@@ -15,7 +15,10 @@
 \usepackage{csquotes}
 \usepackage[ngerman]{babel}
 
-\usepackage[colorlinks,citecolor=blue]{hyperref}
+\usepackage[colorlinks,citecolor=blue,
+pdfauthor={A. Arnold und O. Lenz},
+pdfkeywords={CC-Lizenz: http://creativecommons.org/licenses/by-nc-sa/3.0/deed.de},
+pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 \usepackage{scrhack} % fix listings behavior with recent KOMA
 \usepackage{listings}
 \usepackage{graphicx}
@@ -27,8 +30,9 @@
 \usepackage{fancybox}
 \usepackage[style=alphabetic]{biblatex}
 \usepackage{makeidx}
-\usepackage{todonotes}
-\usepackage{cclicenses}
+\usepackage{todonotes} % comments and todos
+\usepackage{cclicenses} % license symbols
+\usepackage{xmpincl} % 
 
 \usetikzlibrary{positioning,arrows,decorations.pathreplacing}
 
@@ -106,6 +110,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % start of content
+
+\includexmp{license}
 
 \begin{document}
 
