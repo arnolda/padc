@@ -1,0 +1,429 @@
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Axel Arnold, Universitaet Stuttgart.
+% 
+% Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+% Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+% zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+% http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+% schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+% View, California, 94041, USA.
+\chapter{Lineare Algebra \textrm{I}}
+\index{Gleichungssysteme>lineare}
+
+Lineare Gleichungssysteme sind die einfachste Art von
+Gleichungssystemen, für die sich zum Beispiel leicht bestimmen lässt,
+ob und wieviele Lösungen es gibt. Daher führt man auch die Lösung
+komplexerer Probleme, wie zum Beispiel Differentialgleichungen, oft
+auf die Lösung eines Satzes von linearen Gleichungssystemen
+zurück. Lineare Gleichungssysteme sind in diesem Sinne eine der
+wesentlichen Grundlagen der numerischen Mathematik. Der händischen
+Lösung der Systeme steht dabei vor allem ihre Größe im Weg ---
+Finite-Elemente-Rechnungen können leicht die Lösung von
+Gleichungssystemen mit Millionen von Variablen erfordern. Mit modernen
+Algorithmen und Computern lassen sich solche Gleichungssysteme
+allerdings schnell und zuverlässig lösen. In diesem Kapitel lernen wir
+die grundlegende Methode zum Lösen von Gleichungssystemen kennen,
+nämlich die allgemeine, aber langsame Gaußelimination. Daneben lernen
+wir noch die LU-Zerlegung und die Choleskyzerlegung kennen, die mit
+etwas Vorarbeit eine effizientere Lösung erlauben und im folgenden oft
+zum Einsatz kommen werden.
+
+Wir betrachten also folgendes Problem: Sei $A=(a_{ik})\in\RR^{m\times
+  n}$, $b\in\RR^m$. Gesucht ist die Lösung $x\in\RR^n$ des
+Gleichungssystems
+\begin{equation}
+  \label{eq:lgs}
+  \begin{matrix}
+    a_{11}x_1 &+&  a_{12}x_2 &+& \ldots &+& a_{1n}x_n &=& b_1\\
+    a_{21}x_1 &+&  a_{22}x_2 &+& \ldots &+& a_{2n}x_n &=& b_2\\
+    \vdots   &&   \vdots   &&         && \vdots  && \vdots\\
+    a_{m1}x_1 &+&  a_{m2}x_2 &+& \ldots &+& a_{mn}x_n &=& b_m
+  \end{matrix}
+\end{equation}
+oder kurz $Ax=b$. In dieser allgemeinen Form ist weder garantiert,
+dass es eine Lösung gibt (z.B. $A=0$, $b\neq 0$), noch, dass diese
+eindeutig ist ($A=0$, $b=0$).
+
+\section{\keyword{Dreiecksmatrizen}}
+
+Eine Matrix $A\in\RR^{n\times n}$ heißt eine \emph{rechte obere
+  Dreiecksmatrix}, wenn sie quadratisch ist und $a_{ij}=0$ für $i>j$.
+Analog kann man auch die linken unteren Dreiecksmatrizen definieren,
+mit $a_{ij}=0$ für $i<j$. In jedem Fall bilden rechte obere und linke
+untere Dreiecksmatrizen jeweils Unteralgebren der Matrixalgebra, d.h.,
+sie sind abgeschlossen unter Addition und Multiplikation. Die
+Schnittmenge dieser Algebren ist wiederum die Algebra der
+\emph{\keyword{Diagonalmatrizen}}.
+
+Ist $A$ eine rechte obere Dreiecksmatrix, so hat das Gleichungssystem
+die Form
+\begin{equation}
+  \begin{matrix}
+    a_{11}x_1 &+&  a_{12}x_2 &+& \ldots &+& a_{1n}x_n &=& b_1\\
+             &&  a_{22}x_2 &+& \ldots &+& a_{2n}x_n &=& b_2\\
+             &&            && \ddots && \vdots  && \vdots\\
+             &&            &&        && a_{nn}x_n &=& b_n.
+  \end{matrix}
+\end{equation}
+Dieses Gleichungssystem hat genau dann eine Lösung, wenn $A$ regulär
+ist, also $\det A=\prod_{i=1}^na_{ii}\neq 0$. Die Lösung kann dann durch
+\emph{Rücksubstitution} direkt bestimmt werden:
+\begin{equation}
+  \label{eq:ruecksubst}
+  x_i = \frac{1}{a_{ii}}\left( b_i - \sum_{k=i+1}^n a_{ik}x_k\right)
+  \quad\text{für}\; i=n(-1)1.
+\end{equation}
+
+Für reguläre \emph{linke untere Dreiecksmatrizen} ergibt sich die
+Lösung entsprechend durch \emph{Vorwärtssubstitution}:
+\begin{equation}
+  \label{eq:vorwsubst}
+  x_i = \frac{1}{a_{ii}}\left( b_i - \sum_{k=1}^{i-1} a_{ik}x_k\right)
+  \quad\text{für}\; i=1(1)n.
+\end{equation}
+
+Für Diagonalmatrizen ist die Situation natürlich einfacher, es gilt
+\begin{equation}
+  x_i = \frac{1}{a_{ii}} b_i
+  \quad\text{für}\; i=1(1)n.
+\end{equation}
+
+\begin{sloppypar}
+  SciPy stellt für Dreiecksmatrizen spezielle Löserroutinen zur
+  Verfügung, \scipy{scipy.linalg.solve_triangular(A, b, lower=False)},
+  wobei \argd{lower} angibt, ob  \argd{A} eine linke untere statt rechte
+  obere Dreiecksmatrix ist.
+\end{sloppypar}
+
+\section{\keyword{Gaußelimination}}
+
+Die Gaußelimination ist ein Verfahren, um eine beliebiges
+Gleichungssystem $Ax=b$, mit $A\in\RR^{m\times n}$, auf die
+äquivalente Form
+\begin{equation}
+  \label{eq:rform}
+  \begin{pmatrix}
+    R & K \\
+    0 & 0
+  \end{pmatrix} x' = b'
+\end{equation}
+zu bringen, wobei $R$ eine reguläre rechte obere Dreiecksmatrix und
+$K\in\RR^{k\times l}$ beliebig ist, und $x'$ eine Permutation
+(Umordnung) von $x$. Dieses Gleichungssystem hat offenbar nur dann
+eine Lösung, wenn $b_i'=0$ für $i=m-k+1(1)m$.
+
+Diese ist im allgemeinen auch nicht eindeutig, vielmehr können die
+freien Variablen $x_\text{K} = (x'_i)_{i=n-k+1}^{n}$ frei gewählt
+werden. Ist $x_\text{R} = (x'_i)_{i=1}^{n-k}$ der Satz der
+verbleibenden Lösungsvariablen, so gilt also
+\begin{equation*}
+  x_\text{L} = R^{-1}b' - R^{-1}K x_\text{K}.
+\end{equation*}
+Die Lösungen ergeben sich daraus als
+\begin{equation}
+  x' =
+  \begin{pmatrix}
+    R^{-1}b'\\
+    0
+  \end{pmatrix} +
+  \left<
+    \begin{pmatrix}
+      -R^{-1}K_i\\
+      e_i
+    \end{pmatrix}
+  \right>,
+\end{equation}
+wobei $K_i$ die $i$-te Spalte von K und
+$\left<\right>$ den aufgespannten Vektorraum bezeichnet. Die
+Ausdrücke, die $R^{-1}$ enthalten, können durch Rücksubstitution bestimmt
+werden.
+
+Um das System $Ax=b$, das wir im folgenden als $A|b$ zusammenfassen,
+auf diese Form zu bringen, stehen folgende Elementaroperationen zur
+Verfügung, die offensichtlich die Lösung nicht verändern:
+\begin{enumerate}
+\item Vertauschen zweier Gleichungen (Zeilentausch in $A|b$)
+\item Vertauschen zweier Spalten in $x$ und $A$ (Variablenaustausch)
+\item Addieren eines Vielfachen einer Zeile zu einer anderen
+\item Multiplikation einer Zeile mit einer Konstanten ungleich 0
+\end{enumerate}
+Die Gausselimination nutzt nun diese Operationen, um die Matrix
+spaltenweise auf die gewünschte Dreiecksform zu bringen. Dazu werden
+Vielfache der ersten Zeile von allen anderen abgezogen, so dass die
+Gleichung die Form
+\begin{equation}
+  \left(\begin{array}{lll|c}
+      a_{11}^{(0)} & a_{12}^{(0)}\ldots &a_{1n}^{(0)} & b_1^{(0)}\\
+      0     & a_{22}^{(1)}\ldots &a_{2n}^{(1)} & b_2^{(1)}\\
+      \vdots& \vdots      &\vdots& \vdots\\
+      0     & a_{m2}^{(1)}\ldots &a_{mn}^{(1)} & b_m^{(1)}\\
+    \end{array}\right) =: A^{(1)} | b^{(1)}
+\end{equation}
+annimmt, wobei
+\begin{equation}
+  \begin{array}{rcll}
+    a_{ik}^{(1)} &=& a_{ik}^{(0)} -  l_{i}^{(1)}a_{1k}^{(0)}
+    & \quad\text{für}\; i=2(1)n, k=1(1)m\\[0.3em]
+    b_{i}^{(1)} &=& b_{i}^{(0)} - l_{i}^{(1)} b_{1}^{(0)}
+    & \quad\text{für}\; i=2(1)n \\[0.3em]
+    a_{1k}^{(1)} &=& a_{1k}^{(0)},\quad b_{1}^{(1)} = b_{1}^{(0)}
+    & \quad\text{sonst}
+  \end{array}
+  \quad\text{mit}\, l_{i}^{(1)} = \frac{a_{i1}^{(0)}}{a_{11}^{(0)}}.
+\end{equation}
+Mit dem verbleibenden Resttableau wird nun
+genauso weiter verfahren:
+\begin{equation}
+  \label{eq:gausseli}
+  \begin{array}{rcll}
+    a_{ik}^{(r)} &=& a_{ik}^{(r-1)} -  l_{i}^{(r)}a_{r,k}^{(r-1)}
+    & \quad\text{für}\; i=r+1(1)n, k=r(1)m\\[0.3em]
+    b_{i}^{(r)} &=& b_{i}^{(r-1)} - l_{i}^{(r)} b_{r}^{(r-1)}
+    & \quad\text{für}\; i=r+1(1)n \\[0.3em]
+    a_{ik}^{(r)} &=& a_{ik}^{(r-1)},\quad b_{i}^{(r)} = b_{i}^{(r-1)}
+    & \quad\text{sonst}
+  \end{array}
+  \text{mit}\, l_{i}^{(r)} = \frac{a_{ir}^{(r-1)}}{a_{rr}^{(r-1)}}.
+\end{equation}
+Das Verfahren ist beendet, wenn das Resttableau nur noch eine Zeile hat.
+
+Ist während eines Schrittes $a_{rr}^{(r-1)} = 0$ und
+\begin{enumerate}
+\item nicht alle $a_{ir}^{(r-1)}=0$, $i=r+1(1)m$. Dann tauscht man
+  Zeile $r$ gegen eine Zeile $i$ mit $a_{ir}^{(r-1)}\neq 0$, und fährt
+  fort.
+\item alle $a_{ir}^{(r-1)}=0$, $i=r(1)m$, aber es gibt ein
+  $a_{ik}^{(r-1)}\neq 0$ mit $i,k\ge r$. Dann vertauscht man zunächst
+  Zeile $r$ mit Zeile $i$, tauscht anschließend Spalte $k$ mit
+  Spalte $r$, und fährt fort.
+\item alle $a_{ik}^{(r-1)}=0$ für $i,k \ge r$. Dann hat
+  $A^{(r-1)}|b^{(r-1)}$ die gewünschte Form \eqref{eq:rform} erreicht,
+  und das Verfahren terminiert.
+\end{enumerate}
+
+Das Element $a_{rr}^{(r-1)}$ heißt auch \emph{Pivotelement}, da es
+sozusagen der Dreh- und Angelpunkt des iterativen Verfahrens ist.  In
+der Praxis ist es numerisch günstiger, wenn dieses Element möglichst
+groß ist. Das lässt sich erreichen, in dem wie in den singulären
+Fällen verfahren wird, also Zeilen oder Spalten getauscht werden, um
+das betragsmäßig maximale $a_{ik}^{(r-1)}$ nach vorne zu
+bringen. Folgende Verfahren werden unterschieden
+\begin{itemize}
+\item \emph{kanonische \keyword{Pivotwahl}}: es wird stets
+  $a_{rr}^{(r-1)}$ gewählt und abgebrochen, falls dieses betragsmäßig
+  zu klein wird. Diese Verfahren scheitert schon bei einfachen
+  Matrizen (z.B. {\tiny $\begin{pmatrix} 0 & 1\\ 1 &
+      0\end{pmatrix}$}), und kann daher nur eingesetzt werden, wenn
+  die Struktur der Matrix sicherstellt, das $a_{rr}^{(r-1)}$ stets
+  hinreichend groß ist.
+\item \emph{Spaltenpivotwahl}: es wird wie oben im 1. Fall nur in der
+  Spalte maximiert, d.h. wir wählen als  Pivotelement
+  \begin{equation}
+    i_0 = \text{argmax}_{i>r} \lvert a_{ir}^{(r-1)}\rvert
+  \end{equation}
+  und tauschen Zeilen $i_0$ und $r$; die Variablenreihenfolge bleibt
+  unverändert. Ist die Matrix $A$ quadratisch, bricht das Verfahren
+  genau dann ab, wenn $A$ singulär ist.
+\item \emph{Totalpivotwahl}: wie oben im 2. Fall wird stets das maximale
+  Matrixelement im gesamten Resttableau gensucht, also
+  \begin{equation}
+    i_0,k_0 = \text{argmax}_{i,k>r} \lvert a_{ik}^{(r-1)}\rvert.
+  \end{equation}
+  Dann vertauscht man zunächst Zeile $r$ mit Zeile $i_0$, und tauscht
+  anschließend Spalte $k_0$ mit Spalte $r$, wobei man sich noch die
+  Permutation der Variablen geeignet merken muss, zum Beispiel als
+  Vektor von Indizes.
+\end{itemize}
+
+Unabhängig von der Pivotwahl benötigt die Gaußelimination bei
+quadratischen Matrizen im wesentlichen $\O(n^3)$
+Fließkommaoperationen. Das ist relativ langsam, daher werden wir
+später bessere approximative Verfahren kennenlernen. Für Matrizen
+bestimmter Struktur, zum Beispiel Bandmatrizen, ist die
+Gaußelimination aber gut geeignet. NumPy bzw. SciPy stellen daher auch
+keine Gaußelimination direkt zur Verfügung.
+\scipy{scipy.linalg.solve(A, b)} ist allerdings ein Löser für
+Gleichungssysteme $Ax=b$, der auf der LU-Zerlegung durch
+Gaußelimination basiert. Dieser Löser setzt allerdings voraus, dass
+die Matrix nicht singulär ist, also eindeutig lösbar.
+ 
+\section{\keyword{Matrixinversion}}
+
+Ist $A\in\RR^{n\times n}$ regulär, so liefert die Rücksubstitution
+implizit die Inverse von $A$, da für beliebige $b$ das
+Gleichungssystem $Ax=b$ gelöst werden kann. Allerdings muss das für
+jedes $b$ von neuem geschehen. Alternativ kann mit Hilfe der
+Gaußelimination auch die Inverse von $A$ bestimmt werden. Dazu wird
+das Tableau $A|I$ in das Tableau $I|A^{-1}$ transformiert, wobei $I$
+die $n\times n$-Einheitsmatrix bezeichnet. Die Vorgehensweise
+entspricht zunächst der Gaußelimination mit
+Spaltenpivotwahl. Allerdings werden nicht nur die Elemente unterhalb
+der Diagonalen, sondern auch oberhalb eliminiert. Zusätzlich wird die
+Pivotzeile noch mit $1/a_{ii}^{(i-1)}$ multipliziert, so dass das $A$
+schrittweise die Form
+\begin{equation}
+  \left(\begin{array}{cccc}
+      1     & 0      & a_{12}^{(2)}\ldots &a_{1n}^{(2)} \\
+      0     & 1      & a_{22}^{(2)}\ldots &a_{2n}^{(2)} \\
+      \vdots& 0      & a_{32}^{(2)}\ldots &a_{3n}^{(2)} \\
+      \vdots& \vdots & \vdots             & \vdots      \\
+      0     & 0      & a_{n2}^{(2)}\ldots &a_{nn}^{(2)} \\
+    \end{array}\right)
+\end{equation}
+annimmt. Das Verfahren ist allerdings numerisch nicht sehr stabil, und
+generell sollte die explizite Berechnung der Inversen wann inner
+möglich vermieden werden. SciPy stellt die Matrixinversion als
+Funktion \scipy{scipy.linalg.inv(A)} zur Verfügung.
+
+Eine Ausnahme bilden Matrizen der Form $I + A$ mit $\lVert A \rVert =
+\max \lVert Ax\rVert / \lVert x \rVert < 1$. Dann ist
+\begin{equation}
+  (I+A)^{-1} = I - A + A^2 - A^3 + \cdots
+\end{equation}
+eine gut konvergierende Näherung der Inversen.
+
+\section{\keyword{LU-Zerlegung}}
+\index{LR-Zerlegung}
+
+Eine weitere Anwendung der Gaußelimination ist die LU-Zerlegung von
+bestimmten quadratischen Matrizen. Dabei wird eine Matrix
+$A\in\RR^{n\times n}$ so in eine ein linke untere Dreiecksmatrix $L$
+und eine rechte obere Dreiecksmatrix $U$ zerlegt, dass $A=L\cdot U$.
+Um die LU-Zerlegung eindeutig zu machen, vereinbart man üblicherweise,
+dass $l_{ii}=1$ für $i=1(1)n$. Das $U$ steht übrigens für das
+englische "`upper right"' und $L$ für "`lower left"'. Im Deutschen
+findet sich vereinzelt noch der Begriff LR-Zerlegung, wobei hier L für
+eine linke untere und R für eine rechte obere Matrix steht.
+
+Ist eine solche Zerlegung einmal gefunden, lässt sich das
+Gleichungssystem $Ax=b$ für beliebige $b$ effizient durch Vorwärts-
+und Rücksubstitution lösen:
+\begin{equation}
+  L y = b,\, U x = y \quad\implies\quad Ax = L\,U x = L y = b.
+\end{equation}
+Zunächst wird also $y$ durch Vorwärtssubstitution berechnet,
+anschließend $x$ durch Rückwärtssubstitution. Die Inverse lässt
+sich so auch bestimmen:
+\begin{equation}
+  L y_i = e_i,\, U x_i = y_i\quad\text{für}\; i=1(1)n
+  \quad\implies\quad  A^{-1} = \left(x_1,
+    \ldots, x_n\right).
+\end{equation}
+Die Determinante von $A=L\cdot U$ ist ebenfalls einfach zu bestimmen:
+\begin{equation}
+  \det A = \det L\,\det U = \prod_{i=1}^n u_{ii}
+\end{equation}
+
+Um die LU-Zerlegung zu berechnen, nutzen wir wieder die
+Gaußelimination.  Kann bei $A\in\RR^{n\times n}$ die Gaußelimination
+in kanonischer Pivotwahl durchgeführt werden, so ist die LU-Zerlegung
+von $A$ durch $U=A^{(n-1)}$, also die finale, auf rechte obere
+Dreiecksform transformierte Matrix, und durch die Matrix
+\begin{equation}
+  L =
+  \begin{pmatrix}
+    1       &          &         &          & 0 \\
+    l_1^{(0)} & 1       &         &           &  \\
+    l_2^{(0)} & l_2^{(1)} & 1       &          &  \\
+    \vdots  &          & \ddots & \ddots    & \\
+    l_n^{(0)} & \ldots  & \ldots  & l_n^{(n-1)} & 1
+  \end{pmatrix}
+\end{equation}
+der Updatekoeffizienten aus \eqref{eq:gausseli} gegeben.
+
+Wie bereits gesagt, ist die Voraussetzung, dass die Gaußelimination
+mit kanonischer Pivotwahl durchgeführt werden kann, stark, und
+schließt selbst einfache Matrizen wie {\tiny $\begin{pmatrix} 0 & 1\\
+    1 & 0\end{pmatrix}$} aus. Wie man sich leicht überlegt, besitzt
+diese Matrix allerdings keine LU-Zerlegung.
+
+Für manche Anwendungen ist es günstiger, wenn $L$ und $U$ normiert
+sind. Dann benutzt man die \keyword{LDU-Zerlegung} $A=LDU$, mit $L$
+linker unterer Dreiecksmatrix, $D$ Diagonalmatrix und $U$ rechter
+oberer Dreiecksmatrix. Jetzt müssen $l_{ii}=1$ und $r_{ii}=1$
+sein. Die LDU-Zerlegung ergibt sich aus der LU-Zerlegung durch $d_{ii}
+= u_{ii}$ und $u'_{ik}=u_{ik}/u_{ii}$.
+
+In SciPy ist die LU-Zerlegung in den Funktionen
+\scipy{scipy.linalg.lu_factor(A)} oder \scipy{scipy.linalg.lu(A)} (zur
+Zerlegung der Matrix A) und \scipy{scipy.linalg.lu_solve((lu,piv), b)}
+(zum Lösen des LGS) implementiert.
+
+\section{Cholesky-Zerlegung}
+\index{Cholesky>-Zerlegung}
+
+Wir betrachten im folgenden nur symmetrische, positiv definite
+Matrizen, wie sie gerade in der Physik oft vorkommen. Auch in der
+Optimierung spielen diese eine wichtige Rolle. Sei $A=LDU$ eine
+LDU-Zerlegung einer symmetrischen Matrix, dann gilt
+\begin{equation}
+  LDU = A = A^T = (LDU)^T = U^T D L^T.
+\end{equation}
+Da die LDU-Zerlegung aber eindeutig ist und $U^T$ eine normierte,
+linke untere Dreiecksmatrix und $L^T$ eine normierte, rechte obere
+Dreiecksmatrix, so gilt $U=U^T$, und damit
+\begin{equation}
+  A = U^TDU = \widehat{U}^T\widehat{U} \quad\text{mit}\; \widehat{U}=\text{diag}(\sqrt{d_{ii}})U.
+\end{equation}
+Dies ist die Cholesky-Zerlegung. Anstatt die Gaußelimination
+durchzuführen, lässt sich die Zerlegung aber auch direkt mit Hilfe des
+\emph{Cholesky-Verfahrens}\index{Cholesky>-Verfahren} bestimmen: Sei
+$A=\widehat{R}^T\widehat{R}$ eine Cholesky-Zerlegung.
+Da $\widehat{R}$ unterhalb der Diagonalen nur 0 enthält, gilt
+\begin{equation}
+  a_{ik} = \sum_{l=1}^{i} \hat{r}_{li}\hat{r}_{lk} \quad\text{für}\;
+  i=1(1)n,\,k=1(1)n.
+\end{equation}
+Daraus lässt sich die erste Zeile von $\widehat{R}$ direkt ablesen:
+\begin{equation}
+\hat{r}_{11} = \sqrt{a_{11}}\quad\text{und}\;
+\hat{r}_{1k} = \frac{a_{1k}}{\hat{r}_{11}} \quad\text{für}\;k=2(1)n.
+\end{equation}
+Die nächsten Zeilen lassen sich analog bestimmen, da für jedes $i$
+\begin{equation}
+  a_{ii} = \sum_{l=1}^{i} \hat{r}_{li}^2\quad\implies\;
+  \hat{r}_{ii} = \sqrt{a_{ii} - \sum_{l=1}^{i-1} \hat{r}_{li}^2}.
+\end{equation}
+Für die restlichen Elemente der Zeile gilt
+\begin{equation}
+  \hat{r}_{ik} = \frac{1}{\hat{r}_{ii}}\left(a_{ik} - \sum_{l=1}^{i-1}\hat{r}_{li}\hat{r}_{lk}\right) \quad\text{für}\;k=i+1(1)n
+\end{equation}
+Das Cholesky-Verfahren ist wie die Gaußelimination von der Ordnung
+$\O(n^3)$, braucht aber nur halb so viele Operationen. In SciPy ist die
+Cholesky-Zerlegung als \scipy{scipy.linalg.cholesky(A)} implementiert.
+
+\section{\keyword{Bandmatrizen}}
+
+Im folgenden werden wir oft mit $k$-Bandmatrizen zu tun haben, also
+Matrizen, bei denen nur die Diagonale und einige Nebendiagonalen
+besetzt sind. Diagonalmatrizen sind also 1-Bandmatrizen, eine
+\emph{Dreibandmatrix}\index{Dreibandmatrizen} hat die Form
+\begin{equation}
+  \begin{pmatrix}
+    d_1 & t_1    &     & & 0 \\
+    b_1 & d_2    & t_2 \\
+    {}  & \ddots & \ddots & \ddots \\
+    {}  &        & b_{n-2} & d_{n-1} & t_{n-1}\\
+    0   &        &        & b_{n-1} & d_n
+  \end{pmatrix}.
+\end{equation}
+Für Matrizen dieser Form ist die Gaußelimination mit kanonischer
+Pivotwahl sehr effizient, da pro Iteration jeweils nur die erste Zeile
+des Resttableaus verändert werden muss. Dadurch ist der Rechenaufwand
+nur noch linear in der Matrixgröße bzw. Länge der Bänder. Die
+Dreiecksmatrizen $L$ und $U$ der LU-Zerlegung sind zusätzlich
+(Drei-) Bandmatrizen, wobei $L$ nur auf der Haupt und der unteren
+Nebendiagonalen von Null verschiedene Einträge hat, $U$ nur auf der
+Diagonalen und der Nebendiagonalen oberhalb.
+
+SciPy stellt für Bandmatrizen ebenfalls spezielle Löserroutinen zur
+Verfügung, \scipy{scipy.linalg.solve_banded((l,u), A, b)},
+wobei \argd{l} und \argd{u} die Anzahl der Nebendiagonalen oberhalb
+und unterhalb angeben, und \argd{A} die Matrix in Bandform
+angibt.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "padc"
+%%% TeX-PDF-mode: t
+%%% End: 

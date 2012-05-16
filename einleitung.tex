@@ -1,0 +1,449 @@
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Axel Arnold, Universitaet Stuttgart.
+% 
+% Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+% Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+% zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+% http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+% schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+% View, California, 94041, USA.
+
+\chapter{Einleitung}
+
+In dieser Vorlesung geht es darum, wie der Computer in der modernen
+Physik eingesetzt wird, um neue Erkenntnisse zu gewinnen. Klassisch
+war die Physik ein Zusammenspiel aus Experiment und Theorie. Die
+Theorie macht Vorhersagen, die im Experiment überprüft
+werden. Umgekehrt kann im Experiment ein neuer Effekt beobachtet
+werden, für den die Theorie eine Erklärung liefert. Durch den Einsatz
+von Computern ist dieses Bild komplizierter geworden. In der folgenden
+Graphik sind die Bereiche farblich hinterlegt, in denen heutzutage
+Computer zum Einsatz kommen, die hellroten Bereiche werden in dieser
+Vorlesung behandelt:
+\begin{center}
+  \tikzset{>=stealth',
+    master/.style={rectangle,very thick,
+      rounded corners,draw=black,font={\sffamily\bfseries\Large},
+      node distance=6em and 0em},
+    subnode/.style={rectangle,very thick,
+      draw=black,fill=gray!10!white,font={\sffamily},
+      node distance=0.2em},
+    edge/.style={very thick},
+    vorl/.style={fill=red!20!white}
+  }
+  \begin{tikzpicture}
+    \node[master,vorl] (sim) {Simulation};
+    \node[master,above left= of sim] (theo) {Theorie};
+    \node[master,above right= of sim] (exp) {Experiment};
+    \node[subnode,vorl,above left= of theo] (sym) {Symbolische Mathematik};
+    \node[subnode,vorl,below left= of theo] (num) {Numerische Lösung};
+    \node[subnode,vorl,above right= of exp] (ausw) {Auswertung};
+    \node[subnode,below right= of exp,draw=gray] (mess) {Steuerung};
+
+    \draw[edge] (theo) -- (sym);
+    \draw[edge] (theo) -- (num);
+    \draw[edge] (exp)  -- (ausw);
+    \draw[edge] (exp)  -- (mess);
+
+    \draw[edge,->] (theo) to [bend left] node[above] {Vorhersage} (exp);
+    \draw[edge,->] (exp) to [bend left] node[below] {Überprüfung} (theo);
+
+    \draw[edge,->] (exp.south) to [bend left=30] node[left] {Eichung} (sim.east);
+    \draw[edge,->] (sim.east) to [bend right=60] node[right] {Vorhersage} (exp.south);
+
+    \draw[edge,->] (theo.south) to [bend right=30] node[right] {Vorhersage} (sim.west);
+    \draw[edge,->] (sim.west) to [bend left=60] node[left] {Überprüfung} (theo.south);
+  \end{tikzpicture}
+\end{center}
+Zu den klassischen Säulen Theorie und Experiment ist die
+\emph{Simulation} als Mittelding zwischen Theorie und Experiment
+gekommen. Computersimulationen stellen Experimente im Computer nach,
+ausgehend von bekannten theoretischen Grundlagen. Praktisch alles kann
+simuliert werden, von Galaxien bis hin zu Elektronen und Quarks. Dazu
+gibt es eine Vielzahl an unterschiedlichen Methoden. Simulationen
+erfüllen zwei Hauptaufgaben: Simulationen können einerseits
+Experimente ziemlich genau reproduzieren, andererseits kann man mit
+Ihrer Hilfe theoretische Modelle in ihrer vollen Komplexität
+untersuchen.
+
+Simulationen, die an ein Experiment angepasst (geeicht) sind, können
+zusätzliche Informationen liefern, die experimentell nicht zugänglich
+sind. Zum Beispiel kann man dort Energiebeiträge getrennt messen oder
+sehr kurzlebige Zwischenprodukte beobachten. Außerdem erlauben
+Simulationen, Wechselwirkungen und andere Parameter gezielt zu
+verändern, und damit Vorhersagen über zukünftige Experimente zu
+machen.
+
+Simulationen, die auf theoretischen Modellen basieren, sind oft ein
+gutes Mittel, um notwendige Näherungen auf Plausibilität zu überprüfen
+oder um einen ersten Eindruck vom Verhalten dieses Modells zu
+erhalten. Damit können Simulationen auch helfen, zu entscheiden, ob
+notwendige Näherungen oder das Modell unvollständig ist, wenn Theorie
+und Experiment nicht zu einander passen.
+
+In der klassischen theoretischen Physik werden Papier und Bleistift
+zunehmend vom Computer verdrängt, denn \emph{Computeralgebra} ist
+mittlerweile sehr leistungsfähig und kann zum Beispiel in wenigen
+Sekunden komplexe Integrale analytisch lösen. Und falls eine Gleichung
+doch einmal zu kompliziert ist für eine analytische Lösung, so kann
+der Computer mit \emph{numerischen Verfahren} oft sehr gute Näherungen
+finden.
+
+In der experimentellen Physik fallen immer größere Datenmengen an. Der
+LHC erzeugt zum Beispiel pro Jahr etwa 10 Petabyte an Daten, also etwa
+200 Millionen DVDs, was über mehrere Rechenzentren verteilt
+gespeichert und ausgewertet werden muss. Klar ist, dass nur Computer
+diese gigantischen Datenmengen durchforsten können. Aber auch bei
+einfacheren Experimenten helfen Computer bei der \emph{Auswertung und
+  Aufbereitung} der Daten, zum Beispiel durch Filtern oder
+statistische Analysen. Viele Experimente, nicht nur der LHC, sind aber
+auch so komplex, dass Computer zur \emph{Steuerung} der Experimente
+benötigt werden, was wir in dieser Vorlesung aber nicht behandeln
+können. Die Auswertung und Aufbereitung der Daten hingegen wird
+besprochen, auch weil dies genauso auch für Computersimulationen
+benutzt wird.
+
+Neben diesen direkten Anwendungen in der Physik ist der Computer
+mittlerweile natürlich auch ein wichtiges Mittel für den
+Wissensaustausch unter Physikern. Quasi alle wissenschaftlichen
+Arbeiten, wie etwa dieses Skript, werden heute nicht mit der
+Schreibmaschine und Schablonen erzeugt, sondern auf dem Computer. Die
+großen Verlage verlangen mittlerweile auch, Manuskripte als
+elektronische Dokumente zur Publikation einzureichen. Umgekehrt stehen
+wissenschaftliche Arbeit, vor allem Zeitschriftentexte, normalerweise
+nur noch in elektronischen Bibliotheken zur Verfügung, dafür aber
+Texte aus der gesamten Welt. Zur Suche in diesen riesigen Datenmengen
+dienen wiederum Computer. Und schließlich ist der Computer natürlich
+auch unverzichtbar, um international zusammenzuarbeiten - Brief und
+Telefon wären schlicht zu langsam und unflexibel. Diese Aspekte wurden
+aber schon in den Computergrundlagen behandelt, und sind nicht Teil
+dieser Vorlesung.
+
+Um den Computer für Simulationen, Auswertung von Daten oder auch
+Lösung komplexer Differenzialgleichungen nutzen zu können, sind neben
+physikalischen Kenntnissen auch solche in Programmierung, numerischer
+Mathematik und Informatik gefragt. In diesem Skript geht es vor allem
+um die grundlegenden Methoden und wie diese angewandt werden, daher
+dominiert die numerische Mathematik etwas. Anders als in einer
+richtigen Vorlesung zur Numerik stehen hier aber die Methoden und
+Anwendungen anstatt der Herleitungen im Vordergrund.
+
+\section{Über dieses Skript}
+
+Im folgenden wird eine in der numerischen Mathematik übliche Notation
+benutzt. Wie auch in den meisten Programmiersprachen werden skalare
+und vektorielle Variablen nicht durch ihre Schreibweise unterschieden,
+allerdings werden üblicherweise die Namen $i$--$l$ für (ganzzahlige)
+Schleifenindizes benutzt, $n$ und $m$ für Dimensionen. Da Schleifen sehr
+häufig auftreten, wird hierfür die Kurznotation Anfang(Inkrement)Ende
+benutzt. Zum Beispiel bedeuten
+\begin{align*}
+  1(1)n\,=\,1,2,\ldots, n\\
+  n(-2)1\,=\,n, n-2,\ldots, 3, 1.
+\end{align*}
+Alle anderen Variablen sind reellwertige Skalare oder Vektoren,
+$\RR^n$ bezeichnet dabei den $n$-dimensionalen Vektorraum reller
+Zahlen. Mit $e_i$ wird dabei der Einheitsvektor der $i$-ten Spalte
+bezeichnet, mit $e_i^T$ seine Transponierte, also der Einheitsvektor
+der $i$-ten Zeile.
+
+Integrale werden mit dem Volumenelement am Ende geschrieben, dessen
+Dimensionalität sich aus dem Integrationsbereich erschließt. Sehr
+häufig werden Abschätzungen mit Hilfe der \emph{Landau}-Symbole
+verkürzt. Wie üblich heißt für zwei Funktionen $f$ und $g$
+\begin{equation*}
+  f = \O_{x\to a}(g) \quad\iff\quad \lim_{x\to a}
+  \frac{\lvert f(x)\rvert}{\lvert g(x)\rvert}<\infty.
+\end{equation*}
+In den meisten Fällen ist $a=0$ oder $a=\infty$ und aus dem Kontext
+klar, welcher Grenzwert gemeint ist. Dann wird die Angabe
+weggelassen. Oft wird auch die Notation $f = g + \O(h)$ benutzt, um $f
++ g = \O(h)$ auszudrücken. $f(x) \dot{=} g(x)$ schließlich bedeutet 
+$f(x) - g(x) = \O{x\to 0}(x)$.
+
+Um einzelne Methoden konkret vorstellen zu können, wird in diesem
+Skript auf die Sprachen Python und C zurückgegriffen. Im Bereich des
+Hochleistungsrechnens werden vor allem die Sprachen Fortran und C/C++
+eingesetzt, weil diese in Verbindung mit guten Compilern sehr
+effizienten Code ergeben. Allerdings bieten diese Sprachen keine
+nativen Datentypen wie zum Bespiel Listen oder Wörterbücher und
+verlangen die explizite Typisierung von Variablen, was Beispiele
+unnötig verkompliziert. Daher benutzt dieses Skript die
+Programmiersprache Python\footnote{\url{www.python.org}} mit den
+Erweiterungen NumPy und SciPy\footnote{\url{http://www.scipy.org}},
+die eine leistungsfähige numerische Bibliothek und umfangreiche
+Visualisierungsmöglichkeiten bietet. Für elementare Beispiele hingegen
+greift dieses Skript auf das hardwarenähere C zurück.
+
+Zum Erlernen der Programmiersprachen Python und C sei auf die
+Materialien der Veranstaltung „Computergrundlagen“ hingewiesen, die im
+Fachbereich Physik der Universität Stuttgart jährlich angeboten
+wird.
+
+Die meisten der in diesem Skript vorgestellten numerischen Methoden
+werden von SciPy direkt unterstützt. Die Qualität dieser
+Implementationen ist mit eigenem Code nur schwierig zu überbieten. Wo
+immer möglich, wird daher auf die entsprechend SciPy-Befehle
+verwiesen. Zum Beispiel wird auf die Funktion "`method"' im
+SciPy-Modul "`library"' in der in der Form
+\scipy{scipy.library.method(arg1, arg2, ...)} verwiesen. Trotzdem
+sind viele Methoden auch als expliziter Code gezeigt, da man natürlich
+eine Vorstellung davon haben sollte, was diese Methoden tun.
+
+\section{Beispiel: Fadenpendel}
+\index{Fadenpendel}
+
+\begin{figure}
+  \centering
+  \newcommand{\auslenkung}{50}
+  \newcommand{\kraft}{1.5}
+  \begin{tikzpicture}[x=3em,y=3em]
+    \draw[dashed] (0,1)--(0,-2.5);
+
+    % Winkel
+    \filldraw[fill=none,draw=black] (0,-1.5) arc (-90:-90-\auslenkung:1.5);
+    \pgftransformrotate{-\auslenkung/2}
+    \node at (-0.0,-1) {$\alpha$};
+    \pgftransformrotate{\auslenkung/2}
+
+    % ausgelenkte Kugel
+    \pgftransformrotate{-\auslenkung}
+
+    \draw[color=black,dashed] (0,1) -- (0,-3);
+    \draw[thick,fill] (0,-3) circle (0.18cm) node (masse) {};
+    \draw[thick] (0,0) circle (.1cm);
+    \draw[thick] (0,0) -- (0,-3);
+    \draw[decorate,decoration=brace] (-.2,-3) -- (-.2,0);
+    \node at (-0.7,-1.5) {$l$};
+
+    \draw[->,color=blue,thick] (masse) -- +({\kraft*sin(\auslenkung)},0)
+    node (ft) {} node[right] {$F_\text{tan} = F_\text{G}\sin(\alpha)$};
+    \draw[->,color=red,thick] (masse) -- +(0,{-\kraft*cos(\auslenkung)})
+    node (fr) {} node[left] {$F_\text{rad}$};
+
+    % totale Kraft
+    \pgftransformrotate{\auslenkung}
+    \draw[->,very thick] (masse) -- +(0,-\kraft)
+    node (fg) {} node[below] {$F_\text{G} = -mg$};
+    \draw[thin,dotted] (fr.center) -- (fg.center) -- (ft.center);
+  \end{tikzpicture}
+  \caption{Schematisches Fadenpendel der Masse $m$, das an einem
+    masselosen, steifen Faden der Länge $l$ hängt.}
+  \label{fig:pendel}
+\end{figure}
+
+Wir betrachten ein einfaches Beispielsystem, nämlich ein Fadenpendel.
+Wird dieses Pendel nun ausgelenkt, vollführt es eine periodische
+Schwingung um die Ruhelage, d.h., den tiefsten Punkt. Unser Ziel als
+Physiker ist nun, die Position der Kugel als Funktion der Zeit
+vorherzusagen. Das allerdings ist eine unmögliche Aufgabe --- man
+stelle sich zum Beispiel eine stark inhomogene Masse vor (oder ein
+Fadenpendel als Masse) oder dass der Faden elastisch ist. Daher müssen
+wir zunächst ein geeignet vereinfachtes \emph{Modell} erstellen, auf
+das wir dann die bekannten physikalischen Gesetze anwenden
+können.
+
+\subsection{Modell}
+
+Als Modell wählen wir eine homogene Kugel der Masse $m$, die an einem
+masselosen, steifen Faden der Länge $l$ hängt (vergleiche
+Figur~\ref{fig:pendel}). Auf diese Kugel wirkt nur eine Gewichtskraft
+der Größe $mg$ senkrecht nach, alle anderen Kräfte vernachlässigen wir
+komplett, insbesondere auch die Reibung.
+
+Da der Faden unendlich steif sein soll, kann sich Kugel lediglich auf
+einem Kreis mit Radius $l$ um die Aufhängung bewegen, d.h. die
+Position der Kugel ist durch die Auslenkung $\alpha$ aus dem tiefsten
+Punkt vollständig beschrieben. Weiter wird die Komponente der Kraft
+parallel zum Faden komplett von diesem kompensiert, daher bleibt bei
+Auslenkung $\alpha$ von der Gewichtskraft nur ihre Komponente
+\begin{equation}
+  F_\text{tan} = F_\text{G}\sin(\alpha) = -mg\sin(\alpha)
+\end{equation}
+senkrecht zum Faden übrig. Das Newtonsche Gesetz besagt nun, dass
+die Tangentialbeschleunigung, also die Beschleunigung entlang $\alpha$
+\begin{equation}
+  l\ddot\alpha = F_\text{tan}/m = -g\sin(\alpha)
+  \label{eq:pendelgln}
+\end{equation}
+beträgt. Dies ist jetzt eine Differentialgleichung für die Auslenkung
+$\alpha(t)$ des Pendels als Funktion der Zeit. Diese wiederum liefert
+uns die gewünschte Position $(\cos(\alpha)l,\sin(\alpha)l)$ der Kugel
+relativ zur Aufhängung als Funktion der Zeit. Leider hat selbst diese
+einfache Differentialgleichung keine geschlossene Lösung, und wir
+müssen weitere Näherungen einführen, um eine analytische Lösung zu
+erhalten.
+
+\subsection{Näherung: der harmonische Oszillator}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/pendel_loesung}
+  \caption{Lösungen für ein Fadenpendel der Länge $l=1m$. Im linken Graphen
+    ist die Ausgangslage $\alpha=1,5$, im rechten $\alpha=0,1$; in
+    beiden Fällen ist die Ausgangsgeschwindigkeit 0. Die durchgezogene
+  grüne Linie markiert die analytische Näherungslösung
+  \eqref{eq:naeherung} für kleine Winkel. $\times$ markiert die
+  Ergebnisse einer Integration mit dem einfachen Vorwärtsschritt
+  \eqref{eq:simple} mit Zeitschritt $0,1s$, die gestrichelte rote
+  Linie mit Zeitschritt $0,01s$. $+$ markiert die Lösung mit Hilfe des
+  Velocity-Verlet-Algorithmus und Zeitschritt $0,1s$.}
+  \label{fig:loesung}
+\end{figure}
+
+Für kleine Winkel gilt $\sin(\alpha)\approx\alpha$, und damit
+\begin{equation}
+  \ddot\alpha \approx = -\frac{g}{l}\alpha.
+\end{equation}
+Diese Differentialgleichung hat die allgemeine Lösung
+\begin{equation}
+  \alpha(t) = A \sin(\omega t + \phi)
+  \label{eq:naeherung}
+\end{equation}
+mit $\omega=\sqrt{g/l}$, wie man sich leicht durch Einsetzen
+überzeugt. Die Größen $A$ und $\phi$ ergeben sich aus den
+Anfangsbedingungen, nämlich der Anfangsposition
+\begin{equation}
+  \alpha_0 = A \sin(\phi)
+\end{equation}
+und "~geschwindigkeit
+\begin{equation}
+  v_0 = A \omega \cos(\phi).
+\end{equation}
+Ist zum Beispiel $v_0=0$, so ist $\phi=\pi/2$ und $A=\alpha_0$, im
+allgemeinen Fall ist
+\begin{equation}
+\phi =
+\arctan\left(\frac{\alpha_0\omega}{v_0}\right)\quad\text{und}\quad
+A = \frac{\alpha_0}{\sin(\phi)}.
+\end{equation}
+Wir haben nun eine geschlossene Lösung für die Position des Pendels,
+so lange die Ausgangslage nicht zu sehr ausgelenkt ist. Um diese
+Lösung zu visualisieren, nutzt man heute üblicherweise den Computer,
+siehe Graph~\ref{fig:loesung}.
+
+\subsection{Numerische Lösung}
+
+Was passiert nun, wenn das System stärker ausgelenkt ist? Mit sehr
+viel mehr Aufwand lässt sich auch für diesen Fall eine analytische
+Lösung finden, allerdings in Form einer Reihe, die nicht mehr so
+einfach zu zeichnen ist. Eine Alternative ist, die
+Differentialgleichung \eqref{eq:pendelgln} mit Hilfe des Computers zu
+berechnen. Wir sagen, wir "`simulieren"' das Pendel. Dazu fixieren wir
+ein Einheitensystem, zum Beispiel eine Sekunde als Zeiteinheit und
+einen Meter als Längeneinheit. In diesem System ist also $l=1$,
+$g\approx 9,81$ und $\omega\approx 3,13$, falls des Pendel einen Meter
+lang ist.
+
+Zunächst müssen wir das Problem aber für den Computer anpassen, der ja
+nur mit (endlich vielen) gewöhnlichen Zahlen rechnen kann, wir müssen
+das Problem \emph{diskretisieren}. Wir betrachten nur die Zeitpunkte
+\begin{equation}
+  t_n = n\delta t, n=1(1)N,
+\end{equation}
+wobei der Zeitschritt $\delta t$ frei wählbar ist. Je kleiner $\delta
+t$, desto genauer können wir $\alpha(t)$ bestimmen, allerdings steigt
+natürlich die Anzahl der Schritte, die nötig sind, um eine feste
+Gesamtzeit zu erreichen. Unsere Lösung, die Funktion $\alpha(t)$ wird
+also durch ihre Werte $\alpha(t_n)$ an den diskreten Zeitpunkten
+dargestellt.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/pendel_energie}
+  \caption{Energie als Funktion der Zeit, wieder für $l=1m$, und
+    Ausgangslage $\alpha=1,5$ (links) und $\alpha=0,1$ (rechts) in
+    Ruhe.  $+$ markiert die Ergebnisse einer Integration mit dem
+    einfachen Vorwärtsschritt \eqref{eq:simple} mit Zeitschritt
+    $0,1s$, die gestrichelte rote Linie mit Zeitschritt $0,01s$. $\times$
+    markiert die Lösung mit Hilfe des Velocity-Verlet-Algorithmus und
+    Zeitschritt $0,1s$, und die gestrichelte blaue Linie mit $0,01s$.}
+  \label{fig:energie}
+\end{figure}
+
+Um Gleichung \eqref{eq:pendelgln} auf den Computer zu bringen, müssen
+wir uns allerdings noch überlegen, wie wir mit der Ableitung verfahren.
+Da wir die Ausgangsposition und "~ge\-schwin\-dig\-keit gegeben haben, liegt
+es nahe, die Gleichung zu integrieren:
+\begin{equation}
+  v(t+\delta t) = \dot\alpha(t + \delta t) = v(t) + \int_{t}^{t+\delta t}
+  -\omega^2\sin \alpha(\tau)\, d\tau.
+\end{equation}
+Da $\delta t$ aber unser Zeitschritt ist, wir also nichts weiter über
+$\alpha(\tau)$ wissen, bietet sich die folgende Näherung an:
+\begin{equation}
+  v(t+\delta t) \approx v(t) - \omega^2\sin\alpha(t) \delta t.
+\end{equation}
+Analog ergibt sich dann durch nochmalige Integration:
+\begin{equation}
+  \alpha(t+\delta t) \approx \alpha(t) + v(t) \delta t.
+  \label{eq:simple}
+\end{equation}
+Ausgehend von
+\begin{equation}
+  \alpha(0) = \alpha_0 \quad\text{und}\quad v(0) = v_0
+\end{equation}
+lässt sich damit also $\alpha(t)$ numerisch bestimmen. Der
+Quellcode~\ref{lst:pendel} zeigt, wie eine einfach Implementation in
+Python aussehen könnte.
+
+Wie kann man nun überprüfen, ob diese Lösung tatsächlich korrekt ist?
+Da das System abgeschlossen ist, muss seine Energie
+\begin{equation}
+  E = \frac{1}{2} l^2 v(t)^2 + gl (1 - \cos(\alpha(t)))
+\end{equation}
+erhalten sein. Lässt man sich diese allerdings ausgeben, stellt man
+fest, dass $E(t)$ erheblich schwankt, vergleiche
+Graph~\ref{fig:energie}. Dies lässt sich durch Verringern des
+Zeitschritts beheben, das kostet aber entsprechend mehr Rechenzeit.
+
+Eine bessere Alternative ist, den Algorithmus zu verbessern, was
+wiederum etwas analytische Arbeit erfordert. Wir betrachten die
+Taylorentwicklungen
+\begin{align}
+  \alpha\left(t+\delta t\right) &= \alpha\left(t+\frac{\delta t}{2}\right) + \frac{\delta t}{2}
+  v\left(t+\frac{\delta t}{2}\right) + \frac{\delta t^2}{8} F\left(t+\frac{\delta t}{2}\right) + \O(\delta t^3)
+  \intertext{und}
+  \alpha\left(t\right) &= \alpha\left(t+\frac{\delta t}{2}\right) - \frac{\delta t}{2}
+  v\left(t+\frac{\delta t}{2}\right) + \frac{\delta t^2}{8} F\left(t+\frac{\delta t}{2}\right) - \O(\delta t^3).
+\end{align}
+Durch Subtraktion ergibt sich
+\begin{align}
+  \alpha(t+\delta t) = \alpha(t) + \delta t\,v\left(t+\frac{\delta t}{2}\right) + \O(\delta t^4).
+\end{align}
+Die Geschwindigkeiten an den halben Zeitschritten erhält man einfach
+durch $v(t + \delta t /2) = v(t) + \delta t F(t) / 2$.
+Zusammengefasst ergibt sich der folgende \emph{Velocity-Verlet-Algorithmus}:
+\begin{align}
+  v(t + \frac{\delta t}{2}) &= v(t) + \frac{\delta t}{2} F(t) \\
+  \alpha(t + \delta t) &= \alpha(t) + v(t + \frac{\delta t}{2}) \\
+  v(t + \delta t) &= v(t + \frac{\delta t}{2}) + \frac{\delta t}{2}
+  F(t + \delta t),
+\end{align}
+der anders als die direkte Vorgehensweise vorher numerisch stabil ist
+und quasi keine Energieschwankungen aufzeigt, vergleiche
+Graph~\ref{fig:energie}. 
+Im Quellcode~\ref{lst:pendel} ist alternativ auch dieser Integrator
+implementiert. Obwohl er nur unwesentlich komplizierter ist als der
+einfache Integrator zuvor, erreicht etwa dieselbe Genauigkeit wie
+dieser mit einem Zehntel der Zeitschritte.
+
+Als weiterer Test bietet sich an, bei kleinen Auslenkungen mit der
+analytisch bekannten Lösung zu vergleichen, die gut reproduziert wird,
+siehe Graph~\ref{fig:loesung}. Bei größeren Anfangsauslenkungen oder
+-ge\-schwin\-dig\-keiten ist die Abweichung allerdings sehr groß, weil
+hier die analytische Näherung versagt. Im Rahmen ihrer Genauigkeit
+erlaubt also die numerische Lösung, das vorgegebene Modell in einem
+größeren Parameterraum auf sein Verhalten hin zu untersuchen, als
+analytisch möglich wäre.
+
+\lstinputlisting[style=floating,
+caption={[Fadenpendel] Python-Code zum Fadenpendel
+  mit graphisch aufbereiteter Ausgabe mit Hilfe der \texttt{matplotlib}.},
+label=lst:pendel]{pendel.py}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "padc"
+%%% TeX-PDF-mode: t
+%%% End: 

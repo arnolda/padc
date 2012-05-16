@@ -1,0 +1,695 @@
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Axel Arnold, Universitaet Stuttgart.
+% 
+% Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+% Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+% zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+% http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+% schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+% View, California, 94041, USA.
+
+\chapter{Datenanalyse und Signalverarbeitung}
+
+In diesem Kapitel geht es darum, was man mit einem gemessenen Signal
+machen kann und muss. Ein gemessenes Signal kann dabei entweder
+tatsächlich von einem Messgerät kommen oder aber das Ergebnis einer
+Computersimulation sein. Zwei Fragen sind dabei vor allem wichtig:
+welche Eigenschaften hat das Signal, und wie vertrauenswürdig sind die
+Werte?
+
+Um die Eigenschaften von Signalen zu untersuchen, ist die
+kontinuierliche Fourieranalyse ein gutes Werkzeug, die das Signal vom
+Zeit- in den Frequenzraum überträgt. So lassen sich zum Bespiel
+charakteristische Frequenzen und damit Zeitskalen bestimmen. Außerdem
+bietet der Übergang in der Frequenzraum analytisch viele Vorteile, die
+sich auch auf dem Computer nutzen lassen. So werden zum Beispiel
+langreichweitige Wechselwirkungen in Molekulardynamiksimulationen
+meist im Frequenzraum berechnet.
+
+Als weiteres Werkzeug werden wir Faltungen kennen lernen, die
+erlauben, Signale nach bestimmten Frequenzen zu filtern oder aber aus
+der (gemessenen) Antwort eines linearen Systems auf ein einfaches
+Eingangssignal die Antwort auf beliebige Signale zu berechnen.
+
+Sollen Signale mit dem Computer weiterverarbeitet werden, müssen diese
+\emph{digitalisiert} werden, also in eine Reihe von Zahlen
+übersetzt. Üblicherweise passiert dies dadurch, dass das Signal nur zu
+äquidistanten Zeitpunkten ausgewertet, \emph{abgetastet} wird. Das
+wirft die Frage auf, welche Funktionen dadurch überhaupt gut gemessen
+werden können. Wie wir sehen werden, beschränkt diese Abtastung die
+Frequenzen, die von einer digitalen Auswertung erfasst werden können.
+
+Die meisten Signale sind außerdem, durch Messungenauigkeiten und
+prinzipielle stochastische Prozesse, selbst \emph{stochastisch},
+d.h. die Verteilung der Ergebnisse vieler Messungen ist
+vorherbestimmbar, die einzelne Messung hingegen nicht. Trotzdem sind
+Messungen oft korreliert, zum Beispiel weil eine Observable sich nur
+kontinuierlich ändert.  Durch Korrelationsanalysen lässt sich
+bestimmen, wann Messungen wirklich unabhängig sind. Dies gibt wiederum
+Aufschluss über die Zeitskalen wichtiger Prozesse im System, ist aber
+auch wichtig für eine korrekte Abschätzung des Messfehlers, womit sich
+der letzte Abschnitt beschäftigt.
+
+\section{Kontinuierliche Fouriertransformation}
+\index{Fouriertransformation>kontinuierliche}
+
+Für die Analyse zeitlich veränderlicher Signale besonders nützlich ist
+die Fouriertransformation, die ein kontinuierliches Signal in den
+Frequenzraum übersetzt. Dies gilt nicht nur für periodische Signale,
+sondern zum Beispiel auch dann, wenn die Antwort eines Systems auf ein
+komplexes Eingangssignal gefragt ist. Der tiefere Grund dafür ist,
+dass die Fouriertransformation Differential- und Integraloperatoren in
+einfache algebraische Operationen übersetzt.
+
+Betrachten wir nochmals die Fourierreihe im Interval $[-T/2,T/2)$
+\begin{multline}
+  f(t) = \sum_{n\in\ZZ}
+  \left(\frac{\Delta\omega}{2\pi}\int_{-T/2}^{T/2}
+    f(t)e^{-i n\Delta\omega t}\, dt\right)
+  e^{i n\Delta\omega t}\\
+  =
+  \frac{1}{\sqrt{2\pi}}\sum_{n\in\ZZ}
+  \left(\frac{1}{\sqrt{2\pi}}\int_{-T/2}^{T/2} f(t)e^{-i \omega t}\,dt\right)
+  e^{i \omega t}\,\Delta\omega
+\end{multline}
+mit der Grundfrequenz $\Delta\omega=2\pi/T$ und
+$\omega=n\Delta\omega$. Im Grenzwert $T\to\infty$ ergibt sich
+\begin{equation}
+  \label{eq:contfourierinverse}
+  f(t) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+  \FT(f)(\omega)e^{i \omega t}\,d\omega
+\end{equation}
+mit
+\begin{equation}
+  \label{eq:contfourier}
+  \FT(f)(\omega) =
+  \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty} f(t)e^{-i \omega t}\, dt.
+\end{equation}
+Die \emph{kontinuierliche Fouriertransformation} $\FT$ ist das
+Analogon der periodischen Fourierreihe, ist allerdings keine
+Transformation in eine Reihe mehr, sondern eine Abbildung zwischen
+Funktionen. Für $\FT$ gelten eine Menge sehr starker Aussagen, die wir
+zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
+\begin{itemize}
+\item $\FT(f)$ existiert, falls $f$ quadratintegrabel ist, und
+  bildet $f$ auf eine quadratintegrable Funktion ab. Für solche
+  Funktionen mit der zugehörigen Norm $\lVert f \rVert_2 =
+  \int_{-\infty}^{\infty} \lvert f(t) \rvert^2\,dt$ gilt dann sogar
+  die Isometrie
+  (\emph{Parsevaltheorem}\index{Parsevaltheorem>kontinuierliches}):
+  \begin{equation}
+    \lVert \FT(f) \rVert_2 = \lVert f \rVert_2
+  \end{equation}
+\item $\FT$ ist linear, d.h. $\FT(f + \lambda g) = \FT{f} + \lambda
+  \FT{g}$.
+\item $\FT$ ist reziprok gegen Streckungen, d.h.
+  \begin{equation}
+    \label{eq:fourierreziprok}
+    \FT[f(\alpha
+    t)](\omega) = \frac{1}{\lvert \alpha \rvert}
+    \FT(f)\left(\frac{\omega}{\alpha}\right).
+  \end{equation}
+  Wird also eine Funktion $\alpha$ immer stärker gestaucht, so wird
+  ihre Transformierte immer weiter gestreckt.
+
+  Entsprechend wird aus Zeitumkehr Frequenzumkehr: $\FT(f(-t))(\omega)
+  = \FT(f)(-\omega)$.
+\item $\FT$ ist invertierbar, die Umkehrfunktion $\FT^{-1}$ ist durch
+  \eqref{eq:contfourierinverse} explizit gegeben. Offenbar ist auch
+  die Umkehrung eine Isometrie, es gilt $\lVert \FT^{-1}(f)
+  \rVert_2 =\lVert f \rVert_2$.
+\item Weiter gilt $\FT(\FT(f(t))) = \FT(f(-t))$, und damit $\FT^4(f) =
+  f$. Insbesondere ist auch $\FT^{-1} = \FT^3$.
+\item Eine zeitliche Verschiebung wird zu einer Frequenzmodulation und
+  umgekehrt:
+  \begin{eqnarray}
+    \label{eq:fouriertimeshift}
+    \FT(f(t-t_0))(\omega) = e^{-i\omega t_0} \FT(f(t))(\omega)\\
+    \label{eq:fourierfreqshift}
+    \FT(e^{i\omega_0 t}f(t))(\omega) = \FT(f(t))(\omega-\omega_0).
+  \end{eqnarray}
+  Wird also ein niederfrequentes Signal (Radioprogramm) auf ein
+  hochfrequentes Trägersignal aufmoduliert, verschiebt sich nur dessen
+  Spektrum. 
+\item Aus der Linearität folgt, dass stets gilt:
+  $\FT(\overline{f})(\omega) = \overline{\FT(f)(\omega)}$.
+\item Ist Funktion $f$ symmetrisch, also $f(t) = f(-t)$, so ist
+  $\FT(f)(-\omega) = \FT(f)(\omega)$, also symmetrisch
+\item Ist Funktion $f$ ungerade, also $f(t) = -f(-t)$, so ist
+  $\FT(f)(-\omega) = -\FT(f)(\omega)$, also ungerade.
+\item Ist Funktion $f$ reellwertig, also $f(t) = \overline{f(t)}$, so
+  ist $\FT(f)(-\omega) = \overline{\FT(f)(\omega)}$, aber im
+  allgemeinen komplexwertig!
+\item Für die Fouriertransformierte der Ableitung gilt
+  \begin{equation}
+    \begin{split}
+      \FT\left(\frac{d}{dt}f(t)\right)(\omega) &=
+      \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+      \frac{df}{dt}(t)e^{-i
+        \omega t}\, dt\\
+      &= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+      f(t)\frac{d}{dt}e^{-i \omega t}\, dt = i\omega
+      \FT(f(t))(\omega).
+    \end{split}
+  \end{equation}
+  Dies spielt eine wichtige Rolle beim Lösen von
+  Differenzialgleichungen, weil diese in gewöhnliche algebraische
+  Gleichungen übergehen.
+\item Es gilt die Poissonsche Summenformel
+  \begin{equation}
+    \label{eq:poissonsumme}
+    \sum_{k\in\ZZ}f(t_0 + k\, \delta)=
+    \frac{\sqrt{2\pi}}{|\delta|}\sum_{n\in\ZZ}\FT(f)
+    \left(\frac{2\pi n}{\delta}\right)
+    \exp\left(i \frac{2\pi n}{\delta} t_0\right).
+  \end{equation}
+  Diese Gleichung beruht darauf, dass $\sum_{t\in\ZZ}f(\cdot + t\,
+  \delta)$ eine $\delta$-periodische Funktion ist, die durch eine
+  Fourierreihe dargestellt werden kann. Wegen
+  \eqref{eq:fouriertimeshift} reicht es
+  dabei o.B.d.A. $\delta=1$ zu
+  betrachten:
+  \begin{multline}
+    \sum_{k\in\ZZ}f(t_0 + k) =
+    \sum_{n\in\ZZ} \int_0^1 \sum_{k\in\ZZ}f(\tau + k)e^{-2\pi i
+      n \tau}\, d\tau
+    \, e^{2\pi i n t_0} =\\
+    \sum_{n\in\ZZ} \int_{-\infty}^\infty f(\tau)e^{-2\pi i
+      n \tau}\, d\tau
+    \, e^{2\pi i n t_0}
+    = \sqrt{2\pi}\sum_{n\in\ZZ}\FT(f)(2\pi n)\, e^{2\pi i n t_0}.
+  \end{multline}
+
+  Eine wichtige Anwendung der Poissonschen Summenformel ist die
+  Summation schlecht konvergenter Reihen. Fällt die Funktion $f$ sehr
+  langsam gegen unendlich ab, so fällt ihre Fouriertransformierte
+  wegen der Reziprozität \eqref{eq:fourierreziprok} im allgemeinen
+  schneller, so das aus einer langsam eine rasch konvergierende Reihe
+  wird.
+\end{itemize}
+
+\subsection{Spezielle Fouriertransformierte}
+
+Die Fouriertransformierte einer Gaußglocke ist
+\begin{equation}
+  \FT\left(\frac{1}{\sqrt{2\pi}}e^{-t^2/2}\right)
+  =
+  \frac{1}{2\pi}e^{-\omega^2/2}\int_{-\infty}^{\infty} e^{-(t-i\omega)^2/2}\, dt
+  =
+  \frac{1}{\sqrt{2\pi}}e^{-\omega^2/2}
+\end{equation}
+Die Gaussglocke ist also eine Eigenfunktion der Fouriertransformation
+zum Eigenwert 1. Die Fouriertransformation hat tatsächlich sehr viel
+mehr echt verschiedene Eigenfunktionen, die Familie der
+Hermitefunktionen~\cite{pinsky02a}. Wegen der Isometrieeigenschaft kann die
+Fouriertransformation aber nur Eigenwerte vom Betrag eins haben;
+tatsächlich hat sie nur die vier Eigenwerte $\pm 1$ und $\pm i$, da
+$\FT^4=1$. Daher ist jeder Eigenwert stark degeneriert, und der
+Eigenraum zu jedem Eigenwert unendlichdimensional.
+
+Die (formale) Fouriertransformierte der $\delta$-Funktion ist
+\begin{equation}
+  \label{eq:fourierdelta}
+  \FT(\delta(t))(\omega)
+  =
+  \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+  \delta(t)e^{-i \omega t}\, dt = \frac{1}{\sqrt{2\pi}},
+\end{equation}
+also einfach die konstante Funktion $1/\sqrt{2\pi}$, die ebensowenig
+wie die $\delta$-Funktion eine quadratintegrable Funktion
+ist. Alternativ lässt sich die Beziehung aus der
+Fouriertransformierten der Gaußglocke mit sinkender Varianz herleiten.
+
+\subsection{Numerische kontinuierliche Fouriertransformation}
+
+Um die Eigenschaften der kontinuierlichen Fouriertransformation
+numerisch zu nutzen, machen wir den Grenzübergang $T\to\infty$
+rückgängig und ziehen uns auf ein für die betrachtetete Funktion
+hinreichend großes $T$ zurück, so dass $\int_{\lvert t\rvert>T}\lvert
+f(t)\rvert^2\, dt$ hinreichend klein ist. Ist das Signal wie in der
+Praxis endlich, so könnte $T$ zum Beispiel so groß sein, dass das
+Signal vollständig abgedeckt ist. In jedem Fall ist das Signal eine
+Funktion $f$, die wir nur an auf einem äquidistanten Gitter $t_k =
+T\left(-\frac{1}{2} + \frac{k}{N}\right)$, $k=0(1)N-1$ kennen. Dann
+ist mit $\omega_0=\frac{2\pi}{T}$
+\begin{multline}
+  \label{eq:dftcont}
+  \FT(f)(\omega_0 n)\approx
+  \frac{1}{\sqrt{2\pi}}\int_{-T/2}^{T/2} f(t)e^{-i n \omega_0 t}\, dt
+  \approx
+  \frac{1}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
+  f(t_k)
+  e^{-i n\omega_0 T\left(-\frac{1}{2} + \frac{k}{N}\right)}\,
+  \frac{T}{N}\\
+  =   \frac{T}{N} \frac{e^{-2\pi i n /2}}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
+  f(t_k) e^{-2\pi i n k / N}\,
+  =
+  \frac{T}{N}\frac{(-1)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n,
+\end{multline}
+wobei DFT die diskrete Fouriertransformation aus \eqref{eq:dft}
+bezeichnet.  Die bekannten schnellen FFT-Routinen lassen sich also
+auch für die numerische Bearbeitung der kontinuierlichen
+Fouriertransformation nutzen. Auf diese Weise ist
+z.B. Abbildung~\ref{fig:fourierfaltung} entstanden.
+
+\subsection{\keyword{Abtasttheorem}}
+
+In der Praxis sind Signale meist als diskrete Werte an (endlich
+vielen) äquidistanten Stellen beziehungsweise Zeitpunkten gegeben, zum
+Beispiel, weil ein Messgerät Daten in regelmäßigen Abständen liefert.
+Eine wichtige Frage ist, wie gut man das reale Signal und sein
+Frequenzspektrum aus den diskreten Datenpunkten rekonstruieren kann.
+
+Hierzu betrachten wir zunächst ein \emph{bandbreitenbeschränktes
+  Signal} $f$, d.h. ein Signal, dessen Fouriertransformierte einen
+kompakten Träger $[-\omega_0,\omega_0]$ hat. Dann besagt die
+Poissonsche Summenformel~\eqref{eq:poissonsumme}, dass für
+$\omega\in[-\omega_0,\omega_0]$
+\begin{equation}
+  \FT(f)(\omega) =
+  \sum_{k\in\ZZ}\FT(e^{-i\omega \cdot} f)\left(2k\omega_0\right)
+  =
+  \frac{1}{\sqrt{2\pi}}
+  \sum_{n\in\ZZ} e^{-i \omega n \Delta}f\left(n \Delta\right)
+\end{equation}
+mit $\Delta=\pi/\omega_0$. Die Fouriertransformierte eines
+bandbreitenbeschränkten Signals lässt sich also \emph{exakt} nur aus
+den Funktionswerten an den äquidistanten diskreten Stellen mit
+Abtastrate $\Delta$ berechnen. Dadurch kann natürlich auch die
+Funktion exakt aus ihrer Fouriertransformierten rekonstruiert werden:
+\begin{equation}
+  \label{eq:ftreconst}
+  f(t)
+  = \frac{\Delta}{2\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
+  \int_{-\omega_0}^{\omega_0} e^{-i \omega (t - n\Delta)} \,d\omega
+  = \frac{\Delta}{\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
+  \frac{\sin(\omega_0(t-n\Delta))}{t-n\Delta}.
+\end{equation}
+
+Ist nun umgekehrt eine Signal $f(n\Delta)$ an äquidistanten diskreten
+Stellen gegeben, so lässt sich diesem umgekehrt gemäß
+\eqref{eq:ftreconst} ein kontinuierliches Signal zuordnen, dessen
+Fouriertransformierte nur in $[-\omega_0,\omega_0]$ nicht
+verschwindet, wobei $\omega_0 = \pi/\Delta$. Das bedeutet, dass bei
+Abtastrate $\Delta$ nur Frequenzen bis zur Nyquist-Frequenz
+$f_\text{Nyquist}=\frac{1}{2\Delta}$ abgetastet werden können, ähnlich
+wie im periodischen Fall.
+
+\section{Faltungen}
+\index{Faltung}
+
+Die \emph{Faltung} der quadratintegrablen Funktionen $f$ und $g$ ist
+definiert als
+\begin{equation}
+  (f \star g)(t) := \int_{-\infty}^{\infty} f(t')g(t-t')\,dt'.
+\end{equation}
+Das negative Vorzeichen von $t'$ in der zweiten Funktion sorgt
+dafür, dass die Faltung kommutativ ist. Weitere Eigenschaften der
+Faltung sind Linearität in den Komponenten und sogar
+Assoziativität. Die Faltung verhält sich also so ähnlich wie die
+klassische Multiplikation und wird daher mit dem Zeichen $\star$
+bezeichnet.  Vereinfacht gesagt, deponiert die Faltung an jedem Punkt
+$t$ die Funktion $f$, skaliert mit $g(\cdot - t) $. Daher ist z.B.
+\begin{equation}
+  (\delta(\cdot - t_0) \star g)(t) = g(t - t_0).
+\end{equation}
+\index{Glättung}
+Wird nun statt der unendlich dünnen $\delta$-Funktion zum Beispiel
+eine Gaußglocke gewählt, so wird die Funktion $g$ verschmiert
+bzw. geglättet, siehe Abbildung~\ref{fig:fourierfaltung}.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/fouriertrafo}
+  \caption{Oben links: Summe zweier Schwingungen $\cos(x) +
+    0,25\sin(7,5 x)$ (schwarze Linie), die mit einer Gaußglocke (blau
+    gepunktet) gefaltet wird. Das Ergebnis (rote dicke Linie) ist die
+    quasi ungestörte langsame Schwingung ohne die höherfrequente
+    Schwingung, die weggeglättet wurde. Oben rechts:
+    Fouriertransformierte der Funktionen. Klar sichtbar ist die
+    hochfrequente Störung mit einer Frequenz von 7,5, die im
+    gefilterten Signal fehlt. In der unteren Reihe wurde eine
+    frequenzverschobene Gaußglocke benutzt, um statt der langsamen die
+    schnelle Schwingung zu filtern; die Farbcodierung ist wie
+    oben. Gemäß \eqref{eq:fourierfreqshift} bewirkt die
+    Frequenzverschiebung eine Modulation der Gaußfunktion.}
+  \label{fig:fourierfaltung}
+\end{figure}
+
+Die Fouriertransformierte der Faltung zweier Funktionen ist
+\begin{equation}
+  \label{eq:fourierfaltung}
+  \begin{split}
+    \FT(f\star g)(\omega) &=
+    \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+    \int_{-\infty}^{\infty} f(t')g(t-t')\,dt' e^{-i \omega t}\,
+    dt\\
+    &= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+    \int_{-\infty}^{\infty} f(t') g(t) e^{-i \omega (t+t')}\, dt\,
+    dt'\\
+    &= \frac{1}{\sqrt{2\pi}} \int_{-\infty}^{\infty} f(t')e^{-i
+      \omega t'}\, dt' \int_{-\infty}^{\infty} g(t) e^{-i \omega
+      t}\, dt = \sqrt{2\pi}\FT(f)(\omega)\FT(g)(\omega).
+  \end{split}
+\end{equation}
+Die Faltung geht also in eine punktweise Multiplikation über. Im
+Fourierraum lässt sich also sehr viel schneller falten, als im
+Realraum, wo ja für jeden Punkt ein Integral zu lösen ist.
+
+\subsection{Filter}
+\index{Filter}
+
+Außerdem lässt \eqref{eq:fourierfaltung} noch eine weitere
+Interpretation der Faltung der Funktion $g$ mit der Funktion $f$ zu:
+ist $f$ bzw. $\FT(f)$ reellwertig und symmetrisch, so werden die
+einzelnen Frequenzkomponenten der Funktion $g$ mit den
+Frequenzanteilen von $f$ gestreckt bzw. gestaucht, $g$ also
+frequenzgefiltert.  Durch Wahl einer symmetrischen und reellwertigen
+Fouriertransformierten und Rücktransformation lassen sich also
+beliebige Frequenzfilter realisieren; in der Praxis wird natürlich
+direkt im Fourierraum gefiltert. Später lernen wir die numerische
+diskrete Fouriertransformation kennen, die nicht zuletzt wegen dieser
+Filtereigenschaften so wichtig ist. Abbildung~\ref{fig:fourierfaltung}
+illustriert einen (gaußschen) Tiefpassfilter und einen Bandfilter, die
+nur bestimmte Frequenzen passieren lassen. Daher wird beim
+Tiefpassfilter die aufgeprägte hochfrequente Schwingung unterdrückt,
+beim Hochpassfilter hingegen die an sich dominante langsame Schwingung.
+
+\subsection{Antwort zeitinvarianter linearer Systeme}
+\index{zeitinvariante lineare Systeme}
+
+Eine weitere wichtige Anwendung der Faltung ist die Bestimmung der
+Antwort eines zeitinvarianten linearen Systems auf ein beliebiges
+Eingangssignal. Einfach zu messen ist typischerweise die Antwort
+$A_\theta(t)$ des Systems auf einen Einschaltvorgang, also ein
+Eingangssignal der Form
+\begin{equation}
+  \theta(t) =
+  \begin{cases}
+    0 & \text{für}\; t < 0\\
+    1 & \text{für}\; t \ge 0.
+  \end{cases}
+\end{equation}
+Um daraus die Antwort auf ein beliebiges Eingangssignal zu bestimmen,
+schreiben wir das Eingangssignal $f$ als $f = f \star \delta$. Wegen
+der Linearität der Faltung und der Systemantwort ist die Antwort auf
+das Signal $f$ gegeben durch die Faltung $A_f(t) = f \star A_\delta$
+mit der Antwort auf einen $\delta$-Impuls. Diese Antwort wiederum
+lässt sich aus der Sprungantwort durch einfach Ableitung erhalten, was
+mit Hilfe der Fouriertransformierten sehr bequem zu berechnen ist:
+\begin{equation}
+  A_f(t) = f \star A_\delta = f \star
+  \frac{d}{dt} A_\theta = \sqrt{2\pi} \FT^{-1}\bigl( i\omega \FT(f) \FT(A_\theta)\bigr).
+\end{equation}
+
+\section{Kreuz- und Autokorrelation}
+\index{Korrelationsanalyse}
+
+Bis jetzt haben wir uns mit der Verarbeitung idealer Signale
+beschäftigt, die zu einem gegebenen Zeitpunkt einen prinzipiell
+eindeutig vorherbestimmten Wert haben.  Reale Signale sind aber oft
+verrauscht, entweder durch Messungenauigkeiten, Bauteiltoleranzen oder
+prinzipielle stochastische Prozesse.  Trotzdem möchte man oft wissen,
+ob zwei gemessene Signale von einander abhängig, \emph{korreliert},
+sind. Zum Beispiel könnte man die Position eines Elektrons und seinen
+Spin, die Menge der verkauften Eis- und Sonnencreme, oder auch die
+Position eines Pendels zu zwei verschiedenen Zeitpunkten betrachten.
+In den beiden letzteren Fällen werden diese im allgemeinen korreliert,
+also abhängig sein. Allerdings gibt dies keinen Aufschluss über den
+dahinterstehenden kausalen Mechanismus. Im Fall des Pendels rührt die
+Korrelation daher, dass es sich in kurzer Zeit nicht beliebig weit von
+seiner Ausgangsposition bewegen kann. Bei der Eis- und Sonnencreme
+wird es vermutlich auch eine Korrelation geben, aber weder erzeugt
+Eiscreme Sonnenbrand, noch macht Sonnencreme Lust auf Eis. Allerdings
+haben wir Menschen nunmal bei strahlendem Sonnenschein mehr Lust auf
+Eis, aber brauchen auch Sonnencreme.
+
+Formal betrachten wir zunächst zwei Observablen $A$ und $B$. Diese
+beiden heißen genau dann unkorreliert, falls die Mittelwerte
+$\mean{A\cdot B} = \mean{A}\mean{B}$
+bzw. $\mean{(A-\mean{A})(B-\mean{B})}=0$ erfüllen. Sind nun $A=A(t)$
+und $B=B(t)$ zeitliche Messreihen eines ergodischen stochastischen
+Prozesses mit verschwindenden Mittelwerten, $\mean{A} = \mean{B} = 0$,
+so ergeben sich die Mittelwerte als Zeitmittelungen, also Integrale
+über die Zeit:
+\begin{equation}
+  \mean{A\cdot B} \stackrel{!}{=} C(A,B) := \int_{-\infty}^{\infty} A(t)B(t) dt
+\end{equation}
+Ergodisch bedeutet hier einfach, dass der Prozess bei einer langen
+zeitlichen Messung alle möglichen Ergebnisse einmal besuchen wird,
+sprich, dass eben der zeitliche Mittelwert gleich dem
+Ensemble-Mittelwert ist.
+
+Im allgemeinen wird man allerdings nicht erwarten, dass sich die
+Änderung einer Observablen unmittelbar in einer anderen niederschlägt,
+sondern erst nach einer Zeit $\tau$.  Um nun die Korrelation zwischen
+$A$ und $B$ mit einem zeitlichen Versatz von $\tau$ zu betrachten,
+definiert man daher die \emph{\keyword{Kreuzkorrelationsfunktion}} als
+\begin{equation}
+  C(A,B)(\tau) = \int_{-\infty}^{\infty} A(t)B(t+\tau) dt =
+  \bigl(A \star B(-\cdot)\bigr)(-\tau) = \bigl(A(-\cdot) \star B\bigr)(\tau).
+\end{equation}
+Als Faltung kann die
+Kreuzkorrelationsfunktion effizient im Frequenzraum bestimmt werden:
+\begin{equation}
+  C(A,B) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\FT(A)(-\omega)\FT(B)(\omega)\bigr).
+\end{equation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/v_ac}
+  \caption{Geschwindigkeitsautokorrelationsfunktion einer temperierten
+    Lennard-Jones-Flüs\-sig\-ke\-it mit niedriger Dichte (rot
+    gepunktet) und hoher Dichte (blau durchgezogen). Für die niedrige
+    Dichte ist die Autokorrelationsfunktion im wesentlichen
+    exponentiell abfallend, mit einer Korrelationszeit $\tau_c=0.17$,
+    die durch die Kopplungszeit des Thermostaten bestimmt ist.}
+  \label{fig:vac}
+\end{figure}
+
+Die Bedingung $\mean{A} = \mean{B} = 0$ kann stets durch Abziehen des
+Mittelwerts vom Signal erreicht werden. Ist dieser nicht analytisch
+bekannt, kann er numerisch durch Mittelung der Daten bestimmt
+werden. Oft wird aber selbst bei Observablen, die aus Symmetriegründen
+einen Mittelwert von Null haben müssen, der numerische gemessene
+Mittelwert abgezogen. Diese übliche Praxis ist aber falsch, und führt
+zu einer systematischen Unterschätzungen der Korrelationen im System!
+
+Im Spezialfall $A=B$ spricht man von der
+\emph{\keyword{Autokorrelationsfunktion}}. Diese ist offenbar
+symmetrisch, daher sind nur Zeitversätze $\tau\ge 0$ von
+Interesse. Die Autokorrelationsfunktion misst gewissermaßen, wie lange
+es dauert, bis das Signal nicht mehr von seinem vorherigen Wert
+abhängt, wann es diesen sozusagen "`vergisst"'. In dem häufigen Fall,
+dass die Autokorrelationsfunktion zunächst expontentiell abfällt,
+lässt sich dem Gedächtnis eine Zeitkonstante $\tau_c$, die
+\emph{\keyword{Korrelationszeit}}, zuordnen. Diese kann man entweder
+durch einen geeigneten Funktionsfit bestimmen, oder aber durch
+Integration aus
+\begin{equation}
+  \label{eq:tauc}
+  \int_{0}^{\infty} C(A,A)(\tau)\,d\tau = \int_{0}^{\infty}
+  C(A,A)(0)e^{-\tau/\tau_c}\,d\tau = \tau_c\,C(A,A)(0).
+\end{equation}
+
+Abbildung~\ref{fig:vac} zeigt die Geschwindigkeitsautokorrelation
+$C(v,v)$ einer temperierten Lennard-Jones-Flüs\-sig\-ke\-it bei zwei
+verschiedenen Dichten. Die Temperierung wird dabei mit Hilfe eines
+Thermostaten erreicht, der die Teilchen stochastisch an ein Wärmebad
+koppelt. Dadurch dekorreliert die Geschwindigkeit eines Teilchens in
+einer Korrelationszeit von etwa $1/6$.
+
+$C(v,v)$ wird häufig dazu benutzt, um die Diffusionskonstante $D =
+\int_0^{\infty} C(v,v)(\tau)\, d\tau$ des Systems zu bestimmen, die
+also eng mit der Korrelationszeit des Thermostaten verwandt ist.  Bei
+niedriger Dichte ist das System annähernd ein ideales Gas, und die
+Teilchen dekorrelieren im wesentlichen nur durch den Einfluss des
+Thermostaten, der durch Zufallskräfte wirkt, daher ist $C(v,v)$
+tatsächlich gut exponentiell abfallend.  Formel~\eqref{eq:tauc}
+bestimmt die Korrelationszeit mit guter Genauigkeit zu etwa
+$\tau_c=0.17$, wie durch den Thermostaten zu erwarten. Im Falle der
+dichteren Flüssigkeit hingegen kann diese Formel nicht angewendet
+werden, da die Autokorrelation kein einfacher exponentieller Abfall
+mehr ist, da auch Stoßprozesse eine wichtige Rolle spielen. Diese
+führen zum Durchschwingen der Autokorrelationsfunktion.
+
+\section{Messfehlerabschätzung}
+\index{Messfehler}
+
+In diesem letzten Abschnitt zur Signalanalyse geht es darum, wie der
+Messfehler bei einem stochastischen Signal abgeschätzt werden
+kann. Wir betrachten also eine Messreihe $x_i$, $i=1(1)n$, die
+verschiedene Realisationen einer Zufallsvariablen $x$ darstellen. Der
+Mittelwert dieser Variablen lässt sich dann bekanntermaßen als
+\begin{equation}
+  \label{eq:mean}
+  \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^n x_i
+\end{equation}
+abschätzen. Doch was ist nun der Fehler, den wir mit dieser Schätzung
+machen? Dieser ist die zu erwartende quadratische Abweichung
+\begin{equation}
+  \mean{\left(\overline{x} - \mean{x}\right)^2} =
+  \frac{1}{N^2}\sum_{i,j=1}^n \mean{x_ix_j} -
+  \frac{2}{N}\sum_{i=1}^n \mean{x_i}\mean{x} + \mean{x}^2
+  = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
+  + \frac{1}{N}\mean{x^2} - \mean{x}^2
+\end{equation}
+An dieser Stelle nimmt man nun an, dass die Messungen paarweise
+unabhängig sind, also, dass $\mean{x_ix_j} = \mean{x_i}\mean{x_j}$ für
+$i\neq j$.  In der Praxis lässt sich das zum Beispiel durch Betrachten
+der Autokorrelationsfunktion sicherstellen, in dem nur Messwerte mit
+einem zeitlichen Abstand berücksichtigt werden, der sehr viel größer
+als die Korrelationszeit ist. Unter der Annahme, dass die Messungen
+$x_i$ alle paarweise unabhängig sind gilt also weiter
+\begin{equation}
+  \label{eq:esterr}
+  \mean{(\overline{x} - \mean{x})^2}
+  = \frac{N(N-1)}{N^2}\mean{x}^2 + \frac{1}{N}\mean{x^2} - \mean{x}^2
+  = \frac{1}{N}\left(\mean{x^2} - \mean{x}^2\right)
+  = \frac{1}{N}\sigma^2(x).
+\end{equation}
+Sind die Messungen unabhängig voneinander, ist der quadratische Fehler
+von $N$ Messungen also gerade ein $N$-tel der Varianz
+\begin{equation}
+  \sigma^2(x) = \mean{\bigl(x-\mean{x}\bigr)^2}
+  = \mean{x^2} - 2\mean{\mean{x}x}  + \mean{x}^2
+  = \mean{x^2} - \mean{x}^2,
+\end{equation}
+die die erwartete quadratische Abweichung einer Messung vom Mittelwert
+angibt. Sie ist eine Eigenschaft der zu messenden Observablen und daher
+nicht von der Anzahl der Messungen abhängig.
+
+Als Fehlerbalken wird üblicherweise die \emph{Standardabweichung} der
+Messung $\overline{x}$, angegeben. Diese ist durch
+\begin{equation}
+  \sqrt{\mean{(\overline{x} - \mean{x})^2}}
+  = \frac{1}{\sqrt{N}}\sigma(x)
+\end{equation}
+gegeben. Dies bedeutet, dass für eine Halbierung des Fehlerbalken
+bereits viermal soviele Messungen durchgeführt werden müssen, und für
+eine Größenordnung an Genauigkeit hundert Mal soviele. Besonders für
+Computersimulationen ist das ein Problem, da die Rechenzeit im
+allgemeinen proportional zur Anzahl der Messungen ist. Dauert also
+eine Simulation eine Woche, was nicht ungewöhnlich ist, so würde eine
+Messung mit einer Größenordnung mehr Genauigkeit fast zwei Jahre in
+Anspruch nehmen!
+
+Zur Berechnung des Fehlers benötigen wir noch eine Schätzung der
+Varianz, die im allgemeinen ebensowenig wie der Mittelwert bekannt ist
+und geschätzt werden muss. Dazu ersetzt man die Mittelwerte in
+$\mean{x^2} - \mean{x}^2$ durch den Schätzer \eqref{eq:mean}. Für
+diesen Ausdruck gilt:
+\begin{equation}
+  \label{eq:varest}
+  \mean{\overline{x^2} - \bar{x}^2}
+  = \mean{x^2} - 
+  \frac{1}{N^2}\sum_{i=1}^n \mean{x_i^2}
+  - \frac{1}{N^2}\sum_{i\neq j} \mean{x_ix_j}
+  = \frac{N-1}{N}\left(\mean{x^2} - \mean{x}^2\right),
+\end{equation}
+wobei wir wieder annehmen, dass die Messungen unabhängig voneinander
+sind. Das der Ausdruck auf der linken Seite selber kein guter
+Schätzer ist, liegt also daran, dass für $\bar{x}$ zweimal derselbe
+Datensatz benutzt wurde. Ein guter Schätzer für $\sigma^2(x)$ ergibt
+sich aus der Umkehrung von \eqref{eq:varest}:
+\begin{equation}
+  \sigma^2(x) \approx \frac{N}{N-1}\left(\overline{x^2} - \bar{x}^2\right)
+  = \frac{1}{N-1} \left(\sum_{i=1}^N x_i^2 - N\bar{x}^2\right).
+\end{equation}
+
+Auf dem Computer lassen sich also $\mean{x}$ und $\sigma^2(x)$ bequem in
+einem Durchlauf der Daten abschätzen:
+\begin{lstlisting}
+sum  = 0
+sum2 = 0
+for v in x:
+    sum  += v
+    sum2 += v*v
+mittel = sum/len(x)
+sigma2 = (sum2 - len(x)*mittel**2)/(len(x)-1)
+fehler = sqrt(sigma2/N)
+\end{lstlisting}
+
+In der Praxis wird oft einfach angenommen, dass die Messungen
+unabhängig sind. Was passiert nun, wenn dies nicht der Fall ist?
+Betrachten wir also eine Observable die o.B.d.A. Mittelwert $\mean{x}
+= 0$ habe. Dann ist wie oben gezeigt
+\begin{align}
+  \mean{(\overline{x} - \mean{x})^2}
+  = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
+  + \frac{1}{N}\sigma^2(x).
+\end{align}
+Der tatsächliche Fehler ist also um $\frac{2}{N^2}\sum_{i > j}
+\mean{x_ix_j}$ größer als man aufgrund der Varianz erwarten würde. In
+die Abschätzung für die Varianz ging ebenfalls die Unabhängigkeit ein,
+für diese gilt nun
+\begin{align}
+  \frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}
+  &= \frac{1}{N-1}\left(N\mean{x^2} - \mean{x^2}
+    - \frac{1}{N}\sum_{i\neq j} \mean{x_ix_j}\right)\\
+  &= \sigma^2(x) - \frac{2}{N(N-1)}\sum_{i> j} \mean{x_ix_j},
+\end{align}
+d.h., die Varianz wird zusätzlich noch um
+$\frac{1}{(N-1)N^2}\sum_{i\neq j} \mean{x_ix_j}$
+\emph{unterschätzt}. Insgesamt wird der quadratischen Fehler also
+um ebenfalls
+\begin{align}
+  F&=\mean{(\overline{x} - \mean{x})^2} -
+  \frac{1}{N}\frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}\nonumber\\
+  &=
+  \left(\frac{2}{N^2} + \frac{2}{(N-1)N^2}\right)\sum_{i > j} \mean{x_ix_j}
+  =
+  \frac{2}{N(N-1)}\sum_{j=1}^{N}\sum_{n = 1}^{N-j} \mean{x_jx_{j+n}}
+\end{align}
+unterschätzt. Für eine Observable $x$, die in gleichmäßigen
+Zeitabständen $\Delta$ gemessen wird, lässt sich dieser Ausdruck mit
+Hilfe der Autokorrelationsfunktion $C(\tau) = C(x,x)(\tau)$
+abschätzen:
+\begin{equation}
+  \label{eq:correrrest}
+  F
+  \approx
+  \frac{2}{N(N-1)}\sum_{j=1}^{N}\int_{n = 0}^{N-j} C(n\Delta)
+  \approx
+  \frac{2}{N}\int_{n = 0}^{\infty} C(n\Delta)
+  =
+  \frac{2}{N}\frac{\tau_c}{\Delta} C(0)
+  =
+  \frac{2\tau_c}{\Delta}\frac{\sigma^2(x)}{N},
+\end{equation}
+wobei $\tau_c$ die Korrelationszeit gemäß \eqref{eq:tauc} ist und
+angenommen wurde, dass $\tau_c\ll N\Delta$, so dass die Erweiterung
+des Integrals bis unendlich keinen nennenswerten Beitrag mehr liefert.
+Verglichen mit \eqref{eq:esterr} erhält man mit korrelierten Daten
+eine Abschätzung für den Fehler, die um einen Faktor
+$1-2\tau_C/\Delta$ zu klein ist, was sich durch noch so gute Statistik
+nicht ausgleichen lässt! Daher lassen sich ohne Kenntnis der
+Korrelationszeit der Daten keine verlässlichen Aussagen über die Güte
+der Daten machen. Nur, wenn $\Delta\gg\tau_c$, ist der Fehler durch
+korrelierte Daten vernachlässigbar.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/error}
+  \caption{Geschätzte, scheinbare Varianz eines dünnen temperierten
+    Lennard-Jones-Systems als Funktion der gewählten Schrittweite
+    $\Delta$.  Die schwarze Linie zeigt die Abschätzung der
+    scheinbaren Varianz gemäß \eqref{eq:correrrest} als
+    $(1-2\tau_C/(\Delta N))\sigma^2(x)$, was gut zu den gemessenen
+    Daten passt.}
+  \label{fig:error}
+\end{figure}
+
+Abbildung~\ref{fig:error} zeigt die scheinbare Varianz des weniger
+dichten thermalisierten Lennard-Jones-Systems als Funktion der
+gewählten Schrittweite. Wie gezeigt ist die Korrelationszeit dieses
+Systems $\approx 0,17$, so dass bei rascheren Messungen eine
+Unterschätzung der Varianz und auch des Fehlers zu erwarten ist, was
+von der Abbildung bestätigt wird.
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "padc"
+%%% TeX-PDF-mode: t
+%%% End: 

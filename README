@@ -1,0 +1,23 @@
+Skript zur Vorlesung
+
+Physik auf dem Computer
+Axel Arnold
+
+Universität Stuttgart im SS 2012
+
+Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+View, California, 94041, USA.
+
+Compilieren
+===========
+
+Das Skript benutzt eine Reihe TeX-Pakete, die aber alle Teil von
+TexLive 2010 sind. Die Graphen sind alle mit Python gemacht und
+benötigten SciPy oder NumPy. Zum Compilieren wird latexmk benutzt.
+
+Ein Skript ./make.sh baut das ganze Projekt automatisch mit Hilfe von
+make für die Bilder und latexmk für das Dokument selber.

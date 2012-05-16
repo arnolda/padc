@@ -1,0 +1,155 @@
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Axel Arnold, Universitaet Stuttgart.
+% 
+% Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+% Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+% zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+% http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+% schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+% View, California, 94041, USA.
+
+\documentclass[BCOR0mm,index=default]{scrbook}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{csquotes}
+\usepackage[ngerman]{babel}
+
+\usepackage[colorlinks,citecolor=blue]{hyperref}
+\usepackage{scrhack} % fix listings behavior with recent KOMA
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{icomma} % correct decimal commas in formulas
+\usepackage{nicefrac}
+\usepackage{fancybox}
+\usepackage[style=alphabetic]{biblatex}
+\usepackage{makeidx}
+\usepackage{todonotes}
+\usepackage{cclicenses}
+
+\usetikzlibrary{positioning,arrows,decorations.pathreplacing}
+
+\graphicspath{{figures/}}
+
+\bibliography{icp,padc}
+
+\makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% formatting
+
+% bold true type
+\DeclareFontShape{OT1}{cmtt}{bx}{n}{
+  <5><6><7><8><9><10><10.95><12><14.4><17.28><20.74><24.88>cmttb10}{}
+
+% the default font for listings needs to be the ttdefault, otherwise
+% all special characters are messed up and you cannot copy&paste out
+% of the code.
+\renewcommand{\ttdefault}{fvm}
+
+\renewcommand{\floatpagefraction}{.8}
+
+\setcapindent{0em}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% listings
+
+\lstset{
+  frame=tb,
+  language=Python,
+  aboveskip=\medskipamount,
+  belowskip=\medskipamount,
+  showstringspaces=false,
+  basicstyle={\ttfamily\small},
+  keywordstyle={\bfseries\color{violet}},
+  stringstyle={\fontfamily{cmtt}\selectfont},
+  commentstyle={\itshape\color{red!80!black}},
+  basewidth={0.55em},
+  escapechar=@,
+  captionpos=b,
+  abovecaptionskip=\medskipamount
+}
+\lstdefinestyle{floating}{float=p,lineskip={-0.3\baselineskip}}
+\lstdefinestyle{abovecaption}{captionpos=b,abovecaptionskip=\medskipamount}
+\lstdefinestyle{scipy}{style=inline,
+  basicstyle={\ttfamily\bfseries\color{violet}},
+  breaklines=true
+}
+\lstdefinestyle{inline}{columns=fullflexible,
+  basicstyle={\ttfamily}
+}
+\newcommand{\scipy}[1]{\lstinline[style=scipy]!#1!}
+\newcommand{\argd}[1]{\lstinline[style=inline]!#1!}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% short cuts
+
+\renewcommand{\Re}{\mathrm{Re}}
+\renewcommand{\Im}{\mathrm{Im}}
+
+\renewcommand{\O}{\mathcal O}
+\newcommand{\FT}{\mathcal F}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+
+\newcommand{\mean}[1]{\left\langle{#1}\right\rangle}
+\newcommand{\norm}[1]{\left\lVert{#1}\right\rVert}
+\newcommand{\abs}[1]{\left\lvert{#1}\right\rvert}
+
+\newcommand{\erf}{\operatorname{erf}}
+\newcommand{\keyword}[1]{%
+  #1\index{#1}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% start of content
+
+\begin{document}
+
+\title{Skript zur Vorlesung\\
+  ``Physik auf dem Computer''}
+\author{JP Dr. A. Arnold\\
+  Universität Stuttgart\\
+  Institut für Computerphysik\\[2em]
+  {\small unter Mithilfe von}\\
+  Dr. O. Lenz\\[1em]
+}
+\date{\vfill Sommersemester 2012}
+\lowertitleback{
+Dies ist das Skript zur Vorlesung "`Physik auf dem Computer"', die
+von Axel Arnold im Sommersemester 2012 an der Universität Stuttgart
+gehalten wurde.
+\vspace{1em}
+
+Dieses Skript und alle Quelldateien sind unter einer Creative
+Commons-Lizenz vom Typ Namensnennung-Weitergabe unter gleichen
+Bedingungen 3.0 Deutschland zugänglich. Um eine Kopie dieser Lizenz
+einzusehen, konsultieren Sie
+\url{http://creativecommons.org/licenses/by-sa/3.0/de/} oder wenden
+Sie sich schriftlich an Creative Commons, 444 Castro Street, Suite
+900, Mountain View, California, 94041, USA.
+
+\hfill\Large\cc\bysa}
+\maketitle
+
+\tableofcontents
+\input{einleitung.tex}
+\input{lgs.tex}
+\input{darstellung.tex}
+\input{signalanalyse.tex}
+\input{ngls.tex}
+
+\printbibliography
+
+\printindex
+
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% TeX-PDF-mode: t
+%%% End: 
