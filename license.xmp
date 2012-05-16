@@ -1,0 +1,39 @@
+<?xpacket begin='' id=''?>
+<x:xmpmeta xmlns:x='adobe:ns:meta/'>
+  <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <rdf:Description rdf:about=''
+		     xmlns:xapRights='http://ns.adobe.com/xap/1.0/rights/'>
+      <xapRights:Marked>True</xapRights:Marked>
+    </rdf:Description>
+    <rdf:Description rdf:about=''
+		     xmlns:xapRights='http://ns.adobe.com/xap/1.0/rights/'
+		     >
+      <xapRights:UsageTerms>
+	<rdf:Alt>
+	  <rdf:li xml:lang='x-default' >Dieses Werk bzw. Inhalt steht unter einer &lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-sa/3.0/de/&#34;&gt;Creative Commons Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland Lizenz&lt;/a&gt;.</rdf:li>
+	  <rdf:li xml:lang='de' >Dieses Werk bzw. Inhalt steht unter einer &lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-sa/3.0/de/&#34;&gt;Creative Commons Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland Lizenz&lt;/a&gt;.</rdf:li>
+	  <rdf:li xml:lang='en' >This work is licensed under a &lt;a rel=&#34;license&#34; href=&#34;http://creativecommons.org/licenses/by-sa/3.0/de/&#34;&gt;Creative Commons Attribution-ShareAlike 3.0 Germany License&lt;/a&gt;.</rdf:li>
+	  </rdf:Alt>
+      </xapRights:UsageTerms>
+    </rdf:Description>
+    <rdf:Description rdf:about=''
+		     xmlns:dc='http://purl.org/dc/elements/1.1/'>
+      <dc:title>
+	<rdf:Alt>
+	  <rdf:li xml:lang='x-default'>Vorlesung Physik auf dem Computer</rdf:li>
+	  <rdf:li xml:lang='de'>Vorlesung Physik auf dem Computer</rdf:li>
+	</rdf:Alt>
+      </dc:title>
+    </rdf:Description>
+    <rdf:Description rdf:about=''
+      xmlns:cc='http://creativecommons.org/ns#'>
+      <cc:license rdf:resource='http://creativecommons.org/licenses/by-sa/3.0/de/'/>
+    </rdf:Description>
+    <rdf:Description rdf:about=''
+      xmlns:cc='http://creativecommons.org/ns#'>
+      <cc:attributionName>Axel Arnold, Universität Stuttgart</cc:attributionName>
+    </rdf:Description>
+    
+  </rdf:RDF>
+</x:xmpmeta>
+<?xpacket end='r'?>
