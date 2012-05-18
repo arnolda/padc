@@ -548,7 +548,7 @@ $B$:
   \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr)(k\Delta)\\
   \approx
   \frac{1}{N}\,\text{iDFT}
-  \bigl(\text{DFT}(A)(N-n)\text{DFT}(B)(n)\bigr)(k).
+  \bigl(\overbar{\text{DFT}(A)(n)}\text{DFT}(B)(n)\bigr)(k).
 \end{multline}
 Man sollte dabei beachten, dass durch die Benutzung der DFT das Signal
 implizit mit Periode $N\Delta$ periodisiert wird. Daher sollte
@@ -563,10 +563,8 @@ import numpy
 import numpy.fft as fft
 
 def kreuzkorrelation(A, B):
-    ftA = fft.fft(A)
+    ftA = fft.fft(A).conj()
     ftB = fft.fft(B)
-    # Frequenzumkehr, auf A[N] = A[0] achten!
-    ftA = numpy.concatenate(((ftA[0],), ftA[:0:-1]))
     return numpy.real(fft.ifft(ftA*ftB))/A.shape[0]
 \end{lstlisting}
 
