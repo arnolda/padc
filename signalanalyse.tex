@@ -247,7 +247,18 @@ ist mit $\omega_0=\frac{2\pi}{T}$
   \frac{T}{N}\frac{(-1)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n,
 \end{multline}
 wobei DFT die diskrete Fouriertransformation aus \eqref{eq:dft}
-bezeichnet.  Die bekannten schnellen FFT-Routinen lassen sich also
+bezeichnet.  Die Koeffizienten der DFT sind periodisch, daher auch die
+eben Näherung $\FT(f)$. Tatsächlich sollten die Koeffizienten aber nur
+als Frequenzen im Interval $[-\omega_0 N/2,\omega_0 N/2]$
+interpretiert werden, alle Frequenzen außerhalb dieses Intervals
+sollten als Null angesehen werden. Der Grund dafür ist das
+Abtasttheorem, dass im folgenden Abschnitt besprochen wird. Dieses
+besagt, dass bei einem Zeitschritt $\Delta=T/N$ nur Kreisfrequenzen
+bis $\omega_0 N/2 = \pi/\Delta$ eindeutig gemessen werden
+können. Daher ist die Beschränkung auf das innerste Interval die
+natürlich Interpretation.
+
+Die bekannten schnellen FFT-Routinen lassen sich also
 auch für die numerische Bearbeitung der kontinuierlichen
 Fouriertransformation nutzen. Auf diese Weise ist
 z.B. Abbildung~\ref{fig:fourierfaltung} entstanden.
@@ -292,8 +303,8 @@ Stellen gegeben, so lässt sich diesem umgekehrt gemäß
 Fouriertransformierte nur in $[-\omega_0,\omega_0]$ nicht
 verschwindet, wobei $\omega_0 = \pi/\Delta$. Das bedeutet, dass bei
 Abtastrate $\Delta$ nur Frequenzen bis zur Nyquist-Frequenz
-$f_\text{Nyquist}=\frac{1}{2\Delta}$ abgetastet werden können, ähnlich
-wie im periodischen Fall.
+$f_\text{Nyquist}=\frac{1}{2\Delta}$ eindeutig abgetastet werden
+können, ähnlich wie im periodischen Fall.
 
 \section{Faltungen}
 \index{Faltung}
@@ -427,34 +438,137 @@ Eis, aber brauchen auch Sonnencreme.
 Formal betrachten wir zunächst zwei Observablen $A$ und $B$. Diese
 beiden heißen genau dann unkorreliert, falls die Mittelwerte
 $\mean{A\cdot B} = \mean{A}\mean{B}$
-bzw. $\mean{(A-\mean{A})(B-\mean{B})}=0$ erfüllen. Sind nun $A=A(t)$
-und $B=B(t)$ zeitliche Messreihen eines ergodischen stochastischen
-Prozesses mit verschwindenden Mittelwerten, $\mean{A} = \mean{B} = 0$,
-so ergeben sich die Mittelwerte als Zeitmittelungen, also Integrale
-über die Zeit:
+bzw. $\mean{(A-\mean{A})(B-\mean{B})}=0$ erfüllen.  Im allgemeinen
+wird man aber vielleich nicht erwarten, dass sich die Änderung einer
+Observablen unmittelbar in einer anderen niederschlägt, sondern erst
+nach einer Zeit $\tau$.  Man betrachtet daher die Korrelation zwischen
+$A$ und $B$ mit einem zeitlichen Versatz von $\tau$, die
+\emph{\keyword{Kreuzkorrelationsfunktion}}:
 \begin{equation}
-  \mean{A\cdot B} \stackrel{!}{=} C(A,B) := \int_{-\infty}^{\infty} A(t)B(t) dt
+  \label{eq:crosscorr}
+  C(A,B)(\tau) := \mean{A(0)B(\tau)},
 \end{equation}
-Ergodisch bedeutet hier einfach, dass der Prozess bei einer langen
-zeitlichen Messung alle möglichen Ergebnisse einmal besuchen wird,
-sprich, dass eben der zeitliche Mittelwert gleich dem
-Ensemble-Mittelwert ist.
+wobei die Signale $A$ und $B$ zeitinvariant sein sollen, so dass der
+Zeitpunkt $t=0$ beliebig gewählt sein kann. Für große $\tau$
+dekorrelieren die Signale, daher gilt $C(A,B)\to \mean{A}\mean{B}$ für
+$\tau\to\infty$. Wird stattdessen die normierte Kreuzkorrelation
+$C(A-\mean{A}, B-\mean{B})$ betrachtet, verschwindet dieses also im
+Limit $\tau\to\infty$.
 
-Im allgemeinen wird man allerdings nicht erwarten, dass sich die
-Änderung einer Observablen unmittelbar in einer anderen niederschlägt,
-sondern erst nach einer Zeit $\tau$.  Um nun die Korrelation zwischen
-$A$ und $B$ mit einem zeitlichen Versatz von $\tau$ zu betrachten,
-definiert man daher die \emph{\keyword{Kreuzkorrelationsfunktion}} als
+$\mean{\cdot}$ bezeichnet in der Physik üblicherweise den
+Ensemblemittelwert, also den Mittelwert über alle möglichen
+Realisationen des Experiments. Sind nun $A=A(t)$ und $B=B(t)$
+zeitliche Messreihen eines zeitinvarianten Systems, so ermittelt man
+die Mittelwerte üblicherweise als Zeitmittelwerte, also Integrale über
+die Zeit:
 \begin{equation}
-  C(A,B)(\tau) = \int_{-\infty}^{\infty} A(t)B(t+\tau) dt =
-  \bigl(A \star B(-\cdot)\bigr)(-\tau) = \bigl(A(-\cdot) \star B\bigr)(\tau).
+  \label{eq:crosscorrtime}
+  C(A,B)(\tau) = \mean{A(0)\cdot B(\tau)} \stackrel{!}{=}
+  \lim_{T\to\infty}\frac{1}{T}\int_{-T/2}^{T/2} A(t)B(t+\tau)\,dt.
 \end{equation}
-Als Faltung kann die
-Kreuzkorrelationsfunktion effizient im Frequenzraum bestimmt werden:
+Das Ausrufezeichen soll andeuteten, dass dies eine Annahme ist, denn
+die Gleichheit gilt nur genau dann, wenn das System \emph{ergodisch}
+ist, d.h., dass der Prozess bei einer unendlich langen zeitlichen
+Messung alle möglichen Realisationen einmal besuchen wird. Diese
+Annahme wird meist gemacht, obwohl die Ergodizität für die meisten
+Systeme nicht bewiesen werden kann. Hinzu kommt, dass ja in der Praxis
+niemals über beliebig lange Zeiträume gemittelt werden kann. Daher
+können auch endliche, aber hohe Energiebarrieren zu einem
+systematischen Fehler führen.
+
+$\mean{A}$ bzw. $\mean{B}$ sind oft gar nicht genau bekannt, und
+müssen numerisch durch (Zeit-)Mittelung der Daten bestimmt werden. Da
+hier aber normalerweise dieselben Daten zugrunde gelegt werden, die
+auch zu Berechnung der Kreuzkorrelation selber genutzt werden, sind
+diese notwendigerweise korreliert, was zu kleinen Abweichungen in der
+Kreuzkorrelationsfunktion führt. Im häufigen Fall, dass eine
+Observable aus Symmetriegründen einen Mittelwert von Null haben muss,
+sollte daher auf keinen Fall der numerische gemessene Mittelwert
+abgezogen, "`um das Ergebnis zu verbessern"'. Diese übliche Praxis ist
+falsch, da sie ja erzwingt, dass der letzte Datenpunkt der gemessenen
+Kreuzkorrelationsfunktion notwendigerweise auf $\mean{A}\mean{B}$
+abfällt, selbst wenn einfach nur das Messinterval zu kurz gewählt
+wurde. Daher führt diese Methode zu einer Unterschätzung der
+Langzeitkorrelationen!
+
+Analog zu \eqref{eq:crosscorrtime} kann man die Kreuzkorrelation auch
+für \emph{endliche} Signale definieren. Für zwei quadratintegrable
+Signale $f$ und $g$ ist in Analogie die Kreuzkorrelationsfunktion
+definiert als
 \begin{equation}
-  C(A,B) = \sqrt{2\pi}\FT^{-1}
-  \bigl(\FT(A)(-\omega)\FT(B)(\omega)\bigr).
+  C(f,g)(\tau) = \int_{-\infty}^{\infty} f(t)g(t+\tau)\,dt,
 \end{equation}
+wobei wegen der Quadratintegrabilität auf die Normierung verzichtet
+werden kann. Diese Kreuzkorrelation misst keine Korrelationen im
+stochastischen Sinne mehr, weil das Integral nun keine Zeitmittelung
+mehr darstellt. Stattdessen ist $C(f,g)(\tau)$ in diesem Fall ein Maß
+dafür, wie sehr sich die Signale $f$ und $g$ mit einem Zeitversatz
+$\tau$ im Verlauf ähneln. Diese Form der Kreuzkorrelation ähnelt einer
+Faltung sehr. Tatsächlich ist
+\begin{equation}
+  C(f,g)(\tau) = \bigl(f \star g(-\cdot)\bigr)(-\tau) =
+  \bigl(f(-\cdot) \star g\bigr)(\tau)
+\end{equation}
+und kann damit effizient im Frequenzraum bestimmt werden:
+\begin{equation}
+  \label{eq:crosscorrfft}
+  C(f,g) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr).
+\end{equation}
+
+Kommen wir nun zu unserem Ausgangsproblem mit zwei stochastischen,
+zeitinvarianten Variablen $A$ und $B$ und dem Zeitmittel zurück. Wie
+üblich nehmen wir an, dass $A$ und $B$ an endlich vielen, diskreten
+Zeitpunkten $tk\Delta$, $k=0(1)n-1$, gemessen wurden. Die Messung
+erstreckt sich also über den Zeitraum $[0,T]$ mit $T=n\Delta$. Dann
+ist eine Näherung für die Kreuzkorrelation von $A$ und $B$ gegeben
+durch
+\begin{equation}
+  \label{eq:crosscorrnum}
+  C(A,B)(k\Delta) = \mean{A(0)\cdot B(k\Delta)}
+  \approx
+  \frac{1}{N-k}\sum_{l=0}^{N-k}A(l\Delta)B\left((l+k)\Delta\right)
+  \quad\text{für}\; k=0(1)K-1.
+\end{equation}
+Die unterschiedliche Gewichtung $1/(N-k)$ ergibt sich durch die
+unterschiedliche Anzahl an Messungen für den Versatz $k$. Für große
+Versätze ist die Anzahl der Messungen sehr klein (für $k=N-1$ nur noch
+eine), daher muss $k \ll N$ sein. Form \eqref{eq:crosscorrnum} ist
+numerisch allerdings nicht sehr effizient auszuwerten, da im
+allgemeinen $2NK$ viele Operationen benötigt werden, und $K$ meist
+einige hundert Datenpunkte beträgt.  Daher liegt es nahe, auch hier
+die FFT zur Beschleunigung einzusetzen. \eqref{eq:crosscorrfft} und
+\eqref{eq:dftcont} zusammen ergeben für gleich lange Messreihen $A$ und
+$B$:
+\begin{multline}
+  \label{eq:crosscorrnum}
+  C(A,B)(k\Delta)
+  \approx
+  \sqrt{2\pi}\FT^{-1}
+  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr)(k\Delta)\\
+  \approx
+  \frac{1}{N}\,\text{iDFT}
+  \bigl(\text{DFT}(A)(N-n)\text{DFT}(B)(n)\bigr)(k).
+\end{multline}
+Man sollte dabei beachten, dass durch die Benutzung der DFT das Signal
+implizit mit Periode $N\Delta$ periodisiert wird. Daher sollte
+$C(A,B)(k\Delta)$ nur für $k\ll N/2$ interpretiert werden. Die
+Berechnung der 2 DFTs sowie der inversen DFT braucht etwa $6 N\log N$
+Operationen, was normalerweise wesentlich weniger als die $2NK$ der
+direkten Berechnung ist.
+
+In Python sieht die Berechnung der Kreuzkorrelation so aus:
+\begin{lstlisting}
+import numpy
+import numpy.fft as fft
+
+def kreuzkorrelation(A, B):
+    ftA = fft.fft(A)
+    ftB = fft.fft(B)
+    # Frequenzumkehr, auf A[N] = A[0] achten!
+    ftA = numpy.concatenate(((ftA[0],), ftA[:0:-1]))
+    return numpy.real(fft.ifft(ftA*ftB))/A.shape[0]
+\end{lstlisting}
 
 \begin{figure}
   \centering
@@ -468,19 +582,13 @@ Kreuzkorrelationsfunktion effizient im Frequenzraum bestimmt werden:
   \label{fig:vac}
 \end{figure}
 
-Die Bedingung $\mean{A} = \mean{B} = 0$ kann stets durch Abziehen des
-Mittelwerts vom Signal erreicht werden. Ist dieser nicht analytisch
-bekannt, kann er numerisch durch Mittelung der Daten bestimmt
-werden. Oft wird aber selbst bei Observablen, die aus Symmetriegründen
-einen Mittelwert von Null haben müssen, der numerische gemessene
-Mittelwert abgezogen. Diese übliche Praxis ist aber falsch, und führt
-zu einer systematischen Unterschätzungen der Korrelationen im System!
+\subsection{Autokorrelationsfunktion}
 
 Im Spezialfall $A=B$ spricht man von der
 \emph{\keyword{Autokorrelationsfunktion}}. Diese ist offenbar
 symmetrisch, daher sind nur Zeitversätze $\tau\ge 0$ von
 Interesse. Die Autokorrelationsfunktion misst gewissermaßen, wie lange
-es dauert, bis das Signal nicht mehr von seinem vorherigen Wert
+es dauert, bis die Observable nicht mehr von seinem vorherigen Wert
 abhängt, wann es diesen sozusagen "`vergisst"'. In dem häufigen Fall,
 dass die Autokorrelationsfunktion zunächst expontentiell abfällt,
 lässt sich dem Gedächtnis eine Zeitkonstante $\tau_c$, die
@@ -517,21 +625,22 @@ führen zum Durchschwingen der Autokorrelationsfunktion.
 \section{Messfehlerabschätzung}
 \index{Messfehler}
 
-In diesem letzten Abschnitt zur Signalanalyse geht es darum, wie der
-Messfehler bei einem stochastischen Signal abgeschätzt werden
-kann. Wir betrachten also eine Messreihe $x_i$, $i=1(1)n$, die
-verschiedene Realisationen einer Zufallsvariablen $x$ darstellen. Der
-Mittelwert dieser Variablen lässt sich dann bekanntermaßen als
+In diesem letzten Abschnitt zur Datenanalyse geht es darum, wie der
+der Messfehler bei der Messung des Erwartungswerts einer
+stochastischen Observable abgeschätzt werden kann. Wir betrachten also
+eine Messreihe $x_i$, $i=1(1)N$, die verschiedene Messungen einer
+stochastischen Observablen $x$ darstellen. Der Erwartungswert dieser
+Observablen lässt sich dann bekanntermaßen als
 \begin{equation}
   \label{eq:mean}
-  \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^n x_i
+  \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^N x_i
 \end{equation}
 abschätzen. Doch was ist nun der Fehler, den wir mit dieser Schätzung
 machen? Dieser ist die zu erwartende quadratische Abweichung
 \begin{equation}
   \mean{\left(\overline{x} - \mean{x}\right)^2} =
-  \frac{1}{N^2}\sum_{i,j=1}^n \mean{x_ix_j} -
-  \frac{2}{N}\sum_{i=1}^n \mean{x_i}\mean{x} + \mean{x}^2
+  \frac{1}{N^2}\sum_{i,j=1}^N \mean{x_ix_j} -
+  \frac{2}{N}\sum_{i=1}^N \mean{x_i}\mean{x} + \mean{x}^2
   = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
   + \frac{1}{N}\mean{x^2} - \mean{x}^2
 \end{equation}
