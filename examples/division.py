@@ -3,23 +3,27 @@
 # 
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
-# zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+# zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
 # http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 
-default: \
-pendel_energie.pdf  pendel_loesung.pdf \
-sinus.pdf runge_lagrange.pdf \
-splines.pdf leastsq.pdf \
-fftsin.pdf fftalias.pdf \
-fourier.pdf wavelet.pdf \
-fouriertrafo.pdf \
-v_ac.pdf error.pdf \
-banach.pdf newton.pdf regulafalsi.pdf bisektion.pdf
+# Demonstration Division 
+#########################
 
-pendel_energie.pdf pendel_loesung.pdf: pendel_plot.py
-	python $<
+from numpy import *
 
-%.pdf: %.py
-	python $<
+a=2.0
+res = 1.0/a
+
+def digits(x):
+    return int(floor(-log(abs(res-x))/log(10)))
+
+def div(x):
+    return x*(2 - a*x)
+
+x = 0.9
+for step in range(6):
+    print "%d & %.15f & %d \\\\" % (
+        step, x, digits(x))
+    x = div(x)
