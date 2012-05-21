@@ -1,0 +1,36 @@
+! Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+! Axel Arnold, Universitaet Stuttgart.
+! 
+! Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+! Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+! zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+! http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+! schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+! View, California, 94041, USA.
+% basiert auf dem
+% MakeIndex-Style fuer die KOMA-Script-Anleitung
+% Dies ist auf meinen Mist gewachsen (Harald Sommerfeldt)
+%
+% Aufruf:
+%   makeind(e)x -g -r -s scrguide.ist scrguide.idx
+%
+
+level  '>'
+actual '='
+encap  '|'
+quote  '~'
+%
+preamble  "\\clearpage\\begin{theindex}\n"
+postamble "\n\n\\end{theindex}\n"
+%
+% und Punkte sind sowieso immer gut (es sei denn, sie liegen in Flensburg)
+delim_0 "~\\dotfill~"
+delim_1 "~\\dotfill~"
+delim_2 "~\\dotfill~"
+%
+% fehlen nur noch die Indexbuchstaben zu unserem Gl"uck
+heading_prefix "{\\hspace{0pt plus 2fil}\\textbf{"
+heading_suffix "}\\hspace{0pt plus 1fil}}\\nopagebreak\n"
+headings_flag  1
+%
+% Ende der Datei `myind.ist'
