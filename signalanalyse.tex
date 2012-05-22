@@ -221,6 +221,7 @@ ist. Alternativ lässt sich die Beziehung aus der
 Fouriertransformierten der Gaußglocke mit sinkender Varianz herleiten.
 
 \subsection{Numerische kontinuierliche Fouriertransformation}
+\label{sec:contdft}
 
 Um die Eigenschaften der kontinuierlichen Fouriertransformation
 numerisch zu nutzen, machen wir den Grenzübergang $T\to\infty$
@@ -231,7 +232,7 @@ Praxis endlich, so könnte $T$ zum Beispiel so groß sein, dass das
 Signal vollständig abgedeckt ist. In jedem Fall ist das Signal eine
 Funktion $f$, die wir nur an auf einem äquidistanten Gitter $t_k =
 T\left(-\frac{1}{2} + \frac{k}{N}\right)$, $k=0(1)N-1$ kennen. Dann
-ist mit $\omega_0=\frac{2\pi}{T}$
+ist mit $\omega_0=\frac{2\pi}{T}$ für $n=-N/2(1)N/2$
 \begin{multline}
   \label{eq:dftcont}
   \FT(f)(\omega_0 n)\approx
@@ -243,25 +244,38 @@ ist mit $\omega_0=\frac{2\pi}{T}$
   \frac{T}{N}\\
   =   \frac{T}{N} \frac{e^{-2\pi i n /2}}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
   f(t_k) e^{-2\pi i n k / N}\,
-  =
-  \frac{T}{N}\frac{(-1)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n,
+  =\frac{T}{N}\frac{(-1)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n
 \end{multline}
 wobei DFT die diskrete Fouriertransformation aus \eqref{eq:dft}
-bezeichnet.  Die Koeffizienten der DFT sind periodisch, daher auch die
-eben Näherung $\FT(f)$. Tatsächlich sollten die Koeffizienten aber nur
-als Frequenzen im Interval $[-\omega_0 N/2,\omega_0 N/2]$
+bezeichnet.  Die Koeffizienten der DFT sind periodisch, daher auch
+diese Näherung für $\FT(f)$. Tatsächlich sollten die Koeffizienten
+aber nur als Frequenzen im Interval $[-\omega_0 N/2,\omega_0 N/2]$
 interpretiert werden, alle Frequenzen außerhalb dieses Intervals
 sollten als Null angesehen werden. Der Grund dafür ist das
 Abtasttheorem, dass im folgenden Abschnitt besprochen wird. Dieses
 besagt, dass bei einem Zeitschritt $\Delta=T/N$ nur Kreisfrequenzen
 bis $\omega_0 N/2 = \pi/\Delta$ eindeutig gemessen werden
 können. Daher ist die Beschränkung auf das innerste Interval die
-natürlich Interpretation.
+natürliche Interpretation. Insbesondere ist diese Einschränkung
+wichtig, wenn $N$ ungerade ist, da dann $(-1)^{N-n}\neq (-1)^{-n}$
+ist. Wenn nun die Ursprungsfunktion reell war, würde für die
+Transformierte scheinbar $f(-\omega)=-\overline{f(\omega)}$ gelten,
+$f$ wäre also scheinbar rein imaginär! Bei rein reellen Signalen ist
+es daher günstiger, direkt die reellen Varianten der
+FFT-Implementationen zu nutzen, die nur die positiven Koeffizienten
+bis $N/2$ benötigen und damit das Problem umgehen.
 
-Die bekannten schnellen FFT-Routinen lassen sich also
-auch für die numerische Bearbeitung der kontinuierlichen
-Fouriertransformation nutzen. Auf diese Weise ist
-z.B. Abbildung~\ref{fig:fourierfaltung} entstanden.
+Analog lässt sich auch die Rücktransformation nähern:
+\begin{equation}
+  \label{eq:idftcont}
+  \FT^{-1}(f)(t_k)\approx
+  \text{iDFT}\left(\sqrt{2\pi}\frac{N}{T}(-1)^n f_n\right)_k
+\end{equation}
+
+Die bekannten schnellen FFT-Routinen lassen sich also auch für die
+numerische Bearbeitung der kontinuierlichen Fouriertransformation
+nutzen. Auf diese Weise ist z.B. Abbildung~\ref{fig:fourierfaltung}
+entstanden.
 
 \subsection{\keyword{Abtasttheorem}}
 
@@ -365,7 +379,31 @@ Die Fouriertransformierte der Faltung zweier Funktionen ist
 \end{equation}
 Die Faltung geht also in eine punktweise Multiplikation über. Im
 Fourierraum lässt sich also sehr viel schneller falten, als im
-Realraum, wo ja für jeden Punkt ein Integral zu lösen ist.
+Realraum, wo ja für jeden Punkt ein Integral zu lösen ist. Dies nutzt
+man auch numerisch, um Faltungen zu berechnen, in Verbindung mit
+\eqref{eq:dftcont}. Seien also $N$ Datenpunkte $f_k = f(t_k)$ und $g_k
+= $ mit $t_k = T\left(-\frac{1}{2} + \frac{k}{N}\right)$ gegeben. Dann
+ist
+\begin{multline}
+  \label{eq:discretefold}
+  (f\star g)(t_k) =
+  \sqrt{2\pi}\FT^{-1}\left(\FT(f)(\omega)\FT(g)(\omega)\right)(t_k)\\
+  \approx
+  iDFT\left(2\pi \frac{N}{T} (-1)^n
+  \left[\frac{T^2}{2\pi N^2}\text{DFT}(f_k)_n\text{DFT}(g_k)_n\right]\right)_k\\
+  =
+  \frac{T}{N} \text{iDFT}\left[(-1)^n DFT(f_k)_n DFT(g_k)_n\right]_k.
+\end{multline}
+Wie im Abschnitt~\ref{sec:contdft} gezeigt, ist der Faktor $(-1)^n$
+durch den Aufpunkt $T/2$ bestimmt, und $n$ muss eine Frequenz im
+Bereich $-N/2 bis N/2$ sein. Dieser Faktor bleibt einmalig von der
+Fouriertransformation übrig. Daher kann die eine der beiden
+Funktionen, etwa $g$, im Prinzip beliebig verschoben sein, da sich
+etwaige Vorfaktoren durch die Vor- und Rücktransformation
+ausgleichen. Nur die Funktion $f$ sollte dann um die Null zentriert
+gegeben sein. Die Faltung wird in diesem Fall natürlich nur im
+Definitionsbereich der Funktion $g$ berechnet. Mit anderen Worten, die
+Funktion $g$ wird mit der Funktion $f$ gefiltert.
 
 \subsection{Filter}
 \index{Filter}
@@ -375,7 +413,13 @@ Interpretation der Faltung der Funktion $g$ mit der Funktion $f$ zu:
 ist $f$ bzw. $\FT(f)$ reellwertig und symmetrisch, so werden die
 einzelnen Frequenzkomponenten der Funktion $g$ mit den
 Frequenzanteilen von $f$ gestreckt bzw. gestaucht, $g$ also
-frequenzgefiltert.  Durch Wahl einer symmetrischen und reellwertigen
+frequenzgefiltert. Man beachte, dass $g$ für die Definition
+\eqref{eq:fourierfaltung} nicht quadratintegrabel sein muss, sofern
+der Filter $f$ schnell genug abfällt. Insbesondere kann $g$ eine nur
+beschränkte, aber nicht abklingende Funktion seinm, wie etwa ein
+Messsignal.
+
+Durch Wahl einer symmetrischen und reellwertigen
 Fouriertransformierten und Rücktransformation lassen sich also
 beliebige Frequenzfilter realisieren; in der Praxis wird natürlich
 direkt im Fourierraum gefiltert. Später lernen wir die numerische
@@ -384,7 +428,8 @@ Filtereigenschaften so wichtig ist. Abbildung~\ref{fig:fourierfaltung}
 illustriert einen (gaußschen) Tiefpassfilter und einen Bandfilter, die
 nur bestimmte Frequenzen passieren lassen. Daher wird beim
 Tiefpassfilter die aufgeprägte hochfrequente Schwingung unterdrückt,
-beim Hochpassfilter hingegen die an sich dominante langsame Schwingung.
+beim Hochpassfilter hingegen die an sich dominante langsame
+Schwingung.
 
 \subsection{Antwort zeitinvarianter linearer Systeme}
 \index{zeitinvariante lineare Systeme}
@@ -537,25 +582,22 @@ eine), daher muss $k \ll N$ sein. Form \eqref{eq:crosscorrnum} ist
 numerisch allerdings nicht sehr effizient auszuwerten, da im
 allgemeinen $2NK$ viele Operationen benötigt werden, und $K$ meist
 einige hundert Datenpunkte beträgt.  Daher liegt es nahe, auch hier
-die FFT zur Beschleunigung einzusetzen. \eqref{eq:crosscorrfft} und
-\eqref{eq:dftcont} zusammen ergeben für gleich lange Messreihen $A$ und
-$B$:
+die FFT gemäß \eqref{eq:discretefold} zur Beschleunigung einzusetzen.
+Es ergeben für gleich lange Messreihen $A$ und $B$:
 \begin{multline}
   \label{eq:crosscorrnumfft}
   C(A,B)(k\Delta)
   \approx
-  \sqrt{2\pi}\FT^{-1}
-  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr)(k\Delta)\\
-  \approx
   \frac{1}{N}\,\text{iDFT}
   \bigl(\overline{\text{DFT}(A)(n)}\,\text{DFT}(B)(n)\bigr)(k).
 \end{multline}
-Man sollte dabei beachten, dass durch die Benutzung der DFT das Signal
-implizit mit Periode $N\Delta$ periodisiert wird. Daher sollte
-$C(A,B)(k\Delta)$ nur für $k\ll N/2$ interpretiert werden. Die
-Berechnung der 2 DFTs sowie der inversen DFT braucht etwa $6 N\log N$
-Operationen, was normalerweise wesentlich weniger als die $2NK$ der
-direkten Berechnung ist.
+Der Faktor $(-1)^n$ fehlt hier, weil in diesem Fall sowohl $A$ als
+auch $B$ als bei $t=0$ starten betrachtet werden. Man sollte beachten,
+dass durch die Benutzung der DFT das Signal implizit mit Periode
+$N\Delta$ periodisiert wird. Daher sollte $C(A,B)(k\Delta)$ nur für
+$k\ll N/2$ interpretiert werden. Die Berechnung der 2 DFTs sowie der
+inversen DFT braucht etwa $6 N\log N$ Operationen, was normalerweise
+wesentlich weniger als die $2NK$ der direkten Berechnung ist.
 
 In Python sieht die Berechnung der Kreuzkorrelation so aus:
 \begin{lstlisting}

@@ -19,25 +19,27 @@ N=10000
 T=2*pi*5
 
 x = linspace(-T/2, T/2, N)
-o = linspace(0,N*2*pi/T,N)
 
 def contfft(data):
-    return ((-1)**arange(N))*T/sqrt(2*pi)/N*fft.fft(data)
+    f = fft.rfft(data)
+    return ((-1)**arange(len(f)))*T/sqrt(2*pi)/N*f
 
 def icontfft(data):
-    return fft.ifft(sqrt(2*pi)*N/T*((-1)**arange(N))*data)
+    return fft.irfft(sqrt(2*pi)*N/T*((-1)**arange(len(data)))*data, N)
 
 # Beispiel 1: Glaettung einer hochfrequenten Stoerung
 # mit einer Gaussglocke
 yf = cos(x) + 0.25*sin(7.5*x)
 f  = contfft(yf)
 
+o = linspace(0,N*pi/T,len(f))
+
 s=0.5
 yg = 1/sqrt(2*pi)/s*exp(-x**2/2/s**2)
 g  = contfft(yg)
 
 h=sqrt(2*pi)*f*g
-yh=real(icontfft(h))
+yh=icontfft(h)
 
 figure = pyplot.figure(figsize=(8,8))
 
@@ -61,16 +63,11 @@ s = 1
 g  = 1/sqrt(2*pi)/s*exp(-(o-o0)**2/2/s**2)
 # g = (o < 9) * (o > 6)
 
-# Symmetrisierung fuer ein reelles Signal
-g = g + concatenate(((0,), g[N:0:-1]))
-
-# Ruecktrafo, das real gleicht numerische Fehler im Imaginaerteil aus. 
+# Ruecktrafo
 yg = icontfft(g)
-print "max imag=", max(imag(yg))
-yg = real(yg)
 
 h=sqrt(2*pi)*f*g
-yh=real(icontfft(h))
+yh=icontfft(h)
 
 graph = figure.add_subplot(223)
 graph.plot(x, yf, "k", linewidth=0.5)
