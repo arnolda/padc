@@ -584,13 +584,13 @@ allgemeinen $2NK$ viele Operationen benötigt werden, und $K$ meist
 einige hundert Datenpunkte beträgt.  Daher liegt es nahe, auch hier
 die FFT gemäß \eqref{eq:discretefold} zur Beschleunigung einzusetzen.
 Es ergeben für gleich lange Messreihen $A$ und $B$:
-\begin{multline}
+\begin{equation}
   \label{eq:crosscorrnumfft}
   C(A,B)(k\Delta)
   \approx
   \frac{1}{N}\,\text{iDFT}
   \bigl(\overline{\text{DFT}(A)(n)}\,\text{DFT}(B)(n)\bigr)(k).
-\end{multline}
+\end{equation}
 Der Faktor $(-1)^n$ fehlt hier, weil in diesem Fall sowohl $A$ als
 auch $B$ als bei $t=0$ starten betrachtet werden. Man sollte beachten,
 dass durch die Benutzung der DFT das Signal implizit mit Periode
