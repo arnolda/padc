@@ -16,7 +16,7 @@ fftsin.pdf fftalias.pdf \
 fourier.pdf wavelet.pdf \
 fouriertrafo.pdf \
 v_ac.pdf error.pdf \
-banach.pdf newton.pdf regulafalsi.pdf bisektion.pdf \
+banach.pdf newton.pdf sekanten.pdf bisektion.pdf \
 num_diff.py
 
 pendel_energie.pdf pendel_loesung.pdf: pendel_plot.py

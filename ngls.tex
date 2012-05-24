@@ -124,7 +124,7 @@ gibt auche eine \textit{a priori}-Abschätzung des Fehlers:
 sowie eine Abschätzung der Konvergenzrate:
 \begin{equation}
   \frac{\norm{x_{n+1} - \overline{x}}}{\norm{x_n - \overline{x}}}
-  = \frac{\norm{G(x_n) - G(\overline{x})}}{\norm{x_n - \overline{x}}}
+  = \frac{\norm{g(x_n) - g(\overline{x})}}{\norm{x_n - \overline{x}}}
   \le L < 1.
 \end{equation}
 Die sukzessive Substitution konvergiert also linear.
@@ -227,12 +227,12 @@ wenn $f$ zweifach differenzierbar ist, da
     \frac{f(x_n) - f(\overline{x})}{x_n - \overline{x}}\right)\nonumber\\
   = \frac{(x_n - \overline{x})}{f'(x_n)}\left( f'(x_n) -
     f'(\xi')\right)
-  = \frac{(x_n - \overline{x})^2}{f'(x_n)}f''(\xi)
+  = \frac{(x_n - \overline{x})(x_n - \xi')}{f'(x_n)}f''(\xi)
 \end{align}
 und somit
 \begin{equation}
   \frac{\abs{x_{n+1} - \overline{x}}}{\abs{x_n - \overline{x}}^2}
-  \le \frac{\max_{\xi\in [a,b]} \abs{f''(\xi)}}{\max_{\xi\in [a,b]} \abs{f'(\xi)}}
+  \le \frac{\max_{\xi\in [a,b]} \abs{f''(\xi)}}{\min_{\xi\in [a,b]} \abs{f'(\xi)}}
 \end{equation}
 Ist $f$ nur differenzierbar, so lässt sich ähnlich zeigen, dass das
 Newtonverfahren superlinear konvergiert. Das Newtonverfahren
@@ -242,10 +242,11 @@ differenzierbare Funktion.
 
 Bis jetzt haben wir nur die lokale Konvergenz des
 Newton-Verfahrens. Ist die Zielfunktion $f\in C^1([a,b])$ allerdings
-konvex bzw. konkav, also $f'$ monoton wachsend bzw. fallend, und hat
-eine Nullstelle, so kann man zeigen, dass das Newtonverfahren global
-gegen eine Nullstelle $\overline{x}$ von $f$ konvergiert. Dabei ist
-das Verfahren nach dem ersten Schritt monoton, d.h. entweder $x_1\le
+konvex bzw. konkav, also $f'$ monoton wachsend bzw. fallend und
+beschränkt, und hat $f$ eine Nullstelle in $[a,b]$, so kann man
+zeigen, dass das Newtonverfahren global gegen eine Nullstelle
+$\overline{x}$ von $f$ in $[a,b]$ konvergiert. Dabei ist das Verfahren
+nach dem ersten Schritt monoton, d.h. entweder $x_1\le
 x_2\le\ldots\le\overline{x}$ oder $x_1\ge
 x_2\ge\ldots\ge\overline{x}$.
 
@@ -341,61 +342,57 @@ Hornerschemas wie in Abschnitt~\ref{sec:horner}, lässt sich diese
 aber abspalten und das Newtonverfahren erneut starten, bis alle
 Nullstellen gefunden sind.
 
-\section{Regula falsi}
-\keyword{Regula falsi}
+\section{\keyword{Sekantenmethode}}
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{plots/regulafalsi}
-  \caption{Regula falsi für die Funktion $f(r) = e^{-r}/r -
+  \includegraphics[width=\textwidth]{plots/sekanten}
+  \caption{Sekantenmethode für die Funktion $f(r) = e^{-r}/r -
     \phi_0$. Wie zuvor ist links $\phi_0=2$, rechts $\phi_0=1/4$.
     Blau dargestellt ist wieder $f$, die roten, gestrichelten dicken
     Linien stellen die Sekanten dar, deren Nullstellen die neuen
     Näherungen für die gesuchte Nullstelle von $f$ sind. Durchgezogen
     ist der Abschnitt der Sekante durch $x_{n-1}$ und $x_n$, der von $x_n$
     zu $x_{n+1}$ führt.}
-  \label{fig:regulafalsi}
+  \label{fig:sekanten}
 \end{figure}
 
 In vielen Fällen ist es nicht einfach oder unmöglich, die Ableitung
 einer Funktion zu bestimmen. In diesem Fall kann man die Ableitung
 durch die dividierte Differenz annähern, wobei nun zwei Startpunkte
-$x_0$ und $x_1$ gebraucht werden. Daraus ergibt sich die \emph{Regula
-  falsi}
+$x_0$ und $x_1$ gebraucht werden. Dies führt dazu, dass die
+Näherungsfunktion keine Tangente mehr ist, wie beim Newtonverfahren,
+sondern im allgemeinen eine Sekante. Daher rührt der Name der
+\emph{Sekantenmethode}
 \begin{equation}
-  x_{n+1} = x_n - f(x_n)\frac{f(x_n) - f(x_{n-1})}{x_n - x_{n-1}},
+  x_{n+1} = x_n - f(x_n)\frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})},
 \end{equation}
 die nicht mehr quadratisch, aber wenigstens superlinear konvergiert.
 
 Das Bestimmen der Ableitung von $f$ ist immer dann unmöglich, wenn $f$
 sehr komplex ist. Ein Extremfall wäre eine
 Molekulardynamik-Computersimulation, bei der zum Beispiel in
-Abhängigkeit vom aktuellen Volumen $V$ der mittleren Druck $P(V)$ in
+Abhängigkeit vom aktuellen Volumen $V$ der mittlere Druck $P(V)$ in
 einem gegebenen System bestimmt wird. Den mittleren Druch nach $V$
 abzuleiten, ist vollkommen aussichtslos, wenn die Wechselwirkungen
-zwischen den Teilchen hinreichend komplex sind. Dabei ist es sehr wohl
-von großem Interesse, dasjenige Volumen zu bestimmen, für das $P(V)$
+zwischen den Teilchen hinreichend komplex sind. Dabei ist es von
+großem Interesse, dasjenige Volumen zu bestimmen, für das $P(V)$
 gleich einem vorgegebenen Außendruck $P_0$ ist, denn dies ist die
-natürliche Bedingung im isobarischen Ensemble. In diesem Fall ist
-zusätzlich noch die Funktion $P(V)$ mit einer oftmals nicht kleinen
-statistischen Unsicherheit belegt, weil die Druckschwankungen, also
-die Varianz des Drucks, sehr groß sind. Trotzdem konvergiert die
-Regula falsi im allgemeinen zufriedenstellend, solange keine zu hohen
-Ansprüche an die Genauigkeit gestellt werden. Schliesslich kann die
-Nullstelle nicht genauer als die vorhandenen Daten bestimmt werden.
+natürliche Bedingung im isobarischen Ensemble. Dies führt aber zur
+Nullstellengleichung $P(V)-P_0 = 0$.
 
-Als Beispiel für die Regula falsi soll ein weiteres Mal die Funktion
-$f(r) = e^{-r}/r - \phi_0$ dienen. Für diese zeigt
-Abbildung~\ref{fig:regulafalsi} die erste paar Schritte der Regula
-falsi. Unter geeigneten Umständen, nämlich, wenn die angenäherte
-Tangente hinreichend gut mit der tatsächlichen über einstimmt,
-konvergiert die Regula falsi praktisch genauso gut wie das normale
-Newtonverfahren. Sind die Startpunkte allerdings ungünstig gewählt,
-wie im rechten Beispiel, so kann es passieren, dass diese abwechselnd
-um die Nullstelle liegen, und damit nicht mehr monoton konvergieren.
+Als Beispiel für die Sekantenmethode soll ein weiteres Mal die
+Funktion $f(r) = e^{-r}/r - \phi_0$ dienen. Für diese zeigt
+Abbildung~\ref{fig:sekanten} die erste paar Schritte der
+Sekantenmethode. Unter geeigneten Umständen, nämlich, wenn die
+angenäherte Tangente hinreichend gut mit der tatsächlichen über
+einstimmt, konvergiert die Sekantenmethode praktisch genauso gut wie
+das normale Newtonverfahren. Sind die Startpunkte allerdings ungünstig
+gewählt, wie im rechten Beispiel, so kann es passieren, dass diese
+abwechselnd um die Nullstelle liegen, und damit nicht mehr monoton
+konvergieren.
 
-\section{Bisektion}
-\index{Bisektion}
+\section{\keyword{Bisektion}}
 \index{Bisektionsverfahren}
 
 Wie wir gesehen haben, konvergiert das Newtonverfahren und seine
@@ -443,7 +440,7 @@ sieben Schritten schließt diese bei Startinterval $[0,1,\,1]$ die
 Nullstelle bis auf $[0,3391,\,0,3461]$, als etwa $10^{-2}$ genau
 ein. Zum Vergleich: das Newtonverfahren mit Startwert $0,05$ erreicht
 in sieben Schritten eine Genauigkeit von etwa $10^{-5}$, und selbst
-die Regula falsi $10^{-3}$.
+die Sekantenmethode $10^{-3}$.
 
 \begin{figure}
   \centering
@@ -460,7 +457,37 @@ die Regula falsi $10^{-3}$.
   \label{fig:bisektion}
 \end{figure}
 
+\section{\keyword{Regula falsi}}
+
+Sowohl die Bisektion wie auch die Sekantenmethode benötigen zwei
+Startwerte. Daher liegt es nahe, die Verfahren zu kombinieren.
+
+Bei der \emph{Regula falsi} wird wie bei der Bisektion ein Interval
+$[a,b]$ schrittweise verkleinert so dass dieses stets wenigstens eine
+Nullstelle enthält. Anders als bei der Bisektion wird der neue
+Randpunkt $m$ allerdings nicht einfach als Intervalmitte bestimmt,
+sondern mit Hilfe der Sekantenmethode, mit den beiden
+Intervalrandpunkten $a$ und $b$ als Stützstellen. Da $f(a)f(b)<0$,
+schneidet die Sekante die Nulllinie immer im Interval.  Dadurch
+verkleinert sich das Interval schneller, sofern die Nullstelle der
+Sekante dicht an der echten Nullstelle liegt.
+
+Die Regula falsi ist also die schnellste und stabilste
+Nullstellensuche, falls die Ableitung der Funktion nicht bekannt
+ist. Insbesondere funktioniert diese Methode im allgemeinen auch noch
+einigermaßen zufriedenstellend, falls die Funktionswerte gar nicht
+mehr genau bekannt sind. Dies wäre zum Beispiel bei der bereits
+angesprochenen Messung des Drucks in einer Simulation der Fall, da
+dieser starken Schwankungen unterliegt. Dadurch kann man meist den
+Druck in akzeptabler Rechenzeit nicht so gut mitteln, dass dessen
+Messfehler vernachlässigt werden kann.  Trotzdem konvergiert die
+Regula falsi im allgemeinen zufriedenstellend, solange keine zu hohen
+Ansprüche an die Genauigkeit gestellt werden. Die Methode muss in
+diesem Fall abgebrochen werden, sobald die Grenzen innerhalb des
+Fehlerbalkens Null sind.
+
 \section{Newtonverfahren in mehreren Dimensionen}
+\index{Newtonverfahren>in mehreren Dimensionen}
 \index{Gleichungssysteme>nichtlineare}
 
 Bis jetzt haben wir das Newtonverfahren nur für eindimensionale
