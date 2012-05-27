@@ -445,15 +445,18 @@ die Sekantenmethode $10^{-3}$.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{plots/bisektion}
-  \caption{Bisektion für die Funktion $f(r) = e^{-r}/r -
-    \phi_0$, hier nur mit $\phi_0=2$, da die genau Form der Funktion
+  \caption{Links: Bisektion für die Funktion $f(r) = e^{-r}/r -
+    \phi_0$, hier nur mit $\phi_0=2$, da die genaue Form der Funktion
     für diese Methode unerheblich ist. Blau dargestellt ist wieder
-    $f$, die roten Balken markieren die nacheinander generierten,
-    kleiner werdenden Intervalle $[a_n, b_n]$, die der Sichtbarkeit
-    wegen auf Höhe von
-    $f(m_n)$ eingezeichnet sind. Die gestrichelten, schwarzen Linien
-    markieren noch einmal ausdrücklichen die Intervalmitten $m_n$, die
-    im nächsten Schritt eine der beiden Intervalgrenzen werden.}
+    $f$, die grünen Balken markieren die nacheinander generierten,
+    kleiner werdenden Intervalle $[a_n, b_n]$. Die gestrichelten,
+    schwarzen Linien markieren die Intervalmitten $m_n$, die im
+    nächsten Schritt eine der beiden Intervalgrenzen werden. Rechts:
+    Regula falsi für dieselbe Funktion. Die Funktion ist streng
+    konvex, daher reagiert die Regula falsi lethargisch und ist der
+    Bisektion unterlegen; die Intervalle verkürzen sich praktisch
+    nicht mehr, da die untere Anfangsgrenze $1/4$ nie versetzt wird,
+    nur die obere Grenze.}
   \label{fig:bisektion}
 \end{figure}
 
@@ -467,10 +470,20 @@ $[a,b]$ schrittweise verkleinert so dass dieses stets wenigstens eine
 Nullstelle enthält. Anders als bei der Bisektion wird der neue
 Randpunkt $m$ allerdings nicht einfach als Intervalmitte bestimmt,
 sondern mit Hilfe der Sekantenmethode, mit den beiden
-Intervalrandpunkten $a$ und $b$ als Stützstellen. Da $f(a)f(b)<0$,
-schneidet die Sekante die Nulllinie immer im Interval.  Dadurch
-verkleinert sich das Interval schneller, sofern die Nullstelle der
-Sekante dicht an der echten Nullstelle liegt.
+Intervalrandpunkten $a$ und $b$ als Stützstellen:
+\begin{equation}
+  m = b - f(b)\frac{b - a}{f(b) - f(a)} =
+  \frac{f(b)a - f(a)b}{f(b) - f(a)}.
+\end{equation}
+Da $f(a)f(b)<0$, schneidet die Sekante die Nulllinie immer im
+Interval.  Dadurch verkleinert sich das Interval schneller, sofern die
+Nullstelle der Sekante dicht an der echten Nullstelle liegt, und die
+Funktion im Intervall nicht streng konkav oder konvex ist, also einen
+Wendepunkt hat. Diese Bedingung ist leider im allgemeinen nicht
+gegeben, so dass oft die einfache Bisektion schneller ist. In diesem
+Fall wird die Regula falsi sehr langsam, was auch als Lethargie
+bezeichnet wird. Dies ist zum Beispiel in
+Abbildung~\ref{fig:bisektion} rechts gezeigt.
 
 Die Regula falsi ist also die schnellste und stabilste
 Nullstellensuche, falls die Ableitung der Funktion nicht bekannt

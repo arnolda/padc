@@ -415,9 +415,9 @@ Die Geschwindigkeiten an den halben Zeitschritten erhält man einfach
 durch $v(t + \delta t /2) = v(t) + \delta t F(t) / 2$.
 Zusammengefasst ergibt sich der folgende \emph{Velocity-Verlet-Algorithmus}:
 \begin{align}
-  v(t + \frac{\delta t}{2}) &= v(t) + \frac{\delta t}{2} F(t) \\
-  \alpha(t + \delta t) &= \alpha(t) + v(t + \frac{\delta t}{2}) \\
-  v(t + \delta t) &= v(t + \frac{\delta t}{2}) + \frac{\delta t}{2}
+  v\left(t + \frac{\delta t}{2}\right) &= v(t) + \frac{\delta t}{2} F(t) \\
+  \alpha(t + \delta t) &= \alpha(t) + v\left(t + \frac{\delta t}{2}\right) \\
+  v(t + \delta t) &= v\left(t + \frac{\delta t}{2}\right) + \frac{\delta t}{2}
   F(t + \delta t),
 \end{align}
 der anders als die direkte Vorgehensweise vorher numerisch stabil ist

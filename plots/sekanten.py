@@ -18,7 +18,7 @@ import matplotlib.pyplot as pyplot
 def f(r, phi0):
     return exp(-r)/r - phi0
 
-def graphical_regulafalsi(x0, x1, f, n):
+def graphical_secantmethod(x0, x1, f, n):
     "Regula falsi"
 
     xnn = x0
@@ -44,7 +44,7 @@ x1 = 0.1
 rmin=0.01
 rmax=0.5
 
-path = graphical_regulafalsi(x0, x1, lambda r: f(r, phi0), n)
+path = graphical_secantmethod(x0, x1, lambda r: f(r, phi0), n)
         
 figure = pyplot.figure(figsize=(8,4))
 
@@ -82,7 +82,7 @@ x1 = 1.9
 rmin=0.5
 rmax=2
 
-path = graphical_regulafalsi(x0, x1, lambda r: f(r, phi0), n)
+path = graphical_secantmethod(x0, x1, lambda r: f(r, phi0), n)
         
 graph = figure.add_subplot(122)
 
@@ -107,4 +107,4 @@ for n in range(2, len(path)):
 graph.axis([rmin, rmax,-0.25,0.75])
 graph.set_xticks(arange(rmin, rmax+0.01, 0.25))
 
-figure.savefig("regulafalsi.pdf")
+figure.savefig("sekanten.pdf")

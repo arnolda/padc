@@ -17,7 +17,7 @@ fourier.pdf wavelet.pdf \
 fouriertrafo.pdf \
 v_ac.pdf error.pdf \
 banach.pdf newton.pdf sekanten.pdf bisektion.pdf \
-num_diff.py
+bessel.pdf num_diff.pdf num_int.pdf
 
 pendel_energie.pdf pendel_loesung.pdf: pendel_plot.py
 	python $<
