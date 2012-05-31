@@ -17,7 +17,13 @@ fourier.pdf wavelet.pdf \
 fouriertrafo.pdf \
 v_ac.pdf error.pdf \
 banach.pdf newton.pdf sekanten.pdf bisektion.pdf \
-bessel.pdf num_diff.pdf num_int.pdf
+bessel_diff.pdf num_diff.pdf \
+trapezregel.pdf mittelpunktsregel.pdf simpsonregel.pdf \
+rechteckregel.pdf trapezzusammen.pdf \
+bessel_int.pdf romberg.pdf inf_int.pdf pi.pdf
+
+trapezregel.pdf mittelpunktsregel.pdf simpsonregel.pdf rechteckregel.pdf trapezzusammen.pdf: num_int.py
+	python $<
 
 pendel_energie.pdf pendel_loesung.pdf: pendel_plot.py
 	python $<

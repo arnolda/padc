@@ -85,13 +85,16 @@ Punkte, und suchen Koeffizienten $c_k$ derart, dass
   c_2 f(x_{i+2}) + c_1 f(x_{i+1})  + c_0 f(x_i) + c_{-1}f(x_{i-1}) +
   c_{-2}f(x_{i-2}) = f'(x_i) + \O(h^5),
 \end{equation}
-unabhänging von der Form von $f$ und seiner Ableitungen.  Durch
+unabhänging von der Form von $f$ und seiner Ableitungen. Durch
 Einsetzen der Taylorentwicklung
 \begin{equation}
   f(x + k h) = f(x) + k\, hf'(x) + k^2\,\frac{h^2}{2} f''(x_i) +
   k^3\,\frac{h^3}{6}f^{(3)}(x) + k^4\,\frac{h^4}{24}f^{(4)}(x) + \O(h^5)
 \end{equation}
-folgt dann, in der Reihenfolge der Ableitungen in der Taylorentwicklung
+können wir nun die obige Gleichung auf beiden Seiten als Vielfache von
+$f(x)$, $f'(x)$, $f''(x)$ usw. schreiben. Da unsere Koeffizienten
+unabhängig von diesen sein sollen, müssen die Vorfaktoren vor diesen
+auf beiden Seiten übereinstimmen. Diese sind, beginnend bei $f(x)$:
 \begin{align}
   \label{eq:derivatives}
   c_{2} + c_{-2} + c_{-1} + c_1 + c_0 &= 0\nonumber\\
@@ -175,7 +178,7 @@ sinkt, spielt die Ordnung des Verfahrens eine Rolle. Wird allerdings
 $h$ zu klein, zeigt sich die endliche Auflösung, mit der der Rechner
 arbeitet, und der Fehler steigt wieder an.
 
-\subsection{Beispiel}
+\subsection{Beispiel: Besselsche Differentialgleichung}
 
 Wir betrachten die Besselsche Differentialgleichung, eine gewöhnliche
 lineare Differentialgleichung zweiter Ordnung:
@@ -249,23 +252,21 @@ Gleichungssystem effizient mit dem Gaußverfahren lösen.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\textwidth]{plots/bessel}
-  \caption{Links: numerische Lösungen der Besselschen
-    Differentialgleichung mit Schrittweite $h=0,05$. Die durchgezogene
-    schwarze Linie markiert die analytische Lösung. Mit grünen
-    Strichpunkten ist die Lösung mit Hilfe von
+  \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
+  \caption{Numerische Lösungen der Besselschen Differentialgleichung
+    mit Schrittweite $h=0,05$ und $N=300$ Stützpunkten. Die
+    durchgezogene schwarze Linie markiert die analytische Lösung. Mit
+    grünen Strichpunkten ist die Lösung mit Hilfe von
     \eqref{eq:besseldiscrete} und Dirichletrandbedingungen im Bereich
     $[h, 15]$ dargestellt, rot gestrichelt mit Vorgabe von
     Funktionswert und Ableitung bei $h$. Blaue Punkte schliesslich
-    markieren den Löser dritter Ordnung mit Dirichletrandbedingungen,
-    der von der analytischen Lösung nicht zu unterscheiden
-    ist. Rechts: numerische Lösung des Besselintegrals mit 300 (blaue
-    Punkte) und 10 Stützpunkten (rot gestrichelt) im Interval
-    $[0,\pi]$.}
-  \label{fig:bessel}
+    markieren den Löser dritter Ordnung mit Dirichletrandbedingungen
+    auf $[0, 15-h]$, der von der analytischen Lösung nicht zu
+    unterscheiden ist.}
+  \label{fig:bessel_diff}
 \end{figure}
 
-Die Lösung dieses Gleichungssystems ist in Abbildung~\ref{fig:bessel}
+Die Lösung dieses Gleichungssystems ist in Abbildung~\ref{fig:bessel_diff}
 mit grünen Strichpunkten gezeigt. Sie hat allerdings wenig mit der
 korrekten Lösung gemeinsam. Der tiefere Grund ist, dass die Besselsche
 Differentialgleichung für ganzzahlige $\nu$ nicht nur die in $0$
@@ -279,7 +280,7 @@ unsere Lösung.
 Um dieses Problem zu umgehen, könnte man nun statt der Randwerte den
 Funktionswert und die erste Ableitung am linken Rand vorschreiben,
 also $F_1 = f(h) = f_h$ und $ F'_1 = \nicefrac{d}{dx}f(h) \approx
-\frac{1}{h} f_{2h} - \frac{1}{h}f_h$.  Wie Abbildung~\ref{fig:bessel}
+\frac{1}{h} f_{2h} - \frac{1}{h}f_h$.  Wie Abbildung~\ref{fig:bessel_diff}
 in rot gestrichelt zeigt, ist dann die Lösung am linken Rand
 tatsächlich besser, aber am rechten Rand immer noch nicht
 befriedigend. Auch durch Verringern der Schrittweite $h$ verbessert
@@ -300,9 +301,9 @@ ingesamt vier Startwerte. Von diesen benutzen wir zwei als
 Dirichletbedingungen $f_0 = F_0$ und $f_{N-1} = F_{N-1}$, und
 generieren daraus über Gleichung \eqref{eq:besseldiscrete} Näherungen
 für $f_1$ und $f_{N-2}$. Die Lösung dieses Gleichungssystem ist in
-Abbildung~\ref{fig:bessel} blau gepunktet eingezeichnet und nicht mehr
-von der analytischen Lösung zu unterscheiden. Dies zeigt den Nutzen
-von Ableitungsnäherungen höherer Ordnung.
+Abbildung~\ref{fig:bessel_diff} blau gepunktet eingezeichnet und nicht
+mehr von der analytischen Lösung zu unterscheiden. Dies zeigt den
+Nutzen von Ableitungsnäherungen höherer Ordnung.
 
 \section{\keyword{Quadratur}: \keyword{numerische Integration}}
 
@@ -338,26 +339,29 @@ Funktion das Rungephänomen bei der Integration, und ab Ordnung $n=9$
 treten negative Koeffizienten $\alpha_i$ auf, was die Näherung
 verschlechtert. Daher sind nur kleine $n$ sinnvoll, und in der Praxis
 werden meist nur Formeln bis Ordnung $n=8$ benutzt. Die
-gebräuchlichsten sind in Abbildung~\ref{fig:intregel} skizziert und
-werden im folgenden kurz diskutiert.
+gebräuchlichsten werden im folgenden kurz diskutiert.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/num_int}
-  \caption{Illustration der vier Newton-Cotes-Formeln. Die Punkte
-    markieren die Stützpunkte, hellblau ist die Fläche unter dem
-    interpolierenden Polynom, die der Näherung des Integrals dient.}
-  \label{fig:intregel}
-\end{figure}
+\newcommand{\topillu}[1]{%
+  \begin{tikzpicture}[overlay,x=\textwidth,y=\baselineskip]
+    \draw (1,0) node[anchor=north east] {\includegraphics[width=0.25\textwidth]{#1}};
+  \end{tikzpicture}}
+
+\topillu{plots/trapezregel}
 \subsubsection{\keyword{Trapezregel}}
 
-Die Trapezregel benutzt als Stützstellen $x_0=a$ und $x_1=b$:
-\begin{equation}
-  \int_a^b f(x)\, dx \approx f(a)\int_a^b \frac{x-b}{a-b}\,dx \,+\,
-  f(b)\int_a^b \frac{x-a}{b-a}\,dx
-  \,=\, \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr).
-\end{equation}
-Weiter gilt
+\begin{minipage}{0.74\linewidth}
+  Die Trapezregel benutzt als Stützstellen $x_0=a$ und $x_1=b$, die
+  dementsprechend durch eine Gerade verbunden werden:
+  \begin{align}
+    \int_a^b f(x)\, dx &\approx \int_a^b f(a)\frac{x-b}{a-b} \,+\,
+    f(b)\frac{x-a}{b-a}\,dx\nonumber\\
+    &= f(a)\int_a^b \frac{x-b}{a-b}\,dx \,+\,
+    f(b)\int_a^b \frac{x-a}{b-a}\,dx\nonumber\\
+    &= \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr).
+  \end{align}
+\end{minipage}
+
+ \noindent Weiter gilt
 \begin{multline}
   \int_a^b f(x)\, dx - \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr)
   =  \int_a^b f(x) - f(a)\frac{x-b}{a-b}
@@ -369,7 +373,7 @@ Weiter gilt
   \frac{1}{a-b}\left(\frac{f(x) - f(a)}{x-a} + \frac{f(b) - f(x)}{x-b}\right)
   \underbrace{(x-b)(x-a)}_{<0 \text{ in } [a,b]}\, dx\\
   =
-  \frac{f''(\xi)}{2}\int_a^b (x-b)(x-a)\, dx = \frac{(b-a)^3}{12} f''(\xi)
+  \frac{f''(\xi)}{2}\int_a^b (x-b)(x-a)\, dx = -\frac{(b-a)^3}{12} f''(\xi)
 \end{multline}
 für ein $\xi\in[a,b]$. Gibt es also eine Abschätzung für die zweite
 Ableitung von $f$, so lässt sich auch der Fehler der Trapezregel
@@ -377,60 +381,637 @@ abschätzen. Ist $f$ konvex auf $[a,b]$, also $f''(\xi)>0$, so
 unterschätzt also die Trapezregel das Integral, ist $f$ konkav,
 überschätzt sie es.
 
-\subsubsection{Simpsonregel}
+\newpage
 
-Analog wird die Simpsonregel für die drei Stützpunkte $x_0=a$,
-$x_1=\frac{a+b}{2}$ und $x_2=b$ definiert:
-\begin{equation}
-  \int_a^b f(x)\, dx = \frac{b-a}{3} \left(f(a) +
-  4 f\left(\frac{a+b}{2}\right) + f(b)\right) +
-  \frac{(b-a)^5}{90} f^{(4)}(\xi)
-\end{equation}
-für ein $\xi\in[a,b]$.
+\topillu{plots/simpsonregel}
+\subsubsection{\keyword{Simpsonregel}}
+
+\begin{minipage}{0.74\linewidth}
+  Analog wird die Simpsonregel für die drei Stützpunkte $x_0=a$,
+  $x_1=m=\frac{a+b}{2}$ und $x_2=b$ definiert, die durch eine Parabel
+  verbunden werden:
+  \begin{equation}
+    \int_a^b f(x)\, dx = \frac{b-a}{6} \left(f(a) +
+      4 f\left(m\right) + f(b)\right) -
+    \frac{(b-a)^5}{2880} f^{(4)}(\xi)
+  \end{equation}
+  für ein $\xi\in[a,b]$.
+\end{minipage}
 
 \index{Newton-Cotes-Formeln>offene}
 \index{Newton-Cotes-Formeln>geschlossene}
-
 Die Simpsonregel und die Trapezregel sind die meistgenutzten
 \emph{geschlossenen} Newton-Cotes-Formeln. Geschlossen heißen solche
 Formeln, die $a$ und $b$ als Stützpunkte beinhalten. \emph{Offene}
 Formeln dagegen enthalten wenigstens einen der Punkte
 nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
 
-\subsubsection{Rechteckregel}
+\topillu{plots/rechteckregel}
+\subsubsection{\keyword{Rechteckregel}}
 
-Wir benutzen $x_0=a$ als Stützpunkt, und erhalten:
+\begin{minipage}[t]{0.74\linewidth}
+  Wir benutzen $x_0=a$ als Stützpunkt, und erhalten:
+  \begin{equation}
+    \int_a^b f(x)\, dx = (b-a) f(a) +
+    \frac{(b-a)}{2} f'(\xi)
+  \end{equation}
+  für ein $\xi\in[a,b]$.
+\end{minipage}
+
+\topillu{plots/mittelpunktsregel}
+\subsubsection{\keyword{Mittelpunktsregel}}
+
+\begin{minipage}[t]{0.74\linewidth}
+  Wir benutzen $x_0=m=\frac{a+b}{2}$ als Stützpunkt, und erhalten:
+  \begin{equation}
+    \int_a^b f(x)\, dx = (b-a) f(m) +
+    \frac{(b-a)^3}{24} f''(\xi)
+  \end{equation}
+  für ein $\xi\in[a,b]$. Ähnlich wie schon beim Differenzieren ist
+  also der Intervallmittelpunkt ausgezeichnet.
+\end{minipage}
+
+\subsection{Zusammengesetzte Newton-Cotes-Formeln}
+\index{Newton-Cotes-Formeln>zusammengesetzte}
+
+Wie bereits gesagt, sind Newton-Cotes-Formeln höherer Ordnung
+numerisch noch ungünstiger als die Polynominterpolation, auf der sie
+basieren. Im allgemeinen konvergiert bei steigender Anzahl der
+Stützstellen die Näherung für das Integral nicht einmal. Genauso wie
+bei der Interpolation liegt es nahe, auf stückweise Polynome, also
+Splines, überzugehen, wenn die Funktion $f$ an sehr vielen
+Stützstellen $a=x_0< x_1 < \ldots < x_{N} = b$ gegeben ist.  Der
+kubische Spline benötigt zur Auswertung allerdings die ziemlich
+aufwendige Lösung eines linearen Gleichungssystems, daher greift man
+auf stückweise lineare Splines zurück. Auf jedem Teilinterval $[x_i,
+x_{i+1}]$ wird die Funktion durch eine Gerade approximiert, was genau
+der Trapezregel entspricht.
+
+\topillu{plots/trapezzusammen}
+\subsubsection{Zusammengesetzte Trapezregel}
+\index{Trapezregel>zusammengesetzte}
+\begin{minipage}[t]{0.74\linewidth}
+  Die \emph{zusammengesetzte Trapezregel} für beliebig viele
+  Stützstellen $x_i$, $i=0(1)N$ ist gegeben durch
+\end{minipage}
+\begin{align}
+  \label{eq:trapezzusammen}
+  \int_a^b f(x)\, dx &\approx \sum_{i=0}^{N-1} \frac{x_{i+1} -
+    x_i}{2}\Bigl(f(x_i) + f(x_{i+1})\Bigr)\nonumber\\
+  &= \frac{x_1-x_0}{2}f(x_0) + \sum_{i=1}^{N-1} \frac{x_{i+1} - x_{i-1}}{2}
+  f(x_i) + \frac{x_N-x_{N-1}}{2}f(x_N)
+\end{align}
+Auf einem äquidistanten Gitter $a + kh$,
+$k=0(1)N$ mit $h=(b-a)/N$, verkürzt sich diese Formel zu
 \begin{equation}
-  \int_a^b f(x)\, dx = (b-a) f(a) +
-  \frac{(b-a)}{2} f'(\xi)
+  \int_a^b f(x)\, dx =
+  h\left(\frac{f(x_0)}{2} + \sum_{i=1}^{N-1} f(x_i) +
+    \frac{f(x_N)}{2}\right)
+  - \frac{(b-a)^3}{12 N^2}f''(\xi)
 \end{equation}
-für ein $\xi\in[a,b]$.
+für ein $\xi\in [a,b]$. Hier konnten wir den Fehler der einfachen
+Trapezregel übernehmen, da stets $\frac{1}{N} \sum_{i=0}^{N-1}
+f''(\xi_i) = f''(\xi)$ für ein $\xi\in[a,b]$.
 
-\subsubsection{Mittelpunktsregel}
+Die zusammengesetzte Trapezregel ist in Scipy als
+\scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
+die Reihenfolge der Funktionswerte \argd{y} und Knoten \argd{x}! Die
+Angabe der Knoten ist dabei optional, alternativ kann bei
+äuqidistanten Daten nur die Schrittweite \argd{dx}$=h$ spezifiziert
+werden.
 
-Wir benutzen $x_0=\frac{a+b}{2}$ als Stützpunkt, und erhalten:
+\subsubsection{Zusammengesetzte Mittelpunktsregel}
+
+Analog zur Trapezregel lässt sich auch die zusammengesetzte
+Mittelpunktsregel für äquidistante Gitter formulieren:
 \begin{equation}
-  \int_a^b f(x)\, dx = (b-a) f(\frac{a+b}{2}) +
-  \frac{(b-a)^3}{24} f''(\xi)
+  \int_a^b f(x)\, dx =
+  h\sum_{i=0}^{N-1} f(x_i) + \frac{(b-a)^3}{24 N^2}f''(\xi)
 \end{equation}
-für ein $\xi\in[a,b]$. Ähnlich wie schon beim Differenzieren ist also
-der Intervallmittelpunkt ausgezeichnet.
+wobei $h=(b-a)/N$, $x_i = a + h(i+\nicefrac{1}{2})$, $i=0(1)N-1$, und
+$\xi\in [a,b]$. Die Stützpunkte $x_i$ sind also um $h/2$ gegenüber den
+Intervallenden versetzt. Abgesehen davon sind Mittelpunktsregel und
+Trapezregel offenbar äquivalent, was sich auch in den ähnlichen
+Fehlerformeln ausdrückt. Mittelpunkts- oder Trapezregel sollten danach
+ausgewählt werden, wie sich die vorhandenen Stützstellen in Bezug auf
+die Randpunkte verhalten. Meist werden die Intervallenden einbezogen
+sein; dann setzt man die Trapezregel ein.
 
-\subsection{Zusammengesetzte Quadraturregeln}
+\subsubsection{Zusammengesetzte Simpsonregel}
 
+Sei das Interval $[a,b]$ in geradzahlig viele Abschnitte unterteilt,
+also $x_i = a + hi$, $i=0(1)N$, mit $h=(b-a)/N$ und $N$ gerade. Dann
+kann man je zwei Abschnitte zusammenfassen, und den mittleren Knoten
+als Intervallmitte des doppelt breiten Abschnitts benutzen, und so die
+Simpsonregel benutzen. Das führt zur Formel
+\begin{equation}
+  \int_a^b f(x)\, dx =
+  \frac{h}{3}\left(
+    f(x_0) +
+    \sum_{i=1}^{N/2-2} \Bigl(2 f(x_{2i}) + 4 f(x_{2i+1})\Bigr)
+    + f(x_N)
+  \right)
+  - \frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)
+\end{equation}
+für ein $\xi\in [a,b]$. Durch die höhere Potenz von $N$ konvergiert
+dieses Verfahren schneller als die zusammengesetzte Trapezregel,
+sofern $f$ vierfach stetig differenzierbar ist.
 
-\subsection{Richardson-Extrapolation}
-Romberg-Verfahren
+Die zusammengesetzte Simpsonregel ist in Scipy als
+\scipy{scipy.integrate.simps(y, x)} implementiert. Wieder ist die
+Reihenfolge der Funktionswerte \argd{y} und Knoten \argd{x} vertauscht
+und die Angabe der Knoten optional, alternativ kann bei äuqidistanten
+Daten nur die Schrittweite \argd{dx}$=h$ spezifiziert werden. Ist die
+Anzahl der Stützstellen ungerade, so wird an den Rändern mit der
+Trapezregel ergänzt.
 
-\subsection{Gauß-Quadratur}
+\subsection{Beispiel: Besselfunktion}
 
-\subsection{Unbegrenzte Intervalle und Singularitäten}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/bessel_int}
+  \caption{Links: numerische Lösungen für das Besselintegral
+    \eqref{eq:besselint}. Die durchgezogene schwarze Linie markiert
+    die analytische Lösung. Blaue Plus-Symbole und gelbe Rauten
+    markieren Trapez- bzw. Simpsonregel mit jeweils 20 Stützstellen.
+    Rote Punkte und grüne Kreuze markieren dieselben Quadraturformeln,
+    aber mit nur 6 Stützstellen. Rechts: in schwarz ist der Integrand
+    von \eqref{eq:besselint} für $x=12$ dargestellt. Die schwarzen
+    Punkte markieren darauf die 6 Stützstellen, durch die das Integral
+    abgeschätzt werden soll. Rot gepunktet sind die linearen
+    Näherungen, die in der Trapezregel integriert werden, grün
+    gestrichelt die quadratischen Näherungen der zusammengesetzten
+    Simpsonregel. Es ist klar, dass diese keine zufriedenstellende
+    Auflösung des Integrals liefern können.}
+  \label{fig:bessel_int}
+\end{figure}
 
-\subsection{Monte-Carlo-Integration}
-Curse of dimension
+Als Beispiel für die numerische Integration soll uns noch einmal die
+Besselfunktion erster Ordnung $J_\nu(x)$ dienen, also die Lösung der
+Besselschen Differentialgleichung. Wie man durch Einsetzen in die
+Differentialgleichung "`leicht"' sieht, ist $J_0(x)$ gegeben durch das
+bestimmte Integral
+\begin{equation}
+  \label{eq:besselint}
+  J_0(x) = \frac{1}{\pi} \int_0^\pi  \cos(x\sin(\tau))\,d\tau,
+\end{equation}
+das wir numerisch mit Hilfe der zusammengesetzten Trapez- und
+Simpsonregel berechnen wollen. Wie Abbildung~\ref{fig:bessel_int}
+links zeigt, gelingt dies mit nur 20 Stützpunkten recht
+zufriedenstellend, sechs Stützpunkte allerdings ist für beide Regeln
+nicht ausreichend. Zum Vergleich: die numerische Lösung der
+Differentialgleichung mit dem Verfahren dritter Ordnung benötigt
+dreihundert Stützpunkte, liefert aber auch eine Abschätzung der
+Funktion an jedem Stützpunkt, während das Integral für jeden Punkt neu
+gelöst werden muss.
 
-\subsubsection{Beispiel: Berechung von $\pi$}
+Der Grund, dass sechs Stützstellen nicht ausreichen, ist im Prinzip
+derselbe, wie wir ihn schon bei Abbildung~\ref{fig:num_diff} gesehen
+haben: mit nur sechs Stützstellen lassen sich bei höheren $x$ die
+Schwingungen nicht mehr auflösen, siehe Abbildung~\ref{fig:bessel_int}
+rechts. Dies lässt sich auch durch das Verfahren höherer Ordnung nicht
+korrigieren, sondern nur durch eine hinreichend kleine
+Schrittweite. In diesem Fall sollte $h \ll 2\pi/x$ bzw. $N \gg x/2$
+sein, so dass
+\begin{equation}
+  \abs{x\left(\sin(\tau + h) - \sin(\tau)\right)} \approx x h
+  \abs{cos(\tau)} \ll 2\pi,
+\end{equation}
+damit der äußere Cosinus ausreichend aufgelöst wird.  Für größere $x$
+als im Graphen gezeigt wird also auch $N=20$ nicht ausreichend sein.
 
+\subsection{\keyword{Richardson-Extrapolation}}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/romberg}
+  \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
+    = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
+    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$. Sowohl
+    Kreuze also auch blaue Kreise markieren Berechnungen mit der
+    Trapezregel. Durch die mit blauen Kreisen markierten Datenpunkte
+    wurde dann das interpolierende Polynom bestimmt und rot
+    gestrichelt eingezeichnet. Während der beste benutzte Datenpunkt
+    eine Genauigkeit von etwa $6\cdot10^{-5}$ erreicht, hat der
+    extrapolierte Wert eine Genauigkeit von $3\cdot 10^{-16}$.  }
+  \label{fig:romberg}
+\end{figure}
+
+Ist $f\in C^{2k+2}([a,b])$ und
+\begin{equation}
+  T_f(h) = h\left(\frac{f(a)}{2} + \sum_{i=1}^{(b-a)/h - 1} f(a + i h) +
+    \frac{f(b)}{2}\right)
+\end{equation}
+die Trapezformel zur Schrittweite $h$, so gilt die
+\emph{\keyword{Euler-McLaurin-Summenformel}}
+\begin{equation}
+  \int_a^b f(x)\,dx = T_f(h) - \sum_{i=1}^k h^{2i}\alpha_i + \O(h^{2k-2})
+\end{equation}
+mit
+\begin{equation}
+  \alpha_i = \frac{b_{2i}}{(2i)!}\left(f^{2i-1}(b) - f^{2i-1}(a)\right).
+\end{equation}
+$b_{2i}$ bezeichnet dabei die Bernoullizahlen, die $\alpha_i$ sind
+also unabhängig von der Schrittweite $h$.  Durch Extrapolation zu
+$h=0$ kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
+$\O(h^{2k-2})$ verbessert werden. Für $b-a$-periodische
+$C^\infty$-Funktionen sind sogar alle $\alpha_i=0$, daher strebt die
+Trapezformel $T_f(h)$ für diese schneller als jedes Polynom in $h$
+gegen Null.
+
+Man kann zwar im allgemeinen die $\alpha_i$ nicht analytisch
+bestimmen, aber $T_f(h)$ durch Polynominterpolation annähern.  Bei der
+Richardson-Extrapolation bestimmt man zunächst $T_{i,o}=T_f(h_i)$ für
+paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$. Dann kann
+man mit Hilfe des Neville-Aitken-Schemas das interpolierende Polynom
+in $h^2$ an der Stelle 0 auswerten, also auf $h=0$ extrapolieren:
+\begin{equation}
+  \label{eq:richardson}
+  T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
+    T_{i,j-1}}{\frac{h_i^2}{h_{i+j}^2} -1}
+  \quad\text{für}\; i=0(1)k-j, j=1(1)k.
+\end{equation}
+Dann gilt $T_{0,k} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
+\O(h^{2k+2})$.
+
+Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
+\eqref{eq:richardson}
+zu
+\begin{equation}
+  \label{eq:richardson}
+  T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
+    T_{i,j-1}}{4^j - 1} = \frac{4^j T_{i+1,j-1} -
+    T_{i,j-1}}{4^j - 1},
+\end{equation}
+was als \emph{\keyword{Romberg-Verfahren}} bezeichnet wird. Diese Wahl
+der Schrittweiten hat auch den Vorteil, dass die Summe für $h_i$ bei
+der Berechnung von $h_{i+1}$ wiederverwendet werden kann:
+\begin{equation}
+  T_f(h_{i+1}) = \frac{1}{2} T_f(h_i) +
+  h_{i+1}\sum_{l=0}^{2^i-1} f\left(a + h_i\left(l
+      + \frac{1}{2}\right)\right)
+\end{equation}
+Da sich der Aufwand für die Berechnung aller $T_f(h_i)$ mit jeder
+Stufe verdoppelt, ist der Gesamtaufwand nicht wesentlich größer als
+der Aufwand zur Berechnung der niedrigsten Stufe $T_f(h_k)$ alleine,
+bei deutlicher Verbesserung der
+Fehlerabschätzung. Codebeispiel~\ref{lst:romberg} am Ende des Kapitels
+zeigt eine einfach, aber effiziente Implementation des
+Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
+selber eine Implementation des Verfahrens,
+\scipy{scipy.integrate.romberg(f, a, b)}.
+
+Als Beispiel für die Romberg-Integration soll diesmal das
+Fehlerintegral $\int_0^1 e^{-x^2}\,dx = \sqrt{\pi}\erf(1)/2$
+dienen. Das Besselintegral aus dem vorherigen Abschnitt ist wenig
+geeignet, da die zu integrierende Funktion $b-a$-periodisch und
+$C^\infty$ ist. Dadurch konvergiert bereits die einfache Trapezregel
+schneller als jedes Polynom, und bereits mit nicht sehr kleinen
+Schrittweiten erreicht die Trapezregel Maschinengenauigkeit. Da
+andererseits die Schrittweite wie beschrieben hinreichend klein sein
+muss, bleibt nicht genügend Raum, um durch Extrapolation noch etwas zu
+verbessern. Beim Fehlerintegral hingegen sind die Randwerte bereits
+der ersten Ableitung stark verschieden, so dass $T_f(h)$ tatsächlich
+polynomielle Form hat und um die Null herum in einer weiten Umgebung
+nahezu quadratisch ist. Daher kann die Extrapolation den Fehler
+signifikant senken.  Im Beispiel werden Schrittweiten von 1 bis $1/16$
+betrachtet. Bei Schrittweite $1/16$ beträgt der Fehler noch etwa
+$6,0\cdot 10^{-5}$, während die Extrapolation durch die 5 Datenpunkte
+bis auf $3,3\cdot 10^{-16}$, also Maschinengenauigkeit, das Integral
+korrekt bestimmt.
+
+\subsection{\keyword{Gauß-Quadratur}}
+
+Bis jetzt hatten wir uns vor allem mit äquidistanten oder aber ganz
+freien Gittern beschäftigt. Wenn aber die zu integrierende Funktion
+analytisch gegeben ist, so können wir die Stützpunkte frei
+wählen. Welche Stützpunkte sind dann optimal? Bei der Gauß-Quadratur
+suchen wir Stützstellen $x_i$ und dazugehörige Gewichte $\alpha_i$, so
+dass für Polynome $f$ mit möglichst hohem Grad noch
+\begin{equation}
+  \int_{-1}^1 f(x)\, dx = I_n f := \sum_{i=1}^n \alpha_i f(x_i)
+\end{equation}
+gilt, also dies Polynome exakt integriert werden. Die feste Wahl der
+Integralgrenzen $a=-1$ und $b=1$ ist dabei keine Einschränkung, weil
+jedes endliche Integral auf diesen Bereich transformiert werden kann:
+\begin{equation}
+  \int_a^b f(x)\, dx = (b-a) \int_{-1}^{1}f\bigl(a + x'(b-a)\bigr)\, dx'.
+\end{equation}
+
+Welcher Polynomgrad können wir so erreichen?  Die Newton-Cotes-Formeln
+mit $n$ Stützstellen integrieren schon einmal Polymere bis Grad $n-1$
+exakt. Auf der anderen Seite ist für das Polynom $p(x) = \prod_{i=1}^n
+(x-x_i)^2$ jede Näherung $I_n p = 0$, während offenbar $\int_{a}^{b}
+p(x)\,dx>0$. Daher kann es also kein Verfahren geben, dass alle
+Polynome bis Grad $2n$ exakt integriert. Ein Grad darunter, also
+$2n-1$ ist allerdings möglich, und wird durch die Gauß-Quadratur
+erreicht.
+
+Um ein Polynom $2n-1$ Grades eindeutig durch Stützstellen zu
+bestimmen, benötigen wir $2n$ Daten. Da wir aber nur $n$ Stützstellen
+benutzen wollen, liegt es nahe, an diesen auch die Ableitungen
+einzubeziehen, was ein Spezialfall der Hermite-Interpolation ist. Wie
+man leicht sieht, ist
+\begin{equation}
+  p(x) = \sum_{i=1}^n L_i^2(x)\Bigl\{f(x_i)\bigl[1-2L_i'(x_i)(x-x_i)\bigr] +
+    f'(x_i)(x-x_i)\Bigr\}
+\end{equation}
+das gesuchte Polynom $2n-1$-Grades durch die Stützstellen $(x_i,
+f(x_i), f'(x_i))$. $L_i$ bezeichnet die Lagrangepolynome aus Gleichung
+\eqref{eq:lagrange}. Daraus ergibt sich die \emph{Hermite-Quadratur}
+\begin{equation}
+  \int_{-1}^1 f(x)\, dx \approx \int_{-1}^1 p(x)\, dx =
+  \sum_{i=1}^{n} \alpha_i f(x_i) + \sum_{i=1}^{n} \beta_i f'(x_i)
+\end{equation}
+mit
+\begin{equation}
+  \alpha_i = \int_{-1}^1 L_i^2(x)\bigl[1-2L_i'(x_i)(x-x_i)\bigr]\,dx
+  \quad\text{und}\quad
+  \beta_i = \int_{-1}^1 L_i^2(x)(x-x_i)\, dx.
+\end{equation}
+
+Ziel ist nun, die Lage der Knoten $x_i$ so zu wählen, dass die
+Ableitungen, die wir ja im allgemeinen gar nicht kennen, aus der
+Näherungen entfallen:
+\begin{equation}
+  \label{eq:gaussortho}
+  0 \stackrel{!}{=} \beta_i = \prod_{k\neq i}\frac{1}{x_i-x_k}
+  \int_{-1}^1 L_i(x)\omega(x)\, dx,
+\end{equation}
+mit $\omega_n(x):=\prod_{i=1}^n(x-x_i)$. Da die $L_i$ eine Basis der
+Polynome vom Grad $n-1$ bilden, bedeutet dies, dass $\omega_n$
+bezüglich des üblichen Skalarprodukts $(f,\,g) = \int_{-1}^1
+f(x)g(x)\,dx$ senkrecht auf dem Raum der Polynome vom Grad $n-1$
+stehen muss. Mit $\beta_i=0$ vereinfacht sich außerdem
+\begin{equation}
+  \alpha_i = \int_{-1}^1 L_i^2(x)\,dx - 2L_i'(x_i)\beta_i
+  = \int_{-1}^1 L_i^2(x)\, dx.
+\end{equation}
+
+Wir suchen also ein Polynom $\omega_n$ mit Höchstkoeffizient $1$ und
+Grad $n$, dass senkrecht auf alles Polynomen vom Grad $n-1$ steht. Die
+Nullstellen dieses Polynoms sind dann die gesuchten Stützstellen
+$x_i$.  Die Existenz und Eindeutigkeit von $\omega_n$ kann man mit
+Hilfe des Gram-Schmidt-Orthogonalisierungserfahrens konstruktiv
+zeigen, dass wir später genauer kennenlernen werden. Die Idee ist
+dabei, die Basisvektoren $\{1, x, x^2,\ldots\}$ schrittweise so zu
+transformieren, dass sie senkrecht zu einanderstehen.
+
+Dies ergibt, bis auf einen Vorfaktor, die
+\emph{\keyword{Legendrepolynome}}, die rekursiv zum Beispiel so
+berechnet werden können:
+\begin{align}
+  P_0(x) &= 1\nonumber\\
+  P_1(x) &= x\nonumber\\
+  P_n(x) &= \frac{1}{n}\Bigl((2n-1)xP_{n-1}(x) -
+    (n-1)P_{n-2}(x)\Bigr).
+\end{align}
+{\samepage Die Nullstellen der ersten dieser Polynome und die
+zugehörigen Gewichte sind
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{r|l|l}
+    Grad & Nullstelle & Gewicht\\
+    \hline
+    1    & $x_0=0$         & $\alpha_i=2$\\
+    2    & $x_{0,1} = \pm \sqrt{\nicefrac{1}{3}}$ &
+    $\alpha_{0,1} = 1$ \\
+    3    & $x_{0,2} =  \pm \sqrt{\nicefrac{3}{5}}$ &
+    $\alpha_{0,2}=\nicefrac{5}{9}$\\
+    {}   & $x_1 =  0$                             &
+    $\alpha_1=\nicefrac{8}{9}$\\
+  \end{tabular}
+\end{center}}
+In SciPy implementiert \scipy{scipy.integrate.fixed_quad(f, a, b,
+  n=5)} die Gauß-Quadratur mit den Nullstellen der
+Legendrepolynome. \argd{n} gibt dabei die Anzahl der Stützstellen an,
+die benutzt werden sollen.
+
+Um andere Gauß-Quadraturen zu entwickeln, kann man gewichtete
+Skalarprodukte betrachten. Wir definieren
+\begin{equation}
+  (f,g)_w := \int_{-1}^1 f(x)g(x)w(x)\, dx
+\end{equation}
+als das zur Gewichtsfunktion $w(x)>0$ gehörige Skalarprodukt. Dies
+ändert unsere Orthogonalitätsbeziehung \eqref{eq:gaussortho} in
+\begin{equation}
+  0 \stackrel{!}{=} (L_i,\omega)_w = \int_{-1}^1 L_i(x)\omega(x)w(x)\, dx.
+\end{equation}
+Wenn wir die ursprüngliche Hermite-Interpolation beibehalten wollen,
+bedeutet dies, dass wir auch das Zielintegral entsprechend anpassen
+müssen, also nun
+\begin{equation}
+  \int_{-1}^1 f(x) w(x)\, dx \approx \int_{-1}^1 p(x) w(x)\, dx
+  \sum_{i=1}^{n} \alpha_i f(x_i) + \sum_{i=1}^{n} \beta_i f'(x_i)
+\end{equation}
+berechnen mit
+\begin{equation}
+  \alpha_i = \int_{-1}^1 L_i^2(x)w(x)\, dx.
+\end{equation}
+
+Die Legendrepolynome bzw. deren Nullstellen gehören also zur
+Gewichtsfunktion $w(x)=1$. Die Gewichtsfunktion
+$w(x)=\nicefrac{1}{\sqrt{1-x^2}}$ hingegen liefert als Stützstellen
+die Nullstellen der Chebyshev-Polynome $T_n(x)$, vergleiche
+\eqref{eq:chebyshev}. Die Gewichte sind in diesem Fall sehr einfach,
+nämlich $\pi/n$. Um das offene Interval $(-\infty,\infty)$ zu
+betrachten, kann die Gewichtsfunktion $e^{-x^2}$ benutzt werden, zu
+der die orthogonalen Polynome die Hermitepolynome sind.
+
+Als letztes soll noch erwähnt werden, dass die Gauß-Quadratur für alle
+Gewichtsfunktionen mit steigender Anzahl von Stützstellen gegen das
+tatsächliche Integral konvergiert, im Gegensatz zun den
+Newton-Cotes-Formeln.
+
+\subsection{Unendliche Integrale und Singularitäten}
+
+Alle genannten numerischen Integrationsverfahren lösen Integrale mit
+Singularitäten nur schlecht. Unendliche Integrationsgrenzen sind, bis
+auf die Gauß-Quadratur mit Hermitepolynomen, gar nicht möglich. In
+ersterem Falle müssen sehr viele Stützpunkte in der Nähe der
+Singularität liegen, im zweiten Fall muss das unendliche Integral
+durch ein möglichst großes, endliches Interval approximiert
+werden. Allerdings ist es oft möglich, solche Probleme durch
+Variablensubstitution zu umgehen.  So ist zum Beispiel
+\begin{equation}
+  \int_1^{\infty} \frac{f(x)}{x^2}dx \stackrel{z = \frac{1}{x}}{=}
+  \int_0^1 f\left(\frac{1}{z}\right)dz.
+\end{equation}
+Fällt $f'(x)$ für große $x$ gegen $0$ ab, so dass $f$ gegen eine
+Konstante strebt, dann ist die Ableitung von $f(1/z)$ gegen $0$
+beschränkt, und die Funktion gut integrierbar. Im Unterschied zum
+ursprünglichen Integral ist das neue Integral aber eigentlich und
+damit mit den genannten Verfahren einfach zu lösen.
+
+Als Beispiel soll die Berechnung von $\pi/2$ gemäß der Formel
+\begin{equation}
+  \frac{\pi}{2} = \int_0^{\infty} \frac{1}{1+x^2}\, dx
+\end{equation}
+dienen. Mit obiger Transformation folgt
+\begin{equation}
+  \int_0^{\infty} \frac{1}{1+x^2}\, dx
+  = \int_0^1 \frac{1}{1+x^2}\, dx +  \int_0^1 \frac{1}{1+z^{-2}}z^{-2}\, dz
+  = 2\int_0^1 \frac{1}{1+x^2}\, dx.
+\end{equation}
+Durch Romberg-Integration auf nur 32 Stützstellen kann der Ausdruck
+auf der rechten Seite bis auf 14 Stellen genau ausgewertet
+werden.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/inf_int}
+  \caption{Romberg-Verfahren für das Integral $\int_0^{b}
+    \frac{1}{1+x^2}\, dx$, als Funktion von $b$. Die blau gepunktete
+    Linie markiert die Ergebnisse des Verfahrens mit 128 Stützstellen,
+    die rote durchgezogene Linie mit 32 Stützstellen. Die schwarz
+    gestrichelte Linie markiert $\nicefrac{\pi}{2}$, also den
+    Grenzwert des Integrals gegen unendlich. Eine Kombination von $b$
+    und Anzahl Stützstellen zu finden, die diesen Grenzwert gut
+    approximiert, ist also sehr schwierig.}
+  \label{fig:inf_int}
+\end{figure}
+
+Abbildung~\ref{fig:inf_int} zeigt hingegen, was bei 32
+bzw. 128 Stützstellen geschieht, wenn man stattdessen $\int_0^b
+\frac{1}{1+x^2}\, dx$ für große $b$ mit Hilfe des Rombergverfahrens
+bestimmt. Das Ergebnis hängt stark von der Integrationsgrenze $b$ ab,
+und so ist es praktisch unmöglich, zu sagen, was der tatsächliche Wert
+des Integrals ist. Durch Anpassen der Anzahl der Stützpunkte an $b$
+und damit Konstanthalten der Schrittweite lässt sich zwar das Integral
+stabilisieren, trotzdem müsste man mehrere Werte von $b$ mit hohen
+Anzahlen an Stützstellen ausprobieren, um eine gute Näherung
+sicherzustellen. Im Beispiel erreicht keines der beiden Extrema vorne
+mehr als 3 Stellen Genauigkeit. Daher sollte man stets lieber
+versuchen, das Integral durch Substitutionen auf eine endliche Form zu
+bringen.
+
+\subsection{Mehrdimensionale Integration, \keyword{Monte-Carlo-Integration}}
+
+Bis jetzt haben wir uns nur mit eindimensionalen Integralen
+beschäftigt. Im Prinzip ist es nicht schwer, die obigen Verfahren auch
+auf höhere Dimensionen zu erweitern, etwa die zusammengesetzte 
+Mittelpunktsregel auf zwei Dimensionen:
+\begin{equation}
+  \int_a^b \int_c^d f(x, y)\, dx\, dy \approx
+  \frac{(b-a)(d-c)}{NM} \sum_{i=0}^{N-1} \sum_{j=0}^{M-1}
+  f\bigl(a + (b-a)\frac{i}{N}, c + (d-c)\frac{j}{N}\bigr).
+\end{equation}
+Hatte man allerdings bei einer hinreichend glatten Funktion bereits
+mit hundert Stützstellen gute Ergebnisse erzielen können, benötigt man
+nun etwa $100^2=10,000$ Stützstellen. Mit steigender Anzahl der
+Dimensionen wird dies schnell unhandbar. Für die Zustandssumme der
+statistischen Physik muss etwa über alle Koordinaten des Phasenraums
+integriert werden. Bei nur hundert Teilchen entspräche das 600
+Koordinaten. Sollen in jeder dieser Koordinaten nur 2 Stützpunkte
+benutzt werden, wären insgesamt trotzdem über $2^{600}= 4\cdot
+10^{180}$ Stützpunkte zu berücksichtigen! Für diesen exponentiellen
+Anstieg hat R. Bellman den Begriff "`Curse of dimensionality"'
+geprägt, der bei praktischen allen hochdimensionalen Problemen
+auftritt.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/pi}
+  \caption{Links: Illustration der Monte-Carlo-Integration. Die
+    Funktion $\chi_{S^1}$ wird über 200 zufällig gewählte Positionen
+    (rote punkte und grüne Kreuze) innerhalb $[-1,1]^2$ gemittelt. An
+    den grünen Kreuzen ist $\chi_{D^2}=1$, für die roten Punkte ist es
+    Null. Rechts: Genauigkeit der Integralnäherungen als Funktion der
+    Anzahl der Stützstellen $N$.  Blaue Punkte markieren die mittlere
+    Genauigkeit der zweidimensionalen Monte-Carlo-Integration wie
+    links skizziert, die roten Kreuze die entsprechende
+    Mittelpunktsregel. Gelbe Rauten und grüne Kreuze zeigen die
+    Genauigkeiten von Monte-Carlo-Integration und Mittelpunktsregel
+    für die 5-Kugel, bei der die Monte-Carlo-Integration schon klar
+    überlegen ist.}
+  \label{fig:pi}
+\end{figure}
+
+Um solche hochdimensionalen Integrale trotzdem nähern zu können,
+kann man die Monte-Carlo-Integration einsetzen. Diese benutzt, dass
+\begin{equation}
+  \mean{\frac{1}{N} \sum_{i=1}^N f(\xi_i)} = \mean{f}_{V}
+  \int_{x\in V} f(x)\,dx / |V|,
+\end{equation}
+wobei $\xi_i$ verschiedene Ziehungen einer Zufallsvariablen sind, die
+gleichverteilt in $V$ ist. $V$ ist dabein ein endliches Untervolumen
+des $\RR^n$, $|V|$ sein Volumen. Daher lässt sich das Integral von $f$
+als
+\begin{equation}
+  \int_{x\in V} f(x)\,dx \approx \frac{|V|}{N} \sum_{i=1}^N f(\xi_i)
+\end{equation}
+nähern, wobei $\xi_i$ hinreichend gute (Pseudo-)Zufallsvektoren aus
+$V$ sein müssen. Wie diese generiert werden, ist Thema des nächsten
+Kapitels. Was ist nun der Fehler dieser Näherung? Da die $\xi_i$ gemäß
+Konstruktion unabhängig sind, lässt sich der Fehler gut mit Hilfe der
+Standardabweichung $\sigma(f)$ abschätzen, und beträgt
+$|V|\sigma(f)/\sqrt{N}$. Die Standardabweichung kennen wir im
+allgemeinen nicht, können sie aber gemäß~\eqref{eq:varest} als
+\begin{equation}
+  \sigma^2(x) \approx \frac{1}{N-1} \left[\sum_{i=1}^N f(\xi_i)^2 -
+    N\left(\sum_{i=1}^Nf(\xi_i)\right)^2\right]
+\end{equation}
+zusammen mit der Integration abschätzen.
+
+Da die Standardabweichung eine Konstante ist, fällt der Fehler der
+Monte-Carlo-Integration im allgemeinen wie $\O(N^{-1/2})$. Im
+Vergleich dazu fällt der Fehler der Trapezregel im eindimensionalen
+wie $\O(N^{-2})$, sofern $f$ genügend glatt ist. Wenn man bei der
+Trapezregel die Anzahl der Stützpunkte verdoppelt, dann muss man bei
+der Monte-Carlo-Integration mehr als eine Größenordnung mehr Punkte
+aufwenden, um dieselbe Verbesserung in der Genauigkeit zu erreichen!
+
+Bei mehrdimensionalen Integralen sieht die Situation allerdings anders
+aus. Bei der Trapezregel mit ingesamt $N$ Stützstellen entfallen pro
+Dimension $N^{1/n}$ viele Stützstellen, wenn diese auf einem Würfel
+gleichmässig in allen Dimensionen verteilt werden. Die Genauigkeit ist
+damit $\O(N^{-2/n})$. Ab fünf Dimensionen ist damit die
+Monte-Carlo-Integration der Trapezregel überlegen. Aber auch wenn die
+Funktion $f$ nicht genügend glatt oder nicht einmal stetig ist, so ist
+die Trapezregel auch bei niedrig-dimensionalen Integralen nicht mehr
+so deutlich überlegen.
+
+Als Beispiel soll diesmal eine andere Methode zur Bestimmung von
+$\pi$ dienen, nämlich die Integration der charakteristischen Funktion
+\begin{equation}
+  \chi_{D^2}(x, y)=
+  \begin{cases}
+    1 & \text{falls}\; x^2 + y^2 < 1\\
+    0 & \text{sonst}
+  \end{cases}
+\end{equation}
+im Bereich $[-1,1]^2$. Das ergibt dann gerade den Kreisinhalt, also
+\begin{equation}
+  \int_{x\in[-1,1]}\int_{y\in[-1,1]}\chi_{D^2}(x, y)\,dx\,dy
+  = \pi.
+\end{equation}
+
+Abbildung~\ref{fig:pi} skizziert links die Monte-Carlo-Integration von
+$\chi_{D^2}$, rechts zeigt sie gemessene Fehler bei
+Monte-Carlo-Integration und Mittelpunktsregel. Dabei wurde neben
+$\chi_{D^2}$ auch $\chi_{D^5}$ integriert, also das Volumen der
+fünfdimensionalen Kugel ($8\pi^2/15$). Der Fehler der
+Monte-Carlo-Integration ist jeweils als mittlerer Fehler von zwanzig
+Aufrufen gemessen, wobei durch die große Anzahl von Abtastungen die
+Schwankungen nicht sehr hoch sind.
+
+Für das ursprüngliche, zweidimensionale Problem (blaue Punkte und rote
+Kreuze) ist die Trapezregel überlegen, auch wenn sie in zwei
+Dimensionen nicht die erwartete Skalierung mit $1/N$ erreicht. Das ist
+zu erwarten, da die zu integrierende Funktion ja nicht stetig
+ist. Auch der nichtmonotone Abstieg der Fehler ist durch die
+Unstetigkeit und die Auflösung des Kreisrands bedingt. Beim
+fünfdimensionalen Problem aber sieht es wie angekündigt anders aus,
+hier ist die Monte-Carlo-Integration besser. Tatsächlich sind nicht
+nur die mittleren Abweichungen kleiner als bei der Trapezregel,
+sondern es ist sogar sehr unwahrscheinlich, ein ebenso schlechtes
+Ergebnis zu erzielen. Für solche Integrale ist also die
+Monte-Carlo-Methode in jedem Falle vorzuziehen.
+
+\lstinputlisting[style=floating,
+caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
+  berechnet $\pi$ auf 16 Stellen genau.},
+label=lst:romberg]{romberg.py}
 
 
 %%% Local Variables: 

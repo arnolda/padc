@@ -250,6 +250,12 @@ nach dem ersten Schritt monoton, d.h. entweder $x_1\le
 x_2\le\ldots\le\overline{x}$ oder $x_1\ge
 x_2\ge\ldots\ge\overline{x}$.
 
+In SciPy gibt es natürlich auch das Newtonverfahren sowie einige
+verbesserte Algorithmen. Das Newtonverfahren ist als
+\scipy{scipy.optimize.newton(f, x0, df)} implementiert, wobei \argd{f}
+und \argd{df} die Funktion $f$ und ihre Ableitung $\nicefrac{df}{dx}$
+angeben, und \argd{x0} der Startwert des Newtonverfahrens.
+
 \subsection{Beispiel}
 
 Wir betrachten wieder die Aufgabe $e^{-r}/r = \phi_0$, bzw. $f(r) =
@@ -392,6 +398,12 @@ gewählt, wie im rechten Beispiel, so kann es passieren, dass diese
 abwechselnd um die Nullstelle liegen, und damit nicht mehr monoton
 konvergieren.
 
+In SciPy implementiert \scipy{scipy.optimize.newton(f, x0)} (also bei
+Nichtangabe der Ableitung) die Sekantenmethode. \argd{f} ist wieder
+die Funktion, deren Nullstelle gesucht wird, und \argd{x0} ein
+Startwert. Der zweite wird hardcodiert in einer Umgebung von \argd{x0}
+gewählt, kann also vom Benutzer nicht gesetzt werden.
+
 \section{\keyword{Bisektion}}
 \index{Bisektionsverfahren}
 
@@ -442,9 +454,15 @@ ein. Zum Vergleich: das Newtonverfahren mit Startwert $0,05$ erreicht
 in sieben Schritten eine Genauigkeit von etwa $10^{-5}$, und selbst
 die Sekantenmethode $10^{-3}$.
 
+In SciPy implementiert \scipy{scipy.optimize.bisect(f, a, b)} mit der
+Funktion \argd{f} und Intervalgrenzen \argd{a} und \argd{b} die
+Bisektion. \scipy{scipy.optimize.brentq(f, a, b)} implementiert die
+Brentsche Methode, die unter den selben Bedingung wie die Bisektion
+konvergiert, aber meist wesentlich schneller.
+
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{plots/bisektion}
+  \includegraphics[width=\textwidth]{plots/bisektion}
   \caption{Links: Bisektion für die Funktion $f(r) = e^{-r}/r -
     \phi_0$, hier nur mit $\phi_0=2$, da die genaue Form der Funktion
     für diese Methode unerheblich ist. Blau dargestellt ist wieder
@@ -583,7 +601,7 @@ $\norm{F(x^{m+1})}\le\norm{F(x^{m})}$. Dazu wird zum Bespiel mit
 $\lambda=1$ begonnen, und $\lambda$ solange verringert, bis die
 Bedingung erreicht ist.
 
-\begin{lstlisting}[style=floating,deletekeywords={lambda}, float=t,
+\begin{lstlisting}[style=floating,deletekeywords={lambda},
 caption={Gedämpftes Newtonverfahren in mehreren
 Dimensionen. \lstinline!f(x)! muß
 eine vektorwertige Funktion sein, \lstinline!fprime(x)! ihre

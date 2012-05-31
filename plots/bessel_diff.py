@@ -111,60 +111,16 @@ for n in range(2, N-2):
 
 fx5 = solve(A, b)
 
-# Integral, zusammengesetzte Trapezregel
-# j1(x) = int_0^pi cos(tau - x sin(tau)) dtau
 ############################################
 
-Nint = 50
-xint = linspace(0,xmax, Nint)
-
-# Aufloesung N wie DGL
-############################################
-
-hint = pi/N
-
-fxintN = zeros(xint.shape)
-
-for n in range(len(xint)):
-    xn = xint[n]
-
-    # linker Rand, tau = 0 und tau = pi
-    I = 0.5*hint - 0.5*hint
-    # Rest
-    tau = arange(1, N)*hint
-    I += sum(cos(nu*tau - xn*sin(tau)))*hint
-
-    fxintN[n] = I/pi
-
-# Aufloesung N=10
-############################################
-
-N=10
-hint = pi/N
-
-fxintN10 = zeros(xint.shape)
-
-for n in range(len(xint)):
-    xn = xint[n]
-
-    # linker Rand, tau = 0 und tau = pi
-    I = 0.5*hint - 0.5*hint
-    # Rest
-    tau = arange(1, N)*hint
-    I += sum(cos(nu*tau - xn*sin(tau)))*hint
-
-    fxintN10[n] = I/pi
-
-############################################
-
-figure = pyplot.figure(figsize=(8,4))
+figure = pyplot.figure(figsize=(4,4))
 
 x = linspace(0, xmax, 200)
 
 # diff equation
 ############################################
 
-graph = figure.add_subplot(121)
+graph = figure.add_subplot(111)
 
 graph.plot(x, jn(nu, x), "k-",linewidth=0.5)
 graph.plot(x3, fx3, "g-.")
@@ -172,14 +128,4 @@ graph.plot(x3, fx3l, "r--")
 graph.plot(x5, fx5, "b--", dashes=(1,8), dash_capstyle="round", linewidth=3)
 graph.axis((0, xmax, -0.5, 1))
 
-# int representation
-############################################
-
-graph = figure.add_subplot(122)
-
-graph.plot(x, jn(nu, x), "k-",linewidth=0.5)
-graph.plot(xint, fxintN10, "r--")
-graph.plot(xint, fxintN, "b--", dashes=(1,8), dash_capstyle="round", linewidth=3)
-graph.axis((0, xmax, -0.5, 1))
-
-figure.savefig("bessel.pdf")
+figure.savefig("bessel_diff.pdf")
