@@ -198,112 +198,122 @@ diskretisieren \eqref{eq:besselode} mit Hilfe der finiten Differenzen
 \eqref{eq:2orderdiff} und \eqref{eq:1order2diff} in linearer Ordnung:
 \begin{align}
   \label{eq:besseldiscrete}
-  0 &= k^2\left(\frac{1}{2} f_{k-1} - f_k + \frac{1}{2} f_{k+1} \right)
+  0 &= k^2\left(f_{k-1} - 2f_k + f_{k+1} \right)
   + k\left(\frac{1}{2} f_{k+1} - \frac{1}{2} f_{k-1}\right)
   + k^2h^2f_k\nonumber\\
-  &= \frac{1}{2}(k^2 - k)f_{k-1}
-  + k^2(h^2 - 1)f_k
-  + \frac{1}{2}(k^2 + k)f_{k+1}.
+  &= \left(k^2 - \frac{1}{2}k\right)f_{k-1}
+  + k^2(h^2 - 2)f_k
+  + \left(k^2 + \frac{1}{2}k\right)f_{k+1}.
 \end{align}
 Für die Lösung $f$ auf dem endlichen Interval $[0, (N-1)h]$ sind das
-$N-2$ Gleichungen, da für die Randpunkte die zweite Ableitung so nicht
-abgeschätzt werden kann. Dies ist aber auch nicht weiter
-verwunderlich, da wir ja die Randbedingungen noch nicht festgelegt
-haben. Die natürlichen Randbedingungen der Diskretisierung sind also
-Dirichlet-Randbedingungen, bei denen die fehlenden Randwerte
-vorgegeben werden.
+$N-2$ Gleichungen, da zumindest für die Randpunkte die zweite
+Ableitung so nicht abgeschätzt werden kann. Dies ist aber auch nicht
+weiter verwunderlich, da wir ja die Randbedingungen noch nicht
+festgelegt haben. Die natürlichen Randbedingungen der Diskretisierung
+sind also Dirichlet-Randbedingungen, bei denen die fehlenden Randwerte
+vorgegeben werden: $f_0 = f(0)=F_0$ und $f_{N-1} = f((N-1)h) = F_{N-1}$.
 
-$f_0$ erscheint allerdings in keiner weiteren Gleichung gemäß
-\eqref{eq:besseldiscrete}, da $k^2-k=0$ für $k=1$. Wird also $f_0$
-vorgegeben, so ist der Verlauf der Gleichung im Bereich $\ge h$ nur
-durch den rechten Rand (unter-)bestimmt. Dies deutet bereits an, dass
-diese einfachste Disretisierung der Gleichung problematisch sein
-könnte. Man kann nun versuchen, dass Problem zu umgehen, in dem $f$
-stattdessen im Bereich $[h, Nh]$ betrachtet wird. Wir erhalten das
-folgende lineare Gleichungssystem:
+Wir erhalten das folgende lineare Gleichungssystem:
 \begin{equation}
   \begin{pmatrix}
     1 & 0         & 0         &\ldots & \ldots & 0\\
-    1 & -4\lambda & 3         & 0 & \ldots & 0\\
-    0 & 3         & -9\lambda & 6 & 0\quad \ldots & 0\\
+    \nicefrac{1}{2} & -\lambda & \nicefrac{3}{2} & 0 & \ldots & 0\\
+    0 & 3         & -4\lambda & 5 & 0\quad \ldots & 0\\
     & & \ddots & \ddots & \ddots\qquad\qquad \\
-    0 & \ldots & 0 & \frac{1}{2}(N-1)(N-2) & -(N-1)^2\lambda & \frac{1}{2}(N^2-N)\\
+    0 & \ldots & 0 & \mu_n - \nu_n & -\mu_n\lambda & \mu_n + \nu_n\\
     0 &          &  \ldots  &   & 0      & 1
   \end{pmatrix}
   \begin{pmatrix}
-    f_1\\
+    f_0\\
     \vdots\\
-    f_N
+    f_{N-1}
   \end{pmatrix}=
   \begin{pmatrix}
-    F_1\\
+    F_0\\
     0\\
     0\\
     \vdots\\
     0 \\
-    F_N
+    F_{N-1}
   \end{pmatrix},
 \end{equation}
-wobei $\lambda=(1-h^2)$. Die beiden äußeren Zeilen implementieren die
-Dirichletbedingungen $f_1 = f(h)=F_1$ und $f_N = f(Nh) = F_n$, die
-restlichen $N-2$ Zeilen Gleichung \eqref{eq:besseldiscrete} für
-$k=2(1)N$.  Da die Matrix Bandstruktur hat, können wir dieses lineare
-Gleichungssystem effizient mit dem Gaußverfahren lösen.
+wobei $\lambda=(2-h^2)$, $\mu_n=(N-2)^2$ und $\nu_n=
+\frac{1}{2}(N-2)$. Die beiden äußeren Zeilen implementieren die
+Dirichletbedingungen, die restlichen Zeilen Gleichung
+\eqref{eq:besseldiscrete} für $k=1(1)N-1$.  Da die Matrix Bandstruktur
+hat, können wir dieses lineare Gleichungssystem effizient mit dem
+Gaußverfahren lösen.
+
+Alternativ können wir statt der Dirichlet-Randbedingungen auch
+Funktion $f(0) = F_0$ und Ableitung $f'(0)=F'_0$ am linken Rand
+festlegen. Dann sieht das Gleichungssystem wie folgt aus:
+\begin{equation}
+  \begin{pmatrix}
+    1 & 0         & 0         &\ldots & \ldots & 0\\
+    -\nicefrac{1}{2h} & 0         & \nicefrac{1}{2h} &\ldots & \ldots & 0\\
+    \nicefrac{1}{2} & -\lambda & \nicefrac{3}{2} & 0 & \ldots & 0\\
+    0 & 3         & -4\lambda & 5 & 0\quad \ldots & 0\\
+    & & \ddots & \ddots & \ddots\qquad\qquad \\
+    0 & \ldots & 0 & \mu_n - \nu_n & -\mu_n\lambda & \mu_n + \nu_n\\
+  \end{pmatrix}
+  \begin{pmatrix}
+    f_0\\
+    \vdots\\
+    f_{N-1}
+  \end{pmatrix}=
+  \begin{pmatrix}
+    F_0\\
+    F'_0\\
+    0\\
+    \vdots\\
+    0 \\
+  \end{pmatrix}.
+\end{equation}
 
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
   \caption{Numerische Lösungen der Besselschen Differentialgleichung
-    mit Schrittweite $h=0,05$ und $N=300$ Stützpunkten. Die
+    auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
     durchgezogene schwarze Linie markiert die analytische Lösung. Mit
-    grünen Strichpunkten ist die Lösung mit Hilfe von
-    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen im Bereich
-    $[h, 15]$ dargestellt, rot gestrichelt mit Vorgabe von
-    Funktionswert und Ableitung bei $h$. Blaue Punkte schliesslich
-    markieren den Löser dritter Ordnung mit Dirichletrandbedingungen
-    auf $[0, 15-h]$, der von der analytischen Lösung nicht zu
-    unterscheiden ist.}
+    grünen Diamanten ist die Lösung mit Hilfe von
+    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
+    dargestellt, für die roten Sterne wurden Funktionswert und
+    Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
+    den Löser dritter Ordnung mit Dirichletrandbedingungen, der von
+    der analytischen Lösung praktisch nicht zu unterscheiden ist.}
   \label{fig:bessel_diff}
 \end{figure}
 
-Die Lösung dieses Gleichungssystems ist in Abbildung~\ref{fig:bessel_diff}
-mit grünen Strichpunkten gezeigt. Sie hat allerdings wenig mit der
-korrekten Lösung gemeinsam. Der tiefere Grund ist, dass die Besselsche
-Differentialgleichung für ganzzahlige $\nu$ nicht nur die in $0$
-beschränkte Lösung hat, die wir suchen, sondern auch eine
-unbeschränkte. Da wir aber in linearer Ordnung keine Gleichung
-erhalten, die den Punkt 0 mit den restlichen Punkten verbindet, kann
-die Lösung im Bereich $>h$ prinzipiell auch zur singulären Lösung
-gehören und daher eine sehr steile Ableitung aufweisen, wie eben
-unsere Lösung.
+Die Lösung dieser beiden Gleichungssysteme für $h=0,5$ ist in
+Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten und roten Sternen
+gezeigt. Insbesondere die Lösung mit Dirichletrandbedingungen weicht
+noch signifikant ab, was allerdings durch die hohe Schrittweite
+bedingt ist. Ab Schrittweite $h\approx 0,1$ gibt es keine sichtbaren
+Abweichungen mehr. Wie man erwarten würde, ist die Lösung mit Vorgabe von
+Funktion und Ableitung am linken Rand dort genauer, während sie zum
+rechten Rand hin abweicht.
 
-Um dieses Problem zu umgehen, könnte man nun statt der Randwerte den
-Funktionswert und die erste Ableitung am linken Rand vorschreiben,
-also $F_1 = f(h) = f_h$ und $ F'_1 = \nicefrac{d}{dx}f(h) \approx
-\frac{1}{h} f_{2h} - \frac{1}{h}f_h$.  Wie Abbildung~\ref{fig:bessel_diff}
-in rot gestrichelt zeigt, ist dann die Lösung am linken Rand
-tatsächlich besser, aber am rechten Rand immer noch nicht
-befriedigend. Auch durch Verringern der Schrittweite $h$ verbessert
-sich die Lösung nicht deutlich.
-
-Abhilfe schafft, auf Verfahren höherer Ordnung zurückzugreifen, etwa
-\eqref{eq:3order2diff} und \eqref{eq:4orderdiff}. In dieser Ordnung
-taucht $f_0$ in der Hauptgleichung
+Allerdings lässt sich auch in dieser niedrigen Auflösung eine gute
+Näherung finden, in dem man auf Ableitungsnäherungen höherer Ordnung
+zurückzugreift, etwa \eqref{eq:3order2diff} und
+\eqref{eq:4orderdiff}. Dann ist die Hauptgleichung
 \begin{align}
   0 = &\frac{1}{12}(-k^2 + k)f_{k-2}
   + \frac{2}{3}(2k^2 - k)f_{k-1}
   + k^2\left(h^2 - \frac{5}{2}\right)f_k\nonumber\\
   &+ \frac{2}{3}(2k^2 - k)f_{k+1}
-  + \frac{1}{12}(-k^2 + k)f_{k+2}
+  + \frac{1}{12}(-k^2 + k)f_{k+2}.
 \end{align}
-auch für $k=2$ auf. Durch den breiteren Rand benötigt diese Gleichung
-ingesamt vier Startwerte. Von diesen benutzen wir zwei als
-Dirichletbedingungen $f_0 = F_0$ und $f_{N-1} = F_{N-1}$, und
-generieren daraus über Gleichung \eqref{eq:besseldiscrete} Näherungen
-für $f_1$ und $f_{N-2}$. Die Lösung dieses Gleichungssystem ist in
-Abbildung~\ref{fig:bessel_diff} blau gepunktet eingezeichnet und nicht
-mehr von der analytischen Lösung zu unterscheiden. Dies zeigt den
-Nutzen von Ableitungsnäherungen höherer Ordnung.
+Bei $N$ Punkten lassen sich hierdurch nur $N-4$ Gleichungen
+formulieren, weil ja am linken und rechten Rand jeweils noch zwei
+Nachbarpunkte benötigt werden. Von diesen benutzen wir zwei zum
+Beispiel als Dirichletbedingungen $f_0 = F_0$ und $f_{N-1} = F_{N-1}$,
+und generieren daraus über Gleichung \eqref{eq:besseldiscrete}
+Näherungen für $f_1$ und $f_{N-2}$. Die Lösung dieses Gleichungssystem
+ist in Abbildung~\ref{fig:bessel_diff} blau gepunktet eingezeichnet
+und fast nicht mehr von der analytischen Lösung zu unterscheiden. Dies
+zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 
 \section{\keyword{Quadratur}: \keyword{numerische Integration}}
 
@@ -475,10 +485,10 @@ f''(\xi_i) = f''(\xi)$ für ein $\xi\in[a,b]$.
 
 Die zusammengesetzte Trapezregel ist in Scipy als
 \scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
-die Reihenfolge der Funktionswerte \argd{y} und Knoten \argd{x}! Die
-Angabe der Knoten ist dabei optional, alternativ kann bei
-äuqidistanten Daten nur die Schrittweite \argd{dx}$=h$ spezifiziert
-werden.
+die umgedrehte Reihenfolge der Funktionswerte \argd{y} und Knoten
+\argd{x}! Die Angabe der Knoten ist dabei optional, alternativ kann
+bei äuqidistanten Daten nur die Schrittweite \argd{dx}$=h$
+spezifiziert werden.
 
 \subsubsection{Zusammengesetzte Mittelpunktsregel}
 
@@ -638,7 +648,6 @@ Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
 \eqref{eq:richardson}
 zu
 \begin{equation}
-  \label{eq:richardson}
   T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
     T_{i,j-1}}{4^j - 1} = \frac{4^j T_{i+1,j-1} -
     T_{i,j-1}}{4^j - 1},
