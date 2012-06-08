@@ -371,7 +371,7 @@ gebräuchlichsten werden im folgenden kurz diskutiert.
   \end{align}
 \end{minipage}
 
- \noindent Weiter gilt
+ \noindent Weiter gilt für den Fehler der Trapezregel
 \begin{multline}
   \int_a^b f(x)\, dx - \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr)
   =  \int_a^b f(x) - f(a)\frac{x-b}{a-b}
@@ -400,12 +400,12 @@ unterschätzt also die Trapezregel das Integral, ist $f$ konkav,
   Analog wird die Simpsonregel für die drei Stützpunkte $x_0=a$,
   $x_1=m=\frac{a+b}{2}$ und $x_2=b$ definiert, die durch eine Parabel
   verbunden werden:
-  \begin{equation}
-    \int_a^b f(x)\, dx = \frac{b-a}{6} \left(f(a) +
-      4 f\left(m\right) + f(b)\right) -
-    \frac{(b-a)^5}{2880} f^{(4)}(\xi)
-  \end{equation}
-  für ein $\xi\in[a,b]$.
+  \begin{align}
+    \int_a^b f(x)\, dx &= \frac{b-a}{6} \left(f(a) +
+      4 f\left(m\right) + f(b)\right)\nonumber\\
+    &-\frac{(b-a)^5}{2880} f^{(4)}(\xi)
+  \end{align}
+  für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm ist.
 \end{minipage}
 
 \index{Newton-Cotes-Formeln>offene}
@@ -425,7 +425,7 @@ nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
     \int_a^b f(x)\, dx = (b-a) f(a) +
     \frac{(b-a)}{2} f'(\xi)
   \end{equation}
-  für ein $\xi\in[a,b]$.
+  für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm ist.
 \end{minipage}
 
 \topillu{plots/mittelpunktsregel}
@@ -437,9 +437,14 @@ nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
     \int_a^b f(x)\, dx = (b-a) f(m) +
     \frac{(b-a)^3}{24} f''(\xi)
   \end{equation}
-  für ein $\xi\in[a,b]$. Ähnlich wie schon beim Differenzieren ist
-  also der Intervallmittelpunkt ausgezeichnet.
+  für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm
+  ist.
 \end{minipage}
+
+Ähnlich wie schon beim Differenzieren ist also der
+Intervallmittelpunkt ausgezeichnet, da dieser bei gleicher
+Stützstellenzahl eine bessere Ordnung als etwa bei der Rechteckregel
+ermöglicht.
 
 \subsection{Zusammengesetzte Newton-Cotes-Formeln}
 \index{Newton-Cotes-Formeln>zusammengesetzte}
@@ -477,11 +482,12 @@ $k=0(1)N$ mit $h=(b-a)/N$, verkürzt sich diese Formel zu
   \int_a^b f(x)\, dx =
   h\left(\frac{f(x_0)}{2} + \sum_{i=1}^{N-1} f(x_i) +
     \frac{f(x_N)}{2}\right)
-  - \frac{(b-a)^3}{12 N^2}f''(\xi)
+  \,-\, \frac{(b-a)^3}{12 N^2}f''(\xi)
 \end{equation}
-für ein $\xi\in [a,b]$. Hier konnten wir den Fehler der einfachen
-Trapezregel übernehmen, da stets $\frac{1}{N} \sum_{i=0}^{N-1}
-f''(\xi_i) = f''(\xi)$ für ein $\xi\in[a,b]$.
+für ein $\xi\in [a,b]$, wobei der letzte Term wieder den Fehler angibt
+und üblicherweise nicht berechnet werden kann. Hier konnten wir den
+Fehler der einfachen Trapezregel übernehmen, da stets $\frac{1}{N}
+\sum_{i=0}^{N-1} f''(\xi_i) = f''(\xi)$ für ein $\xi\in[a,b]$.
 
 Die zusammengesetzte Trapezregel ist in Scipy als
 \scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
@@ -496,7 +502,7 @@ Analog zur Trapezregel lässt sich auch die zusammengesetzte
 Mittelpunktsregel für äquidistante Gitter formulieren:
 \begin{equation}
   \int_a^b f(x)\, dx =
-  h\sum_{i=0}^{N-1} f(x_i) + \frac{(b-a)^3}{24 N^2}f''(\xi)
+  h\sum_{i=0}^{N-1} f(x_i)\, +\, \frac{(b-a)^3}{24 N^2}f''(\xi)
 \end{equation}
 wobei $h=(b-a)/N$, $x_i = a + h(i+\nicefrac{1}{2})$, $i=0(1)N-1$, und
 $\xi\in [a,b]$. Die Stützpunkte $x_i$ sind also um $h/2$ gegenüber den
@@ -521,7 +527,7 @@ Simpsonregel benutzen. Das führt zur Formel
     \sum_{i=1}^{N/2-2} \Bigl(2 f(x_{2i}) + 4 f(x_{2i+1})\Bigr)
     + f(x_N)
   \right)
-  - \frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)
+  \, - \, \frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)
 \end{equation}
 für ein $\xi\in [a,b]$. Durch die höhere Potenz von $N$ konvergiert
 dieses Verfahren schneller als die zusammengesetzte Trapezregel,
