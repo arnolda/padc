@@ -51,24 +51,48 @@ h = array(h_list)
 
 ############################################
 
-figure = pyplot.figure(figsize=(4,4))
-figure.subplots_adjust(left=0.2, bottom=0.15)
-graph = figure.add_subplot(111)
-graph.set_xscale("log")
-graph.set_xlabel("h")
-graph.set_yscale("log")
-graph.set_ylabel("$\Delta T_f(h)$")
 
 h_cont = logspace(log(min(h)), log(max(h)), 100, base=exp(1))
 
 print "tgt=", tgt
 print "error=", lagrange(h**2, tf)(0) - tgt
 print "best input=", tf[kmax] - tgt
+est = lagrange(h[kmin:kmax]**2, tf[kmin:kmax])
+
+figure = pyplot.figure(figsize=(6,4))
+figure.subplots_adjust(left=0.2, bottom=0.15)
+
+graph = figure.add_subplot(111)
+graph.set_xlabel("h")
+graph.set_ylabel("$\Delta T_f(h)$")
+graph.ticklabel_format(scilimits=(3,3))
 
 graph.plot(h, tgt - tf, "k+", markersize=4)
 graph.plot(h[kmin:kmax], tgt - tf[kmin:kmax], "bo", markersize=6)
-est = lagrange(h[kmin:kmax]**2, tf[kmin:kmax])
 graph.plot(h_cont, tgt - est(h_cont**2), "r:")
-graph.axis((min(h_cont), max(h), 1e-8, 1e-1))
+graph.axis((min(h_cont), 0.251, 1e-8, 4e-3))
+
+inset = pyplot.axes([0.3, 0.47, 0.3, 0.4])
+inset.set_xscale("log")
+#inset.set_xlabel("h")
+inset.set_yscale("log")
+#inset.set_ylabel("$\Delta T_f(h)$")
+inset.set_yticks([1e-8, 1e-6, 1e-4, 1e-2])
+inset.tick_params(labelsize='small')
+inset.plot(h, tgt - tf, "k+", markersize=4)
+inset.plot(h[kmin:kmax], tgt - tf[kmin:kmax], "bo", markersize=6)
+inset.plot(h_cont, tgt - est(h_cont**2), "r:")
+inset.axis((min(h_cont), max(h), 1e-8, 1e-1))
+
+# graph = figure.add_subplot(122)
+# graph.set_xscale("log")
+# graph.set_xlabel("h")
+# graph.set_yscale("log")
+# graph.set_ylabel("$\Delta T_f(h)$")
+
+# graph.plot(h, tgt - tf, "k+", markersize=4)
+# graph.plot(h[kmin:kmax], tgt - tf[kmin:kmax], "bo", markersize=6)
+# graph.plot(h_cont, tgt - est(h_cont**2), "r:")
+
 
 figure.savefig("romberg.pdf")

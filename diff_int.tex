@@ -42,7 +42,7 @@ anzunähern, wobei $x$ und $y$ beide nahe bei $\xi$ liegen sollten.
 Doch an welchem Punkt $\xi$ ist diese Näherung optimal? Gemäß
 Mittelwertsatz gilt auf jeden Fall $f[x,y]=f'(\xi)$ für ein $\xi\in
 [x,y]$. Man erwartet daher, dass $f[x,y]$ am besten in der
-Intervalmitte $m=\frac{x+y}{2}$ approximiert. Das ist tatsächlich so,
+Intervallmitte $m=\frac{x+y}{2}$ approximiert. Das ist tatsächlich so,
 wie wir nun per Taylorentwicklung sehen werden. Mit Entwicklung um $m$
 und $h=x-y$ gilt
 \begin{align}
@@ -205,7 +205,7 @@ diskretisieren \eqref{eq:besselode} mit Hilfe der finiten Differenzen
   + k^2(h^2 - 2)f_k
   + \left(k^2 + \frac{1}{2}k\right)f_{k+1}.
 \end{align}
-Für die Lösung $f$ auf dem endlichen Interval $[0, (N-1)h]$ sind das
+Für die Lösung $f$ auf dem endlichen Intervall $[0, (N-1)h]$ sind das
 $N-2$ Gleichungen, da zumindest für die Randpunkte die zweite
 Ableitung so nicht abgeschätzt werden kann. Dies ist aber auch nicht
 weiter verwunderlich, da wir ja die Randbedingungen noch nicht
@@ -319,14 +319,14 @@ zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 
 Bei der numerischen Integration geht es genau wie beim Differenzieren
 darum, aus endlich vielen Stützwerten das Integral einer Funktion in
-einem endlichen Interval abzuschätzen. Wir suchen also Gewichte
+einem endlichen Intervall abzuschätzen. Wir suchen also Gewichte
 $\alpha_{i}\in\RR$, so dass möglichst genau
 \begin{equation}
   \int_a^b f(x)\, dx \approx \sum_{i=0}^{n-1} \alpha_if(x_i),
 \end{equation}
 wobei die $\alpha_i$ von der Lage der Stützpunkte ("`Knoten"') $x_i$
 abhängen, aber nicht von $f$. Dadurch, dass die Funktion über dem
-ganzen Interval $[a,b]$ in das Integral eingeht, wird man für die
+ganzen Intervall $[a,b]$ in das Integral eingeht, wird man für die
 numerische Integration natürlich mehr Punkte als beim Differenzieren
 einbeziehen wollen, und hat dementsprechend auch mehr Möglichkeiten,
 die Gewichte zu wählen. Im folgenden werden wir einige der
@@ -449,18 +449,27 @@ ermöglicht.
 \subsection{Zusammengesetzte Newton-Cotes-Formeln}
 \index{Newton-Cotes-Formeln>zusammengesetzte}
 
-Wie bereits gesagt, sind Newton-Cotes-Formeln höherer Ordnung
+Wie weiter oben erwähnt, sind Newton-Cotes-Formeln höherer Ordnung
 numerisch noch ungünstiger als die Polynominterpolation, auf der sie
 basieren. Im allgemeinen konvergiert bei steigender Anzahl der
 Stützstellen die Näherung für das Integral nicht einmal. Genauso wie
 bei der Interpolation liegt es nahe, auf stückweise Polynome, also
 Splines, überzugehen, wenn die Funktion $f$ an sehr vielen
-Stützstellen $a=x_0< x_1 < \ldots < x_{N} = b$ gegeben ist.  Der
-kubische Spline benötigt zur Auswertung allerdings die ziemlich
-aufwendige Lösung eines linearen Gleichungssystems, daher greift man
-auf stückweise lineare Splines zurück. Auf jedem Teilinterval $[x_i,
-x_{i+1}]$ wird die Funktion durch eine Gerade approximiert, was genau
-der Trapezregel entspricht.
+Stützstellen $a=x_0< x_1 < \ldots < x_{N} = b$ gegeben ist.
+
+Für die bei der Interpolation üblicherweise verwendeten kubischen
+Splines wird die Gleichheit der ersten Ableitung zweier Teilstücke an
+den gemeinsamen Stützstellen gefordert.  Diese Forderung ist bei der
+Integration unnötig.  Zudem erfordert die Auswertung der Splines die
+ziemlich aufwendige Lösung eines linearen Gleichungssystems.  Daher
+greift man bei der numerischen Integration üblicherweise auf
+stückweise Polynome niedrigerer Ordnung beziehungsweise ohne die
+Randbedingungen zurück.
+
+Da die reinen, nicht zusammengesetzten Newton-Cotes-Formeln in der
+Praxis kaum auftauchen, sind meistens die jeweiligen zusammengesetzten
+Formeln gemeint, wenn man von der \emph{Trapezregel} oder der
+\emph{Simpsonregel} spricht.
 
 \topillu{plots/trapezzusammen}
 \subsubsection{Zusammengesetzte Trapezregel}
@@ -473,7 +482,7 @@ der Trapezregel entspricht.
   \label{eq:trapezzusammen}
   \int_a^b f(x)\, dx &\approx \sum_{i=0}^{N-1} \frac{x_{i+1} -
     x_i}{2}\Bigl(f(x_i) + f(x_{i+1})\Bigr)\nonumber\\
-  &= \frac{x_1-x_0}{2}f(x_0) + \sum_{i=1}^{N-1} \frac{x_{i+1} - x_{i-1}}{2}
+  &= \frac{x_1-x_0}{2}f(x_0) + \sum_{i=1}^{N-2} \frac{x_{i+1} - x_{i}}{2}
   f(x_i) + \frac{x_N-x_{N-1}}{2}f(x_N)
 \end{align}
 Auf einem äquidistanten Gitter $a + kh$,
@@ -482,7 +491,7 @@ $k=0(1)N$ mit $h=(b-a)/N$, verkürzt sich diese Formel zu
   \int_a^b f(x)\, dx =
   h\left(\frac{f(x_0)}{2} + \sum_{i=1}^{N-1} f(x_i) +
     \frac{f(x_N)}{2}\right)
-  \,-\, \frac{(b-a)^3}{12 N^2}f''(\xi)
+  \,-\, \underbrace{\frac{(b-a)^3}{12 N^2}f''(\xi)}_{\in \O(h^2)}
 \end{equation}
 für ein $\xi\in [a,b]$, wobei der letzte Term wieder den Fehler angibt
 und üblicherweise nicht berechnet werden kann. Hier konnten wir den
@@ -493,7 +502,7 @@ Die zusammengesetzte Trapezregel ist in Scipy als
 \scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
 die umgedrehte Reihenfolge der Funktionswerte \argd{y} und Knoten
 \argd{x}! Die Angabe der Knoten ist dabei optional, alternativ kann
-bei äuqidistanten Daten nur die Schrittweite \argd{dx}$=h$
+bei äquidistanten Daten nur die Schrittweite \argd{dx}$=h$
 spezifiziert werden.
 
 \subsubsection{Zusammengesetzte Mittelpunktsregel}
@@ -502,7 +511,8 @@ Analog zur Trapezregel lässt sich auch die zusammengesetzte
 Mittelpunktsregel für äquidistante Gitter formulieren:
 \begin{equation}
   \int_a^b f(x)\, dx =
-  h\sum_{i=0}^{N-1} f(x_i)\, +\, \frac{(b-a)^3}{24 N^2}f''(\xi)
+  h\sum_{i=0}^{N-1} f(x_i) 
+  \,+\, \underbrace{\frac{(b-a)^3}{24 N^2}f''(\xi)}_{\in \O(h^2)}
 \end{equation}
 wobei $h=(b-a)/N$, $x_i = a + h(i+\nicefrac{1}{2})$, $i=0(1)N-1$, und
 $\xi\in [a,b]$. Die Stützpunkte $x_i$ sind also um $h/2$ gegenüber den
@@ -515,7 +525,7 @@ sein; dann setzt man die Trapezregel ein.
 
 \subsubsection{Zusammengesetzte Simpsonregel}
 
-Sei das Interval $[a,b]$ in geradzahlig viele Abschnitte unterteilt,
+Sei das Intervall $[a,b]$ in geradzahlig viele Abschnitte unterteilt,
 also $x_i = a + hi$, $i=0(1)N$, mit $h=(b-a)/N$ und $N$ gerade. Dann
 kann man je zwei Abschnitte zusammenfassen, und den mittleren Knoten
 als Intervallmitte des doppelt breiten Abschnitts benutzen, und so die
@@ -527,19 +537,22 @@ Simpsonregel benutzen. Das führt zur Formel
     \sum_{i=1}^{N/2-2} \Bigl(2 f(x_{2i}) + 4 f(x_{2i+1})\Bigr)
     + f(x_N)
   \right)
-  \, - \, \frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)
+  \, - \, \underbrace{\frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)}_{\in \O(h^4)}
 \end{equation}
 für ein $\xi\in [a,b]$. Durch die höhere Potenz von $N$ konvergiert
 dieses Verfahren schneller als die zusammengesetzte Trapezregel,
 sofern $f$ vierfach stetig differenzierbar ist.
 
-Die zusammengesetzte Simpsonregel ist in Scipy als
-\scipy{scipy.integrate.simps(y, x)} implementiert. Wieder ist die
-Reihenfolge der Funktionswerte \argd{y} und Knoten \argd{x} vertauscht
-und die Angabe der Knoten optional, alternativ kann bei äuqidistanten
-Daten nur die Schrittweite \argd{dx}$=h$ spezifiziert werden. Ist die
-Anzahl der Stützstellen ungerade, so wird an den Rändern mit der
-Trapezregel ergänzt.
+Die zusammengesetzte Simpsonregel ist nicht identisch zur Integration
+mit kubischen Splines, da hier nicht die Gleichheit der Ableitungen an
+der Stützstellen gefordert wird.
+
+In Scipy ist die Regel als \scipy{scipy.integrate.simps(y, x)}
+implementiert. Wieder ist die Reihenfolge der Funktionswerte \argd{y}
+und Knoten \argd{x} vertauscht und die Angabe der Knoten optional,
+alternativ kann bei äquidistanten Daten nur die Schrittweite
+\argd{dx}$=h$ spezifiziert werden. Ist die Anzahl der Stützstellen
+ungerade, so wird an den Rändern mit der Trapezregel ergänzt.
 
 \subsection{Beispiel: Besselfunktion}
 
@@ -596,40 +609,33 @@ sein, so dass
 damit der äußere Cosinus ausreichend aufgelöst wird.  Für größere $x$
 als im Graphen gezeigt wird also auch $N=20$ nicht ausreichend sein.
 
-\subsection{\keyword{Richardson-Extrapolation}}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/romberg}
-  \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
-    = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
-    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$. Sowohl
-    Kreuze also auch blaue Kreise markieren Berechnungen mit der
-    Trapezregel. Durch die mit blauen Kreisen markierten Datenpunkte
-    wurde dann das interpolierende Polynom bestimmt und rot
-    gestrichelt eingezeichnet. Während der beste benutzte Datenpunkt
-    eine Genauigkeit von etwa $6\cdot10^{-5}$ erreicht, hat der
-    extrapolierte Wert eine Genauigkeit von $3\cdot 10^{-16}$.  }
-  \label{fig:romberg}
-\end{figure}
+\subsection{\keyword{Romberg-Integration}}
 
 Ist $f\in C^{2k+2}([a,b])$ und
 \begin{equation}
   T_f(h) = h\left(\frac{f(a)}{2} + \sum_{i=1}^{(b-a)/h - 1} f(a + i h) +
-    \frac{f(b)}{2}\right)
+    \frac{f(b)}{2}\right) + \O(h^2)
 \end{equation}
-die Trapezformel zur Schrittweite $h$, so gilt die
+die (zusammengesetzte) Trapezformel zur Schrittweite $h$, so gilt die
 \emph{\keyword{Euler-McLaurin-Summenformel}}
 \begin{equation}
   \int_a^b f(x)\,dx = T_f(h) - \sum_{i=1}^k h^{2i}\alpha_i + \O(h^{2k-2})
 \end{equation}
 mit
 \begin{equation}
-  \alpha_i = \frac{b_{2i}}{(2i)!}\left(f^{2i-1}(b) - f^{2i-1}(a)\right).
+  \alpha_i = \frac{b_{2i}}{(2i)!}\left(f^{(2i-1)}(b) - f^{(2i-1)}(a)\right).
 \end{equation}
 $b_{2i}$ bezeichnet dabei die Bernoullizahlen, die $\alpha_i$ sind
-also unabhängig von der Schrittweite $h$.  Durch Extrapolation zu
-$h=0$ kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
+also unabhängig von der Schrittweite $h$.  
+
+In anderen Worten bedeutet das, dass der Fehler der Trapezregel sich
+selbst wie ein Polynom in $h^2$ verhält!  Dies erlaubt es uns, die
+numerischen Regeln im Umgang mit Polynomen auf den Fehler selbst
+anzuwenden.  Insbesondere können wir -- sofern wir die Werte von
+$\alpha_i$ bestimmen können -- den Fehler der Trapezformel (und damit
+auch einen besseren Wert des Integrals) bei $h=0$ (also bei unendlich
+kleiner Schrittweite!) durch Extrapolation annähern. In diesem Fall
+kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
 $\O(h^{2k-2})$ verbessert werden. Für $b-a$-periodische
 $C^\infty$-Funktionen sind sogar alle $\alpha_i=0$, daher strebt die
 Trapezformel $T_f(h)$ für diese schneller als jedes Polynom in $h$
@@ -637,22 +643,22 @@ gegen Null.
 
 Man kann zwar im allgemeinen die $\alpha_i$ nicht analytisch
 bestimmen, aber $T_f(h)$ durch Polynominterpolation annähern.  Bei der
-Richardson-Extrapolation bestimmt man zunächst $T_{i,o}=T_f(h_i)$ für
+Richardson-Extrapolation bestimmt man zunächst $T_{i,0}=T_f(h_i)$ für
 paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$. Dann kann
-man mit Hilfe des Neville-Aitken-Schemas das interpolierende Polynom
-in $h^2$ an der Stelle 0 auswerten, also auf $h=0$ extrapolieren:
+man mit Hilfe des Neville-Aitken-Schemas das interpolierende
+(Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten, also auf $h=0$
+extrapolieren:
 \begin{equation}
   \label{eq:richardson}
-  T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
+  T_{i,j} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
     T_{i,j-1}}{\frac{h_i^2}{h_{i+j}^2} -1}
   \quad\text{für}\; i=0(1)k-j, j=1(1)k.
 \end{equation}
 Dann gilt $T_{0,k} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
 \O(h^{2k+2})$.
 
-Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
-\eqref{eq:richardson}
-zu
+\noindent Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
+\eqref{eq:richardson} zu
 \begin{equation}
   T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
     T_{i,j-1}}{4^j - 1} = \frac{4^j T_{i+1,j-1} -
@@ -671,29 +677,47 @@ Stufe verdoppelt, ist der Gesamtaufwand nicht wesentlich größer als
 der Aufwand zur Berechnung der niedrigsten Stufe $T_f(h_k)$ alleine,
 bei deutlicher Verbesserung der
 Fehlerabschätzung. Codebeispiel~\ref{lst:romberg} am Ende des Kapitels
-zeigt eine einfach, aber effiziente Implementation des
+zeigt eine einfache, aber effiziente Implementation des
 Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
 selber eine Implementation des Verfahrens,
 \scipy{scipy.integrate.romberg(f, a, b)}.
 
-Als Beispiel für die Romberg-Integration soll diesmal das
-Fehlerintegral $\int_0^1 e^{-x^2}\,dx = \sqrt{\pi}\erf(1)/2$
-dienen. Das Besselintegral aus dem vorherigen Abschnitt ist wenig
-geeignet, da die zu integrierende Funktion $b-a$-periodisch und
-$C^\infty$ ist. Dadurch konvergiert bereits die einfache Trapezregel
-schneller als jedes Polynom, und bereits mit nicht sehr kleinen
-Schrittweiten erreicht die Trapezregel Maschinengenauigkeit. Da
-andererseits die Schrittweite wie beschrieben hinreichend klein sein
-muss, bleibt nicht genügend Raum, um durch Extrapolation noch etwas zu
-verbessern. Beim Fehlerintegral hingegen sind die Randwerte bereits
-der ersten Ableitung stark verschieden, so dass $T_f(h)$ tatsächlich
-polynomielle Form hat und um die Null herum in einer weiten Umgebung
-nahezu quadratisch ist. Daher kann die Extrapolation den Fehler
-signifikant senken.  Im Beispiel werden Schrittweiten von 1 bis $1/16$
-betrachtet. Bei Schrittweite $1/16$ beträgt der Fehler noch etwa
-$6,0\cdot 10^{-5}$, während die Extrapolation durch die 5 Datenpunkte
-bis auf $3,3\cdot 10^{-16}$, also Maschinengenauigkeit, das Integral
-korrekt bestimmt.
+Als Beispiel für die Romberg-Integration ist das Besselintegral aus
+dem vorherigen Abschnitt wenig geeignet, da die zu integrierende
+Funktion $b-a$-periodisch und $C^\infty$ ist. Dadurch konvergiert
+bereits die einfache Trapezregel schneller als jedes Polynom, und
+bereits mit nicht sehr kleinen Schrittweiten erreicht die Trapezregel
+Maschinengenauigkeit. Da andererseits die Schrittweite wie beschrieben
+hinreichend klein sein muss, bleibt nicht genügend Raum, um durch
+Extrapolation noch etwas zu verbessern. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/romberg}
+  \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
+    = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
+    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$ (im Inset
+    in doppeltlogarithmischer Skala). Sowohl Kreuze also auch blaue
+    Kreise markieren Berechnungen mit der Trapezregel. Durch die mit
+    blauen Kreisen markierten Datenpunkte wurde dann das
+    interpolierende Polynom bestimmt und rot gestrichelt
+    eingezeichnet. Während der beste benutzte Datenpunkt eine
+    Genauigkeit von etwa $6\cdot10^{-5}$ erreicht, hat der
+    extrapolierte Wert eine Genauigkeit von $3\cdot 10^{-16}$.  }
+  \label{fig:romberg}
+\end{figure}
+
+Stattdessen wollen wir hier das Fehlerintegral $\int_0^1 e^{-x^2}\,dx
+= \sqrt{\pi}\erf(1)/2$ verwenden (siehe Abbildung \ref{fig:romberg}).
+Dabei sind die Randwerte bereits der ersten Ableitung stark
+verschieden, so dass $T_f(h)$ tatsächlich polynomielle Form hat und um
+die Null herum in einer weiten Umgebung nahezu quadratisch ist. Daher
+kann die Extrapolation den Fehler signifikant senken.  Im Beispiel
+werden Schrittweiten der Trapezregel von 1 bis $1/16$ betrachtet. Bei
+Schrittweite $1/16$ beträgt der Fehler der Trapezregel noch etwa
+$6,0\cdot 10^{-5}$, während das Integral durch die Extrapolation von 5
+Datenpunkten das Integral bis auf $3,3\cdot 10^{-16}$ korrekt
+bestimmt, also Maschinengenauigkeit.
 
 \subsection{\keyword{Gauß-Quadratur}}
 
@@ -713,20 +737,19 @@ jedes endliche Integral auf diesen Bereich transformiert werden kann:
   \int_a^b f(x)\, dx = (b-a) \int_{-1}^{1}f\bigl(a + x'(b-a)\bigr)\, dx'.
 \end{equation}
 
-Welcher Polynomgrad können wir so erreichen?  Die Newton-Cotes-Formeln
-mit $n$ Stützstellen integrieren schon einmal Polymere bis Grad $n-1$
-exakt. Auf der anderen Seite ist für das Polynom $p(x) = \prod_{i=1}^n
-(x-x_i)^2$ jede Näherung $I_n p = 0$, während offenbar $\int_{a}^{b}
-p(x)\,dx>0$. Daher kann es also kein Verfahren geben, dass alle
-Polynome bis Grad $2n$ exakt integriert. Ein Grad darunter, also
-$2n-1$ ist allerdings möglich, und wird durch die Gauß-Quadratur
-erreicht.
+Welchen Polynomgrad können wir so erreichen?  Auf der einen Seite
+integrieren schon die Newton-Cotes-Formeln mit $n$ Stützstellen
+Polynome bis Grad $n-1$ exakt. Auf der anderen Seite ist für das
+Polynom $p(x) = \prod_{i=1}^n (x-x_i)^2$ jede Näherung $I_n p = 0$,
+während offenbar $\int_{a}^{b} p(x)\,dx>0$. Daher kann es also kein
+Verfahren geben, dass alle Polynome bis Grad $2n$ exakt
+integriert. Ein Grad darunter, also $2n-1$ ist allerdings möglich, und
+wird durch die Gauß-Quadratur erreicht.
 
-Um ein Polynom $2n-1$ Grades eindeutig durch Stützstellen zu
-bestimmen, benötigen wir $2n$ Daten. Da wir aber nur $n$ Stützstellen
-benutzen wollen, liegt es nahe, an diesen auch die Ableitungen
-einzubeziehen, was ein Spezialfall der Hermite-Interpolation ist. Wie
-man leicht sieht, ist
+Um ein Polynom $2n-1$ Grades eindeutig zu bestimmen, benötigen wir
+$2n$ Stützstellen. Da wir aber nur $n$ Stützstellen benutzen wollen,
+liegt es nahe, an diesen auch die Ableitungen einzubeziehen, was ein
+Spezialfall der Hermite-Interpolation ist. Wie man leicht sieht, ist
 \begin{equation}
   p(x) = \sum_{i=1}^n L_i^2(x)\Bigl\{f(x_i)\bigl[1-2L_i'(x_i)(x-x_i)\bigr] +
     f'(x_i)(x-x_i)\Bigr\}
@@ -745,8 +768,8 @@ mit
   \beta_i = \int_{-1}^1 L_i^2(x)(x-x_i)\, dx.
 \end{equation}
 
-Ziel ist nun, die Lage der Knoten $x_i$ so zu wählen, dass die
-Ableitungen, die wir ja im allgemeinen gar nicht kennen, aus der
+\noindent Ziel ist nun, die Lage der Knoten $x_i$ so zu wählen, dass
+die Ableitungen, die wir ja im allgemeinen gar nicht kennen, aus der
 Näherungen entfallen:
 \begin{equation}
   \label{eq:gaussortho}
@@ -787,10 +810,12 @@ zugehörigen Gewichte sind
   \renewcommand{\arraystretch}{1.2}
   \begin{tabular}{r|l|l}
     Grad & Nullstelle & Gewicht\\
+    \hline\hline
+    1    & $x_0=0$         & $\alpha_0=2$\\
     \hline
-    1    & $x_0=0$         & $\alpha_i=2$\\
     2    & $x_{0,1} = \pm \sqrt{\nicefrac{1}{3}}$ &
     $\alpha_{0,1} = 1$ \\
+    \hline
     3    & $x_{0,2} =  \pm \sqrt{\nicefrac{3}{5}}$ &
     $\alpha_{0,2}=\nicefrac{5}{9}$\\
     {}   & $x_1 =  0$                             &
@@ -829,7 +854,7 @@ Gewichtsfunktion $w(x)=1$. Die Gewichtsfunktion
 $w(x)=\nicefrac{1}{\sqrt{1-x^2}}$ hingegen liefert als Stützstellen
 die Nullstellen der Chebyshev-Polynome $T_n(x)$, vergleiche
 \eqref{eq:chebyshev}. Die Gewichte sind in diesem Fall sehr einfach,
-nämlich $\pi/n$. Um das offene Interval $(-\infty,\infty)$ zu
+nämlich $\pi/n$. Um das offene Intervall $(-\infty,\infty)$ zu
 betrachten, kann die Gewichtsfunktion $e^{-x^2}$ benutzt werden, zu
 der die orthogonalen Polynome die Hermitepolynome sind.
 
@@ -845,7 +870,7 @@ Singularitäten nur schlecht. Unendliche Integrationsgrenzen sind, bis
 auf die Gauß-Quadratur mit Hermitepolynomen, gar nicht möglich. In
 ersterem Falle müssen sehr viele Stützpunkte in der Nähe der
 Singularität liegen, im zweiten Fall muss das unendliche Integral
-durch ein möglichst großes, endliches Interval approximiert
+durch ein möglichst großes, endliches Intervall approximiert
 werden. Allerdings ist es oft möglich, solche Probleme durch
 Variablensubstitution zu umgehen.  So ist zum Beispiel
 \begin{equation}
