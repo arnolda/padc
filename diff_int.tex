@@ -605,21 +605,6 @@ als im Graphen gezeigt wird also auch $N=20$ nicht ausreichend sein.
 
 \subsection{\keyword{Romberg-Integration}}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/romberg}
-  \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
-    = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
-    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$. Sowohl
-    Kreuze also auch blaue Kreise markieren Berechnungen mit der
-    Trapezregel. Durch die mit blauen Kreisen markierten Datenpunkte
-    wurde dann das interpolierende Polynom bestimmt und rot
-    gestrichelt eingezeichnet. Während der beste benutzte Datenpunkt
-    eine Genauigkeit von etwa $6\cdot10^{-5}$ erreicht, hat der
-    extrapolierte Wert eine Genauigkeit von $3\cdot 10^{-16}$.  }
-  \label{fig:romberg}
-\end{figure}
-
 Ist $f\in C^{2k+2}([a,b])$ und
 \begin{equation}
   T_f(h) = h\left(\frac{f(a)}{2} + \sum_{i=1}^{(b-a)/h - 1} f(a + i h) +
@@ -635,8 +620,16 @@ mit
   \alpha_i = \frac{b_{2i}}{(2i)!}\left(f^{(2i-1)}(b) - f^{(2i-1)}(a)\right).
 \end{equation}
 $b_{2i}$ bezeichnet dabei die Bernoullizahlen, die $\alpha_i$ sind
-also unabhängig von der Schrittweite $h$.  Durch Extrapolation zu
-$h=0$ kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
+also unabhängig von der Schrittweite $h$.  
+
+In anderen Worten bedeutet das, dass der Fehler der Trapezregel sich
+selbst wie ein Polynom in $h^2$ verhält!  Dies erlaubt es uns, die
+numerischen Regeln im Umgang mit Polynomen auf den Fehler selbst
+anzuwenden.  Insbesondere können wir -- sofern wir die Werte von
+$\alpha_i$ bestimmen können -- den Fehler der Trapezformel (und damit
+auch einen besseren Wert des Integrals) bei $h=0$ (also bei unendlich
+kleiner Schrittweite!) durch Extrapolation annähern. In diesem Fall
+kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
 $\O(h^{2k-2})$ verbessert werden. Für $b-a$-periodische
 $C^\infty$-Funktionen sind sogar alle $\alpha_i=0$, daher strebt die
 Trapezformel $T_f(h)$ für diese schneller als jedes Polynom in $h$
@@ -646,8 +639,9 @@ Man kann zwar im allgemeinen die $\alpha_i$ nicht analytisch
 bestimmen, aber $T_f(h)$ durch Polynominterpolation annähern.  Bei der
 Richardson-Extrapolation bestimmt man zunächst $T_{i,0}=T_f(h_i)$ für
 paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$. Dann kann
-man mit Hilfe des Neville-Aitken-Schemas das interpolierende Polynom
-in $h^2$ an der Stelle 0 auswerten, also auf $h=0$ extrapolieren:
+man mit Hilfe des Neville-Aitken-Schemas das interpolierende
+(Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten, also auf $h=0$
+extrapolieren:
 \begin{equation}
   \label{eq:richardson}
   T_{i,j} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
@@ -677,29 +671,47 @@ Stufe verdoppelt, ist der Gesamtaufwand nicht wesentlich größer als
 der Aufwand zur Berechnung der niedrigsten Stufe $T_f(h_k)$ alleine,
 bei deutlicher Verbesserung der
 Fehlerabschätzung. Codebeispiel~\ref{lst:romberg} am Ende des Kapitels
-zeigt eine einfach, aber effiziente Implementation des
+zeigt eine einfache, aber effiziente Implementation des
 Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
 selber eine Implementation des Verfahrens,
 \scipy{scipy.integrate.romberg(f, a, b)}.
 
-Als Beispiel für die Romberg-Integration soll diesmal das
-Fehlerintegral $\int_0^1 e^{-x^2}\,dx = \sqrt{\pi}\erf(1)/2$
-dienen. Das Besselintegral aus dem vorherigen Abschnitt ist wenig
-geeignet, da die zu integrierende Funktion $b-a$-periodisch und
-$C^\infty$ ist. Dadurch konvergiert bereits die einfache Trapezregel
-schneller als jedes Polynom, und bereits mit nicht sehr kleinen
-Schrittweiten erreicht die Trapezregel Maschinengenauigkeit. Da
-andererseits die Schrittweite wie beschrieben hinreichend klein sein
-muss, bleibt nicht genügend Raum, um durch Extrapolation noch etwas zu
-verbessern. Beim Fehlerintegral hingegen sind die Randwerte bereits
-der ersten Ableitung stark verschieden, so dass $T_f(h)$ tatsächlich
-polynomielle Form hat und um die Null herum in einer weiten Umgebung
-nahezu quadratisch ist. Daher kann die Extrapolation den Fehler
-signifikant senken.  Im Beispiel werden Schrittweiten von 1 bis $1/16$
-betrachtet. Bei Schrittweite $1/16$ beträgt der Fehler noch etwa
-$6,0\cdot 10^{-5}$, während die Extrapolation durch die 5 Datenpunkte
-bis auf $3,3\cdot 10^{-16}$, also Maschinengenauigkeit, das Integral
-korrekt bestimmt.
+Als Beispiel für die Romberg-Integration ist das Besselintegral aus
+dem vorherigen Abschnitt wenig geeignet, da die zu integrierende
+Funktion $b-a$-periodisch und $C^\infty$ ist. Dadurch konvergiert
+bereits die einfache Trapezregel schneller als jedes Polynom, und
+bereits mit nicht sehr kleinen Schrittweiten erreicht die Trapezregel
+Maschinengenauigkeit. Da andererseits die Schrittweite wie beschrieben
+hinreichend klein sein muss, bleibt nicht genügend Raum, um durch
+Extrapolation noch etwas zu verbessern. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/romberg}
+  \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
+    = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
+    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$ (im Inset
+    in doppeltlogarithmischer Skala). Sowohl Kreuze also auch blaue
+    Kreise markieren Berechnungen mit der Trapezregel. Durch die mit
+    blauen Kreisen markierten Datenpunkte wurde dann das
+    interpolierende Polynom bestimmt und rot gestrichelt
+    eingezeichnet. Während der beste benutzte Datenpunkt eine
+    Genauigkeit von etwa $6\cdot10^{-5}$ erreicht, hat der
+    extrapolierte Wert eine Genauigkeit von $3\cdot 10^{-16}$.  }
+  \label{fig:romberg}
+\end{figure}
+
+Stattdessen wollen wir hier das Fehlerintegral $\int_0^1 e^{-x^2}\,dx
+= \sqrt{\pi}\erf(1)/2$ verwenden (siehe Abbildung \ref{fig:romberg}).
+Dabei sind die Randwerte bereits der ersten Ableitung stark
+verschieden, so dass $T_f(h)$ tatsächlich polynomielle Form hat und um
+die Null herum in einer weiten Umgebung nahezu quadratisch ist. Daher
+kann die Extrapolation den Fehler signifikant senken.  Im Beispiel
+werden Schrittweiten der Trapezregel von 1 bis $1/16$ betrachtet. Bei
+Schrittweite $1/16$ beträgt der Fehler der Trapezregel noch etwa
+$6,0\cdot 10^{-5}$, während das Integral durch die Extrapolation von 5
+Datenpunkten das Integral bis auf $3,3\cdot 10^{-16}$ korrekt
+bestimmt, also Maschinengenauigkeit.
 
 \subsection{\keyword{Gauß-Quadratur}}
 
