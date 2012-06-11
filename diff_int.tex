@@ -143,6 +143,8 @@ bestimmt. Analog lässt sich jede $n$-te Ableitung aus $n+1$
 benachbarten Stützstellen in erster Ordnung durch dividierte
 Differenzen approximieren.
 
+\subsection{Genauigkeit}
+
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{plots/num_diff}
@@ -159,8 +161,6 @@ Differenzen approximieren.
     methodenunabhängig und durch die endliche Rechenauflösung bestimmt.}
   \label{fig:num_diff}
 \end{figure}
-
-\subsection{Genauigkeit}
 
 Generell sind alle diese Näherungen numerisch instabil, da bei kleinen
 Abständen $h$ auch $f(x)$ und $f(x+h)$ sehr ähnlich sind. Sind diese
@@ -180,6 +180,21 @@ $h$ zu klein, zeigt sich die endliche Auflösung, mit der der Rechner
 arbeitet, und der Fehler steigt wieder an.
 
 \subsection{Beispiel: Besselsche Differentialgleichung}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
+  \caption{Numerische Lösungen der Besselschen Differentialgleichung
+    auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
+    durchgezogene schwarze Linie markiert die analytische Lösung. Mit
+    grünen Diamanten ist die Lösung mit Hilfe von
+    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
+    dargestellt, für die roten Sterne wurden Funktionswert und
+    Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
+    den Löser dritter Ordnung mit Dirichletrandbedingungen, der von
+    der analytischen Lösung praktisch nicht zu unterscheiden ist.}
+  \label{fig:bessel_diff}
+\end{figure}
 
 Wir betrachten die Besselsche Differentialgleichung, eine gewöhnliche
 lineare Differentialgleichung zweiter Ordnung:
@@ -245,6 +260,13 @@ Dirichletbedingungen, die restlichen Zeilen Gleichung
 hat, können wir dieses lineare Gleichungssystem effizient mit dem
 Gaußverfahren lösen.
 
+Beispielcode~\ref{lst:bessel} zeigt ein Pythonskript zur Lösung dieses
+Gleichungsssystems. Dessen Lösung für $h=0,5$ ist in
+Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten gezeigt und
+weicht noch signifikant ab, was allerdings durch die hohe Schrittweite
+bedingt ist. Mit einer Schrittweite $h < 0,1$ gäbe es keine sichtbaren
+Abweichungen mehr.
+
 Alternativ können wir statt der Dirichlet-Randbedingungen auch
 Funktion $f(0) = F_0$ und Ableitung $f'(0)=F'_0$ am linken Rand
 festlegen. Dann sieht das Gleichungssystem wie folgt aus:
@@ -270,21 +292,19 @@ festlegen. Dann sieht das Gleichungssystem wie folgt aus:
     0 \\
   \end{pmatrix}.
 \end{equation}
+Abbildung~\ref{fig:bessel_diff} zeigt, dass die Lösung in diesem Fall
+am linken Rand genauer ist, während sie zum rechten Rand hin
+abweicht. Das ist ist zu erwarten, da unsere Bedingung die Lösung ja
+nur am linken Rand zwingen, mit der analytischen Lösung
+übereinzustimmen.
 
-Beispielcode~\ref{lst:bessel} zeigt ein Pythonskript zur Lösung dieser
-Gleichungsssysteme. Deren Lösung für $h=0,5$ ist in
-Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten und roten Sternen
-gezeigt.  Insbesondere die Lösung mit Dirichletrandbedingungen weicht
-noch signifikant ab, was allerdings durch die hohe Schrittweite
-bedingt ist. Ab Schrittweite $h\approx 0,1$ gibt es keine sichtbaren
-Abweichungen mehr. Wie man erwarten würde, ist die Lösung mit Vorgabe
-von Funktion und Ableitung am linken Rand dort genauer, während sie
-zum rechten Rand hin abweicht.
-
-Allerdings lässt sich auch in dieser niedrigen Auflösung eine gute
-Näherung finden, in dem man auf Ableitungsnäherungen höherer Ordnung
-zurückzugreift, etwa \eqref{eq:3order2diff} und
-\eqref{eq:4orderdiff}. Dann ist die Hauptgleichung
+Generell zeigen allerdings sowohl Dirichlet- wie auch gemischte
+Randbedingungen noch leichte Artefakte. Diese lassen sich durch
+natürlich durch kleinere Schrittweite verringern, da die Lösung aber
+$C^\infty$ ist, kann man aber stattdessen auch auf
+Ableitungsnäherungen höherer Ordnung zurückzugreifen, etwa
+\eqref{eq:3order2diff} und \eqref{eq:4orderdiff}. Dann ist die
+Hauptgleichung
 \begin{align}
   0 = &\frac{1}{12}(-k^2 + k)f_{k-2}
   + \frac{2}{3}(2k^2 - k)f_{k-1}
@@ -302,30 +322,14 @@ ist in Abbildung~\ref{fig:bessel_diff} blau gepunktet eingezeichnet
 und fast nicht mehr von der analytischen Lösung zu unterscheiden. Dies
 zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
-  \caption{Numerische Lösungen der Besselschen Differentialgleichung
-    auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
-    durchgezogene schwarze Linie markiert die analytische Lösung. Mit
-    grünen Diamanten ist die Lösung mit Hilfe von
-    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
-    dargestellt, für die roten Sterne wurden Funktionswert und
-    Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
-    den Löser dritter Ordnung mit Dirichletrandbedingungen, der von
-    der analytischen Lösung praktisch nicht zu unterscheiden ist.}
-  \label{fig:bessel_diff}
-\end{figure}
-
-\clearpage
-{\raggedbottom
+\afterpage{\raggedbottom
   \lstinputlisting[style=multipage,
   caption={Numerische Lösung der Besselschen Differentialgleichung mit
     Hilfe von finiten Differenzen linearer und kubischer Ordnung. Dieser
     Code erzeugt Abbildung~\ref{fig:bessel_diff}},
   label=lst:bessel]{bessel.py}
-}
   \clearpage
+}
 
 \section{\keyword{Quadratur}: \keyword{numerische Integration}}
 \index{Integration>numerische}
@@ -440,7 +444,6 @@ nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
   für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm ist.
 \end{minipage}
 
-\newpage
 \subsubsection{\keyword{Mittelpunktsregel}}
 \index{Integration>Mittelpunktsregel}
 \topillu{plots/mittelpunktsregel}
@@ -715,7 +718,13 @@ Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
 selber eine Implementation des Verfahrens,
 \scipy{scipy.integrate.romberg(f, a, b)}.
 
-\subsection{Bespiel: Fehlerintegral}
+\lstinputlisting[style=floating,
+caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
+  berechnet $\pi$ auf 16 Stellen genau.},
+label=lst:romberg]{romberg.py}
+\afterpage{\clearpage}
+  
+\subsection{Beispiel: Fehlerintegral}
 
 Als Beispiel für die Romberg-Integration ist das Besselintegral aus
 dem vorherigen Abschnitt wenig geeignet, da die zu integrierende
@@ -753,12 +762,6 @@ Schrittweite $1/16$ beträgt der Fehler der Trapezregel noch etwa
 $6,0\cdot 10^{-5}$, während das Integral durch die Extrapolation von 5
 Datenpunkten das Integral bis auf $3,3\cdot 10^{-16}$ korrekt
 bestimmt, also Maschinengenauigkeit.
-
-\lstinputlisting[style=floating,
-caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
-  berechnet $\pi$ auf 16 Stellen genau.},
-label=lst:romberg]{romberg.py}
-\clearpage
 
 \subsection{\keyword{Gauß-Quadratur}}
 \index{Integration>Gauß-Quadratur}
@@ -907,6 +910,20 @@ Newton-Cotes-Formeln.
 
 \subsection{Unendliche Integrale und Singularitäten}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/inf_int}
+  \caption{Romberg-Verfahren für das Integral $\int_0^{b}
+    \frac{1}{1+x^2}\, dx$, als Funktion von $b$. Die blau gepunktete
+    Linie markiert die Ergebnisse des Verfahrens mit 128 Stützstellen,
+    die rote durchgezogene Linie mit 32 Stützstellen. Die schwarz
+    gestrichelte Linie markiert $\nicefrac{\pi}{2}$, also den
+    Grenzwert des Integrals gegen unendlich. Eine Kombination von $b$
+    und Anzahl Stützstellen zu finden, die diesen Grenzwert gut
+    approximiert, ist also sehr schwierig.}
+  \label{fig:inf_int}
+\end{figure}
+
 Alle genannten numerischen Integrationsverfahren lösen Integrale mit
 Singularitäten nur schlecht. Unendliche Integrationsgrenzen sind, bis
 auf die Gauß-Quadratur mit Hermitepolynomen, gar nicht möglich. In
@@ -938,20 +955,6 @@ dienen. Mit obiger Transformation folgt
 Durch Romberg-Integration auf nur 32 Stützstellen kann der Ausdruck
 auf der rechten Seite bis auf 14 Stellen genau ausgewertet
 werden.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/inf_int}
-  \caption{Romberg-Verfahren für das Integral $\int_0^{b}
-    \frac{1}{1+x^2}\, dx$, als Funktion von $b$. Die blau gepunktete
-    Linie markiert die Ergebnisse des Verfahrens mit 128 Stützstellen,
-    die rote durchgezogene Linie mit 32 Stützstellen. Die schwarz
-    gestrichelte Linie markiert $\nicefrac{\pi}{2}$, also den
-    Grenzwert des Integrals gegen unendlich. Eine Kombination von $b$
-    und Anzahl Stützstellen zu finden, die diesen Grenzwert gut
-    approximiert, ist also sehr schwierig.}
-  \label{fig:inf_int}
-\end{figure}
 
 Abbildung~\ref{fig:inf_int} zeigt hingegen, was bei 32
 bzw. 128 Stützstellen geschieht, wenn man stattdessen $\int_0^b
@@ -1048,7 +1051,8 @@ Funktion $f$ nicht genügend glatt oder nicht einmal stetig ist, so ist
 die Trapezregel auch bei niedrig-dimensionalen Integralen nicht mehr
 so deutlich überlegen.
 
-\subsection{Beispiel: Monte-Carlo-Integration von $\pi$}
+\subsection{\texorpdfstring{Beispiel: Monte-Carlo-Integration von
+    $\pi$}{Beispiel: Quasi-Monte-Carlo-Integration von pi}}
 
 Als Beispiel soll diesmal eine andere Methode zur Bestimmung von
 $\pi$ dienen, nämlich die Integration der charakteristischen Funktion
@@ -1110,20 +1114,6 @@ Monte-Carlo-Methode in jedem Falle vorzuziehen.
 \subsection{\keyword{Quasi-Monte-Carlo-Integration}}
 \index{Integration>Quasi-Monte-Carlo-}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/quasirandom}
-  \caption{Quasi-Monte-Carlo-Integration von $\pi$. Wie in
-    Abbildung~\ref{fig:pi} sind links die aus der Halton-Folge
-    gezogenen Punkte dargestellt, wobei die ersten zehn Punkte rot
-    gefärbt sind, die nächsten hundert Punkte blau und die restlichen
-    grün. Auf der rechten Seite sind die Ergebnisse der Integration zu
-    sehen, wobei blaue Kreise die Monte-Carlo-Integration mit
-    Pseudozufallszahlen angeben, grüne Kreuze die Trapezregel und rote
-    Diamanten die Quasi-Monte-Carlo-Integration.}
-  \label{fig:qmc}
-\end{figure}
-
 Bei der Monte-Carlo-Integration nutzen wir (Pseudo-)Zufallszahlen, um
 durch zufällige Abtastung möglichst gut den mittleren Wert der zu
 integrierenden Funktion zu bestimmen. Wie wir gesehen haben, sind im
@@ -1180,7 +1170,6 @@ Nachkommastellen, in umgekehrter Reihenfolge:
       7 & 111 & .111 & \nicefrac{7}{8}
     \end{tabular}
   \end{minipage}
-      
 \end{center}
 Für $p=3$ ergibt sich analog aus der ternären Darstellung
 \begin{center}
@@ -1189,15 +1178,15 @@ Für $p=3$ ergibt sich analog aus der ternären Darstellung
     \begin{tabular}[t]{l|r|l|l}
       $n$ & ternär & Bitumkehr & Ergebnis\\\hline
       1 &   1 & .1 & \nicefrac{1}{3}\\
-      2 &   2 & .2 & \nicefrac{2}{3}
+      2 &   2 & .2 & \nicefrac{2}{3}\\\hline
+      3 &  10 & .01 & \nicefrac{1}{9}\\
+      4 &  11 & .11 & \nicefrac{4}{9}\\
     \end{tabular}
   \end{minipage}
   \begin{minipage}[t]{0.49\textwidth}
     \centering
     \begin{tabular}[t]{l|r|l|l}
       $n$ & ternär & Bitumkehr & Ergebnis\\\hline
-      3 &  10 & .01 & \nicefrac{1}{9}\\
-      4 &  11 & .11 & \nicefrac{4}{9}\\
       5 &  12 & .21 & \nicefrac{7}{9}\\
       6 &  20 & .02 & \nicefrac{2}{9}\\
       7 &  21 & .12 & \nicefrac{5}{9}\\
@@ -1214,13 +1203,13 @@ Die mehrdimensionale Halton-Folge ist dann die Folge, die aus der
 Verschränkung einer van Corput-Folge für jede Dimension entsteht. Bei
 zwei Dimensionen mit Basen 2 und 3 ergibt sich also
 \begin{equation}
-  \left(\frac{1}{2}, \frac{1}{3}\right),
-  \left(\frac{1}{4}, \frac{2}{3}\right),
-  \left(\frac{3}{4}, \frac{1}{9}\right),
-  \left(\frac{1}{8}, \frac{4}{9}\right),
-  \left(\frac{5}{8}, \frac{7}{9}\right),
-  \left(\frac{3}{8}, \frac{2}{9}\right),
-  \left(\frac{7}{8}, \frac{5}{9}\right),\ldots
+  \left(\nicefrac{1}{2}, \nicefrac{1}{3}\right),
+  \left(\nicefrac{1}{4}, \nicefrac{2}{3}\right),
+  \left(\nicefrac{3}{4}, \nicefrac{1}{9}\right),
+  \left(\nicefrac{1}{8}, \nicefrac{4}{9}\right),
+  \left(\nicefrac{5}{8}, \nicefrac{7}{9}\right),
+  \left(\nicefrac{3}{8}, \nicefrac{2}{9}\right),
+  \left(\nicefrac{7}{8}, \nicefrac{5}{9}\right),\ldots
 \end{equation}
 
 Die folgende Routine berechnet die ersten $N$ Glieder der van der
@@ -1230,7 +1219,6 @@ reziproken Potenz auf das Ergebnis addiert, bis alle Stellen von auch
 der höchsten Zahl, $N$, bearbeitet wurden:
 \begin{lstlisting}
 from numpy import *
-
 def vanderCorput(N, p):
     # zu wandelnde Zahlen
     numbers = arange(1,int(N)+1)
@@ -1257,7 +1245,21 @@ Aufrufe von \lstinline!uniform(a,b,N)! durch
 wählt man dabei $p=2$ für die erste Dimension, $p=3$ für die zweite,
 und so weiter.
 
-\subsection{Beispiel: Quasi-Monte-Carlo-Integration von $\pi$}
+\subsection{\texorpdfstring{Beispiel: Quasi-Monte-Carlo-Integration von $\pi$}{Beispiel: Quasi-Monte-Carlo-Integration von pi}}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/quasirandom}
+  \caption{Quasi-Monte-Carlo-Integration von $\pi$. Wie in
+    Abbildung~\ref{fig:pi} sind links die aus der Halton-Folge
+    gezogenen Punkte dargestellt, wobei die ersten zehn Punkte rot
+    gefärbt sind, die nächsten hundert Punkte blau und die restlichen
+    grün. Auf der rechten Seite sind die Ergebnisse der Integration zu
+    sehen, wobei blaue Kreise die Monte-Carlo-Integration mit
+    Pseudozufallszahlen angeben, grüne Kreuze die Trapezregel und rote
+    Diamanten die Quasi-Monte-Carlo-Integration.}
+  \label{fig:qmc}
+\end{figure}
 
 Abbildung~\ref{fig:qmc} zeigt nochmals die Integration von $\pi$ mit
 Hilfe der Monte-Carlo-Integration, allerdings diesmal nicht mit

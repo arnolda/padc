@@ -104,6 +104,6 @@ xfine = linspace(0, xmax, 200)
 
 pyplot.plot(xfine, jn(nu, xfine), "k-",linewidth=0.5)
 pyplot.plot(x, fx3, "gD")
-pyplot.plot(x, fx3l, "r*")
+pyplot.plot(x, fx3l, "r^")
 pyplot.plot(x, fx5, "bo")
 pyplot.show()
