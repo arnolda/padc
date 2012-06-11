@@ -9,6 +9,7 @@
 # View, California, 94041, USA.
 #
 # pi aus der Integration der Indikatorfunktion des Kreises ueber [-1,1]^2
+# mit Quasizufallszahlen
 #
 ############################################
 from scipy import *
@@ -16,15 +17,33 @@ from numpy.random import *
 import math
 import matplotlib.pyplot as pyplot
 
-def f2d(x, y):
+seed(123)
+
+def vanderCorput(N, p):
+    # zu wandelnde Zahlen
+    numbers = arange(1,int(N)+1)
+    # bitumgekehrtes Ergebnis
+    result = zeros(N)
+    # Wert der aktuellen, inversen Stelle
+    frac = 1.0 / p
+
+    # solange die groesste Zahl noch Stellen hat
+    while numbers[-1] > 0:
+        # unterste Stelle abschneiden
+        digit = numbers % p
+        numbers /= p
+        # ... und zum Ergebnis hinzufuegen
+        result += frac*digit
+        frac /= p
+
+    return result
+
+def f(x, y):
     return 1.0*(x**2 + y**2 <= 1)
 
-def f5d(x1, x2, x3, x4, x5):
-    return 1.0*(x1**2 + x2**2 + x3**2 + x4**2 + x5**2 <= 1)
-
-def trapez2d(f, Ntgt_list):
+def trapez(f, N_list):
     res = []
-    for Ntgt in Ntgt_list:
+    for Ntgt in N_list:
         N = int(ceil(Ntgt**0.5))
         h = 2.0/N
         pos = arange(0, N)*h + h/2 - 1.0
@@ -36,35 +55,17 @@ def trapez2d(f, Ntgt_list):
 
     return array(res)
 
-def trapez5d(f, Ntgt_list):
-    res = []
-    for Ntgt in Ntgt_list:
-        N = int(ceil(Ntgt**0.2))
-        h = 2.0/N
-        pos = arange(0, N)*h + h/2 - 1.0
-        S = 0
-        for x1 in pos:
-            for x2 in pos:
-                for x3 in pos:
-                    for x4 in pos:
-                        S += sum(f(x1, x2, x3, x4, pos))
-
-        res.append(S*(2.0/N)**5)
-
-    return array(res)
-
-def mc2d(f, N_list):
+def mc(f, N_list):
     res = []
     for N in N_list:
         res.append(2.0**2*sum(f(uniform(-1,1,N), uniform(-1,1,N)))/N)
     return array(res)
 
-def mc5d(f, N_list):
+def qmc(f, N_list):
     res = []
     for N in N_list:
-        res.append(2.0**5*sum(f(uniform(-1,1,N), uniform(-1,1,N),
-                                uniform(-1,1,N), uniform(-1,1,N),
-                                uniform(-1,1,N)))/N)
+        res.append(2.0**2*sum(f(-1 + 2*array(vanderCorput(N,2)),
+                                 -1 + 2*array(vanderCorput(N,3))))/N)
     return array(res)
 
 def avg(f, N):
@@ -85,19 +86,23 @@ graph = figure.add_subplot(121)
 x = linspace(-1,1,100)
 graph.fill_between(x, sqrt(1-x**2), -sqrt(1-x**2), facecolor="#f0f0f5")
 
-pts = zip(uniform(-1,1,200), uniform(-1,1,200))
-inner = []
-outer = []
-for x, y in pts:
-    if f2d(x,y) > 0:
-        inner.append((x,y))
-    else:
-        outer.append((x,y))
+N = 200
 
-x, y = zip(*outer)
-graph.plot(x, y, "ro")
-x, y = zip(*inner)
-graph.plot(x, y, "g+")
+x = -1 + 2*array(vanderCorput(N,2))
+y = -1 + 2*array(vanderCorput(N,3))
+
+# Punkte nach der x-Reihefolge markieren
+color = []
+for c in range(10):
+    color.append("red")
+for c in range(10,110):
+    color.append("green")
+for c in range(110,N):
+    color.append("blue")
+
+graph.scatter(x, y, c=color,linewidth=0)
+
+graph.axis((-1,1,-1,1))
 
 ##########################################
 
@@ -107,14 +112,11 @@ N_range = logspace(0, 6, 10)
 
 graph.set_xscale("log")
 graph.set_yscale("log")
-graph.plot(N_range, abs(trapez2d(f2d, N_range) - pi), "rx", markersize=3)
-graph.plot(N_range, avg(lambda: abs(mc2d(f2d, N_range) - pi), 20), "bo", markersize=3)
+graph.plot(N_range, abs(trapez(f, N_range) - pi), "gx", markersize=3)
+graph.plot(N_range, avg(lambda: abs(mc(f, N_range) - pi), 20), "bo", markersize=3)
+graph.plot(N_range, abs(qmc(f, N_range) - pi), "rD", markersize=3)
 
-res5d = 8*pi*pi/15
-graph.plot(N_range, abs(trapez5d(f5d, N_range) - res5d), "g+", markersize=3)
-graph.plot(N_range, avg(lambda: abs(mc5d(f5d, N_range) - res5d), 20), "yD", markersize=3)
-
-graph.plot(N_range, N_range**-0.5, "k-",linewidth=0.5)
 graph.set_xlabel("N")
-graph.axis((10,1e6+1000, 1e-4, 10))
-figure.savefig("pi.pdf")
+graph.axis((10,1.1e6, 1e-5, 1))
+
+figure.savefig("quasirandom.pdf")

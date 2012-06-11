@@ -27,6 +27,7 @@ Verfahren diskretisiert und das resultierende lineare Gleichungssystem
 gelöst werden.
 
 \section{Numerisches Differenzieren}
+\index{Differenzieren}
 
 Die erste Ableitung einer Funktion $f\in C^1([a,b])$ ist definiert als
 \begin{equation}
@@ -270,29 +271,15 @@ festlegen. Dann sieht das Gleichungssystem wie folgt aus:
   \end{pmatrix}.
 \end{equation}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
-  \caption{Numerische Lösungen der Besselschen Differentialgleichung
-    auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
-    durchgezogene schwarze Linie markiert die analytische Lösung. Mit
-    grünen Diamanten ist die Lösung mit Hilfe von
-    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
-    dargestellt, für die roten Sterne wurden Funktionswert und
-    Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
-    den Löser dritter Ordnung mit Dirichletrandbedingungen, der von
-    der analytischen Lösung praktisch nicht zu unterscheiden ist.}
-  \label{fig:bessel_diff}
-\end{figure}
-
-Die Lösung dieser beiden Gleichungssysteme für $h=0,5$ ist in
+Beispielcode~\ref{lst:bessel} zeigt ein Pythonskript zur Lösung dieser
+Gleichungsssysteme. Deren Lösung für $h=0,5$ ist in
 Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten und roten Sternen
-gezeigt. Insbesondere die Lösung mit Dirichletrandbedingungen weicht
+gezeigt.  Insbesondere die Lösung mit Dirichletrandbedingungen weicht
 noch signifikant ab, was allerdings durch die hohe Schrittweite
 bedingt ist. Ab Schrittweite $h\approx 0,1$ gibt es keine sichtbaren
-Abweichungen mehr. Wie man erwarten würde, ist die Lösung mit Vorgabe von
-Funktion und Ableitung am linken Rand dort genauer, während sie zum
-rechten Rand hin abweicht.
+Abweichungen mehr. Wie man erwarten würde, ist die Lösung mit Vorgabe
+von Funktion und Ableitung am linken Rand dort genauer, während sie
+zum rechten Rand hin abweicht.
 
 Allerdings lässt sich auch in dieser niedrigen Auflösung eine gute
 Näherung finden, in dem man auf Ableitungsnäherungen höherer Ordnung
@@ -315,7 +302,33 @@ ist in Abbildung~\ref{fig:bessel_diff} blau gepunktet eingezeichnet
 und fast nicht mehr von der analytischen Lösung zu unterscheiden. Dies
 zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/bessel_diff}
+  \caption{Numerische Lösungen der Besselschen Differentialgleichung
+    auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
+    durchgezogene schwarze Linie markiert die analytische Lösung. Mit
+    grünen Diamanten ist die Lösung mit Hilfe von
+    \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
+    dargestellt, für die roten Sterne wurden Funktionswert und
+    Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
+    den Löser dritter Ordnung mit Dirichletrandbedingungen, der von
+    der analytischen Lösung praktisch nicht zu unterscheiden ist.}
+  \label{fig:bessel_diff}
+\end{figure}
+
+\clearpage
+{\raggedbottom
+  \lstinputlisting[style=multipage,
+  caption={Numerische Lösung der Besselschen Differentialgleichung mit
+    Hilfe von finiten Differenzen linearer und kubischer Ordnung. Dieser
+    Code erzeugt Abbildung~\ref{fig:bessel_diff}},
+  label=lst:bessel]{bessel.py}
+}
+  \clearpage
+
 \section{\keyword{Quadratur}: \keyword{numerische Integration}}
+\index{Integration>numerische}
 
 Bei der numerischen Integration geht es genau wie beim Differenzieren
 darum, aus endlich vielen Stützwerten das Integral einer Funktion in
@@ -333,6 +346,7 @@ die Gewichte zu wählen. Im folgenden werden wir einige der
 gebräuchlichsten Verfahren kennenlernen.
 
 \subsection{\keyword{Newton-Cotes-Formeln}}
+\index{Integration>Newton-Cotes-Formeln}
 
 Um eine an diskreten Stützstellen $x_i$, $i=0(1)n-1$ gegebene Funktion
 $f$ zu integrieren, liegt es nahe, die Funktion mit Hilfe eines
@@ -353,12 +367,12 @@ gebräuchlichsten werden im folgenden kurz diskutiert.
 
 \newcommand{\topillu}[1]{%
   \begin{tikzpicture}[overlay,x=\textwidth,y=\baselineskip]
-    \draw (1,0) node[anchor=north east] {\includegraphics[width=0.25\textwidth]{#1}};
-  \end{tikzpicture}}
+    \draw (1,3) node[anchor=north east] {\includegraphics[width=0.25\textwidth]{#1}};
+  \end{tikzpicture}\\}
 
-\topillu{plots/trapezregel}
 \subsubsection{\keyword{Trapezregel}}
-
+\index{Integration>Trapezregel}
+\topillu{plots/trapezregel}
 \begin{minipage}{0.74\linewidth}
   Die Trapezregel benutzt als Stützstellen $x_0=a$ und $x_1=b$, die
   dementsprechend durch eine Gerade verbunden werden:
@@ -371,7 +385,7 @@ gebräuchlichsten werden im folgenden kurz diskutiert.
   \end{align}
 \end{minipage}
 
- \noindent Weiter gilt für den Fehler der Trapezregel
+\noindent Weiter gilt für den Fehler der Trapezregel
 \begin{multline}
   \int_a^b f(x)\, dx - \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr)
   =  \int_a^b f(x) - f(a)\frac{x-b}{a-b}
@@ -391,11 +405,9 @@ abschätzen. Ist $f$ konvex auf $[a,b]$, also $f''(\xi)>0$, so
 unterschätzt also die Trapezregel das Integral, ist $f$ konkav,
 überschätzt sie es.
 
-\newpage
-
-\topillu{plots/simpsonregel}
 \subsubsection{\keyword{Simpsonregel}}
-
+\index{Integration>Simpsonregel}
+\topillu{plots/simpsonregel}
 \begin{minipage}{0.74\linewidth}
   Analog wird die Simpsonregel für die drei Stützpunkte $x_0=a$,
   $x_1=m=\frac{a+b}{2}$ und $x_2=b$ definiert, die durch eine Parabel
@@ -416,9 +428,9 @@ Formeln, die $a$ und $b$ als Stützpunkte beinhalten. \emph{Offene}
 Formeln dagegen enthalten wenigstens einen der Punkte
 nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
 
-\topillu{plots/rechteckregel}
 \subsubsection{\keyword{Rechteckregel}}
-
+\index{Integration>Rechteckregel}
+\topillu{plots/rechteckregel}
 \begin{minipage}[t]{0.74\linewidth}
   Wir benutzen $x_0=a$ als Stützpunkt, und erhalten:
   \begin{equation}
@@ -428,9 +440,10 @@ nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
   für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm ist.
 \end{minipage}
 
-\topillu{plots/mittelpunktsregel}
+\newpage
 \subsubsection{\keyword{Mittelpunktsregel}}
-
+\index{Integration>Mittelpunktsregel}
+\topillu{plots/mittelpunktsregel}
 \begin{minipage}[t]{0.74\linewidth}
   Wir benutzen $x_0=m=\frac{a+b}{2}$ als Stützpunkt, und erhalten:
   \begin{equation}
@@ -447,6 +460,7 @@ Stützstellenzahl eine bessere Ordnung als etwa bei der Rechteckregel
 ermöglicht.
 
 \subsection{Zusammengesetzte Newton-Cotes-Formeln}
+\index{Integration>Newton-Cotes-Formeln}
 \index{Newton-Cotes-Formeln>zusammengesetzte}
 
 Wie weiter oben erwähnt, sind Newton-Cotes-Formeln höherer Ordnung
@@ -458,22 +472,24 @@ Splines, überzugehen, wenn die Funktion $f$ an sehr vielen
 Stützstellen $a=x_0< x_1 < \ldots < x_{N} = b$ gegeben ist.
 
 Für die bei der Interpolation üblicherweise verwendeten kubischen
-Splines wird die Gleichheit der ersten Ableitung zweier Teilstücke an
+Splines wird die Stetigkeit der zweiten Ableitung zweier Teilstücke an
 den gemeinsamen Stützstellen gefordert.  Diese Forderung ist bei der
 Integration unnötig.  Zudem erfordert die Auswertung der Splines die
 ziemlich aufwendige Lösung eines linearen Gleichungssystems.  Daher
 greift man bei der numerischen Integration üblicherweise auf
-stückweise Polynome niedrigerer Ordnung beziehungsweise ohne die
-Randbedingungen zurück.
+stückweise Polynome niedrigerer Ordnung ohne Anschlussbedingungen an
+den Stützstellen zurück.
 
 Da die reinen, nicht zusammengesetzten Newton-Cotes-Formeln in der
-Praxis kaum auftauchen, sind meistens die jeweiligen zusammengesetzten
+Praxis kaum auftauchen, sind oft die jeweiligen zusammengesetzten
 Formeln gemeint, wenn man von der \emph{Trapezregel} oder der
-\emph{Simpsonregel} spricht.
+\emph{Simpsonregel} spricht, insbesondere in englischsprachiger
+Literatur.
 
-\topillu{plots/trapezzusammen}
 \subsubsection{Zusammengesetzte Trapezregel}
+\index{Integration>Trapezregel}
 \index{Trapezregel>zusammengesetzte}
+\topillu{plots/trapezzusammen}
 \begin{minipage}[t]{0.74\linewidth}
   Die \emph{zusammengesetzte Trapezregel} für beliebig viele
   Stützstellen $x_i$, $i=0(1)N$ ist gegeben durch
@@ -491,12 +507,23 @@ $k=0(1)N$ mit $h=(b-a)/N$, verkürzt sich diese Formel zu
   \int_a^b f(x)\, dx =
   h\left(\frac{f(x_0)}{2} + \sum_{i=1}^{N-1} f(x_i) +
     \frac{f(x_N)}{2}\right)
-  \,-\, \underbrace{\frac{(b-a)^3}{12 N^2}f''(\xi)}_{\in \O(h^2)}
+  \,-\, \underbrace{\frac{(b-a)^3}{12 N^2}f''(\xi)}_{=\O(h^2)}
 \end{equation}
 für ein $\xi\in [a,b]$, wobei der letzte Term wieder den Fehler angibt
 und üblicherweise nicht berechnet werden kann. Hier konnten wir den
 Fehler der einfachen Trapezregel übernehmen, da stets $\frac{1}{N}
 \sum_{i=0}^{N-1} f''(\xi_i) = f''(\xi)$ für ein $\xi\in[a,b]$.
+
+Eine einfache Implementation der Trapezregel in Python könnte so
+aussehen:
+\begin{lstlisting}
+def trapez(f, a, b, N):
+    h = (b-a)/float(N)
+    summe = 0.5*(f(a) + f(b))
+    for x in a + numpy.arange(1, N)*h:
+        summe += f(x)
+    return h*summe
+\end{lstlisting}
 
 Die zusammengesetzte Trapezregel ist in Scipy als
 \scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
@@ -506,13 +533,15 @@ bei äquidistanten Daten nur die Schrittweite \argd{dx}$=h$
 spezifiziert werden.
 
 \subsubsection{Zusammengesetzte Mittelpunktsregel}
+\index{Integration>Mittelpunktsregel}
+\index{Mittelpunktsregel>zusammengesetzte}
 
 Analog zur Trapezregel lässt sich auch die zusammengesetzte
 Mittelpunktsregel für äquidistante Gitter formulieren:
 \begin{equation}
   \int_a^b f(x)\, dx =
   h\sum_{i=0}^{N-1} f(x_i) 
-  \,+\, \underbrace{\frac{(b-a)^3}{24 N^2}f''(\xi)}_{\in \O(h^2)}
+  \,+\, \underbrace{\frac{(b-a)^3}{24 N^2}f''(\xi)}_{=\O(h^2)}
 \end{equation}
 wobei $h=(b-a)/N$, $x_i = a + h(i+\nicefrac{1}{2})$, $i=0(1)N-1$, und
 $\xi\in [a,b]$. Die Stützpunkte $x_i$ sind also um $h/2$ gegenüber den
@@ -524,6 +553,8 @@ die Randpunkte verhalten. Meist werden die Intervallenden einbezogen
 sein; dann setzt man die Trapezregel ein.
 
 \subsubsection{Zusammengesetzte Simpsonregel}
+\index{Integration>Simpsonregel}
+\index{Simpsonregel>zusammengesetzte}
 
 Sei das Intervall $[a,b]$ in geradzahlig viele Abschnitte unterteilt,
 also $x_i = a + hi$, $i=0(1)N$, mit $h=(b-a)/N$ und $N$ gerade. Dann
@@ -537,7 +568,7 @@ Simpsonregel benutzen. Das führt zur Formel
     \sum_{i=1}^{N/2-2} \Bigl(2 f(x_{2i}) + 4 f(x_{2i+1})\Bigr)
     + f(x_N)
   \right)
-  \, - \, \underbrace{\frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)}_{\in \O(h^4)}
+  \, - \, \underbrace{\frac{(b-a)^5}{180 N^4} f^{(4)}(\xi)}_{=\O(h^4)}
 \end{equation}
 für ein $\xi\in [a,b]$. Durch die höhere Potenz von $N$ konvergiert
 dieses Verfahren schneller als die zusammengesetzte Trapezregel,
@@ -610,6 +641,7 @@ damit der äußere Cosinus ausreichend aufgelöst wird.  Für größere $x$
 als im Graphen gezeigt wird also auch $N=20$ nicht ausreichend sein.
 
 \subsection{\keyword{Romberg-Integration}}
+\index{Integration>Romberg-}
 
 Ist $f\in C^{2k+2}([a,b])$ und
 \begin{equation}
@@ -619,35 +651,34 @@ Ist $f\in C^{2k+2}([a,b])$ und
 die (zusammengesetzte) Trapezformel zur Schrittweite $h$, so gilt die
 \emph{\keyword{Euler-McLaurin-Summenformel}}
 \begin{equation}
-  \int_a^b f(x)\,dx = T_f(h) - \sum_{i=1}^k h^{2i}\alpha_i + \O(h^{2k-2})
+  T_f(h) = \int_a^b f(x)\,dx + \sum_{i=1}^k h^{2i}\alpha_i + \O(h^{2k-2})
 \end{equation}
 mit
 \begin{equation}
   \alpha_i = \frac{b_{2i}}{(2i)!}\left(f^{(2i-1)}(b) - f^{(2i-1)}(a)\right).
 \end{equation}
-$b_{2i}$ bezeichnet dabei die Bernoullizahlen, die $\alpha_i$ sind
-also unabhängig von der Schrittweite $h$.  
+$b_{2i}$ bezeichnet dabei die Bernoullizahlen, die $\alpha_i$ hängen also
+nicht von $h$ ab. 
 
-In anderen Worten bedeutet das, dass der Fehler der Trapezregel sich
-selbst wie ein Polynom in $h^2$ verhält!  Dies erlaubt es uns, die
-numerischen Regeln im Umgang mit Polynomen auf den Fehler selbst
-anzuwenden.  Insbesondere können wir -- sofern wir die Werte von
-$\alpha_i$ bestimmen können -- den Fehler der Trapezformel (und damit
-auch einen besseren Wert des Integrals) bei $h=0$ (also bei unendlich
-kleiner Schrittweite!) durch Extrapolation annähern. In diesem Fall
-kann also die Ordnung der Trapezformel von $\O(h^2)$ auf
-$\O(h^{2k-2})$ verbessert werden. Für $b-a$-periodische
-$C^\infty$-Funktionen sind sogar alle $\alpha_i=0$, daher strebt die
-Trapezformel $T_f(h)$ für diese schneller als jedes Polynom in $h$
-gegen Null.
+In anderen Worten bedeutet das, dass sich der die Trapezregel in einer
+Umgebung der 0 wie ein Polynom in $h^2$ verhält!  Damit können wir --
+sofern wir die Werte $\alpha_i$ bestimmen können -- durch Auswerten
+des Polynoms bei $h=0$, also bei unendlich kleiner Schrittweite, das
+gesuchte Integral bis auf einen Fehler der Ordnung $\O(h^{2k-2})$
+ausrechnen.
 
-Man kann zwar im allgemeinen die $\alpha_i$ nicht analytisch
-bestimmen, aber $T_f(h)$ durch Polynominterpolation annähern.  Bei der
-Richardson-Extrapolation bestimmt man zunächst $T_{i,0}=T_f(h_i)$ für
-paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$. Dann kann
-man mit Hilfe des Neville-Aitken-Schemas das interpolierende
-(Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten, also auf $h=0$
-extrapolieren:
+Für $b-a$-periodische $C^\infty$-Funktionen sind offenbar alle
+$\alpha_i=0$, daher strebt die Trapezformel $T_f(h)$ für diese
+schneller als jede Potenz von $h$ gegen das gesuchte Integral.
+
+Für nichtperiodische Funktionen kann man im allgemeinen die $\alpha_i$
+nicht analytisch bestimmen, weil das die Kenntnis hoher Ableitungen
+erfordert. Um das gesuchte Polynom $T_f(h)$, und damit die $\alpha_i$,
+trotzdem zu bestimmen, berechnet man zunächst $T_{i,0}=T_f(h_i)$ für
+paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$, und
+bestimmt dann $T_f(h)$ als das interpolierende Polynom durch diese
+Punkte. Dann kann man mit Hilfe des Neville-Aitken-Schemas das
+interpolierende (Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten:
 \begin{equation}
   \label{eq:richardson}
   T_{i,j} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
@@ -655,16 +686,18 @@ extrapolieren:
   \quad\text{für}\; i=0(1)k-j, j=1(1)k.
 \end{equation}
 Dann gilt $T_{0,k} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
-\O(h^{2k+2})$.
+\O(h^{2k+2})$. Eine solche Extrapolation von Schrittweiten $h>0$ auf
+die Schrittweite Null heißt auch
+\emph{\keyword{Richardson-Extrapolation}}.
 
-\noindent Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
+Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
 \eqref{eq:richardson} zu
 \begin{equation}
   T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
     T_{i,j-1}}{4^j - 1} = \frac{4^j T_{i+1,j-1} -
     T_{i,j-1}}{4^j - 1},
 \end{equation}
-was als \emph{\keyword{Romberg-Verfahren}} bezeichnet wird. Diese Wahl
+was als \emph{Romberg-Integration} bezeichnet wird. Diese Wahl
 der Schrittweiten hat auch den Vorteil, dass die Summe für $h_i$ bei
 der Berechnung von $h_{i+1}$ wiederverwendet werden kann:
 \begin{equation}
@@ -682,6 +715,8 @@ Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
 selber eine Implementation des Verfahrens,
 \scipy{scipy.integrate.romberg(f, a, b)}.
 
+\subsection{Bespiel: Fehlerintegral}
+
 Als Beispiel für die Romberg-Integration ist das Besselintegral aus
 dem vorherigen Abschnitt wenig geeignet, da die zu integrierende
 Funktion $b-a$-periodisch und $C^\infty$ ist. Dadurch konvergiert
@@ -693,10 +728,10 @@ Extrapolation noch etwas zu verbessern.
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.5\textwidth]{plots/romberg}
+  \includegraphics[width=0.75\textwidth]{plots/romberg}
   \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
     = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
-    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$ (im Inset
+    T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$ (im Einschub
     in doppeltlogarithmischer Skala). Sowohl Kreuze also auch blaue
     Kreise markieren Berechnungen mit der Trapezregel. Durch die mit
     blauen Kreisen markierten Datenpunkte wurde dann das
@@ -719,7 +754,14 @@ $6,0\cdot 10^{-5}$, während das Integral durch die Extrapolation von 5
 Datenpunkten das Integral bis auf $3,3\cdot 10^{-16}$ korrekt
 bestimmt, also Maschinengenauigkeit.
 
+\lstinputlisting[style=floating,
+caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
+  berechnet $\pi$ auf 16 Stellen genau.},
+label=lst:romberg]{romberg.py}
+\clearpage
+
 \subsection{\keyword{Gauß-Quadratur}}
+\index{Integration>Gauß-Quadratur}
 
 Bis jetzt hatten wir uns vor allem mit äquidistanten oder aber ganz
 freien Gittern beschäftigt. Wenn aber die zu integrierende Funktion
@@ -926,6 +968,8 @@ versuchen, das Integral durch Substitutionen auf eine endliche Form zu
 bringen.
 
 \subsection{Mehrdimensionale Integration, \keyword{Monte-Carlo-Integration}}
+\index{Integration>Monte-Carlo-}
+\label{sec:mc}
 
 Bis jetzt haben wir uns nur mit eindimensionalen Integralen
 beschäftigt. Im Prinzip ist es nicht schwer, die obigen Verfahren auch
@@ -948,24 +992,6 @@ benutzt werden, wären insgesamt trotzdem über $2^{600}= 4\cdot
 Anstieg hat R. Bellman den Begriff "`Curse of dimensionality"'
 geprägt, der bei praktischen allen hochdimensionalen Problemen
 auftritt.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/pi}
-  \caption{Links: Illustration der Monte-Carlo-Integration. Die
-    Funktion $\chi_{S^1}$ wird über 200 zufällig gewählte Positionen
-    (rote punkte und grüne Kreuze) innerhalb $[-1,1]^2$ gemittelt. An
-    den grünen Kreuzen ist $\chi_{D^2}=1$, für die roten Punkte ist es
-    Null. Rechts: Genauigkeit der Integralnäherungen als Funktion der
-    Anzahl der Stützstellen $N$.  Blaue Punkte markieren die mittlere
-    Genauigkeit der zweidimensionalen Monte-Carlo-Integration wie
-    links skizziert, die roten Kreuze die entsprechende
-    Mittelpunktsregel. Gelbe Rauten und grüne Kreuze zeigen die
-    Genauigkeiten von Monte-Carlo-Integration und Mittelpunktsregel
-    für die 5-Kugel, bei der die Monte-Carlo-Integration schon klar
-    überlegen ist.}
-  \label{fig:pi}
-\end{figure}
 
 Um solche hochdimensionalen Integrale trotzdem nähern zu können,
 kann man die Monte-Carlo-Integration einsetzen. Diese benutzt, dass
@@ -993,6 +1019,17 @@ allgemeinen nicht, können sie aber gemäß~\eqref{eq:varest} als
 \end{equation}
 zusammen mit der Integration abschätzen.
 
+Als SciPy-Code sieht eine Monte-Carlo-Integration noch einfacher als
+die Trapezregel aus. Hier ein Code, der zweidimensional über
+$[a,b]\times[c,d]$ integriert:
+\begin{lstlisting}
+from numpy.random import uniform
+
+def montecarlo(f, a, b, c, d, N):
+    volumen = (b-a)*(d-c)
+    return volumen*sum(f(uniform(a,b,N), uniform(c,d,N)))/N
+\end{lstlisting}
+
 Da die Standardabweichung eine Konstante ist, fällt der Fehler der
 Monte-Carlo-Integration im allgemeinen wie $\O(N^{-1/2})$. Im
 Vergleich dazu fällt der Fehler der Trapezregel im eindimensionalen
@@ -1011,6 +1048,8 @@ Funktion $f$ nicht genügend glatt oder nicht einmal stetig ist, so ist
 die Trapezregel auch bei niedrig-dimensionalen Integralen nicht mehr
 so deutlich überlegen.
 
+\subsection{Beispiel: Monte-Carlo-Integration von $\pi$}
+
 Als Beispiel soll diesmal eine andere Methode zur Bestimmung von
 $\pi$ dienen, nämlich die Integration der charakteristischen Funktion
 \begin{equation}
@@ -1025,6 +1064,26 @@ im Bereich $[-1,1]^2$. Das ergibt dann gerade den Kreisinhalt, also
   \int_{x\in[-1,1]}\int_{y\in[-1,1]}\chi_{D^2}(x, y)\,dx\,dy
   = \pi.
 \end{equation}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/pi}
+  \caption{Links: Illustration der Monte-Carlo-Integration. Die
+    Funktion $\chi_{D^2}$ wird über 200 zufällige Punkte (rote Kreise
+    und grüne Kreuze) innerhalb $[-1,1]^2$ gemittelt. An den grünen
+    Kreuzen ist $\chi_{D^2}=1$, für die roten Punkte ist es
+    Null. Rechts: Genauigkeit der Integralnäherungen als Funktion der
+    Anzahl der Stützstellen $N$.  Blaue Punkte markieren die mittlere
+    Genauigkeit der zweidimensionalen Monte-Carlo-Integration wie
+    links skizziert, die roten Kreuze die entsprechende
+    Mittelpunktsregel. Gelbe Rauten und grüne Kreuze zeigen die
+    Genauigkeiten von Monte-Carlo-Integration und Mittelpunktsregel
+    für die 5-Kugel, bei der die Monte-Carlo-Integration schon klar
+    überlegen ist. Die durchgezogene Linie entspricht einer Skalierung
+    von $N^{-1/2}$, wie man sie für die Monte-Carlo-Integration
+    erwartet.}
+  \label{fig:pi}
+\end{figure}
 
 Abbildung~\ref{fig:pi} skizziert links die Monte-Carlo-Integration von
 $\chi_{D^2}$, rechts zeigt sie gemessene Fehler bei
@@ -1048,11 +1107,169 @@ sondern es ist sogar sehr unwahrscheinlich, ein ebenso schlechtes
 Ergebnis zu erzielen. Für solche Integrale ist also die
 Monte-Carlo-Methode in jedem Falle vorzuziehen.
 
-\lstinputlisting[style=floating,
-caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
-  berechnet $\pi$ auf 16 Stellen genau.},
-label=lst:romberg]{romberg.py}
+\subsection{\keyword{Quasi-Monte-Carlo-Integration}}
+\index{Integration>Quasi-Monte-Carlo-}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/quasirandom}
+  \caption{Quasi-Monte-Carlo-Integration von $\pi$. Wie in
+    Abbildung~\ref{fig:pi} sind links die aus der Halton-Folge
+    gezogenen Punkte dargestellt, wobei die ersten zehn Punkte rot
+    gefärbt sind, die nächsten hundert Punkte blau und die restlichen
+    grün. Auf der rechten Seite sind die Ergebnisse der Integration zu
+    sehen, wobei blaue Kreise die Monte-Carlo-Integration mit
+    Pseudozufallszahlen angeben, grüne Kreuze die Trapezregel und rote
+    Diamanten die Quasi-Monte-Carlo-Integration.}
+  \label{fig:qmc}
+\end{figure}
+
+Bei der Monte-Carlo-Integration nutzen wir (Pseudo-)Zufallszahlen, um
+durch zufällige Abtastung möglichst gut den mittleren Wert der zu
+integrierenden Funktion zu bestimmen. Wie wir gesehen haben, sind im
+Mehrdimensionalen Zufallszahlen zu diesem Zweck besser geeignet als
+ein regelmäßiges Gitter --- das entspräche der ja der
+Trapezregel. Sind aber Zufallszahlen optimal?
+
+Tatsächlich nicht, denn etwa Abbildung~\ref{fig:optical_test} links
+zeigt, dass Zufallszahlen nicht so homogen verteilt sind, wie man
+annehmen würde. Dies ist kein Fehler des betrachteten
+Zufallszahlengenerators, sondern ein prinzipielles Problem echter
+Zufallssequenzen, die sogenannte \emph{\keyword{Diskrepanz}}. Unsere
+Erwartung an eine Reihe von $N$ gleichverteilten Zufallszahlen ist,
+dass jedes Intervall $[a,b]\subseteq [0,1]$ von etwa $(b-a)N$
+Zufallszahlen getroffen wird. Dies ist aber bei echten Zufallszahlen
+erst bei sehr großen $N$ der Fall. Das bedeutet, dass es bei der
+Monte-Carlo-Integration immer Bereiche gibt, die von einer echten
+Zufallsreihe über- oder unterrepräsentiert werden. Hat aber einer
+dieser Bereiche einen großen Anteil am betrachteten Integral, führt
+dies zu entsprechenden Fehlern.
+
+\subsubsection{\keyword{Quasizufallszahlen}}
+
+Anstelle von Zufallszahlen benutzt man daher für die
+Monte-Carlo-Integration besser \emph{Quasizufallszahlen}, die nicht
+mehr wirklich zufällig sind, sondern eine möglichst geringe Diskrepanz
+bieten. Ziel ist es also, möglichst alle Bereiche mit genau so vielen
+Zahlen abzudecken, wie man nach Gleichverteilung erwarten würde. Ein
+Beispiel ist die \emph{\keyword{Halton-Folge}}, die eine Reihe mit
+niedriger Diskrepanz auf $[0,1]$ ist.
+
+Um die Halton-Folge zu definieren, wählen wir für jede Dimension eine
+andere Primzahl $p$ als Basis und schreiben die natürlichen Zahlen in
+Basis $p$. Um daraus die gewünschte Zerlegung des Intervalls $[0,1]$
+zu erhalten, benutzen wir einfach die Stellen der $p$-Darstellung als
+Nachkommastellen, in umgekehrter Reihenfolge:
+\begin{center}
+  \begin{minipage}[t]{0.49\textwidth}
+    \centering
+    \begin{tabular}[t]{l|r|l|l}
+      $n$ & binär & Bitumkehr & Ergebnis\\\hline
+      1 &   1 & .1 & \nicefrac{1}{2}\\\hline
+      2 &  10 & .01 & \nicefrac{1}{4}\\
+      3 &  11 & .11 & \nicefrac{3}{4}
+    \end{tabular}
+  \end{minipage}
+  \begin{minipage}[t]{0.49\textwidth}
+    \centering
+    \begin{tabular}[t]{l|r|l|l}
+      $n$ & ternär & Bitumkehr & Ergebnis\\\hline
+      4 & 100 & .001 & \nicefrac{1}{8}\\
+      5 & 101 & .101 & \nicefrac{5}{8}\\
+      6 & 110 & .011 & \nicefrac{3}{8}\\
+      7 & 111 & .111 & \nicefrac{7}{8}
+    \end{tabular}
+  \end{minipage}
+      
+\end{center}
+Für $p=3$ ergibt sich analog aus der ternären Darstellung
+\begin{center}
+  \begin{minipage}[t]{0.49\textwidth}
+    \centering
+    \begin{tabular}[t]{l|r|l|l}
+      $n$ & ternär & Bitumkehr & Ergebnis\\\hline
+      1 &   1 & .1 & \nicefrac{1}{3}\\
+      2 &   2 & .2 & \nicefrac{2}{3}
+    \end{tabular}
+  \end{minipage}
+  \begin{minipage}[t]{0.49\textwidth}
+    \centering
+    \begin{tabular}[t]{l|r|l|l}
+      $n$ & ternär & Bitumkehr & Ergebnis\\\hline
+      3 &  10 & .01 & \nicefrac{1}{9}\\
+      4 &  11 & .11 & \nicefrac{4}{9}\\
+      5 &  12 & .21 & \nicefrac{7}{9}\\
+      6 &  20 & .02 & \nicefrac{2}{9}\\
+      7 &  21 & .12 & \nicefrac{5}{9}\\
+      8 &  22 & .22 & \nicefrac{8}{9}
+    \end{tabular}
+  \end{minipage}
+\end{center}
+Die Umkehrung der Stellen hat den Vorteil, dass die $p^n$-tel
+nacheinander möglichst gleichmäßig das Intervall füllen, was ja gerade
+einer niedrigen Diskrepanz entspricht. Die sich ergebende Folge heißt
+eine \emph{van der Corput-Folge}.
+
+Die mehrdimensionale Halton-Folge ist dann die Folge, die aus der
+Verschränkung einer van Corput-Folge für jede Dimension entsteht. Bei
+zwei Dimensionen mit Basen 2 und 3 ergibt sich also
+\begin{equation}
+  \left(\frac{1}{2}, \frac{1}{3}\right),
+  \left(\frac{1}{4}, \frac{2}{3}\right),
+  \left(\frac{3}{4}, \frac{1}{9}\right),
+  \left(\frac{1}{8}, \frac{4}{9}\right),
+  \left(\frac{5}{8}, \frac{7}{9}\right),
+  \left(\frac{3}{8}, \frac{2}{9}\right),
+  \left(\frac{7}{8}, \frac{5}{9}\right),\ldots
+\end{equation}
+
+Die folgende Routine berechnet die ersten $N$ Glieder der van der
+Corput-Folge zur Basis $p$. Dazu wird solange von den natürlichen
+Zahlen $1,2,\ldots,N$ die unterste Stelle abgezogen und mit der
+reziproken Potenz auf das Ergebnis addiert, bis alle Stellen von auch
+der höchsten Zahl, $N$, bearbeitet wurden:
+\begin{lstlisting}
+from numpy import *
+
+def vanderCorput(N, p):
+    # zu wandelnde Zahlen
+    numbers = arange(1,int(N)+1)
+    # bitumgekehrtes Ergebnis
+    result = zeros(N)
+    # Wert der aktuellen, inversen Stelle
+    frac = 1.0 / p
+
+    # solange die groesste Zahl noch Stellen hat
+    while numbers[-1] > 0:
+        # unterste Stelle abschneiden
+        digit = numbers % p
+        numbers /= p
+        # ... und zum Ergebnis hinzufuegen
+        result += frac*digit
+        frac /= p
+
+    return array(result)
+\end{lstlisting}
+Um eine Monte-Carlo-Integration mit Quasizufallszahlen durchzuführen,
+müssen im Beispielcode zum Abschnitt~\ref{sec:mc} lediglich die
+Aufrufe von \lstinline!uniform(a,b,N)! durch
+\lstinline!a + (b-a)*vanderCorput(N, p)! ersetzt werden. Üblicherweise
+wählt man dabei $p=2$ für die erste Dimension, $p=3$ für die zweite,
+und so weiter.
+
+\subsection{Beispiel: Quasi-Monte-Carlo-Integration von $\pi$}
+
+Abbildung~\ref{fig:qmc} zeigt nochmals die Integration von $\pi$ mit
+Hilfe der Monte-Carlo-Integration, allerdings diesmal nicht mit
+Pseudozufallszahlen, sondern der Halton-Folge, also
+Quasizufallszahlen. Wie man gut sieht, sind die Quasizufallszahlen
+scheinbar zufällig, aber sehr viel homogener als echte oder
+Pseudozufallszahlen über das Quadrat verteilt, insbesondere auch schon
+bei niedrigen Anzahlen von Punkten.  Die Integration mit
+Quasizufallszahlen wird kurz als \emph{Quasi}-Monte-Carlo-Integration
+bezeichnet, und ist für die unstetige Indikatorfunktion nicht nur der
+Monte-Carlo-Integration mit Zufallszahlen überlegen, sondern auch der
+Trapezregel.
 
 %%% Local Variables: 
 %%% mode: latex

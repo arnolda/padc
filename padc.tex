@@ -23,6 +23,7 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{ifthen}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{icomma} % correct decimal commas in formulas
@@ -77,7 +78,8 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
   abovecaptionskip=\medskipamount
 }
 \lstdefinestyle{floating}{float=p,lineskip={-0.3\baselineskip}}
-\lstdefinestyle{abovecaption}{captionpos=b,abovecaptionskip=\medskipamount}
+\lstdefinestyle{multipage}{captionpos=t,belowcaptionskip=\medskipamount,
+  lineskip={-0.3\baselineskip}}
 \lstdefinestyle{scipy}{style=inline,
   basicstyle={\ttfamily\bfseries\color{violet}},
   breaklines=true
@@ -99,6 +101,7 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\ZZ}{\mathbb{Z}}
 \newcommand{\NN}{\mathbb{N}}
+\newcommand{\FF}{\mathbb{F}}
 
 \newcommand{\mean}[1]{\left\langle{#1}\right\rangle}
 \newcommand{\norm}[1]{\left\lVert{#1}\right\rVert}
@@ -148,6 +151,7 @@ Sie sich schriftlich an Creative Commons, 444 Castro Street, Suite
 \input{signalanalyse.tex}
 \input{ngls.tex}
 \input{diff_int.tex}
+\input{random.tex}
 
 \printbibliography
 
