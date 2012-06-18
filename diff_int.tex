@@ -779,7 +779,8 @@ gilt, also dies Polynome exakt integriert werden. Die feste Wahl der
 Integralgrenzen $a=-1$ und $b=1$ ist dabei keine Einschränkung, weil
 jedes endliche Integral auf diesen Bereich transformiert werden kann:
 \begin{equation}
-  \int_a^b f(x)\, dx = (b-a) \int_{-1}^{1}f\bigl(a + x'(b-a)\bigr)\, dx'.
+  \int_a^b f(x)\, dx = \frac{(b-a)}{2} \int_{-1}^{1}f\bigl(
+  \frac{a+b}{2} + x'\frac{b-a}{2}\bigr)\, dx'.
 \end{equation}
 
 Welchen Polynomgrad können wir so erreichen?  Auf der einen Seite
@@ -999,7 +1000,7 @@ auftritt.
 Um solche hochdimensionalen Integrale trotzdem nähern zu können,
 kann man die Monte-Carlo-Integration einsetzen. Diese benutzt, dass
 \begin{equation}
-  \mean{\frac{1}{N} \sum_{i=1}^N f(\xi_i)} = \mean{f}_{V}
+  \mean{\frac{1}{N} \sum_{i=1}^N f(\xi_i)} = \mean{f}_{V} =
   \int_{x\in V} f(x)\,dx / |V|,
 \end{equation}
 wobei $\xi_i$ verschiedene Ziehungen einer Zufallsvariablen sind, die
