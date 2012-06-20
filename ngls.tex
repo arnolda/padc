@@ -74,7 +74,10 @@ zum Beispiel die in 0 nicht differenzierbare Betragsfunktion, die auf
 ganz $\RR$ L-stetig mit $L = 1$ ist. Auf der anderen Seite ist
 offenbar jede L-stetige Funktion auch stetig, d.h., die L-stetigen
 Funktionen sind eine eigene Klasse zwischen den stetigen und
-differenzierbaren Funktionen.
+differenzierbaren Funktionen. Dabei ist es nicht wesentlich, welche
+Norm $\norm{\cdot}$ genutzt wird. Sie kann für das Problem geeignet
+gewählt werden, sofern sie die üblichen Bedingungen an eine Norm, wie
+etwa die Dreiecksungleichung, erfüllt.
 
 \index{Banachscher Fixpunktsatz} Hat eine Funktion $g:M\to M$ eine
 Lipschitz-Konstante $L<1$, so heißt $g$ \emph{kontrahierend}, weil
@@ -177,18 +180,6 @@ konvergiert. Wird hingegen $\phi_0$ so gewählt, dass
 $g'(\overline(x))<1$, aber $L>1$, so konvergiert das Verfahren zwar
 noch, aber nicht mehr exponentiell.
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/newton}
-  \caption{Newtonverfahren für die Funktion $f(r) = e^{-r}/r -
-    \phi_0$. Wie schon beim Graphen zur sukzessiven Substitution ist
-    links $\phi_0=2$, rechts $\phi_0=1/4$, allerdings konvergiert das
-    Newtonverfahren für beide Werte. Blau dargestellt ist $f$, die
-    roten, dicken Linien stellen die Tangenten dar, deren Nullstellen
-    die neuen Näherungen für die gesuchte Nullstelle von $f$ sind.}
-  \label{fig:newton}
-\end{figure}
-
 \section{Newtonverfahren in einer Dimension}
 \index{Newtonverfahren}
 \index{Nullstellensuche}
@@ -210,6 +201,18 @@ Nullstelle $\overline{x}$ von $f$ gilt offenbar $g(\overline{x}) =
 durch sukzessive Substitution annähern können. Man bricht das
 Verfahren wie auch die sukzessive Substitution ab, wenn
 $\abs{x_{n}-x_{n-1}}$ bzw. $\abs{f(x_n)}$ hinreichend klein sind.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/newton}
+  \caption{Newtonverfahren für die Funktion $f(r) = e^{-r}/r -
+    \phi_0$. Wie schon beim Graphen zur sukzessiven Substitution ist
+    links $\phi_0=2$, rechts $\phi_0=1/4$, allerdings konvergiert das
+    Newtonverfahren für beide Werte. Blau dargestellt ist $f$, die
+    roten, dicken Linien stellen die Tangenten dar, deren Nullstellen
+    die neuen Näherungen für die gesuchte Nullstelle von $f$ sind.}
+  \label{fig:newton}
+\end{figure}
 
 Ist nun $f$ sogar zweifach stetig differenzierbar, so gilt
 \begin{equation}

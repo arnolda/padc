@@ -59,26 +59,12 @@ class Minstd:
 
 rng_type = Randu
 
-figure = pyplot.figure(figsize=(8,4))
-figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
-
-##########################################
+figure = pyplot.figure(figsize=(4,4))
 
 rng = rng_type()
+data = [ rng.next() for x in range(1000) ]
 
-data = [ rng.next() for x in range(10000) ]
-
-graph = figure.add_subplot(121)
-
-graph.plot(data[:-1], data[1:], ".", markersize=1)
-
-##########################################
-
-rng = rng_type()
-data = [ rng.next() for x in range(10000) ]
-
-rect = figure.add_subplot(1, 2, 2).get_position()
-graph = Axes3D(figure, rect)
+graph = Axes3D(figure)
 
 graph.scatter(data[:-2], data[1:-1], data[2:], s=1, marker="o",
               edgecolors="blue", facecolors="blue")

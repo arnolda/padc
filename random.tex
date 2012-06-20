@@ -920,7 +920,7 @@ auf beliebige Werte $\Delta x$ und $\Delta t$. Dann gilt offenbar $D =
 \sigma^2(u) = \Delta x^2/\Delta t$. Wir betrachten nun die
 Master-Gleichung der diskreten Wahrscheinlichkeitspopulationen
 \begin{equation}
-  p(x, t + \Delta t) =
+  \Delta p(x, t + \Delta t) = p(x, t + \Delta t) - p(x, t) =
   \frac{1}{2}p(x - \Delta x, t) +
   \frac{1}{2}p(x + \Delta x, t) - p(x, t).
 \end{equation}
@@ -934,7 +934,7 @@ bleiben kann.
 Wir multiplizieren nun linker Hand mit $\Delta t^{-1}$ und rechter Hand mit
 $\Delta x^{-2}$:
 \begin{equation}
-  \frac{p(x, t + \Delta t)}{\Delta t} =
+  \frac{\Delta p(x, t + \Delta t)}{\Delta t} =
   \frac{D}{2\Delta x^2} \left(p(x - \Delta x, t) +
     p(x + \Delta x, t) - 2 p(x, t)\right).
 \end{equation}

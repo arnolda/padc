@@ -24,7 +24,8 @@ bessel_int.pdf romberg.pdf inf_int.pdf pi.pdf \
 quasirandom.pdf \
 rejection.pdf inversion.pdf \
 statistics_test.pdf optical_test.pdf fft_tests.pdf \
-rw.pdf dla.pdf percolation.pdf
+rw.pdf dla.pdf percolation.pdf \
+2d-laplace.pdf
 
 trapezregel.pdf mittelpunktsregel.pdf simpsonregel.pdf rechteckregel.pdf trapezzusammen.pdf: num_int.py
 	python $<
