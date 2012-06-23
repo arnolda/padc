@@ -11,45 +11,6 @@
 \chapter{Lineare Gleichungssysteme \textrm{II}}
 \index{Gleichungssysteme>lineare}
 
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[node distance=0em and 0em]
-    \node (pic) {\includegraphics[height=9\baselineskip]{plots/2d-laplace}};
-    \node[right= of pic] {
-      $\cdot\begin{pmatrix}
-        \Phi_0 = \phi(0,0)\\
-        \Phi_1 = \phi(h,0)\\
-        \vdots\\
-        \Phi_{4} = \phi(h,0)\\
-        \Phi_{5} = \phi(0,h)\\
-        \vdots\\
-        \Phi_{24} = \phi(4h,4h)
-      \end{pmatrix}
-      =-
-      \begin{pmatrix}
-        \Phi_0\\
-        \rho(h,0)\\
-        \vdots\\
-        \rho(h,0)\\
-        \rho(0,h)\\
-        \vdots\\
-        \rho(4h,4h)
-      \end{pmatrix}
-      $ } ;
-  \end{tikzpicture}
-  \caption{Symbolische Darstellung der Gleichung zum Laplace-Operator
-    in zwei Dimensionen, diskretisiert auf einem $5\times
-    5$-Gitter. In der Matrix markieren grüne Punkte Einträge mit Wert
-    $1/h^2$, schwarze mit $-4/h^2$ und das rote Kreuz den
-    Normierungseintrag mit Wert 1. Alle anderen Einträge sind
-    Null. Die ersten fünf Elemente einer Matrixzeile numerieren
-    jeweils zunächst die Gitterpunkte $(k h, 0)$, $k=0(1)4$,
-    durch. Die folgenden fünf Elemente der Matrixzeile entsprechen $(k
-    h, h)$, und so weiter. Durch die periodischen Randbedingungen sind
-    auch sehr weit entfernte Nebendiagonalen teilweise besetzt.}
-  \label{fig:2d-laplace}
-\end{figure}
-
 Wie wir bereits gesehen haben, lassen sich gewöhnliche
 Differentialgleichungen in einer Dimension recht einfach auf lineare
 Gleichungssysteme abbilden. Diese haben Bandstruktur und sind
@@ -92,24 +53,66 @@ Wie man sich leicht überlegt, ist diese Zuordnung eindeutig, wir
 können also beliebig zwischen $\Phi_n$ und $\phi_{k,l}$ wechseln und
 so etwa \eqref{eq:laplacedisc} auf den Vektor $\Phi_n$
 übertragen. Dies ergibt dann $N^2$ Gleichungen für alle Datenpunkte,
-die in Matrixform wie Abbildung~\ref{fig:2d-laplace} aussehen.
+die in Matrixform für $N=5$ zum Beispiel wie folgt aussehen:
+\begin{equation}
+  \label{eq:2d-laplace}
+  \text{\raisebox{-4\baselineskip}{\includegraphics[height=8.5\baselineskip]{plots/2d-laplace}}}
+  \;\cdot\begin{pmatrix}
+    \Phi_0 = \phi(0,0)\\
+    \Phi_1 = \phi(h,0)\\
+    \vdots\\
+    \Phi_{4} = \phi(h,0)\\
+    \Phi_{5} = \phi(0,h)\\
+    \vdots\\
+    \Phi_{24} = \phi(4h,4h)
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \Phi_0\\
+    \rho(h,0)\\
+    \vdots\\
+    \rho(h,0)\\
+    \rho(0,h)\\
+    \vdots\\
+    \rho(4h,4h)
+  \end{pmatrix}
+  .
+\end{equation}
+In der Matrix markieren grüne Punkte Einträge mit Wert $1/h^2$,
+schwarze Punkte Einträge mit Wert $-4/h^2$ und das rote Kreuz den
+Normierungseintrag mit Wert 1. Alle anderen Einträge sind Null.
 
-Abbildung~\ref{fig:2d-laplace} zeigt, dass die entstehende Matrix zwar
-immer noch Bandstruktur hat und dünn besetzt ist, d.h. fast alle
-Einträge Null, allerdings sind diese Bänder nicht mehr nur um die
-Diagonale verteilt. Auch durch Umsortieren lässt sich dies nicht
-wesentlich verbessern. Daher muss die volle Gaußelimination
-durchgeführt werden. Für Gitter von $5\times 5$ Punkten ist das zwar
-noch ausreichend schnell zu lösen, bei einem Gitter von $100\times
-100$ Punkten hat die Matrix allerdings bereits $100,000,000$ Einträge,
-was die Gaußelimination ziemlich langsam macht.
+Durch die periodischen Randbedingungen in $x$ und $y$ sind zwei
+Nebendiagonalen weiter außen teilweise besetzt. Damit hat die
+entstehende Matrix zwar immer noch Bandstruktur hat und ist dünn
+besetzt, d.h. fast alle Einträge Null, allerdings ist sie nicht mehr
+tridiagonal. Auch durch Umsortieren lässt sich dies nicht wesentlich
+ändern, daher muss die volle Gaußelimination durchgeführt werden. Für
+Gitter von $5\times 5$ Punkten ist das zwar noch unproblematisch, bei
+einem Gitter von $100\times 100$ Punkten hat die volle Matrix
+allerdings bereits $100,000,000$ Einträge, und die Gaußelimination
+wird zu langsam. Noch schwieriger wird es in den meist benutzten
+drei Dimensionen, da die volle Matrix schnell mehrere Milliarden
+Einträge hat.
+
+Neben der Ineffizienz des Gaußverfahrens bringt das Arbeiten mit der
+vollen Matrix allerdings auch Speicherprobleme mit sich, denn eine
+volle Matrix aus dem $\RR^{100,000\times 100,000}$ benötigt bei
+einfacher Genauigkeit über 37GB Speicher. Dünn besetzte Matrizen
+dieser Größe sind allerdings durchaus handhabbar, denn nur wenige
+Matrixelemente sind überhaupt ungleich Null. Indem man nur diese
+Elemente geschickt speichert, lassen sich sogar noch weitaus größere
+Matrizen bewältigen. Auf derartigen Datenstrukturen kann die
+Gaußelimination allerdings nicht effizient eingesetzt werden, da diese
+die Matrixstruktur durch die Zeilenadditionen rasch zerstört.
 
 Im folgenden lernen wir nun schnellere, iterative Gleichungslöser
 kennen, mit denen auch solche und größere Gleichungssysteme handhabbar
-werden. Außerdem lernen wir Verfahren zur Berechnung von Eigenwerten
-und -vektoren kennen und eine wichtige Verallgemeinerung, die
-Singulärwertzerlegung. Diese leitet dann schon wieder zum nächsten
-Kapitel, der Optimierung, über.
+werden. Außerdem können diese Verfahren auch auf große, dünn besetzte
+Matrizen angewandt werden. Weiter lernen wir Verfahren zur Berechnung
+von Eigenwerten und -vektoren kennen und eine wichtige
+Verallgemeinerung, die Singulärwertzerlegung. Diese leitet dann schon
+wieder zum nächsten Kapitel, der Optimierung, über.
 
 \section{Iterative Gleichungslöser}
 
@@ -225,19 +228,67 @@ gegenüber den Nebeneinträgen sind, desto schneller konvergiert das
 Verfahren, zum Beispiel wenn die Matrix eine kleine Störung der
 Einheitsmatrix ist.
 
+\subsubsection{Indizierte Matrixspeicherung}
+\index{indizierte Matrixspeicherung}
+\index{Indexformat}
+
+Wie man an der komponentenweisen Darstellung \eqref{eq:jacobicomp} gut
+sieht, kann das Jacobiverfahren auch auf dünnbesetzten Matrizen
+implementiert werden. Zum einen wird die Matrix $A$ beim Verfahren
+nicht verändert, sondern nur der erheblich kleinere Lösungsvektor, zum
+anderen wird nur zeilenweise summiert, was eine indizierte Speicherung
+ermöglicht.  Dazu wird für jede Zeile $j$ lediglich der
+Diagonaleintrag $a_{jj}$ explizit gespeichert, sowie eine Liste mit
+Einträgen $(k, a_{jk})$, die die restlichen Elemente $\neq 0$
+enthält. Eine Implementation des Jacobiverfahrens muss dann lediglich
+für jede Zeile die Summe $\sum_{k\neq j} a_{jk}x_k^{(i)}$ mit
+Hilfe der zur Zeile gehörigen Liste bilden, von $b_j$ abziehen und
+durch $a_{jj}$ teilen.
+
+In unserem einführenden Beispiel wären pro Zeile neben der Diagonalen
+maximal vier weitere Einträge nötig, unabhängig davon, wie fein die
+Schrittweite gewählt wird. Die Matrix \eqref{eq:2d-laplace} würde
+damit so dargestellt:
+{\small
+  \begin{align}
+    1, \{\} \;&\mathop{\widehat{=}}\; \left(1, 0, \ldots, 0\right)
+    \nonumber\\
+    -\frac{4}{h^2}, \left\{
+      \left(2, \frac{1}{h^2}\right), \left(0, \frac{1}{h^2}\right),
+      \left(6, \frac{1}{h^2}\right), \left(21, \frac{1}{h^2}\right)
+    \right\}
+    \;&\mathop{\widehat{=}}\;
+    \left(\frac{1}{h^2}, -\frac{4}{h^2}, \frac{1}{h^2}, 0, 0, 0, 1, 0,
+      \ldots, 0, 1, 0, 0, 0\right)\nonumber\\
+    -\frac{4}{h^2}, \left\{
+      \left(3, \frac{1}{h^2}\right), \left(1, \frac{1}{h^2}\right),
+      \left(7, \frac{1}{h^2}\right), \left(22, \frac{1}{h^2}\right)
+    \right\}
+    \;&\mathop{\widehat{=}}\;
+    \left(0, \frac{1}{h^2}, -\frac{4}{h^2}, \frac{1}{h^2}, 0, 0, 0, 1, 0,
+      \ldots, 0, 1, 0, 0\right)\nonumber\\
+    &\vdots
+  \end{align}}
+
 \subsection{\keyword{Gauß-Seidel-Verfahren}}
 
 Wird \eqref{eq:jacobicomp} zeilenweise abgearbeitet, so müssen die
-bereits bearbeiteten Werte $x_k^{(i+1)}$ zwischengespeichert werden,
-da für die restlichen Zeilen ja noch die alten Werte $x_k^{(i+1)}$
+bereits berechneten Werte $x_j^{(i+1)}$ zwischengespeichert werden,
+da für die restlichen Zeilen ja noch die alten Werte $x_k^{(i)}$
 benötigt werden. Beim Gauß-Seidel-Verfahren werden stattdessen die
 bereits berechneten, neueren Werte benutzt:
 \begin{equation}
+  \label{eq:gscomp}
   x_j^{(i+1)} = \frac{1}{a_{jj}}\left(b_j -
     \sum_{k=1}^{j-1} a_{jk}x_k^{(i+1)} - \sum_{k=j+1}^n a_{jk}x_k^{(i)}\right).
 \end{equation}
-Mit der Zerlegung $A=L + D + U$ wie
-beim Jacobiverfahren ergibt sich in Matrixschreibweise
+Dies erspart einerseits die getrennte Speicherung der neuen
+Näherungslösung $x_k$, andererseits ist die neue Näherungslösung näher
+an der Lösung, so dass es durchaus sinnvoll erscheint, diese neuen, besseren
+Werte für die verbleibenden Zeilen zu nutzen.
+
+Mit der Zerlegung $A=L + D + U$ wie beim Jacobiverfahren ergibt sich
+in Matrixschreibweise
 \begin{equation}
   x^{(i+1)} = -D^{-1}L x^{(i+1)} - D^{-1} U x^{(i)} + D^{-1}b
   \;\implies\;
@@ -250,47 +301,55 @@ und damit
 Das Gauß-Seidel-Verfahren ist also auch vom Typ \eqref{eq:itgl}, mit
 der etwas komplexeren Matrix $B= (D+L)^{-1}$. Tatsächlich ist auch
 \begin{equation}
+  \label{eq:gst}
   T = I - (D + L)^{-1} A = (D + L)^{-1}(D + L - A) = -(D+L)^{-1} U.
 \end{equation}
 Man kann zeigen, dass $\norm{T}_\infty$ beim Gauß-Seidel-Verfahren
 kleiner ist als beim Jacobi-Verfahren. Das bedeutet allerdings im
-allgemeinen nicht, dass das Gauß-Seidel-Verfahren schneller ist. Man
-spart allerdings den Speicherplatz, um $x^{(i+1)}$
+allgemeinen nicht, dass das Gauß-Seidel-Verfahren schneller ist, trotz
+dessen, dass teilweise mit prinzipiell besseren Näherungen gerechnet
+wird. Man spart allerdings den Speicherplatz, um $x^{(i+1)}$
 zwischenzuspeichern.
 
+Genauso wie das Jacobiverfahren kann auch das Gauß-Seidel-Verfahren
+auf indizierten Matrixformaten benutzt werden, wobei die beiden Summen
+in \eqref{eq:gscomp} entweder gleichzeitig aufaddiert werden, oder die
+Listen der Nichtdiagonalelemente in Elemente links und rechts der
+Diagonalen aufgeteilt.
+
 Insbesondere für die parallele Verarbeitung, die mit der heutigen
-weiten Verbreitung von Mehrkern-Prozessoren immer wichtiger ist, ist
-das Gauß-Seidel-Verfahren allerdings ungeeignet, da die Berechnung
+weiten Verbreitung von Mehrkern-Prozessoren ein wichtiger Faktor ist,
+ist das Gauß-Seidel-Verfahren allerdings ungeeignet, da die Berechnung
 jeder Zeile die Ergebnisse der vorherigen erfordert. Das
 Jacobi-Verfahren kann hingegen auf soviele Prozessoren verteilt
 werden, wie die Matrix Zeilen hat, was eine effiziente Verarbeitung
-selbst auf modernen Graphikkarten ermöglicht. 
+selbst auf modernen Graphikkarten ermöglicht.
 
 \subsection{\keyword{Relaxationsverfahren}}
-\index{Successive Overrelaxation}
+\index{Successive over-relaxation}
 \index{SOR}
 
-Beim Relaxationsverfahren (Successive Over-relaxation, SOR) wird statt
-$B = D + L$ die Matrix $B = D/\omega + L$ mit einem geeigneten
-Relaxationsfaktor $\omega$ betrachtet. Durch geeignete Wahl von
-$\omega$ können dann auch nicht strikt diagonaldominante Matrizen
-behandelt werden. Allerdings kann man nur zeigen, dass $0<\omega< 2$
-gelten muss, aber ein Wert $\omega$, der zu schneller Konvergenz
-führt, muss durch Ausprobieren gefunden werden.
+Beim Relaxationsverfahren (Successive over-relaxation, SOR) wird statt
+$B = D + L$ die Matrix $B = D/\omega + L$ mit einem Relaxationsfaktor
+$\omega$ betrachtet. Durch geeignete Wahl von $\omega$ können dann
+auch nicht strikt diagonaldominante Matrizen behandelt
+werden. Allerdings kann man nur zeigen, dass $0<\omega< 2$ gelten
+muss, aber ein Wert $\omega$, der zu schneller Konvergenz führt, muss
+durch Ausprobieren gefunden werden.
 
-In Matrixschreibweise gilt analog
-\begin{equation}
-  T = I - \omega(D + \omega L)^{-1} A = (D +
-  \omega L)^{-1}(D + \omega L - \omega A) = -(D+\omega L)^{-1}
+In Matrixschreibweise gilt analog zu \eqref{eq:gst}
+\begin{multline}
+  T = I - \omega(D + \omega L)^{-1} A =\\
+  (D + \omega L)^{-1}(D + \omega L - \omega A) = -(D+\omega L)^{-1}
   \left[\omega U + (\omega-1) D\right]
-\end{equation}
+\end{multline}
 und damit
 \begin{equation}
   x^{(i+1)} = -(D+\omega L)^{-1}
   \left[\omega U + (\omega-1) D\right]x^{(i)} +
   \omega(D + \omega L)^{-1} b
 \end{equation}
-beziehungsweise
+beziehungsweise, analog zum Gauß-Seidel-Verfahren,
 \begin{equation}
   x^{(i+1)} = -\omega D^{-1}L x^{(i+1)}
   -\left[\omega D^{-1}U + (\omega-1)I\right]x^{(i)} +
@@ -304,10 +363,10 @@ In Komponentenschreibweise schließlich ergibt sich
     - \sum_{k=j+1}^{n} a_{jk} x_k^{(i)}\right)
   + (1-\omega) x_j^{(i)}.
 \end{equation}
-$\omega$ gewichtet also zwischen der Beibehaltung der vorherigen
-Näherung und dem der nächsten Gauß-Seidel-Iterierten. Insofern ist es
-erstaunlich, dass auch Werte $\omega>1$ sinnvoll sein können, die die
-bestehende Näherungen quasi bestrafen.
+$\omega$ gewichtet also zwischen der vorherigen Näherung und der
+nächsten Gauß-Seidel-Iterierten. Insofern ist es erstaunlich, dass
+auch Werte $\omega>1$ sinnvoll sein können, die die bestehende
+Näherung quasi bestrafen.
 
 %%% Local Variables: 
 %%% mode: latex

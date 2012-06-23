@@ -22,8 +22,8 @@ betrachten ein Experiment, dass wiederholt voneinander unabhängige
 Ergebnisse $x \in M$ liefert.  Dann heißt ein Ergebnis einer solchen
 Messung eine \emph{Zufallszahl}. Aufgrund der Konstruktion ist für
 jede Zufallszahl $x$ der Erwartungswert gleich und unabhängig von
-allen anderen Messungen Folgengliedern. Betrachtet wir unendliche
-Mengen von Zufallszahlen, so sind die Zufallszahlen in diesem Menge
+allen anderen Messungen. Betrachtet wir eine unendliche
+Menge von Zufallszahlen, so sind die Zufallszahlen in dieser Menge
 stets gleich verteilt, und zwar mit einer Verteilung $P(x)$, die durch
 die Art des Experiments bestimmt ist.
 
@@ -40,19 +40,20 @@ und mit wachsender Folgenlänge würde der Anteil an Einsen, Zweien und
 so weiter gegen jeweils $\nicefrac{1}{6}$ der Gesamtmenge
 konvergieren.
 
-Um echte Zufallszahlen bereitzustellen, müsste der Computer also
-vergleichbar ein (miniaturisiertes) Experiment durchführen. Wie Linux
+Um echte Zufallszahlen bereitzustellen, müsste der Computer
+vergleichbar ein (miniaturisiertes) Experiment mit bekannter,
+stochastischer Verteilung der Messergebnisse durchführen. Wie Linux
 zeigt, ist so etwas durchaus möglich, indem viele verschiedene
 Hardwaredaten kombiniert werden, wie etwa Bits aus dem Netzwerkverkehr
-oder Bits der Mausposition. Diese Daten werden noch so transformiert,
-dass sie gleichverteilte Bytes ergeben, die unter \texttt{/dev/random}
+oder der Mausposition. Diese Daten werden noch so transformiert, dass
+sie gleichverteilte Bytes ergeben, die unter \texttt{/dev/random}
 ausgelesen werden können. Wenn nichts weiter angegeben ist, wird auf
 dem Computer übrigens üblicherweise von einer Gleichverteilung der
 Zufallszahlen ausgegangen, also $P(x) = \nicefrac{1}{\abs{M}}$.
 
 \section{\keyword{Pseudozufallszahlen}}
 \index{Zufallszahlen>Pseudo-}
-)
+
 Für physikalische Anwendungen benutzt man allerdings keine echten
 Zufallszahlen, sondern sogenannte \emph{Pseudozufallszahlen}. Dies
 sind deterministische Zahlenfolgen, die aber "`hinreichend"' zufällig
@@ -62,11 +63,11 @@ solche Zahlen erheblich schneller berechnen als etwa die echten
 Zufallszahlen des Linux-Kernels (um gut einen Faktor 80 auf modernen
 Prozessoren), zum zweiten macht dies Computerexperimente exakt
 reproduzierbar. Beobachtet man also bei einem Durchlauf ein
-ungewöhnliches Verhalten, das eine Analyse benötigt, die nicht
-eingebaut war, kann man diese einfach einbauen und das Experiment
-exakt wiederholen.
+ungewöhnliches Verhalten, das man genauer analysieren möchte, kann man
+das Experiment exakt wiederholen und dabei zum Beispiel zusätzliche
+Messungen vornehmen.
 
-Wie werden solche Pseudozufallszahlen nun generiert? Für diese Aufgabe
+Wie werden solche Pseudozufallszahlen generiert? Für diese Aufgabe
 gibt es verschiedene Algorithmen, sogenannte
 \emph{\keyword{Zufallszahlengeneratoren}}. Diese liefern bei jedem
 Aufruf eine Zufallszahl, meist eine gleichverteilte Ganzzahl. Die
@@ -89,14 +90,14 @@ Molekulardynamiksimulation werden pro Zeitschritt und Teilchen 3
 Zufallszahlen benötigt. Bei zehntausend Teilchen werden damit pro
 Schritt 30,000 Zufallszahlen gezogen, und der Generator wiederholt
 sich nach weniger als 200,000 Zeitschritten. Da sich die
-Teilchenpositionen in dieser Zeit allerdings wahrscheinlich schon
-stark geändert haben, spielt dies in in der Praxis keine Rolle. Bei
-Isingmodellen, bei denen zufällig Spins auf einem Gitter umgedreht
-werden, werden allerdings oft Gitter von einigen Millionen Spins
-betrachtet, und in diesem Fall sind bessere Generatoren
-wesentlich. Der Mersenne-Twister hat zum Beispiel einen internen
-Zustand von 2,5 Kilobyte und eine Periode von $\approx 10^{6000}$, was
-für die meisten Anwendungen ausreichend sein dürfte.
+Teilchenpositionen in dieser Zeit wahrscheinlich schon stark geändert
+haben, spielt dies in in der Praxis keine Rolle. Bei Isingmodellen,
+bei denen zufällig Spins auf einem Gitter invertiert werden,
+betrachtet man allerdings nicht selten Gitter von einigen Millionen
+Spins. In diesem Fall sind bessere Generatoren wesentlich. Der
+Mersenne-Twister hat zum Beispiel einen internen Zustand von 2,5
+Kilobyte und eine Periode von $\approx 10^{6000}$, was für die meisten
+Anwendungen ausreichend sein dürfte.
 
 In Python stellt das Modul \texttt{random} verschiedene effiziente und
 hochwertige Methoden zur Zufallszahlenberechnung bereit. Die Methode
@@ -134,7 +135,7 @@ $x_0$ der Startwert oder \emph{\keyword{Seed}}. Die Konstanten $m$,
 $a$ und $b$ sollten keinesfalls einfach zufällig gewählt werden, da
 Knuth gezeigt hat, dass nur unter gewissen Bedingungen die Periode
 eines solchen Generators tatsächlich $m$ ist~\cite{knuth81b}. Bei
-zufälliger Wahl der Konstanten wird die Periode allerdings sehr viel
+zufälliger Wahl der Konstanten wird die Periode meist sehr viel
 kürzer sein.
 
 Der Zufallsgenerator \texttt{lrand48} der Gnu-C-Bibliothek ist ein
@@ -151,8 +152,8 @@ einfach nur die ersten $b-1$ Bits und ignoriert alle höheren. Denn
 \begin{equation}
   \label{eq:lcgmod}
   \left(\sum_{i=0}^\infty b_i 2^i\right) \bmod 2^b =
-  \sum_{i=0}^\infty b_i \left(  2^i \bmod 2^b \right) \bmod 2^b = 
-  \sum_{i=0}^{b-1} b_i 2^i \bmod 2^b = \sum_{i=0}^{b-1} b_i 2^i.
+  \sum_{i=0}^\infty b_i \underbrace{\left(  2^i \bmod 2^b \right)}_{=
+      0\,\text{für}\; i\ge b} \bmod 2^b = \sum_{i=0}^{b-1} b_i 2^i.
 \end{equation}
 Daher kann der klassische \texttt{rand} in C etwa wie folgt
 implementiert werden:
@@ -218,8 +219,8 @@ unsigned int minstd()
 }
 \end{lstlisting}
 Die Typumwandlung in \lstinline!long int! stellt dabei sicher, dass
-das Produkt der beiden 32-Bit-Zahlen mit 64 Bit gerechnet wird, so
-dass keine Stellen verloren gehen.
+das Produkt der beiden 32-Bit-Zahlen in 64-Bit-Arithmetik gerechnet
+wird, so dass keine Stellen verloren gehen.
 
 \subsection{Verzögerter Fibonaccigenerator}
 \index{Fibonaccigenerator}
@@ -227,21 +228,22 @@ dass keine Stellen verloren gehen.
 
 Um eine längere Periode zu erzielen, könnte man im Prinzip zu immer
 größeren Moduln $m$ übergehen. Allerdings wird es immer schwieriger,
-entsprechende Konstanten zu bestimmen, und auch die Berechnungen mit
-Zahlen mit großen Bitlängen ist aufwändiger. Eine einfache Alternative
+entsprechende Konstanten zu bestimmen, und auch das Rechnung mit
+Zahlen großer Bitlänge ist aufwändiger. Eine einfache Alternative
 sind \emph{verzögerte Fibonaccigeneratoren}, die ähnlich wie ein LCG
 funktionieren, aber mehrere vorherige Werte benutzen:
 \begin{equation}
   x_n = x_{n-a} + x_{n-b} \bmod m,
 \end{equation}
 wobei diesmal $m$ beliebig ist und im allgemeinen einfach als die
-Bittiefe des Rechners gewählt wird. Anstelle der Addition können auch
+Bittiefe des Rechners gewählt wird. Anstelle der Addition kann auch
 die bitweise Addition modulo 2 benutzt werden. Diese
 Exklusiv-Oder-Operation war früher schneller als eine Addition und
-wurde daher gern benutzt. Der interne Status des
-Zufallszahlengenerators besteht in diesem Fall aus $\max(a,b)$ vielen
-$x_i$, die meist in einem Ringspeicher gespeichert werden. Um diesen
-zu Anfang zu füllen, benutzt man oft einen LCG, der nur einen
+wurde daher gern benutzt, bringt sonst allerdings eher Nachteile. Der
+interne Status des Zufallszahlengenerators besteht in diesem Fall aus
+$\max(a,b)$ vielen $x_i$, die meist in einem
+\emph{\keyword{Ringspeicher}} gespeichert werden. Um diesen zu Anfang
+zu füllen, benutzt man üblicherweise einen LCG, der nur einen
 Startwert braucht.
 
 Im Fall $a=b=1$ spricht man von einem Fibonaccigenerator, $a$ und $b$
@@ -249,7 +251,7 @@ sind ansonsten die Verzögerungen. Der Name stammt von den
 Fibonaccizahlen, die ja der analogen Rekursion $x_n = x_{n-1} +
 x_{n-2}$ genügen. Der Fibonaccigenerator selber, also $a=b=1$, ist
 nicht sehr geeignet, gerade für den in der Physik häufigen Fall von
-Dreierblöcken.
+Dreierblöcken zeigt er unerwünschte Korrelationen.
 
 Anders sieht es bei den verzögerten Fibonaccigeneratoren aus. Sofern
 \begin{equation}
@@ -386,17 +388,21 @@ beliebigen Intervallen zu erzeugen, kann man die Zufallszahl einfach
 skalieren. Ist also $\xi$ eine Zufallszahl, die gleichverteilt aus
 $[a,b]$ gezogen wird, so ist
 \begin{equation}
-  \xi' = a + \bigl[b'(\xi - a)\bigr]/b
+  \xi' = \frac{\xi - a}{b-a}
 \end{equation}
-offenbar gleichverteilt in $[a',b']$. Die Klammerung soll zum Ausdruck
-bringen, dass bei Ganzzahlarithmetik zuerst multipliziert und dann
-dividiert werden muss. Zusätzlich ist $b$ ja meist knapp an der
-Bitlänge der Architektur, daher muss das Produkt mit doppelter Bitzahl
-berechnet werden. Da die Prozessoren, die zum wissenschaftlichen
-Rechen benutzt werden, meist auch sehr schnell Fließkommazahlen
-verarbeiten, kann alternative auch mit $b'/b$ in Fließkommadarstellung
-gerechnet werden und anschließend gerundet. Diese Weg benutzt zum
-Beispiel Python. Auf diese Weise können natürlich auch
+gleichverteilt in $[0,1]$ und umgekehrt
+\begin{equation}
+  \xi'' = a' + \frac{(b'-a')(\xi - a)}{b-a}
+\end{equation}
+gleichverteilt in $[a',b']$. Dabei muß bei Ganzzahlarithmetik zuerst
+multipliziert und dann dividiert werden, da $\xi' \le 1$. Zusätzlich
+ist $b$ meist knapp an der Bitlänge der Architektur, daher muss das
+Produkt mit doppelter Bitzahl berechnet werden. Da die Prozessoren,
+die zum wissenschaftlichen Rechen benutzt werden, meist auch sehr
+schnell Fließkommazahlen verarbeiten, kann alternativ auch $\xi'$ in
+in Fließkommadarstellung berechnet werden und daraus $\xi''$. Soll
+$\xi''$ ganzzahlig sein, kann es dabei einfach gerundet werden. Diesen
+Weg benutzt zum Beispiel Python. Auf diese Weise können natürlich auch
 (pseudo-)zufällige gleichverteilte Fließkommazahlen erzeugt werden,
 insbesondere \emph{Standardzufallszahlen}\index{Standardzufallszahl},
 also Fließkommazahlen im Bereich $[0,1]$.
@@ -419,7 +425,7 @@ $p=(x,y)$ ziehen, die gemäß der Dichte
   \end{cases}
 \end{equation}
 verteilt sind.  Abbildung~\ref{fig:pi} links zeigt, wie man dies
-bewerkstelligen könnte: man zieht zunächste zwei unabhängig
+bewerkstelligen könnte: man zieht zunächst zwei unabhängig
 gleichverteilte Zufallszahlen auf $[-1,1]$ und interpretiert diese als
 Koordinaten $p = (x, y)$. Liegt $p$ in der Kreisscheibe, akzeptieren
 wir dies als unseren Zufallsvektor, ansonsten versuchen wir es einfach
@@ -437,23 +443,24 @@ def kreisscheibe():
             return (x, y)
 \end{lstlisting}
 Da wir im Mittel nur $1-\pi/4$ der gezogenen Punkte benutzen, brauchen
-wir $\nicefrac{4}{4-\pi}$ mal mehr Zufallszahlen, als wir als
+wir $\nicefrac{4}{(4-\pi)}$ mal mehr Zufallszahlen, als wir als
 Koordinaten der Punkte zurückliefern. Im Falle des Kreises ist der
-Verlust nicht sehr hoch, aber ist die zulässige Struktur feiner,
+Verlust nicht sehr hoch, aber ist die zulässige Struktur kleiner,
 können sehr viele Zufallszahlen zurückgewiesen werden, und die
 Verwerfungsmethode wird ineffizient.
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{plots/rejection}
-  \caption{Verwerfungsmethode zu $\rho(x)=x^2$. Links sind einige
-    gezogene Punkte eingezeicht, von denen die grünen Sterne
-    akzeptiert wurden, die roten Kreise abgelehnt. Der schwarze Strich
-    stell $\rho(x)$ dar. Rechts sind die beobachteten Häufigkeiten der
-    Punkte als Balken dargestellt, die gut mit der normierte Dichte
-    $3x^2$ übereinstimmen, die rot gestrichelt eingezeichnet ist. Hier
-    werden im Schnitt etwa drei Zufallszahlen pro Aufruf der
-    Verwerfungsmethode benötigt.}
+  \caption{Verwerfungsmethode zur unnormierten Verteilung
+    $\rho(x)=x^2$ für $0\le x \le 1$. Links sind einige gezogene
+    Punkte eingezeichnet, von denen die grünen Sterne akzeptiert
+    wurden, die roten Kreise abgelehnt. Der schwarze Strich stellt
+    $\rho(x)$ dar. Rechts sind die beobachteten Häufigkeiten der
+    Punkte als Balken dargestellt. Diese stimmen gut mit der
+    normierten Dichte $3x^2$ überein, die rot gestrichelt
+    eingezeichnet ist. Hier werden im Schnitt etwa drei Zufallszahlen
+    pro Aufruf der Verwerfungsmethode benötigt.}
   \label{fig:rejection}
 \end{figure}
 
@@ -465,33 +472,44 @@ dass $\rho$ außerhalb $[0,1]^n$ Null ist. Dann müssen die Punkte $p$
 mit relativen Wahrscheinlichkeiten $\rho(p)$ gezogen werden. Das lässt
 sich einfach bewerkstelligen, indem wir zunächst einen Punkt $p$ durch
 Ziehen von $n$ Standardzufallsvariablen gleichverteilt in $[0,1]^n$
-bestimmen. Diesen akzeptieren wir nun nur dann, wenn für eine weitere
-Standardzufallszahl $u\le\rho(p)$ erfüllt ist. Die Wahrscheinlichkeit,
+bestimmen. Wir ziehen nun eine weitere Standardzufallszahl $u$ und
+akzeptieren $p$ nur dann, wenn $u\le\rho(p)$. Die Wahrscheinlichkeit,
 $p$ tatsächlich zu ziehen, ist dann
 \begin{equation}
   P(u \le\rho(p)) = \rho(p).
 \end{equation}
-Im Falle der Kreisscheibe war übrigens $\rho(p)$ entweder Null, in
-welchem Fall $p$ immer abgelehnt wird, oder Eins, wodurch $p$ immer
-akzeptiert wird. Daher kamen wir in diesem Beispiel ohne das Ziehen
-von $u$ aus.
 
 Die korrekte Wahrscheinlichkeit für einen Punkt $p$ im Würfel ist die
 infinitesimale Dichte $\rho(p)\,dx^n$. Da der Normierungsfaktor $dx^n$
 für alle $p$ gleich ist, können wir diesen vernachlässigen, da die
 relativen Wahrscheinlichkeiten auf $[0,1]^n$ trotzdem korrekt
-sind. Das bedeutet auch, dass die Dichte $\rho(p)$ gar nicht normiert
-sein muss --- die Verwerfungsmethode liefert stets Ergebnisse, die
-gemäß der normierten Dichte
+sind. Das bedeutet auch, dass die Eingabe-"`Dichte"' $\rho(p)$ gar nicht
+normiert sein muss --- die Verwerfungsmethode liefert stets
+Ergebnisse, die gemäß der normierten Dichte
 \begin{equation}
   \tilde\rho(p) := \rho(p) / \int_{[0,1]^n} \rho(q)\,dq^n
 \end{equation}
-verteilt sind. Das ist sehr günstig, wenn die Normierungskonstante
-nicht einfach bestimmt werden kann, etwa bei sehr hochdimensionalen
-Räumen. Dies wird zum Beispiel beim Metropolissampling benutzt, dass
-eine zentrale in der numerischen statistischen Physik
-spielt. Abbildung~\ref{fig:rejection} illustriert die
-Normierungseigenschaft der Verwerfungsmethode.
+verteilt sind. Damit können auch Dichten behandelt werden, die nicht
+in $[0,1]$ liegen, so lange sie beschränkt sind, denn man kann in
+diesem Fall
+\begin{equation}
+  \rho'(p) = \frac{\rho(p) + \min_{p\in [0,1]^n} \rho(p)}{
+    \max_{p\in [0,1]^n} \rho(p) - \min_{p\in [0,1]^n} \rho(p)} \in [0,1]
+\end{equation}
+betrachten. Die Normierungseigenschaft ist auch sehr günstig, wenn die
+Normierungskonstante nicht einfach bestimmt werden kann, etwa bei sehr
+hochdimensionalen Räumen. Dies ist die Grundlage des
+Metropolissampling, dass eine zentrale Rolle in der numerischen
+statistischen Physik spielt. Abbildung~\ref{fig:rejection} illustriert
+die Verwerfungsmethode und ihre Normierungseigenschaft.
+
+Im Falle der Kreisscheibe hatten wir übrigens auch von der
+Normierungseigenschaft Gebrauch gemacht, denn eigentlich ist $\rho(p)$
+Null außerhalb der Kreisscheibe und $\nicefrac{1}{\pi}$ innerhalb. Da
+wir aber die Punkte innerhalb automatisch akzeptiert haben, haben wir
+formal ein $\rho'$ betrachtet mit $\rho'(p) = 1$ auf der
+Kreisscheibe. Dank der Normierungseigenschaft haben wir damit trotzdem
+die korrekte Verteilung erzeugt.
 
 Als Python-Code sieht die allgemeinere Verwerfungsmethode nicht
 wesentlich schwieriger aus:
@@ -499,20 +517,21 @@ wesentlich schwieriger aus:
 from numpy.random import uniform
 
 def verwerfungsmethode(rho, n):
-    """Ziehen eines rho-verteilten Zufallsvektors mit n Dimensionen.
-    rho muss eine Pythonfunktion mit einem n-dimensionalen Vektor als
-    einziges Argument."""
     while True:
         p = uniform(0, 1, n)
         u = uniform(0, 1)
         if u < rho(p):
             return p
 \end{lstlisting}
+\argd{rho} muss dabei eine Pythonfunktion sein, die als einziges
+Argument ein $n$-dimensionales Numpy-Array akzeptiert.
 
-Die Verwerfungsmethode kann schließlich noch auf beliebige
-Ausgangsverteilungen erweitert werden, was etwa bei Verteilungen
-notwendig ist, die über den gesamten $\RR^n$ nichtverschwindende
-Dichten haben. Siehe hierzu zum Beispiel \textcite{knuth81b}.
+Die Verwerfungsmethode kann so erweitert werden, dass die benutzten
+Zufallszahlen  nicht gleichverteilt sind, sondern etwa
+normalverteilt. Das erlaubt, die Verwerfungsmethode auch bei über dem
+gesamten $\RR^n$ nichtverschwindenden Dichten zu benutzen. Siehe
+hierzu zum Beispiel \textcite{knuth81b}. Wie man solche
+normalverteilten Zufallszahlen erzeugt, lernen wir nun kennen.
 
 \subsection{\keyword{Inversionsmethode}}
 
@@ -526,20 +545,26 @@ Sei $\rho:\RR\to \RR$ eine normierte Wahrscheinlichkeitsdichte, zu der
 wir passend Zufallszahlen ziehen wollen. Dann definieren wir die
 Verteilungsfunktion zu $\rho$ als
 \begin{equation}
-  F_\rho(x) := \int_{-\infty}^{x} \rho(x')\, dx'.
+  F_\rho(x) := P(u_\rho \le x) = \int_{-\infty}^{x} \rho(x')\, dx',
 \end{equation}
-Diese gibt die Wahrscheinlichkeit an, einen Wert kleiner als $x$ zu
-beobachten.  Daher bildet $F_\rho$ die reelle Achse monoton wachsend in
-das Intervall $[0,1]$ ab. Das $p$-Quantil ist nun die Umkehrung
-$F_\rho^{-1}(p)$, also diejenige Grenze $x$, bei der ein gezogener Wert
-mit Wahrscheinlichkeit $p$ kleiner als $x$ ist. Es gilt also
+wobei $u_\rho$ eine $\rho$-verteilte Zufallszahl ist.  $F_\rho(x)$
+gibt also die Wahrscheinlichkeit an, einen Wert kleiner als $x$ zu
+beobachten, und bildet daher die reelle Achse monoton wachsend in das
+Intervall $[0,1]$ ab. Das $p$-Quantil ist nun die Umkehrung
+$F_\rho^{-1}(p)$, also diejenige Grenze $x$, bei der ein gezogener
+Wert mit Wahrscheinlichkeit $p$ kleiner als $x$ ist. Es gilt also
 \begin{equation}
   F_\rho\left(F_\rho^{-1}(p)\right) = p.
 \end{equation}
-Dann ist $F_\rho^{-1}(p)$ eine $\rho$-verteilte Zufallsvariable, wenn $p$
-gleichverteilt auf $[0,1]$ ist. Sofern also die Quantilfunktion
-einfach zu invertieren ist, lassen sich so sehr bequem Zufallszahlen
-erzeugen, indem $F_\rho^{-1}$ auf Standardzufallszahlen angewendet wird.
+
+$F_\rho^{-1}(u)$ ist eine $\rho$-verteilte Zufallsvariable, wenn $u$
+eine Standardzufallszahl ist, also gleichverteilt auf $[0,1]$. Denn
+\begin{equation}
+  P(F_\rho^{-1}(u) \le x) = P(u \le F_\rho(x)) = F_\rho(x).
+\end{equation}
+Sofern also die Quantilfunktion einfach zu invertieren ist, lassen
+sich so sehr bequem Zufallszahlen erzeugen, indem $F_\rho^{-1}$ auf
+Standardzufallszahlen angewendet wird.
 
 \subsubsection{\keyword{Box-Muller-Verfahren}}
 
@@ -563,7 +588,7 @@ Mit Hilfe der Inversionsmethode können wir nun auch normalverteilte
 Zufallszahlen erzeugen. Allerdings nicht auf direktem Wege, da das
 Integral der Gaußfunktion, die Fehlerfunktion, nicht einfach
 analytisch zu invertieren ist. Box und Muller gehen daher ähnlich wie
-bei der Bestimmung des uneigentlichen Integrals von $e^{-x^2}$ vor,
+bei der Bestimmung des uneigentlichen Integrals von $e^{-x^2}$ vor
 und weichen auf zwei Dimensionen aus.
 
 Wir betrachten also einen Zufallsvektor $(x, y)$ mit Dichte $\rho(x,
@@ -581,22 +606,22 @@ Wir benötigen also einen gleichverteilten Zufallswinkel $\phi\in
 dessen Umkehrung, also das $p$-Quantil,
 \begin{equation}
   \label{eq:expquantil}
-  F_{\rho_r}^{-1}(p) = \sqrt{-2\log(1 - p)}
+  F_{\rho_r}^{-1}(p) = \sqrt{-2\log(1 - p)}.
 \end{equation}
 Da, falls mit $p$ auch $p-1$ gleichverteilt auf $[0,1]$ ist, ergibt
 sich durch Rücktransformation in kartesische Koordinaten das
-Box-Mullerverfahren als
+Box-Muller-Verfahren als
 \begin{align}
   x  = \sqrt{-2\log(u)}\cos(2\pi u')\\
   y = \sqrt{-2\log(u)}\sin(2\pi u')
 \end{align}
 mit zwei Standardzufallszahlen $u$, $u'$. Diese werden in zwei
 unabhängige, normalverteilte Zufallszahlen $z$ und $z'$
-transformiert. Man erhält also genauso viele normalverteilte
-Zufallszahlen wie gleichverteilte gebraucht werden, allerdings müssen
-diese immer paarweise erzeugt werden. Abbildung~\ref{fig:boxmuller}
-illustriert die Anwendung der Inversionsmethode zur Erzeugung
-normalverteilter Zufallszahlen.
+transformiert. Anders als bei der Verwerfungsmethode erhält man also
+genauso viele normalverteilte Zufallszahlen wie gleichverteilte
+verbraucht werden, allerdings müssen diese immer paarweise erzeugt
+werden. Abbildung~\ref{fig:boxmuller} illustriert die Anwendung der
+Inversionsmethode zur Erzeugung normalverteilter Zufallszahlen.
 
 \subsection{Zufällige Punkte auf Kugel und Kugeloberfläche}
 
@@ -604,15 +629,15 @@ Wie wir bereits gesehen haben, lassen sich mit Hilfe der
 Verwerfungsmethode gleichverteilt Positionen in der Kreisscheibe
 ziehen, und analog natürlich auch Positionen auf jeder Kugel im
 $\RR^n$. Allerdings nimmt die Akzeptanzrate mit steigendem $n$ rasch
-ab, da die $n$-Kugel nur noch einen kleinen Teil des
-$n$-Einheitswürfels belegt. Bis etwa $n=4$ ist die Verwerfungsmethode
+ab, da die $n$-Kugel nur noch einen kleinen Teil von $[-1,1]^n$
+belegt. Bis etwa $n=4$ ist die Verwerfungsmethode
 allerdings sehr effizient, was für die meisten physikalischen
 Anwendungen reicht.
 
 Sollen Punkte auf der Kugeloberfläche gezogen werden, so können diese
 im Prinzip aus über der Kugel gleichverteilten Punkten $p$ gewonnen
-werden, indem diese durch $p\to p/\norm{p}$ auf die Oberfläche
-projeziert werden. Allerdings benötigt man auf diese Weise $n$
+werden, indem diese auf die Oberfläche projeziert werden, also
+$p/\norm{p}$ betrachtet. Allerdings benötigt man auf diese Weise $n$
 Zufallszahlen, um einen Zufallsvektor auf der nur $n-1$-dimensionalen
 Oberfläche zu generieren, zusätzlich zu den Verlusten durch die
 Verwerfungsmethode. Daher ist es im Einzelfall besser, eine geschickte
@@ -620,7 +645,7 @@ Parametrisierung der Oberfläche zu nutzen.
 
 Für die Oberfläche der zweidimensionalen Kugel, also den Kreis, ist
 dies sehr einfach, da dieser über einen Winkel $\phi\in [0,2\pi]$
-gleichmässig parametrisiert wird. Wird also eine Standardzufallszahl
+gleichmäßig parametrisiert wird. Wird also eine Standardzufallszahl
 $u$ gezogen, so sind die Punkte
 \begin{equation}
   \begin{split}
@@ -628,14 +653,14 @@ $u$ gezogen, so sind die Punkte
     y &= r\cos(2\pi u)
   \end{split}
 \end{equation}
-gleichverteit auf einem Kreis vom Radius $r$ um Null.
+gleichverteilt auf einem Kreis vom Radius $r$ um Null.
 
 Für die Oberfläche der dreidimensionalen Kugel, also die 2-Sphäre, ist
 nicht etwa die gebräuchliche Parametrisierung über zwei Winkel am
 besten, sondern die Parametrisierung in Zylinderkoordinaten $\phi$ und
 $z$. Der Winkel $\phi$ ist offenbar gleichverteilt und kann als $2\pi
 u$ bestimmt werden, wobei $u$ eine Standardzufallsvariable ist. $z$
-ist ebenso gleichverteilt, da $\rho(z)$ proportional zum Flächeninhalt
+ist erstaunlicherweise ebenso gleichverteilt, da $\rho(z)$ proportional zum Flächeninhalt
 des jeweiligen Rings ist, dividiert durch den gesamten Flächeninhalt, also
 \begin{equation}
   \rho(z) = \frac{1}{4\pi r^2} 2\pi \sqrt{r^2 - z^2} \sqrt{1 +
@@ -644,12 +669,12 @@ des jeweiligen Rings ist, dividiert durch den gesamten Flächeninhalt, also
 für $-r\le z\le r$.
 
 Um eine gleichverteilte Position auf der Kugeloberfläche zu ziehen,
-genügt es also, zwei Standardzufallszahlen $u$ und $u'$ zu
+genügt es daher, zwei Standardzufallszahlen $u$ und $u'$ zu
 berechnen, und diese gemäß
 \begin{equation}
   \label{eq:2sphere}
   \begin{split}
-    z &= 2ru' - r\\
+    z &= r(2u' - 1)\\
     y &= \sqrt{r^2-z^2}\cos(2\pi u)\\
     x &= \sqrt{r^2-z^2}\sin(2\pi u)
   \end{split}
@@ -660,12 +685,14 @@ zu transformieren.
 \index{Pseudozufallszahlen>Qualitätsanalyse}
 
 Um die Qualität eines Zufallszahlengenerators zu testen, gibt es eine
-Vielzahl von Standardtests. Der Grund ist einfach, dass es leider
-keinen einzelnen Test gibt, der sicherstellt, dass es keinerlei
-Korrelationen in der generierten Folge gibt. Ein solcher Test müßte ja
-quasi jede mögliche Teilmenge bilden und mit allen Zahlen
-korrelieren. Daher sollte ein guter Zufallszahlengenerator möglichst
-viele der folgenden Tests erfüllen.
+Vielzahl von Standardtests. Der Grund davon ist, dass es leider keinen
+einzelnen Test gibt, der sicherstellt, dass es keinerlei Korrelationen
+in der generierten Folge gibt. Ein solcher Test müßte ja jede mögliche
+Teilmenge bilden und mit allen Zahlen korrelieren, was praktisch nicht
+möglich ist. Daher sollte ein guter Zufallszahlengenerator möglichst
+viele der folgenden Tests erfüllen, auch wenn dies keine Garantie ist,
+dass er im Einzelfall nicht doch zu kritischen Korrelationen führt,
+die im schlimmsten Fall das Ergebnis beieinflussen.
 
 Für eine bestimmte Anwendung genügt es natürlich, wenn er nur die
 Tests erfüllt, deren getestete Korrelationen Einfluß auf das System
@@ -677,9 +704,9 @@ sollte die Periode des Generators wie besprochen groß genug sein.
 
 Für die im folgenden beschriebenen Tests nehmen wir an, dass der zu
 testende Zufallszahlengenerator Standardzufallszahlen liefert, also
-gleichverteilt im Intervall $[0,1]$. Solche Zufallszahlen werden ja
-wie beschrieben auf dem Computer benutzt, um andere Verteilungen zu
-erzeugen.
+gleichverteilt im Intervall $[0,1]$. Solche Zufallszahlen werden wie
+beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall auf
+andere Verteilungen transformiert.
 
 \subsubsection{Statistiktests}
 \index{$\chi^2$-Test}
@@ -698,24 +725,29 @@ erzeugen.
 Sind die erzeugten Zufallszahlen $x_i$ tatsächlich gleichverteilt auf
 $[0,1]$, so gilt für den Mittelwertschätzer
 \begin{equation}
-  \lim_{N\to\infty} \overline{x} =
-  \lim_{N\to\infty} \frac{1}{N} \sum_{i=1}^N x_i
-  = \frac{1}{2}.
+  \mean{\overline{x}} =
+  \mean{\frac{1}{N} \sum_{i=1}^N x_i}
+  = \mean{x} = \frac{1}{2}
 \end{equation}
-
-Wird $\overline{x}$ wiederum sehr oft für disjunkte
-Zufallszahlenmengen $\{x_i, i=1(1)N\}$ gemessen, so sollte
-$\overline{x}$ für große $N$ gemäß dem Gesetz der großen Zahlen
-praktisch normalverteilt sein. Die Varianz dieser Verteilung sollte
-nach \eqref{eq:esterr}
+und für dessen Varianz nach \eqref{eq:esterr}
 \begin{equation}
   \sigma(\overline{x}) = \frac{1}{\sqrt{N}} \sigma(x) =
-  \frac{1}{\sqrt{12 N}}
+  \frac{1}{\sqrt{12 N}}.
 \end{equation}
-betragen und kann mit Hilfe von \eqref{eq:varest} gemessen werden.
-Abbildung~\ref{fig:statistics_test} zeigt die Verteilung von
-$\overline{x}$ am Beispiel des \texttt{MINSTD} sowie \texttt{rand}.
-Diese Art von Test wird auch als $\chi^2$-Test bezeichnet.
+Für immer größere $N$ sollte daher $\overline{x}$ gegen
+$\nicefrac{1}{2}$ konvergieren.
+
+Wird $\overline{x}$ sehr oft für disjunkte Zufallszahlenmengen $\{x_i,
+i=1(1)N\}$ gemessen, so sollte $\overline{x}$ außerdem für große $N$
+gemäß dem Gesetz der großen Zahlen praktisch normalverteilt sein, mit
+der oben angegebenen Varianz. Dies kann mit Hilfe von
+\eqref{eq:varest} überprüft werden, man kann aber auch direkt das
+Histogram der Verteilung von $\overline{x}$ darauf überprüfen, dass es
+wie erwartet normalverteilt ist.  Abbildung~\ref{fig:statistics_test}
+zeigt die Verteilung von $\overline{x}$ am Beispiel von
+\texttt{MINSTD} und \texttt{rand}, sowie die erwartete
+Normalverteilung.  Diese Art von Test wird auch als $\chi^2$-Test
+bezeichnet.
 
 \subsubsection{Poincar\'e-Schnitte}
 \index{Würfeltest}\index{Quadrattest}
@@ -733,15 +765,17 @@ Diese Art von Test wird auch als $\chi^2$-Test bezeichnet.
 
 Lineare Kongruenzgeneratoren haben nach einem Satz von Marsaglia die
 Eigenschaft, dass im $\RR^n$ $n$ aufeinanderfolgende Zufallszahlen,
-als Vektor aufgefasst, auf Hyperebenen liegen. Für $n=2$ und $3$ kann
-man das sehr bequem überprüfen, in dem man den Poincar\'e-Schnitt
-$(x_k, x_{k+1})$, $k=0,1,\ldots$ bzw. sein dreidimensionales
-Äquivalent $(x_k, x_{k+1}, x_{k+2})$, $k=0,1,\ldots$ betrachtet. Da
-alle Punkte in $[0,1]^2$ bzw $[0,1]^3$ liegen, heißen dieses Tests
-auch Quadrat- oder Würfeltests. Diese Punktwolken sollten das Quadrat
-bzw. den Würfel homogen füllen und keine Strukturen aufweisen. In zwei
-Dimensionen können wir das sehr rasch erfassen, in drei Dimensionen
-muss man die Punktewolke rotieren, um nach Hyperebenen zu suchen.
+als Vektor aufgefasst, auf Hyperebenen liegen. Problematisch wird
+dies, wenn die Anzahl der Hyperebenen sehr klein ist. Für $n=2$ und
+$3$ kann man das sehr bequem überprüfen, in dem man den
+Poincar\'e-Schnitt $(x_k, x_{k+1})$, $k=0,1,\ldots$ bzw. sein
+dreidimensionales Äquivalent $(x_k, x_{k+1}, x_{k+2})$, $k=0,1,\ldots$
+betrachtet. Da alle Punkte in $[0,1]^2$ bzw $[0,1]^3$ liegen, heißen
+dieses Tests auch Quadrat- oder Würfeltests. Diese Punktwolken sollten
+das Quadrat bzw. den Würfel homogen füllen und keine Strukturen
+aufweisen. In zwei Dimensionen können wir das sehr rasch erfassen, in
+drei Dimensionen muss man die Punktewolke rotieren, um nach
+Hyperebenen zu suchen.
 
 Abbildung~\ref{fig:optical_test} demonstriert dies für den
 berüchtigten \texttt{RANDU}-LCG ($m=2^{31}$, $a=65,539$,
@@ -751,7 +785,7 @@ einigen Großrechnern zu finden. In der zweidimensionalen Darstellung
 sind keine Auffälligkeiten zu sehen, aber ausgerechnet in den
 physikalisch wichtigen drei Dimensionen zeigt sich, dass es lediglich
 eine Handvoll verschiedener Hyperebenen gibt, so dass mit diesem
-Generator erzeugt 3d-Vektoren kaum als zufällig gelten können.
+Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
 
 \subsubsection{\keyword{Fouriertest}}
 \index{Spektraltest}
@@ -769,7 +803,7 @@ Generator erzeugt 3d-Vektoren kaum als zufällig gelten können.
 \end{figure}
 
 Wird eine lange Reihe von Standardzufallszahlen diskret
-Fourier-transformiert, so sollten die 0-te Mode eine Amplitude von
+Fourier-transformiert, so sollte die 0-te Mode eine Amplitude von
 $N/2$ aufweisen, da diese ja die Summe der Zufallszahlen angibt. Alle
 anderen Moden sollten vernachlässigbar kleine, gleichmässige
 Amplituden haben, entsprechend einem weißen Rauschen. Die Amplituden
@@ -806,7 +840,7 @@ demonstriert.
     analytisch erwartete Ergebnis $\mean{x_T^2}=T$. Rechts unten
     die Verteilungen der Positionen zu den Zeitpunkten $t=5$ (rote,
     gefüllte Balken) und $t=80$ (blaue, offene Balken). Gestrichelt sind
-    wieder die jeweils erwarteten Gauß-Verteilungen eingezeichnet.}
+    wieder die jeweils erwarteten Normalverteilungen eingezeichnet.}
   \label{fig:rw}
 \end{figure}
 
@@ -823,30 +857,31 @@ Milliarde Lösungsmittelmoleküle. Deren Bewegung explizit simulieren zu
 wollen, ist aussichtslos. Auf der anderen Seite passieren selbst in
 kurzer Zeit genügend Zusammenstöße, so dass die zeitdiskretisierte
 Kraft auf das Teilchen gut als zufällig und, wegen des Gesetzes der
-großen Zahlen, Gauß-verteilt angenommen werden kann. Der Mittelwert
+großen Zahlen, normalverteilt angenommen werden kann. Der Mittelwert
 ist dabei offenbar Null, da die Zufallsstöße keine Vorzugsrichtung
 haben sollten, die Varianz werden wir mit der Diffusionskonstanten in
 Verbindung bringen.
 
-Um diesen Prozess zunächst aber einmal zu simulieren, können wir uns
-auf zunächst auf ein eindimensionales Modell beschränken, da die
-einzelnen Koordinaten für die Stöße unabhängig sind. Indem wir das
-Gesetz der großen Zahl andersherum anwenden, können wir außerdem eine
-beliebige, aber symmetrische Verteilung der Stöße annehmen. Die
-einfachste Möglichkeit ist, einfach mit gleicher Wahrscheinlichkeit
-dieselbe Distanz vor- oder zurückzugehen.
+Um diesen Prozess zu simulieren, können wir uns zunächst auf ein
+eindimensionales Modell beschränken, da die Stöße in den
+einzelnen Koordinaten unabhängig sind. Indem wir das Gesetz der großen Zahl
+andersherum anwenden, können wir außerdem eine beliebige, aber
+symmetrische Verteilung der Stöße annehmen. Die einfachste Möglichkeit
+ist, einfach mit gleicher Wahrscheinlichkeit dieselbe Distanz vor-
+oder zurückzugehen.
 
 Wir betrachten also ein Teilchen mit Position $x_t$ zum Zeitpunkt
-$t=1,2,\ldots$, so dass
+$t=1, 2,\ldots$, so dass
 \begin{equation}
   \label{eq:rw}
   x_{t+1} = x_t +
   \begin{cases}
     -1 & \text{mit Wahrscheinlichkeit \nicefrac{1}{2}}\\
-    1 & \text{mit Wahrscheinlichkeit \nicefrac{1}{2}}.
+    +1 & \text{mit Wahrscheinlichkeit \nicefrac{1}{2}}.
   \end{cases}
 \end{equation}
-Eine \emph{Random walk} ist eine Folge $x_t$, die durch eine solche
+
+Ein \emph{Random walk} ist eine Folge $x_t$, die durch eine solche
 einfache stochastische Bewegungsgleichung beschrieben wird.
 Abbildung~\ref{fig:rw} zeigt links drei mögliche solche Random
 walks. Sie wurden durch eine Routine ähnlich der folgenden generiert: 
@@ -897,13 +932,13 @@ Varianz. Rechs unten werden für $t=5$ und $t=80$ die Verteilungen der
 Positionen gezeigt. Selbst für $t=5$ werden diese gut durch die
 Gaußglocke beschreiben.  Trotzdem sollte man sich erinnern, dass die
 Verteilung nicht wirklich Gaußsch ist, da offenbar $\abs{x_t}\le t$
-gilt. Denn der maximalen Abstand ist erreicht, wenn wir $t$-mal nur
+gilt. Denn der maximale Abstand ist erreicht, wenn wir $t$-mal nur
 nach links oder rechts gehen. Während also die Gaußverteilung
 prinzipiell beliebig hohe Werte mit sehr kleiner Wahrscheinlichkeit
 zulässt, ist die tatsächliche Verteilung beschränkt.
 
 Das Modell lässt sich leicht auf mehrere Dimensionen erweitern, denn
-die Zufallsbewegungen in den einzelnen Koordinaten ist ja
+die Zufallsbewegungen in den einzelnen Koordinaten sind ja
 unabhängig. Die mittlere Position des Random walks in $n$ Dimensionen
 ist damit immer noch konstant gleich der Ausgangsposition, das
 mittlere Verschiebungsquadrat die Summe der Verschiebungsquadrate der
@@ -927,9 +962,19 @@ Master-Gleichung der diskreten Wahrscheinlichkeitspopulationen
 Die erste Term der rechten Seite besagt, dass das Teilchen beim Sprung
 $t\to t +\Delta$ mit Wahrscheinlichkeit $\frac{1}{2}$ an der Stelle
 $x$ landet, wenn es sich zum Zeitpunkt $t$ an der Stelle $x-\Delta x$
-befand. Der darauffolgende Term gibt dasselbe für $x+\Delta$ , und der
-letzte Term besagt, dass das Teilchen nicht an der aktuellen Stelle
+befand. Der darauffolgende Term bedeutet dasselbe für $x+\Delta$, und
+der letzte Term, dass das Teilchen nicht an der aktuellen Stelle
 bleiben kann.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{plots/polymer}
+  \caption{Kontinuierlicher Random walk als einfaches Polymermodell mit
+    $n=100$ Monomeren. Das Polymer wurde mit der Simulationssoftware
+    \texttt{ESPResSo}~\cite{espresso} erzeugt und dem
+    Visualisierungstool \texttt{VMD}~\cite{vmd} gezeichnet.}
+  \label{fig:contrw}
+\end{figure}
 
 Wir multiplizieren nun linker Hand mit $\Delta t^{-1}$ und rechter Hand mit
 $\Delta x^{-2}$:
@@ -946,20 +991,13 @@ dieser Gleichung die Differentialgleichung
 \end{equation}
 Dies ist nichts anderes als die Diffusionsgleichung mit
 Diffusionskonstante $D$. Die Varianz $D=\sigma^2(u)$ unseres
-Zufallsschritts ist also genau die Diffusionskonstante des Teilchens.
+Zufallsschritts ist also genau die Diffusionskonstante unserer
+makroskopischen Teilchen, und durch geeignete Wahl von $\sigma^2(u)$
+können wir die Diffusionskonstante unserer Random walk-Teilchen
+einstellen.
 
 \subsubsection{Random walks als Polymermodell}
 \index{Random walk>kontinuierlicher}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.6\textwidth]{plots/polymer}
-  \caption{Kontinuierlicher Random walk als einfaches Polymermodell mit
-    $n=100$ Monomeren. Das Polymer wurde mit der Simulationssoftware
-    \texttt{ESPResSo}~\cite{espresso} erzeugt und dem
-    Visualisierungstool \texttt{VMD}~\cite{vmd} gezeichnet.}
-  \label{fig:contrw}
-\end{figure}
 
 Man kann für den mehrdimensionalen Random walk leicht zeigen, dass es
 keinen wesentlichen Unterschied macht, wenn die nächsten Positionen
@@ -977,9 +1015,9 @@ bestimmten Voraussetzungen (in einem sogenannten
 $\theta$-Lösungsmittel). In diesem Fall ist $t$ allerdings keine
 Zeitachse, sondern zählt einfach die Monomere durch.
 
-In guten Lösungsmittel streckt sich das Polymer etwas mehr. Auch dies
+In guten Lösungsmitteln streckt sich das Polymer etwas mehr. Auch dies
 lässt sich durch einen Random walk modellieren, bei dem die Monomere
-eine endliche Ausdehnungen haben und nicht überlappen können. Ein
+eine endliche Ausdehnung haben und nicht überlappen können. Ein
 solcher Random walk heißt auch \emph{Self avoiding walk}, weil er sich
 selber nicht kreuzen kann. In unserem einfachen Random walk-Modell
 \eqref{eq:rw} entspricht das der Bedingung $x_t\neq x_s$ für alle
@@ -989,22 +1027,26 @@ Um einen Self avoiding walk zu generieren, erzeugt man einfach einen
 Random walk, und überprüft mit jedem neuen Punkt, ob dieser einem
 anderen Monomer näher kommt als die Größe der Monomere zulässt. In
 diesem Fall muss man allerdings ganz von vorne beginnen, da sonst
-extrem ungünstige Konfigurationen bevorzugt werden. Bei diesen würde ja
-quasi beliebig lange probiert, den nächsten Punkt zu setzen, selbst
+extrem ungünstige Konfigurationen bevorzugt werden. Bei diesen würde
+ja quasi beliebig lange probiert, den nächsten Punkt zu setzen, selbst
 wenn es nur eine verschwindend geringe Wahrscheinlichkeit gibt, diesen
-Punkt zufällig zu treffen. Daher werden Taschen-artige Konfigurationen
-sehr viel wahrscheinlicher als sie zufällig auftreten würden.
+Punkt zufällig zu treffen. Daher werden taschenartige Konfigurationen
+sehr viel wahrscheinlicher, als sie zufällig auftreten würden. Ab etwa
+100 Monomeren ist die Wahrscheinlichkeit, einen Random walk
+abzulehnen, schon sehr hoch, und die Erzeugung eines Self avoiding
+walks dementsprechend aufwändig.
 
 Auch von der Theorie her ist der Self avoiding walk sehr viel
 komplizierter. So gilt etwa $\mean{x_N^2} \sim N^{2\nu}$ mit
 $\nu\approx 0.588$, so dass das Polymer im Mittel tatsächlich etwas
 mehr gestreckt ist als der Random walk mit $\nu=\nicefrac{1}{2}$. Der
-Wert von $\nu$ für den Self avoiding walk kann hingegen nur aufwändig
-numerisch genähert werden.
+Wert von $\nu$ für den Self avoiding walk kann, anders als beim Random
+walk, nicht analytisch berechnet werden, sondern nur aufwändig
+numerisch genähert.
 
-Self avoiding walk wie auch der der einfache Random walk spielen nach
-wie vor eine wichtige Rolle in der Polymerphysik, insbesondere beim
-Aufsetzen von Polymersimulationen. Daher besitzt etwa
+Der Self avoiding walk wie auch der der einfache Random walk spielen
+nach wie vor eine wichtige Rolle in der Polymerphysik, insbesondere
+beim Aufsetzen von Polymersimulationen. Daher besitzt etwa
 Simulationssoftware \texttt{ESPResSo}~\cite{espresso} einen eigenen
 Befehl, um solche Zufallsketten zu erzeugen.
 
@@ -1018,6 +1060,7 @@ Befehl, um solche Zufallsketten zu erzeugen.
     Reihenfolge der Anlagerung farblich codiert.}
   \label{fig:dla}
 \end{figure}
+
 Eine weitere Anwendung des Random walks ist die diffusionslimitierte
 Aggregation, die etwa die Bildung von Rußaggregaten modelliert. Dabei
 wird davon ausgegangen, dass sich diese aus einem Keim durch
@@ -1029,22 +1072,43 @@ einer Kugelsphäre um den Keim gestartet werden, bis sie entweder am
 Cluster anlagern oder sich zu weit vom Kreis entfernt
 haben. Abbildung~\ref{fig:dla} zeigt zwei solche DLA-Cluster mit 500
 und 2000 Teilchen auf einem zweidimensionalen Gitter. Die beiden
-Cluster haben eine sehr ähnliche struktur, auch wenn die Maßstäbe
+Cluster haben eine sehr ähnliche Struktur, auch wenn die Maßstäbe
 deutlich anders sind. Das hängt damit zusammen, dass solche
 diffusionslimitierte Aggregate selbstähnliche Fraktale
 sind. Listing~\ref{lst:dla} zeigt den Python-Code zur Erzeugung
 solcher zweidimensionaler DLAs.
 
-\clearpage
-\raggedbottom \lstinputlisting[style=multipage,
-caption={Code zur Erzeugung eines DLA-Clusters auf einem
-  zweidimensionalen Gitter \argd{world}. Die Eingabeparameter sind
-  die Größe \argd{M} des Gitters, sowie die Anzahl der Punkte des
-  finalen Aggregats \argd{N}. Das Aggregat entsteht durch sukzessive
-  Anlagerung mit Hilfe von Random walks, die auf einem langsam
-  wachsenden Kreis um das aktuelle Aggregat starten. Der Radius
-  \argd{R} diese Kreises ist stets um 5 Gittereinheiten größer als
-  der Umkreis des Clusters.}, label=lst:dla]{dla.py}
+Die zentrale Frage beim Studium von DLA-Clustern ist die nach ihrer
+fraktalen Dimension. In drei Dimensionen legen wir zu ihrer Bestimmung
+konzentrische Kugeln mit Radius $R$ um den Keim eines sehr großen
+Clusters, und zählen die Anzahl der Teilchen $N(R)$ in dieser
+Kugel. Die fraktale Dimension ist dann
+\begin{equation}
+  d = \lim_{R\to\infty}\frac{\log N(R)}{\log R}.
+\end{equation}
+In der Praxis betrachtet man natürlich einfach mehrere große Cluster
+verschiedener Größe, um $d$ abzuschätzen.  Wäre der Cluster solide mit
+Teilchendichte $\rho$, so wäre $N(R) = \rho \frac{4\pi}{3} R^3$ und
+\begin{equation}
+  \frac{\log N(R)}{\log R} = \frac{\log\left( \rho
+      \frac{4\pi}{3} R^3\right)}{\log R} =
+  3 + \frac{\log\left( \rho\frac{4\pi}{3}\right)}{\log R},
+\end{equation}
+die fraktale Dimension also wie erwartet 3. Der DLA-Cluster in drei
+Dimensionen hat übrigens eine fraktale Dimension von $\approx 1,6$,
+ist also bei weitem kein solides Objekt. Daher werden solche Cluster
+gerne als Katalysatoren verwendet, da sie eine entsprechend große
+Oberfläche haben.
+
+\raggedbottom \lstinputlisting[style=multipage, caption={Code zur
+  Erzeugung eines DLA-Clusters auf einem zweidimensionalen Gitter
+  \argd{world}. Die Eingabeparameter sind die Größe \argd{M} des
+  Gitters, sowie die Anzahl der Punkte des zu erzeugenden Aggregats
+  \argd{N}. Das Aggregat entsteht durch sukzessive Anlagerung mit
+  Hilfe von Random walks, die auf einem langsam wachsenden Kreis um
+  das aktuelle Aggregat starten. Der Radius \argd{R} diese Kreises ist
+  stets um 5 Gittereinheiten größer als der Umkreis des Clusters.},
+label=lst:dla]{dla.py}
 
 \section{Beispiel: \keyword{Perkolation}}
 
@@ -1056,37 +1120,40 @@ Hohlraum gibt, oder eine Mischung von Isolator und Leiter, die nur
 leitet, wenn es eine leitende Verbindung gibt.
 
 Modellieren lässt sich dies als ein Gitter, dessen Zellen mit einer
-gewissen Wahrscheinlichkeit $p$ besetzt ist. Die Frage ist dann, ab
+gewissen Wahrscheinlichkeit $p$ besetzt sind. Die Frage ist dann, ab
 welcher kritischen Wahrscheinlichkeit $p_c$ es im Regelfall einen
 Cluster von benachbarten, besetzten Feldern gibt, der das gesamte
 System in einer Richtung durchzieht, man sagt,
 \emph{perkoliert}. Diese Grenze lässt sich durch Untersuchen sehr
 vieler zufälliger Besetzungen untersuchen.
 
-Die Besetzungen sind dabei natürlich sehr einfach zu erzeugen durch
-stochastisches Belegen des Gitters, algorithmisch etwas schwieriger
-ist nur, zu bestimmen, ob es einen perkolierenden Cluster gibt, also
+Die Besetzungen sind dabei natürlich durch stochastisches Belegen des
+Gitters sehr einfach zu erzeugen, algorithmisch etwas schwieriger ist
+nur, zu bestimmen, ob es einen perkolierenden Cluster gibt, also
 einen, der eine Seite mit der gegenüberliegenden verbindet.
 
 Eine Möglichkeit ist, die Struktur von einer Seite aus gewissermaßen
 zu "`fluten"', und zu sehen, ob man dabei die gegenüberliegende Seite
 erreicht. Erreichen heißt hier, dass es einen zusammenhängenden Pfad
-von paarweise benachbarten, besetzten Punkten gibt. Um diese zu
+von paarweise benachbarten, besetzten Punkten gibt. Um dies zu
 überprüfen, erzeugen wir zunächst eine Liste der besetzten Punkte am
-Startrand.  Dann fügen wir zu dieser Liste alle benachbarten Punkte
+Start\-rand.  Dann fügen wir zu dieser Liste alle benachbarten Punkte
 hinzu, und wiederholen dies solange, bis keine neuen Elemente mehr zur
-Liste hinzugefügt wurden. Wir müssen dann nur noch überprüfen, ob in
-dieser Liste, die alle Punkte enthält, die Verbindung zum Startrand
-haben, Punkte am gegenüberliegenden Rand auftauchen.
+Liste hinzugefügt wurden. Die Liste enthält dann alle Punkte, die
+Verbindung zum Startrand haben. Wir müssen nur noch überprüfen, ob in
+dieser Liste Punkte am gegenüberliegenden Rand auftauchen.
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{plots/percolation}
   \caption{Ein perkolierender Cluster auf einem $50^2$-Gitter mit
     $p=0,6$. Blaue Punkte markieren den Cluster, Kreuze andere, mit
-    diesem Cluster nicht verbundene besetzte Gitterpunkte. Im rechten
-    Graph sind für $L=50$ (grüne Sterne), $L=20$ (blaue Diamanten) und
-    $L=100$ d}
+    diesem Cluster nicht verbundene, aber besetzte Gitterpunkte. Im
+    rechten Graph ist für $L=5$ (grüne Sterne), $L=20$ (blaue
+    Diamanten) und $L=100$ mit welcher Wahrscheinlichkeit bei
+    Besetzung $p$ ein perkolierender Cluster gefunden wurde. Für
+    $L=100$ ist dies ein bereits sehr scharfer 0--1-Übergang in Nähe
+    von $0,6$.}
   \label{fig:percolation}
 \end{figure}
 
@@ -1094,31 +1161,32 @@ In dieser Form wäre der Algorithmus recht langsam, weil man ständig
 wieder Punkte hinzufügen würde, die bereits in der Liste sind, und
 diese erneut untersucht. Um dies zu vermeiden, führt man einfach eine
 zweite Liste der Punkte, deren Nachbarn noch nicht untersucht
-wurden. Ein Punkt, der noch nicht in der Liste der verbunden
-Punkte steht, wird dann nicht nur zu dieser, sondern auch zur Liste
-der zu bearbeitenden Punkte hinzugefügt. Dann müssen nur die Nachbarn
-der Punkte in dieser betrachtet werden, und sobald die Nachbarn eines
-Punkt einmal untersucht wurde, kann dieser aus der Liste der zu
-bearbeitenden Punkte gestrichen werden. Da er aber immer noch als
+wurden. Ein Punkt, der noch nicht in der Liste der verbunden Punkte
+steht, wird dann nicht nur zu dieser, sondern auch zur Liste der zu
+bearbeitenden Punkte hinzugefügt. Dann müssen nur die Nachbarn der
+Punkte in dieser Liste betrachtet werden, und sobald die Nachbarn
+eines Punkts einmal untersucht wurden, kann dieser aus der Liste der
+zu bearbeitenden Punkte gestrichen werden. Da er aber immer noch als
 verbunden markiert ist, wird er auch nie ein zweites Mal in die Liste
 der zu bearbeitenden Punkte eingefügt werden. Der Algorithmus
-terminiert also, wenn die abzuarbeitende Liste leer ist. Ein
+terminiert also, da die abzuarbeitende Liste irgendwann leer ist. Ein
 entsprechendes Python-Skript ist in Listing~\ref{lst:percolation} zu
 sehen.
 
-Abbildung~\ref{fig:percolation} zeigt links einen solchen
-perkolierenden Cluster für ein Gitter mit Besetzungwahrscheinlichkeit
-$p=0,6$, es sind also etwas mehr als die Hälfte der Punkte
-besetzt. Rechts ist für verschiedene Besetzungswahrscheinlichkeiten
-aufgetragen, wie wahrscheinlich es ist, einen perkolierenden Cluster
-zu beobachten. Wie man sieht, ist $p=0,6$ nicht ohne Grund gewählt,
-denn dies ist sehr dicht am kritischen Perkolationsschwellwert
-$p_c\approx 0,593$ im Limit unendlicher Gittergröße. Mit steigender
-Kantenlänge wird der Übergang bereits bei endlichen Gittern relativ
-scharf, bei $L=100$ ist der Grenzbereich weniger als $0,06$ in $p$
-breit. Bei einer Besetzung von $0,56$ ist Perkolation äußerst
-unwahrscheinlich, bei $0.6$ gibt es hingegen schon für die Mehrheit
-der Gitter einen perkolierenden Cluster.
+Abbildung~\ref{fig:percolation} zeigt links einen perkolierenden
+Cluster für ein Gitter mit Besetzungwahrscheinlichkeit $p=0,6$, es
+sind also etwas mehr als die Hälfte der Punkte besetzt. Rechts ist für
+verschiedene Besetzungswahrscheinlichkeiten aufgetragen, wie
+wahrscheinlich es ist, einen perkolierenden Cluster zu beobachten. Wie
+man sieht, ist $p=0,6$ nicht ohne Grund gewählt, denn dies ist sehr
+dicht am kritischen Perkolationsschwellwert. Der tatsächliche Wert des
+Schwellwerts ist $p_c\approx 0,593$ im Limit unendlicher Gittergröße,
+wie man zeigen kann. Mit steigender Kantenlänge wird der Übergang
+bereits bei endlichen Gittern relativ scharf, bei $L=100$ ist der
+Grenzbereich weniger als $0,06$ in $p$ breit. Bei einer Besetzung von
+$0,56$ ist Perkolation äußerst unwahrscheinlich, bei $0.6$ gibt es
+hingegen schon für die Mehrheit der Gitter einen perkolierenden
+Cluster.
 
 Ähnlich wie beim Random walk kann auch die Perkolation in unzähligen
 Variationen betrachtet werden, etwa andere zugrundeliegende Gitter,

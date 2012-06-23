@@ -36,16 +36,21 @@ eqn=0
 for y in range(N):
     for x in range(N):
         if eqn > 0:
-            A[eqn, linindex(x,y)] = 4/h**2
-            A[eqn, linindex(x+1,y)] = -1/h**2
-            A[eqn, linindex(x-1,y)] = -1/h**2
-            A[eqn, linindex(x,y+1)] = -1/h**2
-            A[eqn, linindex(x,y-1)] = -1/h**2
+            A[eqn, linindex(x,y)] = -4/h**2
+            A[eqn, linindex(x+1,y)] = 1/h**2
+            A[eqn, linindex(x-1,y)] = 1/h**2
+            A[eqn, linindex(x,y+1)] = 1/h**2
+            A[eqn, linindex(x,y-1)] = 1/h**2
             M.append((linindex(x,y)  , eqn))
             O.append((linindex(x+1,y), eqn))
             O.append((linindex(x-1,y), eqn))
             O.append((linindex(x,y+1), eqn))
             O.append((linindex(x,y-1), eqn))
+            if eqn <= 2:
+                # kommt in den Text als Beispiel der indizierten Speicherung
+                print linindex(x+1,y), linindex(x-1,y),\
+                    linindex(x,y+1), linindex(x,y-1)
+                print A[eqn,:]
         else:
             # Normierung
             A[0, 0] = 1
