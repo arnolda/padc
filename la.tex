@@ -109,10 +109,11 @@ die Matrixstruktur durch die Zeilenadditionen rasch zerstört.
 Im folgenden lernen wir nun schnellere, iterative Gleichungslöser
 kennen, mit denen auch solche und größere Gleichungssysteme handhabbar
 werden. Außerdem können diese Verfahren auch auf große, dünn besetzte
-Matrizen angewandt werden. Weiter lernen wir Verfahren zur Berechnung
-von Eigenwerten und -vektoren kennen und eine wichtige
-Verallgemeinerung, die Singulärwertzerlegung. Diese leitet dann schon
-wieder zum nächsten Kapitel, der Optimierung, über.
+Matrizen angewandt werden. Weiter lernen wir die QR-Zerlegung als
+weitere Matrixzerlegung kennen, die eine wichtige Rolle bei der
+Bestimmung von orthogonalen Basen und der 
+Optimierung spielt. Sie kann auch zur Berechnung von Eigenwerten und
+-vektoren benutzt werden, was dieses Kapitel abschließt.
 
 \section{Iterative Gleichungslöser}
 
@@ -367,6 +368,375 @@ $\omega$ gewichtet also zwischen der vorherigen Näherung und der
 nächsten Gauß-Seidel-Iterierten. Insofern ist es erstaunlich, dass
 auch Werte $\omega>1$ sinnvoll sein können, die die bestehende
 Näherung quasi bestrafen.
+
+\section{QR-Zerlegung und Orthogonalisierung}
+\index{QR-Zerlegung}
+
+Neben der LU-Zerlegung spielt in der Numerik noch eine zweite
+Zerlegung eine wichtige Rolle, die QR-Zerlegung. Dabei wird eine
+Matrix $A\in\CC^{m,n}$ in eine orthonormale Matrix $Q$ und eine rechte
+obere Dreiecksmatrix $R$ zerlegt, so dass $A=QR$.  Orthonormal
+bedeutet hier, dass die Spaltenvektoren von $Q$ bezüglich des
+Skalarprodukts $(u,v) := u^Hv$ paarweise orthogonal und normiert
+sind. Das bedeutet, dass $Q^HQ=I$, wobei der obere Index $^H$ jeweils
+die Hermitesche bezeichnet.
+
+Anders als bei der LU-Zerlegung existiert eine solche Zerlegung immer,
+ist aber dafür nicht eindeutig. So gibt es Zerlegungen sowohl mit
+$Q\in\CC^{m,n}$ und $R\in\CC^{n,n}$, als auch mit $Q\in\CC^{m,m}$ und
+$R\in\CC^{m,n}$. Wir werden Verfahren kennenlernen, die beide Formen
+erzeugen.
+
+Ist $A$ quadratisch, und regulär, so ist auch $Q$ quadratisch und
+$Q^H=Q^{-1}$. Außerdem gilt $\abs{\det Q} = 1$. Eine solche Matrix
+heißt \emph{unitär}. Praktisch kann man sich unitäre Matrizen als
+Drehungen und Spiegelungen vorstellen. Daher sind alle wesentlichen
+Eigenschaften der Matrix $A$ in $R$ enthalten. Insbesondere kann die
+QR-Zerlegung auch benutzt werden, um bequem $Ax=b$ zu lösen, da ja
+\begin{equation}
+  Ax=QRx\stackrel{!}{=} b\quad\implies\;
+  Rx=Q^H b,
+\end{equation}
+was durch einfach Rücksubstitution gelöst werden kann. Wir werden
+später sehen, dass die QR-Zerlegung auch bei nichtquadratischen
+Matrizen bei der "`Lösung"' von $Ax=b$ wichtig ist, weil sie bestimmte
+verwandte Optimierungsaufgaben löst.
+
+\subsection{\keyword{Gram-Schmidt-Verfahren}}
+\index{Orthogonalisierung}
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[x=8em,y=8em]
+    \pgfmathsetmacro{\azx}{1.4}
+    \pgfmathsetmacro{\azy}{0.3}
+    \pgfmathsetmacro{\aox}{0.7}
+    \pgfmathsetmacro{\aoy}{0.8}
+
+    \draw[->] (0,0) -- (1.2,0);
+    \draw[->] (0,0) -- (0,1.2);
+
+    \draw[->] (0,0) -- (\aox,\aoy) node[above] {$a_2$};
+
+    \pgfmathsetmacro{\l}{1.0/veclen(\azx,\azy)}
+    \pgfmathsetmacro{\qzx}{\azx*\l}
+    \pgfmathsetmacro{\qzy}{\azy*\l}
+
+    \draw[very thick,->] (0,0) -- (\qzx,\qzy) node[below] {$q_1$};
+
+    \pgfmathsetmacro{\scal}{\aox*\qzx + \aoy*\qzy}
+    \pgfmathsetmacro{\qprjx}{\scal*\qzx}
+    \pgfmathsetmacro{\qprjy}{\scal*\qzy}
+    \pgfmathsetmacro{\qpox}{\aox - \qprjx}
+    \pgfmathsetmacro{\qpoy}{\aoy - \qprjy}
+    
+    \pgfmathsetmacro{\l}{1.0/veclen(\qpox,\qpoy)}
+    \pgfmathsetmacro{\qox}{\qpox*\l}
+    \pgfmathsetmacro{\qoy}{\qpoy*\l}
+
+    \draw[dotted, very thick,blue,->] (\qpox,\qpoy) -- (\aox,\aoy);
+    \draw[dotted] (\qprjx,\qprjy) -- (\aox,\aoy);
+
+    \draw[very thick,red,->] (0,0) -- (\qox,\qoy) node[left] {$q_2$};
+    \draw (\qpox,\qpoy) node[left] {$q'_2$};
+
+  \end{tikzpicture}
+
+  \caption{Gram-Schmidt-Orthogonalisierung. $a_2$ wird in den Vektor
+    $q'_2$ transformiert, der zu $q_1$ senkrecht steht, in dem die
+    Projektion von $q_1$ auf $a_2$ (blau gepunktet) von $a_2$
+    abgezogen wird. $q'_2$ wird schließlich noch normiert, um den
+    nächsten Basisvektor $q_2$ zu erhalten.}
+  \label{fig:gs}
+\end{figure}
+
+Das Gram-Schmidt-Verfahren ist das älteste Verfahren zur QR-Zerlegung
+und Orthogonalisierung von Systemen von Vektoren. Auf der anderen
+Seite ist es das allgemeinste Verfahren und kann in beliebigen
+Hilberträumen eingesetzt werden.
+
+Seien also zunächst $m$ linear unabhängige Vektoren $\{a_j, j=1(1)m\}$
+aus einem beliebigen Hilbertraum $H$ gegeben. Ziel ist es nun, diese
+in eine orthonormale Basis $\{q_j, j=1(1)m \}$ zu transformieren. Wir
+beginnen mit $a_1$, das wir lediglich normieren müssen:
+\begin{equation}
+  q_1 = \frac{a_1}{\norm{a_1}}.
+\end{equation}
+Den nächsten Vektor, $a_2$, dürfen wir nun nicht einfach normieren und
+hinzufügen, da er ja nicht notwendigerweise orthogonal zu $q_1$
+ist. Das können wir aber erreichen, in dem wir einfach die Anteile
+parallel zu $q_1$ abziehen (vergleiche Abbildung~\ref{fig:gs}):
+\begin{align*}
+  q'_2 &= a_2 - (a_2, q_1)\,q_1\\
+  q_2 &= \frac{q'_2}{\norm{q'_2}},
+\end{align*}
+wobei $(\cdot,\cdot)$ das Skalarprodukt des Hilbertraums $H$
+bezeichnet.  Da $a_2$ und $a_1$ nach Voraussetzung linear unabhängig
+sein sollen, gilt dies auch für $a_2$ und $q_1$, so dass $q'_2\neq
+0$. Mit den weiteren Vektoren verfahren wir genauso, ziehen also
+zunächst die Anteile der bereits berechneten Basisvektoren ab und
+normieren den Rest:
+\begin{align}
+  \label{eq:gs}
+  q'_k &= a_k - \sum_{i=1}^{k-1} (a_k, q_i)\,q_i\\
+  q_k &= \frac{q'_k}{\norm{q'_k}}.
+\end{align}
+Da wir lineare Unabhängigkeit der $a_i$ vorausgesetzt haben, ist dabei
+gesichert, dass $q'_k\neq 0$ für alle $k$. Außerdem gilt
+\begin{align}
+  (q'_k,q_l) = \left(a_k - \sum_{i=1}^{k-1} (a_k, q_i) q_i, q_l\right) =
+  (a_k, q_l) - \sum_{i=1}^{k-1} (a_k, q_i) \underbrace{(q_i,
+    q_l)}_{=\delta_{il}} = 0.
+\end{align}
+Da zu $q'_k$ parallelen $q_k$ sind damit paarweise orthogonal.
+
+Gleichung \eqref{eq:gs} zeigt auch, dass die orthonormale Basis nicht
+eindeutig ist, denn wir können genausogut
+$q_k=-\nicefrac{q'_k}{\norm{q'_k}}$ wählen oder, im Falle eines
+komplexen Hilbertraums, jeden beliebigen anderen anderen Faktor vom
+Betrag 1.
+
+Das Gram-Schmidt-Verfahren benötigt zur Funktion lediglich das
+Skalarprodukt des zugrundeliegenden Hilbertraums, und kann daher auch
+zur Orthonormalisierung etwa von Polynomen eingesetzt werden, wie wir
+gleich sehen werden. Doch zunächst wollen wir uns den Fall ansehen,
+dass $A=(a_j)\in\CC^{m,n}$ eine Matrix mit linear unabhängigen Spalten
+ist, und die Vektoren $a_j$ deren Spaltenvektoren. Offenbar muss $m\ge
+n$ gelten, sonst sind die Spalten linear abhängig. Wir setzen
+$Q=(q_j)\in\CC^{m,n}$ die Matrix der mit dem Gram-Schmidt-Verfahren
+orthonormierten Spaltenvektoren, und $R=(r_{ik})\in\CC^{n,n}$ mit
+\begin{equation}
+  r_{ik} =
+  \begin{cases}
+    (a_k, q_i)  & \text{falls}\; i < k\\
+    \norm{q'_k} & \text{falls}\; i = k\\
+    0           & \text{sonst}
+  \end{cases}
+\end{equation}
+Dann gilt wegen \eqref{eq:gs}
+\begin{equation}
+  a_k = q_k\norm{q'_k} + \sum_{i=1}^{k-1} (a_k, q_i) q_i =
+  \sum_{i=1}^n r_{ik} q_i
+\end{equation}
+und damit $A=QR$ mit $Q^HQ=I$. Ist $m=n$, so ist dann $Q$ die gesuchte
+unitäre Matrix und $R$ die rechte obere Dreiecksmatrix der
+QR-Zerlegung.
+
+Das Verfahren benötigt bei quadratischen Matrizen genauso wie die
+Gauß-Elimination $\O(n^3)$ Schritte, da für jeden Vektor $\O(n)$
+Skalarprodukte berechnet werden müssen. Außerdem arbeitet das
+Verfahren auf vollen Matrizen, was, wie schon gesagt, bei dünn
+besetzten Matrizen ungünstig ist und die Anwendbarkeit bei großen
+Matrizen einschränkt. Auch hier gibt es daher alternative Verfahren,
+von denen wir gleich die Householder-Spiegelungen und Givensrotationen
+kennenlernen werden.
+
+\subsubsection{Beispiel: Legendrepolynome}
+
+Da sich das Gram-Schmidt-Verfahren auf beliebige Hilberträume anwenden
+lässt, können wir zum Beispiel den Hilbertraum der Polynome
+betrachten, mit dem Skalarprodukt
+\begin{equation}
+  (f, g) := \int_{-1}^1 f(x)g(x)\, dx.
+\end{equation}
+Dann sind die Polynome $1,x,x^2,\ldots$ linear unabhängig, da die
+Koeffizientendarstellung eines Polynoms ja eindeutig ist. Andererseits
+sind diese Polynome aber nicht orthonormal bezüglich $(\cdot,\cdot)$,
+da zum Beispiel
+\begin{equation}
+  (1, x) =  \int_{-1}^1 x\, dx = \frac{1}{2}.
+\end{equation}
+
+Wir benutzen nun das Gram-Schmidt-Verfahren, um eine orthogonale Basis
+zu erzeugen. Da  $(1, 1) = 2$ ist
+\begin{equation}
+  q_1 = \frac{1}{\sqrt{2}}
+\end{equation}
+Weiter ist
+\begin{equation}
+  q'_2 = x - \left(x, \frac{1}{\sqrt{2}}\right) \cdot \frac{1}{\sqrt{2}} = 
+  x
+\end{equation}
+und damit wegen $(x,x) = \nicefrac{2}{3}$
+\begin{equation}
+  q_2 = \sqrt{\frac{3}{2}} q'_1 =
+  \sqrt{\frac{3}{2}} x.
+\end{equation}
+
+Analog erhalten wir
+\begin{equation}
+  q'_3 = x^2 - \frac{3}{2} (x^2, x) \cdot x - \frac{1}{2}(x^2, 1) \cdot 1 = 
+  x^2  - \frac{1}{3}
+\end{equation}
+und
+\begin{equation}
+  q_3 = \sqrt{45}{8}\left(x^2  - \frac{1}{3}\right).
+\end{equation}
+Bis auf Vorfaktoren sind dies die ersten drei Legendrepolynome, die
+sich auf diese Weise berechnen lassen. Analog ergeben sich die
+Chebyshev-Polynome $T_n$, wenn für dieselbe Basis bezüglich
+\begin{equation}
+  (f, g)_T := \int_{-1}^1 \frac{f(x)g(x)}{\sqrt{1-x^2}}\, dx
+\end{equation}
+das Gram-Schmidt-Verfahren durchgeführt wird.
+
+\subsubsection{Modifiziertes Gram-Schmidt-Verfahren}
+\index{Gram-Schmidt-Verfahren>modifiziertes}
+
+Numerisch ist das Gram-Schmidt-Verfahren nicht sehr stabil, denn falls
+zwei Vektoren $a_j$ beinahe parallel sind, kommt es durch Auslöschung
+bei der Berechnung der Projektionen zu großen
+Rundungsfehlern. Numerisch besser ist das modifizierte
+Gram-Schmidt-Verfahren, bei dem die Projektion eines jeden neu
+erzeugten Vektors sofort von allen anderen abgezogen wird. Der
+folgende Python-Code führt das modifizierte Gram-Schmidt-Verfahren auf
+der Matrix $A$ aus, die schrittweise in die orthonormale Matrix $Q$
+transformiert wird, während $R$ mit berechnet wird. Dadurch, dass in
+jedem Schritt der neu berechnete Basisvektor von allen weiteren
+abgezogen wird, ist der nächste zu berechnende Vektor $q_k$ bereits
+orthogonal zu den bisherigen Basisvektoren und muss lediglich
+normalisiert werden:
+\begin{lstlisting}
+for k in range(n):
+    # Berechnen von @\color{red}$ r_{kk} = \norm{q'_k} $@
+    # und Normalisierung des neuen Basisvektors
+    r[k,k] =  sqrt(dot(q[:,k], q[:k]))
+    q[:,k] = q[:k] / r[k,k]
+
+    # Berechnen der @\color{red}$ r_{ik} = (q_k, q_i) $@
+    # und Abziehen der Projektionen von den verbleibenden Vektoren
+    for i in range(k+1, n):
+        r[i,k] =  dot(q[:,k], q[:i])
+        q[:,i] = q[:,i] - r[i,k] q[:, k]
+    end
+end
+\end{lstlisting}
+
+\subsection{\keyword{Householder-Spiegelungen}}
+
+Wie bereits gesagt, sind unitäre Matrizen nichts anderes als
+verallgemeinerte Drehungen und Spiegelungen. Insbesonder ist das
+Produkt von unitären Matrizen wieder unitär. Die beiden folgenden
+Verfahren zur QR-Zerlegung konstruieren $Q$ daher als Produkt von $l$
+einfacher elementarer unitärer Matrizen $Q_i$, wobei $l$ vom Verfahren
+abhängt, wie auch der Typ der Matrizen $Q_i$. Diese transformieren $A$
+schrittweise in rechte obere Dreiecksform:
+\begin{equation}
+  Q_l\cdots Q_2Q_1A = R\quad\implies\; A =
+  \underbrace{Q_1^H\cdots Q_{l-1}^HQ_l^H}_Q R.
+\end{equation}
+
+Bei der QR-Zerlegung mittels Householder-Spiegelungen werden nun $m$
+Spiegelungen konstruiert, so dass nacheinander die Spalten von $A$
+unterhalb der Diagonalen Null werden, und $A$ auf rechte obere
+Dreiecksgestalt transformiert wird. Während also das
+Gram-Schmidt-Verfahren die Matrix $A$ in $Q$ transformiert und dabei
+$R$ als Nebenprodukt anfällt, wird hier $A$ in $R$ transformiert, und
+$Q$ fällt als Nebenprodukt ab. Oft wird $Q$ gar nicht explizit
+benötigt, und es ist geschickter, nur die Householder-Spiegelungen zu
+speichern, die wir nun zunächst definieren wollen.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[x=8em,y=8em]
+    \pgfmathsetmacro{\ax}{0.8}
+    \pgfmathsetmacro{\ay}{0.5}
+
+    \pgfmathsetmacro{\l}{veclen(\ax,\ay)}
+    \pgfmathsetmacro{\vx}{\ax + \l}
+    \pgfmathsetmacro{\vy}{\ay}
+    \pgfmathsetmacro{\tmp}{veclen(\vx,\vy)}
+    \pgfmathsetmacro{\vx}{\vx/\tmp}
+    \pgfmathsetmacro{\vy}{\vy/\tmp}
+
+    \pgfmathsetmacro{\vpx}{\ax - \l}
+    \pgfmathsetmacro{\vpy}{\ay}
+    \pgfmathsetmacro{\tmp}{veclen(\vpx,\vpy)}
+    \pgfmathsetmacro{\vpx}{\vpx/\tmp}
+    \pgfmathsetmacro{\vpy}{\vpy/\tmp}
+
+    \draw[->] (0,0) -- (1.2,0);
+    \draw[->] (0,0) -- (0,1.2);
+
+    \draw[->] (0,0) -- (\ax,\ay) node[above] {$a_1$};
+
+    \draw[very thick, red, ->] (0,0) -- (\l,0) node[below] {$\norm{a_1} e_1$};
+
+    \draw[very thick, red, dotted, ->] (0,0) -- (-\l,0) node[below] {$-\norm{a_1} e_1$};
+
+    \draw[thick, blue, dotted, ->] (0,0) -- (\vx,\vy) node[above] {$v$};
+
+    \draw[thick, blue, ->] (0,0) -- (\vpx,\vpy) node[above] {$v'$};
+
+    \draw[dashed] (\ax,\ay) -- (-\l, 0);
+    \draw[dashed] (\ax,\ay) -- ( \l, 0);
+
+  \end{tikzpicture}
+
+  \caption{Illustration der Householder-Konstruktion. Der Vektor $a_1$
+    soll mittels einer Spiegelung auf einen der Vektoren
+    $\pm\norm{a_1}e_1$ abgebildet werden. Die zugehörigen
+    Householdervektoren sind dann gerade die beiden Winkelhalbierenden
+    $v=a+\norm{a_1}e_1$ und $v'=a-\norm{a_1}e_1$. Bei der Spiegelung
+    von $v$ wird $a_1$ auf $\norm{a_1} e_1$ abgebildet (durchgezogene
+    Linien), bei Spiegelung von $v'$ auf $-\norm{a_1} e_1$
+    (gestrichelte Linien).}
+  \label{fig:householder}
+\end{figure}
+
+Sei also $v\in\RR^m$ ein Vektor mit $\norm{v}^2_2=v^Hv=1$. Dann ist die
+zugehörige Householder-Spiegelung definiert als
+\begin{equation}
+  S_v = I - 2vv^H
+\end{equation}
+Ist $w = \lambda v$, so gilt $S_vw = w - 2vv^Hw = -w$, $w$ wird also
+an der Null gespiegelt. Ist hingegen $w\perp v$, also $v^Hw=0$, dann
+ist $S_vw = w$. $S_v$ lässt also die zu $v$ senkrechte Hyperebene
+invariant, während Vektoren parallel zu $v$ gespiegelt werden.
+Außerdem gilt $S_v^H = S_v$ und $S_v^HS_v = I - 4vv^H + 4vv^Hvv^H =
+I$, damit auch $S_v^2=I$, und $S_v$ ist unitär.
+
+Wie können wir nun eine Householder-Spiegelung konstruieren, so dass
+diese die erste Spalte $a_1$ von $A$ auf die erste Koordinatenachse
+abbildet? Wie man sich leicht überlegt, muss dann $v$ eine der beiden
+Winkelhalbierenden sein (vergleiche
+Abbildung~\ref{fig:householder}). Diese sind von der Form
+\begin{equation}
+  v = \frac{a_1 + \lambda e_1}{\norm{a_1 +\lambda e_1}}
+\end{equation}
+mit
+\begin{equation}
+  \lambda = \pm\norm{a_1}.
+\end{equation}
+Für die numerische Stabilität ist es günstiger, Auslöschungen zu
+vermeiden, daher wählt man
+\begin{equation}
+  \lambda = \text{sgn}(a_{11}) \norm{a_1},
+\end{equation}
+wobei $\text{sgn}(a_{11})$ das Vorzeichen von $a_{11}$ bezeichnet.
+Durch die Wahl dieses Vorzeichens ist $v_1 =
+\text{sgn}(a_{11})(\abs{a_{11}} + \norm{a_1})$ und $v_i = a_i$ für
+$i>1$, so dass es zu keiner Auslöschung kommen kann.
+
+Bei der Implementation ist es natürlich wichtig, $S_v$ \emph{nicht}
+explizit zu berechnen. Es gilt aber
+\begin{equation}
+  \label{eq:hhupdate}
+  S_vA = A - 2v v^HA = A - 2 v (A^Hv)^H
+\end{equation}
+Man berechnet also lediglich einmal den Vektor $t = A^Hv$, und zieht dann
+das $\overline{t_j}$-fache von $v_j$ von der Spalte $a_j$ ab.
+
+Um nun weitere Spalten von $A$ auf Einheitsvektoren zu spiegeln,
+fixieren wir die erste Koordinate, bereits bearbeiteten Koordinaten,
+und betrachten nur noch Spiegelungen in den verbleibenden
+Unterräumen. Nach $n$ Schritten ist dann $A$ auf Dreiecksform
+transformiert. Jedes Matrix-Update gemäß \eqref{eq:hhupdate} benötigt
+im wesentlichen $\O(nm)$ Operationen, die Methode insgesamt daher
+$\O(n^2m)$ Operationen, bei quadratischen Matrizen also wie auch das
+Gram-Schmidt-Verfahren $\O(n^3)$ Schritte.
+
+%\subsection{\keyword{Givens-Rotationen}}
 
 %%% Local Variables: 
 %%% mode: latex
