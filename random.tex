@@ -69,11 +69,12 @@ Messungen vornehmen.
 
 Wie werden solche Pseudozufallszahlen generiert? Für diese Aufgabe
 gibt es verschiedene Algorithmen, sogenannte
-\emph{\keyword{Zufallszahlengeneratoren}}. Diese liefern bei jedem
-Aufruf eine Zufallszahl, meist eine gleichverteilte Ganzzahl. Die
-Bandbreite reicht vom sehr guten, aber aufwändigen Mersenne-Twister
-bis zu den einfachen linearen Kongruenzgeneratoren, die wir nun
-kennenlernen werden.
+\emph{\keyword{Zufallszahlengeneratoren}} (engl. \emph{random number
+  generator} oder \emph{RNG}). Diese liefern bei jedem Aufruf eine
+Zufallszahl, meist eine gleichverteilte Ganzzahl. Die Bandbreite
+reicht vom sehr guten, aber aufwändigen Mersenne-Twister bis zu den
+einfachen linearen Kongruenzgeneratoren, die wir nun kennenlernen
+werden.
 
 Das Hauptmaß für die Güte eines solchen Zufallszahlengenerators ist
 seine \emph{Periode}. Denn da jeder Zufallsgenerator einen internen
@@ -87,17 +88,17 @@ bei 32 Bit.
 
 Das hört sich recht viel an, aber bei einer typischen
 Molekulardynamiksimulation werden pro Zeitschritt und Teilchen 3
-Zufallszahlen benötigt. Bei zehntausend Teilchen werden damit pro
+Zufallszahlen benötigt.  Bei zehntausend Teilchen werden damit pro
 Schritt 30,000 Zufallszahlen gezogen, und der Generator wiederholt
 sich nach weniger als 200,000 Zeitschritten. Da sich die
 Teilchenpositionen in dieser Zeit wahrscheinlich schon stark geändert
-haben, spielt dies in in der Praxis keine Rolle. Bei Isingmodellen,
+haben, spielt dies in in der Praxis keine Rolle.  Bei Isingmodellen,
 bei denen zufällig Spins auf einem Gitter invertiert werden,
 betrachtet man allerdings nicht selten Gitter von einigen Millionen
-Spins. In diesem Fall sind bessere Generatoren wesentlich. Der
-Mersenne-Twister hat zum Beispiel einen internen Zustand von 2,5
-Kilobyte und eine Periode von $\approx 10^{6000}$, was für die meisten
-Anwendungen ausreichend sein dürfte.
+Spins. In diesem Fall sind bessere Generatoren wesentlich.  Der
+Mersenne-Twister-Generator hat zum Beispiel einen internen Zustand von
+2,5 Kilobyte und eine Periode von $\approx 10^{6000}$, was für die
+meisten Anwendungen ausreichend sein dürfte.
 
 In Python stellt das Modul \texttt{random} verschiedene effiziente und
 hochwertige Methoden zur Zufallszahlenberechnung bereit. Die Methode
@@ -110,7 +111,7 @@ $[a,b]$. \scipy{random.gauss(mu, sigma)} schließlich liefert eine
 normalverteilte Fließkommazahl mit Erwartungswert \argd{mu} und
 Standardabweichung \argd{sigma}.
 
-NumPy hat ein eigenes \texttt{random}-Modul, dass zusätzlich Vektoren
+NumPy hat ein eigenes \texttt{random}-Modul, das zusätzlich Vektoren
 von Zufallszahlen generieren kann, indem einfach neben den Parametern
 eine weitere ganze Zahl, die gewünschte Anzahl $N$ von Zufallszahlen,
 angeben wird, also zum Beispiel \scipy{numpy.random.normal(mu, sigma,
@@ -131,23 +132,23 @@ in den neuen inneren Zustand $x_{i+1}$ transformiert wird.  Die
 eigentliche Zufallszahl sind einige (oder alle) der Bits des Zustands
 $x_i$.  $m$, $a$ und $b$ sowie die Menge der für die Zufallszahl
 benutzten Bits sind die Konstanten, die den Algorithmus festlegen,
-$x_0$ der Startwert oder \emph{\keyword{Seed}}. Die Konstanten $m$,
+$x_0$ der Startwert oder \emph{\keyword{Seed}}.  Die Konstanten $m$,
 $a$ und $b$ sollten keinesfalls einfach zufällig gewählt werden, da
 Knuth gezeigt hat, dass nur unter gewissen Bedingungen die Periode
-eines solchen Generators tatsächlich $m$ ist~\cite{knuth81b}. Bei
-zufälliger Wahl der Konstanten wird die Periode meist sehr viel
-kürzer sein.
+eines solchen Generators tatsächlich $m$ ist~\cite{knuth81b}.  Bei
+zufälliger Wahl der Konstanten wird die Periode meist sehr viel kürzer
+sein.
 
-Der Zufallsgenerator \texttt{lrand48} der Gnu-C-Bibliothek ist ein
-Beispiel eines LCGs. Er benutzt einen Modul von $m=2^{48}$,
-$a=25,214,903,917$ und $b=11$. Als Zufallszahlen werden dann die
-obersten 31 Bits von $x_i$ benutzt, also die Bits 17 bis 47. Ältere
+Der Zufallsgenerator \texttt{rand48} der POSIX-C-Bibliothek ist ein
+Beispiel eines LCGs.  Er benutzt einen Modul von $m=2^{48}$,
+$a=25,214,903,917$ und $b=11$.  Als Zufallszahlen werden dann die
+obersten 31 Bits von $x_i$ benutzt, also die Bits 17 bis 47.  Ältere
 Versionen der Standard-C-Bibliothek benutzten für die Funktion
 \texttt{rand} $m=2^{32}$, $a=1,103,515,245$ und $b=12,345$, wovon die
 unteren 31 Bit als Zufallszahl genutzt werden.
 
 Die Wahl von $m=2^{48}$ bzw. $m=2^{32}$ hat den einfachen Grund, dass
-sich sehr einfach modulo $m=2^b$ rechnen lässt - man berücksichtigt
+sich sehr einfach modulo $m=2^b$ rechnen lässt -- man berücksichtigt
 einfach nur die ersten $b-1$ Bits und ignoriert alle höheren. Denn
 \begin{equation}
   \label{eq:lcgmod}
@@ -178,11 +179,11 @@ Zufallszahl.
 
 Dass die Modulo-Operation für eine Zweierpotenz als Modul ein
 einfaches Abschneiden der hohen Bits ist, hat allerdings auch einen
-gewissen Nachteil. Denn die ersten $k$ Bits der Zufallszahl bleiben ja
-bei Abschneiden aller Bits $k+1,\ldots$ übrig. Das bedeutet, dass
-diese anscheinend von einem Generator mit kürzerer Periode $2^{k+1}$
+gewissen Nachteil.  Die ersten $k$ Bits der Zufallszahl bleiben beim
+Abschneiden aller Bits $k+1,\ldots$ übrig.  Das bedeutet, dass diese
+anscheinend von einem Generator mit kürzerer Periode $2^{k+1}$
 generiert werden.  Insbesondere wechselt das unterste Bit mit jedem
-Schritt seinen Wert oder ist konstant. Dies ist der Grund, warum
+Schritt seinen Wert oder ist konstant.  Dies ist der Grund, warum
 \texttt{rand48} die untersten 17 Bit verwirft.
 
 Dieses Problem lässt sich umgehen, in dem der Modul als Primzahl
@@ -237,12 +238,12 @@ funktionieren, aber mehrere vorherige Werte benutzen:
 \end{equation}
 wobei diesmal $m$ beliebig ist und im allgemeinen einfach als die
 Bittiefe des Rechners gewählt wird. Anstelle der Addition kann auch
-die bitweise Addition modulo 2 benutzt werden. Diese
+die bitweise Addition modulo 2 benutzt werden.  Diese
 Exklusiv-Oder-Operation war früher schneller als eine Addition und
-wurde daher gern benutzt, bringt sonst allerdings eher Nachteile. Der
+wurde daher gern benutzt, bringt sonst allerdings eher Nachteile.  Der
 interne Status des Zufallszahlengenerators besteht in diesem Fall aus
 $\max(a,b)$ vielen $x_i$, die meist in einem
-\emph{\keyword{Ringspeicher}} gespeichert werden. Um diesen zu Anfang
+\emph{\keyword{Ringspeicher}} gespeichert werden.  Um diesen zu Anfang
 zu füllen, benutzt man üblicherweise einen LCG, der nur einen
 Startwert braucht.
 
@@ -381,8 +382,8 @@ Indizierung des Ringspeichers.
 \section{Andere Verteilungen}
 
 Die bisher besprochenen Zufallszahlengeneratoren liefern stets ganze
-Zahlen in einem gewissen Intervall, der \texttt{lrand48} zum Beispiel
-im Intervall $[0,2^{31}-1]$, der \texttt{MINSTD} im Intervall
+Zahlen in einem gewissen Intervall, \texttt{rand48} zum Beispiel
+im Intervall $[0,2^{31}-1]$, \texttt{MINSTD} im Intervall
 $[1,2^{31}-1]$. Um daraus gleichverteilte Ganzzahlverteilungen in
 beliebigen Intervallen zu erzeugen, kann man die Zufallszahl einfach
 skalieren. Ist also $\xi$ eine Zufallszahl, die gleichverteilt aus
@@ -410,13 +411,13 @@ also Fließkommazahlen im Bereich $[0,1]$.
 Wie aber können nun etwa normalverteilte Zufallszahlen erzeugt werden?
 Hierfür lernen wir nun mehrere Verfahren kennen, die
 Standardzufallszahlen in im Prinzip beliebige andere Verteilungen
-unwandeln.
+umwandeln.
 
 \subsection{\keyword{Verwerfungsmethode}}
 \index{Rejection sampling}
 
 Angenommen, wir wollen Zufallsvektoren gleichverteilt aus einer
-Kreisscheibe vom Radius $1$ ziehen, d.h., wir wollen Zufallsvektoren
+Kreisscheibe vom Radius $1$ ziehen, d.~h.~, wir wollen Zufallsvektoren
 $p=(x,y)$ ziehen, die gemäß der Dichte
 \begin{equation}
   \rho(x, y) = \begin{cases}
@@ -627,16 +628,15 @@ Inversionsmethode zur Erzeugung normalverteilter Zufallszahlen.
 
 Wie wir bereits gesehen haben, lassen sich mit Hilfe der
 Verwerfungsmethode gleichverteilt Positionen in der Kreisscheibe
-ziehen, und analog natürlich auch Positionen auf jeder Kugel im
+ziehen, und analog natürlich auch Positionen aus jeder Kugel im
 $\RR^n$. Allerdings nimmt die Akzeptanzrate mit steigendem $n$ rasch
 ab, da die $n$-Kugel nur noch einen kleinen Teil von $[-1,1]^n$
-belegt. Bis etwa $n=4$ ist die Verwerfungsmethode
-allerdings sehr effizient, was für die meisten physikalischen
-Anwendungen reicht.
+belegt. Bis etwa $n=4$ ist die Verwerfungsmethode allerdings sehr
+effizient, was für die meisten physikalischen Anwendungen reicht.
 
 Sollen Punkte auf der Kugeloberfläche gezogen werden, so können diese
 im Prinzip aus über der Kugel gleichverteilten Punkten $p$ gewonnen
-werden, indem diese auf die Oberfläche projeziert werden, also
+werden, indem diese auf die Oberfläche projiziert werden, also
 $p/\norm{p}$ betrachtet. Allerdings benötigt man auf diese Weise $n$
 Zufallszahlen, um einen Zufallsvektor auf der nur $n-1$-dimensionalen
 Oberfläche zu generieren, zusätzlich zu den Verlusten durch die
@@ -658,10 +658,11 @@ gleichverteilt auf einem Kreis vom Radius $r$ um Null.
 Für die Oberfläche der dreidimensionalen Kugel, also die 2-Sphäre, ist
 nicht etwa die gebräuchliche Parametrisierung über zwei Winkel am
 besten, sondern die Parametrisierung in Zylinderkoordinaten $\phi$ und
-$z$. Der Winkel $\phi$ ist offenbar gleichverteilt und kann als $2\pi
-u$ bestimmt werden, wobei $u$ eine Standardzufallsvariable ist. $z$
-ist erstaunlicherweise ebenso gleichverteilt, da $\rho(z)$ proportional zum Flächeninhalt
-des jeweiligen Rings ist, dividiert durch den gesamten Flächeninhalt, also
+$z$.  Der Winkel $\phi$ ist offenbar gleichverteilt und kann als $2\pi
+u$ bestimmt werden, wobei $u$ eine Standardzufallsvariable ist.  $z$
+ist erstaunlicherweise ebenso gleichverteilt, da $\rho(z)$
+proportional zum Flächeninhalt des jeweiligen Rings ist, dividiert
+durch den gesamten Flächeninhalt, also
 \begin{equation}
   \rho(z) = \frac{1}{4\pi r^2} 2\pi \sqrt{r^2 - z^2} \sqrt{1 +
     \left(\frac{d}{dx}\sqrt{r^2 - z^2}\right)^2} = \frac{1}{2r}
@@ -685,9 +686,9 @@ zu transformieren.
 \index{Pseudozufallszahlen>Qualitätsanalyse}
 
 Um die Qualität eines Zufallszahlengenerators zu testen, gibt es eine
-Vielzahl von Standardtests. Der Grund davon ist, dass es leider keinen
+Vielzahl von Standardtests. Der Grund dafür ist, dass es leider keinen
 einzelnen Test gibt, der sicherstellt, dass es keinerlei Korrelationen
-in der generierten Folge gibt. Ein solcher Test müßte ja jede mögliche
+in der generierten Folge gibt. Ein solcher Test müßte jede mögliche
 Teilmenge bilden und mit allen Zahlen korrelieren, was praktisch nicht
 möglich ist. Daher sollte ein guter Zufallszahlengenerator möglichst
 viele der folgenden Tests erfüllen, auch wenn dies keine Garantie ist,
@@ -698,15 +699,15 @@ Für eine bestimmte Anwendung genügt es natürlich, wenn er nur die
 Tests erfüllt, deren getestete Korrelationen Einfluß auf das System
 haben. Zum Beispiel werden bei einer Molekulardynamiksimulation in
 drei Dimensionen Paarkorrelationen unwichtig sein, aber
-Tripletkorrelationen problematisch. Bei einem zweidimensionalen
-Isingmodell hingegen wird es genau umgekehrt sein. In jedem Fall aber
+Tripletkorrelationen problematisch.  Bei einem zweidimensionalen
+Isingmodell hingegen wird es genau umgekehrt sein.  In jedem Fall aber
 sollte die Periode des Generators wie besprochen groß genug sein.
 
 Für die im folgenden beschriebenen Tests nehmen wir an, dass der zu
 testende Zufallszahlengenerator Standardzufallszahlen liefert, also
-gleichverteilt im Intervall $[0,1]$. Solche Zufallszahlen werden wie
-beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall auf
-andere Verteilungen transformiert.
+gleichverteilt im Intervall $[0,1]$.  Solche Zufallszahlen werden wie
+beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall
+auf andere Verteilungen transformiert.
 
 \subsubsection{Statistiktests}
 \index{$\chi^2$-Test}
@@ -971,7 +972,7 @@ bleiben kann.
   \includegraphics[width=0.6\textwidth]{plots/polymer}
   \caption{Kontinuierlicher Random walk als einfaches Polymermodell mit
     $n=100$ Monomeren. Das Polymer wurde mit der Simulationssoftware
-    \texttt{ESPResSo}~\cite{espresso} erzeugt und dem
+    \textsc{ESPResSo}~\cite{espresso} erzeugt und dem
     Visualisierungstool \texttt{VMD}~\cite{vmd} gezeichnet.}
   \label{fig:contrw}
 \end{figure}
@@ -1012,14 +1013,15 @@ in Abbildung~\ref{fig:contrw} gezeigt.
 
 Die letztere Wahl ist ein einfaches Modell für Polymere unter
 bestimmten Voraussetzungen (in einem sogenannten
-$\theta$-Lösungsmittel). In diesem Fall ist $t$ allerdings keine
-Zeitachse, sondern zählt einfach die Monomere durch.
+$\theta$-Lösungsmittel).  In diesem Fall ist $t$ allerdings keine
+Zeitachse, sondern zählt einfach die Monomere entlang der Polymerkette
+durch.
 
 In guten Lösungsmitteln streckt sich das Polymer etwas mehr. Auch dies
 lässt sich durch einen Random walk modellieren, bei dem die Monomere
 eine endliche Ausdehnung haben und nicht überlappen können. Ein
 solcher Random walk heißt auch \emph{Self avoiding walk}, weil er sich
-selber nicht kreuzen kann. In unserem einfachen Random walk-Modell
+selbst nicht kreuzen kann. In unserem einfachen Random walk-Modell
 \eqref{eq:rw} entspricht das der Bedingung $x_t\neq x_s$ für alle
 $s\neq t$ und ist auf dem Computer relativ einfach zu erstellen.
 
@@ -1047,7 +1049,7 @@ numerisch genähert.
 Der Self avoiding walk wie auch der der einfache Random walk spielen
 nach wie vor eine wichtige Rolle in der Polymerphysik, insbesondere
 beim Aufsetzen von Polymersimulationen. Daher besitzt etwa
-Simulationssoftware \texttt{ESPResSo}~\cite{espresso} einen eigenen
+Simulationssoftware \textsc{ESPResSo}~\cite{espresso} einen eigenen
 Befehl, um solche Zufallsketten zu erzeugen.
 
 \subsubsection{Diffusionslimitierte Aggregation}
@@ -1184,7 +1186,7 @@ Schwellwerts ist $p_c\approx 0,593$ im Limit unendlicher Gittergröße,
 wie man zeigen kann. Mit steigender Kantenlänge wird der Übergang
 bereits bei endlichen Gittern relativ scharf, bei $L=100$ ist der
 Grenzbereich weniger als $0,06$ in $p$ breit. Bei einer Besetzung von
-$0,56$ ist Perkolation äußerst unwahrscheinlich, bei $0.6$ gibt es
+$0,56$ ist Perkolation äußerst unwahrscheinlich, bei $0,6$ gibt es
 hingegen schon für die Mehrheit der Gitter einen perkolierenden
 Cluster.
 
