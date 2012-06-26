@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
 # 
@@ -7,7 +8,6 @@
 # http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
-# -*- coding: utf-8 -*-
 #
 # Simulation der Bahn eines Pendels
 # mit Hilfe des Velocity-Verlet-Integrators.

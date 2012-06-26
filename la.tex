@@ -8,15 +8,15 @@
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
 
-\chapter{Lineare Gleichungssysteme \textrm{II}}
+\chapter{Lineare Algebra \textrm{II}}
 \index{Gleichungssysteme>lineare}
 
-Wie wir bereits gesehen haben, lassen sich gewöhnliche
-Differentialgleichungen in einer Dimension recht einfach auf lineare
-Gleichungssysteme abbilden. Diese haben Bandstruktur und sind
-effizient zu lösen.  In mehr als einer Dimension ist das allerdings im
-allgemeinen nicht mehr der Fall. Betrachten wir zum Beispiel die
-Poissongleichung in zwei Dimensionen:
+Wie wir bereits an der Besselgleichung gesehen haben, lassen sich
+gewöhnliche Differentialgleichungen in einer Dimension recht einfach
+auf lineare Gleichungssysteme abbilden. Diese haben Bandstruktur und
+sind effizient zu lösen.  In mehr als einer Dimension ist das
+allerdings im allgemeinen nicht mehr der Fall. Betrachten wir zum
+Beispiel die Poissongleichung in zwei Dimensionen:
 \begin{equation}
   \label{eq:laplace}
   \Delta \phi = \frac{\partial^2 \phi}{\partial x^2} +
@@ -128,14 +128,18 @@ Die Gaußelimination liefert diese bei unendlicher Genauigkeit exakt,
 allerdings mit dem hohen Aufwand $\O(n^3)$. Wir haben allerdings
 bereits gesehen, dass iterative Verfahren wie etwa das Newtonverfahren
 zur Lösung nichtlinearer Gleichungssysteme quadratisch
-konvergieren. Daher suchen wir ein iteratives Verfahren der Form
+konvergieren. Hierzu gibt es mehrere mögliche Ansätze, etwa das
+CG-Verfahren, das auf einem Optimierungsproblem beruht und das wir
+später kennenlernen werden. Zunächst suchen wir aber iterative
+Verfahren der Form
 \begin{equation}
   \label{eq:itgl}
   x^{(i+1)} = G(x^{(i)}) = T x_i + r
 \end{equation}
-mit $r\in\RR^n$ und $T\in\RR^{n,n}$, $\norm{T}<1$, damit die
-sukzessive Substitution für jeden Startwert konvergiert, wobei die
-Norm $\norm{\cdot}$ wiederum geeignet gewählt werden kann.
+mit $r\in\RR^n$ und $T\in\RR^{n,n}$, $\norm{T}<1$. Der Banachsche
+Fixpunktsatz gewährleistet, dass diese sukzessive Substitution für
+jeden Startwert konvergiert, wobei die Norm $\norm{\cdot}$ wiederum
+geeignet gewählt werden kann.
 
 Wie müssen wir nun $T$ wählen, damit einerseits $x^{(i)}\to \overline{x}$
 für $i\to\infty$, andererseits aber $T$ und $r$ einfach zu berechnen
@@ -156,10 +160,11 @@ sowohl $T$ als auch $r$ einfach berechnen.
 
 \subsection{\keyword{Jacobiverfahren}}
 
-Beim Jacobiverfahren wird die Matrix also Summe einer Diagonalmatrix
-sowie einer linken, unteren
-und einer rechten oberen Dreiecksmatrix mit verschwindender Diagonale
-zerlegt, also $A = L + D + U$ mit
+Das erste Verfahren nach diesem Schema, dass wir kennenlernen, ist
+das Jacobiverfahren. Die Matrix $A$ wird dazu als Summe einer
+Diagonalmatrix sowie einer linken, unteren und einer rechten oberen
+Dreiecksmatrix mit verschwindender Diagonale zerlegt, also $A = L + D
++ U$ mit
 \begin{equation}
   l_{ik}=
   \begin{cases}
@@ -204,9 +209,14 @@ dass die Matrix $A$ strikt diagonaldominant ist, also
 \begin{equation}
   \sum_{k\neq i} \abs{a_{ik}} < \abs{a_{ii}}\quad\text{für}\; i=1(1)n.
 \end{equation}
-Diese Bedingung wird zum Beispiel von der Matrix aus dem
-Eingangsbeispiel erfüllt.  Matrizen, die durch Diskretisierung von
-Differentialgleichungen entstehen, sind sogar meist von dieser Form.
+Diese Bedingung ist sehr stark, zum Beispiel erfüllen weder die Matrix
+aus dem Eingangsbeispiel noch etwa die für die Spline-Interpolation
+benötigten Matrizen diese Bedingung, da in beiden Fällen das
+Diagonalelement betragsmäßig die Summe der Nebenelemente
+ist. Allerdings sind die bei der sogenannten Finite-Elemente
+Modellierung zur Diskretisierung von Differentialgleichungen
+entstehenden Matrizen meist strikt diagonaldominant. Daher spielen
+Löser für diese Art von Matrizen auch kommerziell eine wichtige Rolle.
 
 Ist $A$ strikt diagonaldominant, so nutzen wir die Maximumsnorm
 \begin{equation}
@@ -338,6 +348,27 @@ werden. Allerdings kann man nur zeigen, dass $0<\omega< 2$ gelten
 muss, aber ein Wert $\omega$, der zu schneller Konvergenz führt, muss
 durch Ausprobieren gefunden werden.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/iterative}
+  \caption{Konvergenz von Jacobi-, Gauß-Seidel- und
+    Relaxationsverfahren. Zum einen wird die Matrix $A$ aus
+    \eqref{eq:2d-laplace} betrachtet, die wie gesagt nicht strikt
+    diagonaldominant ist. Zum anderen wird eine Matrix $B$ mit
+    genausovielen, normalverteilten Einträgen, betrachtet, die strikt
+    diagonal dominant gemacht wurde, in dem $b_{i,i} = 1+ \sum_{k\neq
+      i}\abs{b_{ik}}$ gesetzt wurde. Links sind die Fehler
+    $\norm{Ax-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
+    Matrix $B$ mit blauen Punkten bzw. roten Rauten eingezeichnet. Die
+    roten Kreuze zeigen hingegen den Fehler des Gauß-Seidel-Verfahrens
+    für die Matrix $A$, das nicht konvergiert. Grüne Sterne
+    schließlich zeigen den Fehler des SOR-Verfahrens, das mit
+    $\omega=1,63$ auch bei Matrix $A$ konvergiert. Der rechte Graph
+    zeigt den Fehler des SOR-Verfahrens in Abhängigkeit von $\omega$
+    nach 20 Schritten.}
+  \label{fig:sor}
+\end{figure}
+
 In Matrixschreibweise gilt analog zu \eqref{eq:gst}
 \begin{multline}
   T = I - \omega(D + \omega L)^{-1} A =\\
@@ -364,10 +395,30 @@ In Komponentenschreibweise schließlich ergibt sich
     - \sum_{k=j+1}^{n} a_{jk} x_k^{(i)}\right)
   + (1-\omega) x_j^{(i)}.
 \end{equation}
-$\omega$ gewichtet also zwischen der vorherigen Näherung und der
-nächsten Gauß-Seidel-Iterierten. Insofern ist es erstaunlich, dass
-auch Werte $\omega>1$ sinnvoll sein können, die die bestehende
-Näherung quasi bestrafen.
+Das SOR-Verfahren mit $\omega=1$ entspricht also genau dem
+Gauß-Seidel-Verfahren. Andere Werte von $\omega$ gewichten zwischen
+der vorherigen Näherung und der nächsten
+Gauß-Seidel-Iterierten. Insofern ist es erstaunlich, dass auch Werte
+$\omega>1$ sinnvoll sein können, die die vorherige Näherung quasi
+bestrafen.
+
+Abbildung~\ref{fig:sor} zeigt das Fehlerverhalten von Jacobi-,
+Gauß-Seidel- und SOR-Verfahren für die nicht strikt diagonaldominante
+Matrix $A$ aus \eqref{eq:2d-laplace} im Eingangsbeispiel und eine
+zufällige strikt diagonaldominante Matrix. Wie man sieht, konvergieren
+sowohl Jacobi- wie auch Gauß-Seidel-Verfahren sehr schnell mit
+exponentieller Rate, sofern die Matrix strikt diagonaldominant ist.
+Keines der beiden Verfahren konvergiert aber für die Matrix $A$, im
+Gegensatz zum SOR-Verfahren, dass auch bei dieser Matrix mit
+exponentieller Rate konvergiert.
+
+Im rechten Graphen sieht man allerdings auch, dass die Wahl von
+$\omega$ die Konvergenz stark beeinflusst. Die Matrix $A$ ist ein
+Beispiel, bei dem $\omega$ in jedem Fall größer als 1 gewählt werden
+muss, um Konvergenz zu erzielen, die optimale Rate erreicht man in
+diesem Fall mit $\omega=1,63$. Dabei ist die Konvergenz sehr sensitiv
+von $\omega$ abhängig -- bereits mit $\omega=1,5$ oder $1,75$ ist der
+Fehler nach 20 Schritten um eine Größenordnung schlechter.
 
 \section{QR-Zerlegung und Orthogonalisierung}
 \index{QR-Zerlegung}
@@ -455,10 +506,11 @@ und Orthogonalisierung von Systemen von Vektoren. Auf der anderen
 Seite ist es das allgemeinste Verfahren und kann in beliebigen
 Hilberträumen eingesetzt werden.
 
-Seien also zunächst $m$ linear unabhängige Vektoren $\{a_j, j=1(1)m\}$
-aus einem beliebigen Hilbertraum $H$ gegeben. Ziel ist es nun, diese
-in eine orthonormale Basis $\{q_j, j=1(1)m \}$ zu transformieren. Wir
-beginnen mit $a_1$, das wir lediglich normieren müssen:
+Seien also zunächst $m$ \emph{linear unabhängige} Vektoren $\{a_j,
+j=1(1)m\}$ aus einem beliebigen Hilbertraum $H$ gegeben. Ziel ist es
+nun, diese in eine orthonormale Basis $\{q_j, j=1(1)m \}$ zu
+transformieren. Wir beginnen mit $a_1$, das wir lediglich normieren
+müssen:
 \begin{equation}
   q_1 = \frac{a_1}{\norm{a_1}}.
 \end{equation}
@@ -516,7 +568,7 @@ orthonormierten Spaltenvektoren, und $R=(r_{ik})\in\CC^{n,n}$ mit
 Dann gilt wegen \eqref{eq:gs}
 \begin{equation}
   a_k = q_k\norm{q'_k} + \sum_{i=1}^{k-1} (a_k, q_i) q_i =
-  \sum_{i=1}^n r_{ik} q_i
+  \sum_{i=1}^n  q_i r_{ik}
 \end{equation}
 und damit $A=QR$ mit $Q^HQ=I$. Ist $m=n$, so ist dann $Q$ die gesuchte
 unitäre Matrix und $R$ die rechte obere Dreiecksmatrix der
@@ -588,31 +640,46 @@ zwei Vektoren $a_j$ beinahe parallel sind, kommt es durch Auslöschung
 bei der Berechnung der Projektionen zu großen
 Rundungsfehlern. Numerisch besser ist das modifizierte
 Gram-Schmidt-Verfahren, bei dem die Projektion eines jeden neu
-erzeugten Vektors sofort von allen anderen abgezogen wird. Der
-folgende Python-Code führt das modifizierte Gram-Schmidt-Verfahren auf
-der Matrix $A$ aus, die schrittweise in die orthonormale Matrix $Q$
-transformiert wird, während $R$ mit berechnet wird. Dadurch, dass in
-jedem Schritt der neu berechnete Basisvektor von allen weiteren
+erzeugten Vektors sofort von allen anderen abgezogen wird. Wir setzen
+also $Q^{(0)}=A$ und weiter für $k=1(1)n$:
+\begin{align}
+  \label{eq:modgs}
+  q_k^{(k)} &= q_k^{(k-1)}/r_{kk}\nonumber\\
+  q_l^{(k)} &= q_l^{(k-1)} - r_{ki}\,q_k^{(k)}\quad\text{für}\; l>k\\
+  q_l^{(k)} &= q_l^{(k-1)} \quad\text{für}\; l<k,\nonumber
+\end{align}
+mit
+\begin{align}
+  r_{kk} &= \norm{q_k^{(k-1)}}\nonumber\\
+  r_{ki} &= \left(q_l^{(k-1)}, q_k^{(k)}\right) =  \left(a_l, q_k^{(k)}\right).
+\end{align}
+
+Der folgende Python-Code führt das modifizierte Gram-Schmidt-Verfahren
+auf der Matrix $A$ aus, die schrittweise in die orthonormale Matrix
+$Q$ transformiert wird, während $R$ mit berechnet wird. Dadurch, dass
+in jedem Schritt der neu berechnete Basisvektor von allen weiteren
 abgezogen wird, ist der nächste zu berechnende Vektor $q_k$ bereits
 orthogonal zu den bisherigen Basisvektoren und muss lediglich
 normalisiert werden:
 \begin{lstlisting}
+q = a.copy()
+n = a.shape[1]
+r = zeros((n, n))
 for k in range(n):
     # Berechnen von @\color{red}$ r_{kk} = \norm{q'_k} $@
     # und Normalisierung des neuen Basisvektors
-    r[k,k] =  sqrt(dot(q[:,k], q[:k]))
-    q[:,k] = q[:k] / r[k,k]
+    r[k,k] =  sqrt(dot(q[:,k], q[:,k]))
+    q[:,k] = q[:,k] / r[k,k]
 
-    # Berechnen der @\color{red}$ r_{ik} = (q_k, q_i) $@
+    # Berechnen der @\color{red}$ r_{ki} = (q_i, q_k) = (a_i, q_k) $@
     # und Abziehen der Projektionen von den verbleibenden Vektoren
     for i in range(k+1, n):
-        r[i,k] =  dot(q[:,k], q[:i])
-        q[:,i] = q[:,i] - r[i,k] q[:, k]
-    end
-end
+        r[k,i] =  dot(q[:,i], q[:,k])
+        q[:,i] = q[:,i] - r[k,i] * q[:, k]
 \end{lstlisting}
 
-\subsection{\keyword{Householder-Spiegelungen}}
+\subsection{\keyword{Householder-Verfahren}}
+\index{Householder-Spiegelung}
 
 Wie bereits gesagt, sind unitäre Matrizen nichts anderes als
 verallgemeinerte Drehungen und Spiegelungen. Insbesonder ist das
@@ -724,19 +791,165 @@ explizit zu berechnen. Es gilt aber
   \label{eq:hhupdate}
   S_vA = A - 2v v^HA = A - 2 v (A^Hv)^H
 \end{equation}
-Man berechnet also lediglich einmal den Vektor $t = A^Hv$, und zieht dann
-das $\overline{t_j}$-fache von $v_j$ von der Spalte $a_j$ ab.
+Man berechnet also lediglich einmal den Vektor $t = A^Hv$, und zieht
+dann das $\overline{t_j}$-fache von $v_j$ von der Spalte $a_j$ ab.  Um
+weitere Spalten von $A$ auf rechte obere Dreiecksform zu bringen,
+fixieren wir die bereits bearbeiteten Koordinaten, und betrachten nur
+noch Spiegelungen in den verbleibenden Koordinaten. Wir lassen also
+die bereits transformierten $k$ Spalten und $k$ Zeilen unverändert,
+und führen weitere Householder-Spiegelungen nur noch auf der
+Restmatrix der Größe $(m-k)\times(n-k)$ durch. Nach $\min(m,n)$
+Schritten ist dann $A$ auf Dreiecksform transformiert.
 
-Um nun weitere Spalten von $A$ auf Einheitsvektoren zu spiegeln,
-fixieren wir die erste Koordinate, bereits bearbeiteten Koordinaten,
-und betrachten nur noch Spiegelungen in den verbleibenden
-Unterräumen. Nach $n$ Schritten ist dann $A$ auf Dreiecksform
-transformiert. Jedes Matrix-Update gemäß \eqref{eq:hhupdate} benötigt
-im wesentlichen $\O(nm)$ Operationen, die Methode insgesamt daher
-$\O(n^2m)$ Operationen, bei quadratischen Matrizen also wie auch das
+Ist $A$ nicht quadratisch oder singulär, dann müssen unter Umständen
+Spalten getauscht werden, wenn die gesamte führende Spalte der
+aktuellen Restmatrix Null ist. Spaltentauschmatrizen sind ebenfalls
+unitäre, selbstinverse Matrizen, werden allerdings von rechts
+anmultipliziert. Anders als das Gram-Schmidt-Verfahren kann das
+Householder-Verfahren also auf beliebige Matrizen angewandt
+werden. Man erhält dann eine allgemeine Zerlegung
+\begin{equation}
+  A = Q \cdot \begin{pmatrix}
+    R' & K \\
+    0 & 0
+  \end{pmatrix} \cdot S,
+\end{equation}
+wobei $R'$ eine reguläre rechte obere Dreiecksmatrix ist, $Q$ das
+unitäre Produkt der Householder-Spiegelungen und $S$ die unitäre
+Matrix der eventuell nötigen Spaltenvertauschungen.
+
+Jedes Matrix-Update gemäß \eqref{eq:hhupdate} benötigt im wesentlichen
+$\O(nm)$ Operationen, die Methode insgesamt daher $\O(mn^2)$
+Operationen, bei quadratischen Matrizen also wie auch das
 Gram-Schmidt-Verfahren $\O(n^3)$ Schritte.
 
-%\subsection{\keyword{Givens-Rotationen}}
+Die QR-Zerlegung mit Hilfe von Householder-Spiegelungen ist in SciPy
+als \scipy{scipy.linalg.qr(A)} implementiert und liefert die Zerlegung
+$Q$ und $R$ zurück. Wird das Schlüsselwortargument \argd{pivoting} auf
+\texttt{True} gesetzt, werden zusätzlich noch Spalten getauscht und
+die neuen Spaltenindizes zusätzlich zurückgegeben.
+
+\subsection{Givens-Rotationen}
+\index{Givens-Rotation}
+
+Spiegelungen sind prinzipiell Operationen, die die gesamte Matrix
+betreffen, wie \eqref{eq:hhupdate} zeigt. Wie das
+Gram-Schmidt-Verfahren ist daher auch das Householder-Verfahren nicht
+für dünn besetzte Matrizen geeignet und schlecht zu
+parallelisieren. Daher setzt man in der Praxis gerne Givens-Rotationen
+ein.
+
+Eine Givensrotation ist eine Drehung in zwei Koordinaten, also eine
+Matrix der Gestalt:
+\begin{equation}
+  G_{i,k,\phi} = \begin{matrix}
+    \\
+    i\rightarrow\\
+    \\
+    k\rightarrow\\
+    \\
+  \end{matrix}\begin{pmatrix}
+    I      & 0 & \ldots& 0&0\\
+    0      & c & 0 & -s & 0 \\
+    \vdots & 0 & I & 0 & \vdots\\
+    0      & s & 0 & c & 0 \\
+    0      & 0 & \ldots& 0 &I
+  \end{pmatrix}
+\end{equation}
+mit $c=\cos(\phi)$ und $s=\sin(\phi)$ und einem beliebigen Winkel
+$\phi$. Die beiden Cosinusterme befinden sich stets auf der
+Diagonalen. Offenbar ist $G_{i,k,\phi}$ eine unitäre Matrix, als
+$G_{i,k,\phi}^HG_{i,k,\phi}=I$.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[x=8em,y=8em]
+    \pgfmathsetmacro{\ax}{0.6}
+    \pgfmathsetmacro{\ay}{0.95}
+
+    \pgfmathsetmacro{\l}{veclen(\ax,\ay)}
+    \pgfmathsetmacro{\a}{atan(\ay/\ax)}
+
+    \pgfmathsetmacro{\cx}{\l*cos(\a/2)}
+    \pgfmathsetmacro{\cy}{\l*sin(\a/2)}
+
+    \draw[->] (0,0) -- (1.2,0);
+    \draw[->] (0,0) -- (0,1.5);
+
+    \draw[dotted] (\ax,\ay) -- node[right,pos=0.7] {$r\cos(\phi)$} (\ax,0);
+
+    \draw[very thick, ->] (0,0) -- node[left] {$r$} (\ax,\ay) node[above] {$(x,y)$};
+
+    \draw[very thick, red, ->] (0,0) -- node[below,pos=0.3,black] {$r\sin(\phi)$} (\l,0) node[below]
+    {$(r, 0)$};
+    
+    \draw[thick, dashed, ->] (\ax,\ay) arc (\a:0:\l);
+    \draw (\cx,\cy) node[right] {$\phi$};
+  \end{tikzpicture}
+
+  \caption{Illustration der Givens-Konstruktion. Der Vektor $(x,y)$
+    soll um den Winkel $\phi$ auf die $x$-Achse gedreht werden. Dann
+    gilt $\cos(\phi) = \nicefrac{x}{r}$  und $\sin(\phi) =
+    \nicefrac{x}{r}$ mit $r=\sqrt{x^2+y^2}$.}
+  \label{fig:givens}
+\end{figure}
+
+Wir können nun eine solche Drehung benutzen, um das linke untere
+Element $a_{n,1}$ einer Matrix $A$ auf $0$ zu bekommen. Dazu drehen
+wir die beiden untersten Zeilen der Matrix entsprechend:
+\begin{equation}
+  \begin{pmatrix}
+    I & 0 & 0\\
+    0 & c  & -s\\
+    0 & s  & c
+  \end{pmatrix}
+  \cdot
+  \begin{pmatrix}
+    \ldots & \ldots\\
+    x & \ldots\\
+    y & \ldots
+  \end{pmatrix}
+  \stackrel{!}{=}
+  \begin{pmatrix}
+    \ldots & \ldots\\
+    r & \star\\
+    0 & \star
+  \end{pmatrix}
+\end{equation}
+mit $x=a_{n-1,1}$ und $y=a_{n,1}$ sowie $r=\sqrt{x^2 + y^2}$.  Die
+Sterne deuten dabei an, dass sich die gesamten beiden letzten Zielen
+potentiell ändern. Den Drehwinkel muss man dabei gar nicht explizit
+bestimmen, da $c=\cos(\phi) = x/r$ und $s=\cos(\phi) = y/r$
+(vergleiche Abbildung~\ref{fig:givens}).
+
+Ist $r$ allerdings klein, ist diese Formel numerisch nicht stabil. Im
+Falle, dass $\abs{x}\ge\abs{y}$, berechnet man daher besser
+$r'=\sqrt{1 + \left(\nicefrac{y}{x}\right)^2}$ und damit $c =
+\text{sgn}(x)\frac{1}{r'}$ und $s = \frac{y}{xr'}$, und analog im
+umgekehrten Falle.
+
+Nachdem wir nun das linke unterste Element $a_{n,1}$ auf Null gedreht
+haben, können wir mit dem nächsthöheren Element $a_{n-1,1}$ fortfahren
+und dieses auf $a_{n-2,1}$ drehen. Wir fahren fort, bis die erste
+Spalte mit Ausnahme des ersten Elements auf Nullen gedreht ist. Analog
+können wir nun in den folgenden Spalten unten anfangend alle Elemente
+bis auf das Diagonalelement auf Null drehen.
+
+Bei einer vollbesetzten Matrix benötigt das Verfahren damit insgesamt
+$\O(mn)$ Drehungen, die allerdings jeweils nur zwei Zeilen der Matrix
+verändern, also $\O(n)$ Rechenaufwand haben. Daher benötigt das
+Verfahren insgesamt wieder $\O(mn^2)$.
+
+Anders als das Householder-Verfahren eignen sich Givensrotationen aber
+auch für parallele Verarbeitung und dünn besetzte Gitter. Denn für das
+Verfahren ist es im Prinzip egal, auf welche Zeile die zu entfernende
+gedreht wird, es müssen ja nicht notwendigerweise benachbarte Zeilen
+sein. Daher reicht es, nur die besetzten Elemente unterhalb der
+Diagonalen jeweils nacheinander auf die Diagonale drehen. Bei der
+$5\times 5$-Matrix des Eingangsbeispiels \eqref{eq:laplacedisc} sind
+daher lediglich 50 statt 300 Drehungen nötig.
+
+
 
 %%% Local Variables: 
 %%% mode: latex
