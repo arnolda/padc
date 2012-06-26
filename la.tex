@@ -429,14 +429,16 @@ Matrix $A\in\CC^{m,n}$ in eine orthonormale Matrix $Q$ und eine rechte
 obere Dreiecksmatrix $R$ zerlegt, so dass $A=QR$.  Orthonormal
 bedeutet hier, dass die Spaltenvektoren von $Q$ bezüglich des
 Skalarprodukts $(u,v) := u^Hv$ paarweise orthogonal und normiert
-sind. Das bedeutet, dass $Q^HQ=I$, wobei der obere Index $^H$ jeweils
-die Hermitesche bezeichnet.
+sind. Das ist äquivalent zu $Q^HQ=I$, wobei der obere Index $^H$
+jeweils die Hermitesche bezeichnet.
 
 Anders als bei der LU-Zerlegung existiert eine solche Zerlegung immer,
 ist aber dafür nicht eindeutig. So gibt es Zerlegungen sowohl mit
 $Q\in\CC^{m,n}$ und $R\in\CC^{n,n}$, als auch mit $Q\in\CC^{m,m}$ und
 $R\in\CC^{m,n}$. Wir werden Verfahren kennenlernen, die beide Formen
-erzeugen.
+erzeugen. Die erstere Form kann dabei auch so verstanden werden, dass
+eine orthogonale Basis gesucht wird, die denselben Raum aufspannt wie
+die Spaltenvektoren von $A$.
 
 Ist $A$ quadratisch, und regulär, so ist auch $Q$ quadratisch und
 $Q^H=Q^{-1}$. Außerdem gilt $\abs{\det Q} = 1$. Eine solche Matrix
@@ -501,12 +503,16 @@ verwandte Optimierungsaufgaben löst.
   \label{fig:gs}
 \end{figure}
 
-Das Gram-Schmidt-Verfahren ist das älteste Verfahren zur QR-Zerlegung
-und Orthogonalisierung von Systemen von Vektoren. Auf der anderen
-Seite ist es das allgemeinste Verfahren und kann in beliebigen
-Hilberträumen eingesetzt werden.
+Das Gram-Schmidt-Verfahren ist das älteste Verfahren zur
+QR-Zerlegung. Auf der anderen Seite ist es das allgemeinste Verfahren
+und kann in beliebigen Hilberträumen eingesetzt werden. Das Verfahren
+ist eigentlich nur eine Orthogonalisierung der Spaltenvektoren von
+$A$, die als Nebenprodukt eine QR-Zerlegung liefert. Daher ist das
+Verfahren auch als Gram-Schmidt-Orthogonalisierung bekannt. Wir werden
+als Beispiel sehen, dass das Verfahren etwa auch zur Konstruktion von
+orthogonalen Polynomen eingesetzt werden kann.
 
-Seien also zunächst $m$ \emph{linear unabhängige} Vektoren $\{a_j,
+Seien zunächst $m$ \emph{linear unabhängige} Vektoren $\{a_j,
 j=1(1)m\}$ aus einem beliebigen Hilbertraum $H$ gegeben. Ziel ist es
 nun, diese in eine orthonormale Basis $\{q_j, j=1(1)m \}$ zu
 transformieren. Wir beginnen mit $a_1$, das wir lediglich normieren
@@ -949,7 +955,7 @@ Diagonalen jeweils nacheinander auf die Diagonale drehen. Bei der
 $5\times 5$-Matrix des Eingangsbeispiels \eqref{eq:laplacedisc} sind
 daher lediglich 50 statt 300 Drehungen nötig.
 
-
+\section{Eigenwerte}
 
 %%% Local Variables: 
 %%% mode: latex
