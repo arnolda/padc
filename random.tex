@@ -158,22 +158,8 @@ einfach nur die ersten $b-1$ Bits und ignoriert alle höheren. Denn
 \end{equation}
 Daher kann der klassische \texttt{rand} in C etwa wie folgt
 implementiert werden:
-\begin{lstlisting}[language=C]
-unsigned int state = 1;
-
-void rand_seed(unsigned int seed)
-{
-  state = seed;
-}
-
-unsigned int rand()
-{
-  const unsigned int a = 1103515245, b = 12345;
-  state = a * state + b;
-  return state & ((1u<<31) - 1);
-}
-\end{lstlisting}
-Die Funktion \lstinline!seed! dient zum Setzen des internen Zustands,
+\lstinputlisting[language=C,firstline=10]{rand.c}
+Die Funktion \lstinline!rand_seed! dient zum Setzen des internen Zustands,
 also $x_0$, \lstinline!rand! liefert dann bei jedem Aufruf eine neue
 Zufallszahl.
 
@@ -204,21 +190,7 @@ oberen Bits nicht einfach abgeschnitten werden können. Nach Park und
 Miller ist ein Beispiel eines solchen Generators $m=2^{31}-1$ und
 $a=16807$, der auch als \texttt{MINSTD} bezeichnet wird und wie folgt
 implementiert werden kann:
-\begin{lstlisting}[language=C]
-int state = 1;
-
-void minstd_seed(unsigned int seed)
-{
-  state = seed;
-}
-
-unsigned int minstd()
-{
-  const int m = (1u << 31) - 1, a = 16807;
-  state = ((long int)state)*a % m;
-  return state;
-}
-\end{lstlisting}
+\lstinputlisting[language=C,firstline=10]{minstd.c}
 Die Typumwandlung in \lstinline!long int! stellt dabei sicher, dass
 das Produkt der beiden 32-Bit-Zahlen in 64-Bit-Arithmetik gerechnet
 wird, so dass keine Stellen verloren gehen.
@@ -349,33 +321,7 @@ mögliche Kombination ist $a=521$, $b=168$.
 \end{figure}
 
 In Code sieht ein einfacher verzögerter Fibonaccigenerator so aus:
-\begin{lstlisting}[language=C]
-  /* Position des am weitesten verzoegerten Beitrags x_{n-250}
-     Dieser wird im Ringspeicher durch den neuen Wert ersetzt,
-     da nicht mehr gebraucht */
-  int position = 0;
-  // Der Ringspeicher
-  unsigned int state[250];
-
-  void r250_seed(unsigned int seed) {
-    // minstd zur Initialisierung
-    minstd_seed(seed);
-    for (int i = 0; i < 250; ++i)
-      state[i] = minstd();
-    position = 0;
-  }
-
-  unsigned int r250() {
-    const unsigned int m = (1u << 31) - 1;
-    unsigned int newval =
-      (state[position] + state[(position + 250 - 103) % 250]) % m;
-    state[position] = newval;
-    // Ringspeicher weiterschieben
-    position = (position + 1) % 250;
-    return newval;
-  }
-}
-\end{lstlisting}
+\lstinputlisting[language=C,firstline=10]{r250.c}
 Abbildung~\ref{fig:ringspeicher} illustriert dabei die Funktion und
 Indizierung des Ringspeichers.
 
@@ -1102,7 +1048,8 @@ ist also bei weitem kein solides Objekt. Daher werden solche Cluster
 gerne als Katalysatoren verwendet, da sie eine entsprechend große
 Oberfläche haben.
 
-\raggedbottom \lstinputlisting[style=multipage, caption={Code zur
+\raggedbottom \lstinputlisting[style=multipage, firstline=10,
+caption={Code zur
   Erzeugung eines DLA-Clusters auf einem zweidimensionalen Gitter
   \argd{world}. Die Eingabeparameter sind die Größe \argd{M} des
   Gitters, sowie die Anzahl der Punkte des zu erzeugenden Aggregats
@@ -1194,14 +1141,15 @@ Cluster.
 Variationen betrachtet werden, etwa andere zugrundeliegende Gitter,
 höhere Dimensionen oder auch kontinuierliche Modelle.
 
-\raggedbottom \lstinputlisting[style=multipage,
+\afterpage{
+\raggedbottom \lstinputlisting[style=multipage,firstline=10,
 caption={Code zur Schätzung des Perkolationsschwellwerts auf einem
   zweidimensionalen quadratischen Gitter \argd{world}. Die Liste
   \argd{connected} enthält die alle Punkte, die mit dem oberen Rand
   verbunden sind, die Liste \argd{connected_undone} diejenigen
   verbundenen Punkte, deren Nachbarn noch untersucht werden
   müssen.}, label=lst:percolation]{percolation.py}
-
+}
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "padc"

@@ -323,7 +323,7 @@ und fast nicht mehr von der analytischen Lösung zu unterscheiden. Dies
 zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 
 \afterpage{\raggedbottom
-  \lstinputlisting[style=multipage,
+  \lstinputlisting[style=multipage,firstline=10,
   caption={Numerische Lösung der Besselschen Differentialgleichung mit
     Hilfe von finiten Differenzen linearer und kubischer Ordnung. Dieser
     Code erzeugt Abbildung~\ref{fig:bessel_diff}},
@@ -718,7 +718,7 @@ Rombergverfahrens mit Hilfe von SciPy. Alternativ bietet auch SciPy
 selber eine Implementation des Verfahrens,
 \scipy{scipy.integrate.romberg(f, a, b)}.
 
-\lstinputlisting[style=floating,
+\lstinputlisting[style=floating,firstline=10,
 caption={Romberg-Integration von $4(1+x^2)^{-1}$. Das Programm
   berechnet $\pi$ auf 16 Stellen genau.},
 label=lst:romberg]{romberg.py}

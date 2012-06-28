@@ -265,20 +265,22 @@ damit so dargestellt:
     1, \{\} \;&\mathop{\widehat{=}}\; \left(1, 0, \ldots, 0\right)
     \nonumber\\
     -\frac{4}{h^2}, \left\{
-      \left(2, \frac{1}{h^2}\right), \left(0, \frac{1}{h^2}\right),
-      \left(6, \frac{1}{h^2}\right), \left(21, \frac{1}{h^2}\right)
+      \left(3, \frac{1}{h^2}\right), \left(1, \frac{1}{h^2}\right),
+      \left(7, \frac{1}{h^2}\right), \left(22, \frac{1}{h^2}\right)
     \right\}
     \;&\mathop{\widehat{=}}\;
     \left(\frac{1}{h^2}, -\frac{4}{h^2}, \frac{1}{h^2}, 0, 0, 0, 1, 0,
       \ldots, 0, 1, 0, 0, 0\right)\nonumber\\
     -\frac{4}{h^2}, \left\{
-      \left(3, \frac{1}{h^2}\right), \left(1, \frac{1}{h^2}\right),
-      \left(7, \frac{1}{h^2}\right), \left(22, \frac{1}{h^2}\right)
+      \left(4, \frac{1}{h^2}\right), \left(2, \frac{1}{h^2}\right),
+      \left(8, \frac{1}{h^2}\right), \left(23, \frac{1}{h^2}\right)
     \right\}
     \;&\mathop{\widehat{=}}\;
     \left(0, \frac{1}{h^2}, -\frac{4}{h^2}, \frac{1}{h^2}, 0, 0, 0, 1, 0,
       \ldots, 0, 1, 0, 0\right)\nonumber\\
-    &\vdots
+    &\vdots\\
+    a_{jj}, \left\{(k_1, a_{jk_1}),(k_2, a_{jk_2}), \ldots\right\}
+    \;&
   \end{align}}
 
 \subsection{\keyword{Gauß-Seidel-Verfahren}}
@@ -310,7 +312,7 @@ und damit
   x^{(i+1)} = -(D+L)^{-1} U x^{(i)} - (D+L)^{-1}b.
 \end{equation}
 Das Gauß-Seidel-Verfahren ist also auch vom Typ \eqref{eq:itgl}, mit
-der etwas komplexeren Matrix $B= (D+L)^{-1}$. Tatsächlich ist auch
+der etwas komplexeren Matrix $B= D + L$. Tatsächlich ist auch
 \begin{equation}
   \label{eq:gst}
   T = I - (D + L)^{-1} A = (D + L)^{-1}(D + L - A) = -(D+L)^{-1} U.
@@ -403,18 +405,7 @@ $\omega>1$ sinnvoll sein können, die die vorherige Näherung quasi
 bestrafen.
 
 In Python sieht das SOR-Verfahren in etwa so aus:
-\begin{lstlisting}
-def sor_step(A, b, omega, x):
-    n = A.shape[0]
-    for j in range(n):
-        s = b[j]
-        # diese Werte sind schon neu
-        s -= sum([A[j,k]*x[k] for k in range(j)])
-        # und diese Werte sind noch alt
-        s -= sum([A[j,k]*x[k] for k in range(j+1,n)])
-        # Ueberschreiben von x[j]!
-        x[j] = omega*s/A[j,j] + (1-omega)*x[j]
-\end{lstlisting}
+\lstinputlisting[firstline=10]{sor.py}
 Die Routine erwartet als Eingabe eine quadratische $n\times n$-Matrix
 \lstinline!A! und einen $n$-Vektor \lstinline!b!, den
 Relaxationsfaktor \lstinline!omega! und die aktuelle Näherung
@@ -687,22 +678,7 @@ in jedem Schritt der neu berechnete Basisvektor von allen weiteren
 abgezogen wird, ist der nächste zu berechnende Vektor $q_k$ bereits
 orthogonal zu den bisherigen Basisvektoren und muss lediglich
 normalisiert werden:
-\begin{lstlisting}
-q = a.copy()
-n = a.shape[1]
-r = zeros((n, n))
-for k in range(n):
-    # Berechnen von @\color{red}$ r_{kk} = \norm{q'_k} $@
-    # und Normalisierung des neuen Basisvektors
-    r[k,k] =  sqrt(dot(q[:,k], q[:,k]))
-    q[:,k] = q[:,k] / r[k,k]
-
-    # Berechnen der @\color{red}$ r_{ki} = (q_i, q_k) = (a_i, q_k) $@
-    # und Abziehen der Projektionen von den verbleibenden Vektoren
-    for i in range(k+1, n):
-        r[k,i] =  dot(q[:,i], q[:,k])
-        q[:,i] = q[:,i] - r[k,i] * q[:, k]
-\end{lstlisting}
+\lstinputlisting[firstline=10]{gramschmidt.py}
 
 \subsection{\keyword{Householder-Verfahren}}
 \index{Householder-Spiegelung}
@@ -715,6 +691,7 @@ einfacher elementarer unitärer Matrizen $Q_i$, wobei $l$ vom Verfahren
 abhängt, wie auch der Typ der Matrizen $Q_i$. Diese transformieren $A$
 schrittweise in rechte obere Dreiecksform:
 \begin{equation}
+  \label{eq:unitprod}
   Q_l\cdots Q_2Q_1A = R\quad\implies\; A =
   \underbrace{Q_1^H\cdots Q_{l-1}^HQ_l^H}_Q R.
 \end{equation}
@@ -807,25 +784,67 @@ vermeiden, daher wählt man
   \lambda = \text{sgn}(a_{11}) \norm{a_1},
 \end{equation}
 wobei $\text{sgn}(a_{11})$ das Vorzeichen von $a_{11}$ bezeichnet.
-Durch die Wahl dieses Vorzeichens ist $v_1 =
-\text{sgn}(a_{11})(\abs{a_{11}} + \norm{a_1})$ und $v_i = a_i$ für
-$i>1$, so dass es zu keiner Auslöschung kommen kann.
+Durch die Wahl dieses Vorzeichens ist der unnormierte Spiegelvektor
+\begin{equation}
+  \tilde{v}_j = \begin{cases}
+    \text{sgn}(a_{11})(\abs{a_{11}} + \norm{a_1}_2) & \text{für}\; j=1\\
+    a_j & \text{für}\; j>1,
+  \end{cases}
+\end{equation}
+so dass es zu keiner Auslöschung kommen kann. Der eigentliche
+Spiegelvektor ist der normierte Vektor $v =
+\tilde{v}/\norm{\tilde{v}}_2$.
 
 Bei der Implementation ist es natürlich wichtig, $S_v$ \emph{nicht}
 explizit zu berechnen. Es gilt aber
 \begin{equation}
   \label{eq:hhupdate}
-  S_vA = A - 2v v^HA = A - 2 v (A^Hv)^H
+  S_vA = A - 2v v^HA = A - 2 v (v^HA)
 \end{equation}
-Man berechnet also lediglich einmal den Vektor $t = A^Hv$, und zieht
-dann das $\overline{t_j}$-fache von $v_j$ von der Spalte $a_j$ ab.  Um
-weitere Spalten von $A$ auf rechte obere Dreiecksform zu bringen,
-fixieren wir die bereits bearbeiteten Koordinaten, und betrachten nur
-noch Spiegelungen in den verbleibenden Koordinaten. Wir lassen also
-die bereits transformierten $k$ Spalten und $k$ Zeilen unverändert,
-und führen weitere Householder-Spiegelungen nur noch auf der
-Restmatrix der Größe $(m-k)\times(n-k)$ durch. Nach $\min(m,n)$
+Man berechnet also lediglich einmal den Vektor $t = v^HA$, und zieht
+dann das $t_j$-fache von $v_j$ von der Spalte $a_j$ ab. Um weitere
+Spalten von $A$ auf rechte obere Dreiecksform zu bringen, fixieren wir
+die bereits bearbeiteten Koordinaten, und betrachten nur noch eine
+Spiegelung in den verbleibenden Koordinaten. Dann sieht für die $k$-te
+Spalte der unnormierte Spiegelvektor so aus:
+\begin{equation}
+  \tilde{v}^{(k)}_j = \begin{cases}
+    0 & \text{für} j < k\\
+    \text{sgn}(a_{kk})(\abs{a_{kk}} + \sqrt{\sum_{l = k}^m a_l^2}) & \text{für}\; j=k\\
+    a_j & \text{für}\; j>k,
+  \end{cases}
+\end{equation}
+und der normierte Spiegelvektor ist $v^{(k)} =
+\tilde{v}^{(k)}/\norm{\tilde{v}^{(k)}}_2$. Die Wurzel entspricht der
+Norm des Restvektors $(a_{kk},\ldots,a_{mk})$. Nach $\min(m,n)-1$
 Schritten ist dann $A$ auf Dreiecksform transformiert.
+
+Um die Matrix $Q$ zu erhalten, müssen wir gemäß \eqref{eq:unitprod}
+das Produkt der Spiegelungen in umgekehrte Reihenfolge berechnen, da
+ja $S_v = S_v^H$. Wurden nacheinander die Spiegelungen mit Vektor
+$v_1, v_2,\ldots,v_{l}$ angewandt, suchen wir also die Matrix
+\begin{equation}
+  Q = S_{v^{(1)}}^HS_{v^{(2)}}^H\cdots S_{v^{(l)}}^H =
+  = I\,S_{v^{(1)}}S_{v^{(2)}}\cdots S_{v^{(l)}}.
+\end{equation}
+Um diese zu berechnen, müssen wir nur die Identität von rechts mit den
+Spiegelungen multiplizieren, was analog \eqref{eq:hhupdate} geht:
+\begin{equation}
+  \label{eq:hhupdateh}
+  AS_v  = A - 2Av v^H = A - 2(Av) v^H.
+\end{equation}
+Vielfach ist es aber gar nicht nötig, $Q$ explizit zu kennen, dann
+kann man einfach die Vektoren $v^{(k)}$ speichern und bei Bedarf $Qw$
+für einen beliebigen Vektor $w$ ausrechnen, in dem die Spiegelungen in
+umgekehrter Reihenfolge auf $w$ angewandt werden.
+
+In Python könnte eine QR-Zerlegung mittels Householder-Spiegelungen
+so aussehen:
+\lstinputlisting[firstline=10]{householder.py}
+Die Funktionen \lstinline!multiplyleft! und \lstinline!multiplyright!
+implementieren \eqref{eq:hhupdate} bzw. \eqref{eq:hhupdateh}, die
+Hauptschleife muss also nur den Spiegelvektor $v^{(k)}$ berechnen und
+auf $R$ und $Q$ entsprechend anwenden.
 
 Ist $A$ nicht quadratisch oder singulär, dann müssen unter Umständen
 Spalten getauscht werden, wenn die gesamte führende Spalte der
@@ -876,9 +895,9 @@ Matrix der Gestalt:
     \\
   \end{matrix}\begin{pmatrix}
     I      & 0 & \ldots& 0&0\\
-    0      & c & 0 & -s & 0 \\
+    0      & c & 0 & s & 0 \\
     \vdots & 0 & I & 0 & \vdots\\
-    0      & s & 0 & c & 0 \\
+    0      & -s & 0 & c & 0 \\
     0      & 0 & \ldots& 0 &I
   \end{pmatrix}
 \end{equation}
@@ -926,18 +945,18 @@ wir die beiden untersten Zeilen der Matrix entsprechend:
 \begin{equation}
   \begin{pmatrix}
     I & 0 & 0\\
-    0 & c  & -s\\
-    0 & s  & c
+    0 & c  & s\\
+    0 & -s  & c
   \end{pmatrix}
   \cdot
   \begin{pmatrix}
-    \ldots & \ldots\\
+    \vdots & \ddots\\
     x & \ldots\\
     y & \ldots
   \end{pmatrix}
   \stackrel{!}{=}
   \begin{pmatrix}
-    \ldots & \ldots\\
+    \vdots & \ddots\\
     r & \star\\
     0 & \star
   \end{pmatrix}
@@ -950,8 +969,13 @@ bestimmen, da $c=\cos(\phi) = x/r$ und $s=\cos(\phi) = y/r$
 
 Ist $r$ allerdings klein, ist diese Formel numerisch nicht stabil. Im
 Falle, dass $\abs{x}\ge\abs{y}$, berechnet man daher besser
-$r'=\sqrt{1 + \left(\nicefrac{y}{x}\right)^2}$ und damit $c =
-\text{sgn}(x)\frac{1}{r'}$ und $s = \frac{y}{xr'}$, und analog im
+\begin{align}
+  \label{eq:calccs}
+  r'&=\sqrt{1 + \left(\nicefrac{y}{x}\right)^2}\nonumber\\
+  c &=\text{sgn}(x)\frac{1}{r'}\\
+  s &= \frac{y}{\abs{x}r'}\nonumber,
+\end{align}
+und analog im
 umgekehrten Falle.
 
 Nachdem wir nun das linke unterste Element $a_{n,1}$ auf Null gedreht
@@ -960,6 +984,24 @@ und dieses auf $a_{n-2,1}$ drehen. Wir fahren fort, bis die erste
 Spalte mit Ausnahme des ersten Elements auf Nullen gedreht ist. Analog
 können wir nun in den folgenden Spalten unten anfangend alle Elemente
 bis auf das Diagonalelement auf Null drehen.
+
+Auch die Givens-Rotationen werden dabei nicht als
+Matrix-Multiplikation berechnet, da sich bei Multiplikation von links
+tatsächlich ja nur zwei Zeilen lesen und neu schreiben. Für die
+Berechnung von $Q$ müssen wir nach \eqref{eq:unitprod} die hermiteschen der
+Rotationen von rechts anmultiplizieren, was einer Modifikation zweier
+Spalten entspricht. Die Hermitesche bzw. Transponierte der Drehung
+ergibt sich einfach durch Drehung in der umgekehrten Richtung, also
+Vorzeichenwechsel des Sinusterms.
+
+\clearpage
+
+In Python sieht das Givens-Verfahren so aus:
+\lstinputlisting[firstline=10]{givens.py}
+Die Routinen \lstinline!multiplyleft! und \lstinline!multiplyright!
+implementieren wieder die Multiplikation mit einer Givensmatrix von
+links bzw. rechts. Die Routine \lstinline!calccs! implementiert die
+stabilisierte Berechnung der Sinus- und Cosinusterme gemäß \eqref{eq:calccs}.
 
 Bei einer vollbesetzten Matrix benötigt das Verfahren damit insgesamt
 $\O(mn)$ Drehungen, die allerdings jeweils nur zwei Zeilen der Matrix
@@ -1185,47 +1227,26 @@ schnell gegen den zu $\lambda$ gehörigen Eigenvektor.
 
 Eine einfache Implementation des QR-Algorithmus mit Shift für eine
 Matrix mit reellen Eigenwerten kann wie folgt aussehen:
-\begin{lstlisting}
-def eigenwerte(A, tolerance):
-    Ak = A.copy()
-    dim = Ak.shape[0]
-    converged = False
-    while not converged:
-        shift = Ak[-1,-1]
-        Q, R = qr(Ak - shift*I)
-        Ak = dot(R, Q) + shift*I
-
-        if max([abs(Ak[i,k]) for i in range(A.shape[0]) \
-                             for k in range(i)]) < tolerance:
-            converged = True
-    return Ak
-\end{lstlisting}
-Die Routine liefert die gesamte Beinahe-Dreiecksmatrix zurück, die auf
-der Diagonalen die Eigenwerte zeigt. \argd{tolerance} gibt dabei den
+\lstinputlisting[firstline=10]{qr.py}
+Die Routine liefert einen Vektor aus Eigenwerten zeigt.
+\argd{tolerance} gibt dabei den
 maximalen Betrag eines Subdiagonalelements an, der noch akzeptiert
 wird.  Hat \argd{A} komplexe Eigenwerte, können auch Element eins
-unter der Diagonalen nicht verschwinden, das Kriterium muss dann
-entsprechend angepasst werden, ansonsten funktioniert der Algorithmus
-genauso.
+unter der Diagonalen nicht verschwinden. Dann muss zum einen
+das Kriterium muss dann entsprechend angepasst werden, zum zweiten
+kann dann natürlich nicht einfach die Diagonale zurückgeliefert
+werden. Echte, also reelle Eigenwerte sind dann solche, die weder
+links noch unterhalb auf der Subdiagonalen Nachbarn haben, die anderen
+entsprechen komplexen Eigenwerten.
 
 Die inverse Iteration, die zu einem gegebenen nicht-entarteten
 Eigenwert den Eigenvektor bestimmt, sieht wie folgt aus:
-\begin{lstlisting}
-def inverse_iteration(A, l, tolerance):
-    x = ones(A.shape[0])
-    Ashift = A - l*I
-    converged = False
-    while not converged:
-        x = solve(Ashift, x)
-        x = x / norm(x)
-        if norm(l*x - dot(A, x)) < tolerance:
-            converged = True
-\end{lstlisting}
+\lstinputlisting[firstline=10]{inverse_iteration.py}
 \argd{l} ist hier der Eigenwert $\lambda$, zu dem der Eigenvektor
 gesucht wird. Hier gibt die Toleranz an, wie sehr $Ax$ von $\lambda x$
 abweichen darf.
 
-\subsubsection{Beispiel: Fibonaccizahlen}
+\subsubsection{Beispiel: Fibonaccizahlen numerisch}
 
 Der QR-Algorithmus mit Shift $a^{(k)}_{n,n}$ soll nun anhand des
 Fibonaccibeispiels illustriert werden, für das dieser Algorithmus sehr
@@ -1263,19 +1284,18 @@ schnell konvergiert, wie die folgende Tabelle illustriert:
 Die letzten beiden Spalten geben die Anzahl der korrekt bestimmten
 Nachkommastellen des größten bzw. kleinsten Eigenwerts an. Nach dem
 vierten Schritt verbessert sich daran nichts mehr, da beide Eigenwerte
-bis auf Maschinengenauigkeit bestimmt sind.
+bis auf Maschinengenauigkeit bestimmt sind.  Um die zugehörigen
+Eigenvektoren zu bestimmen, können wir die inverse Iteration benutzen,
+die in diesem Fall für beide Eigenvektoren innerhalb von nur einem
+Schritt auf Maschinengenauigkeit konvergiert.
 
-Um die zugehörigen Eigenvektoren zu bestimmen, benutzen wir die
-inverse Iteration, die in diesem Fall allerdings für beide
-Eigenvektoren innerhalb von nur einem Schritt auf Maschinengenauigkeit
-konvergiert.
-
-Ist die Matrix $A\in\RR^{10,10}$ symmetrisch mit Standardzufallszahlen
-gefüllt, konvergiert das Verfahren in etwa 200 Schritten so, dass
-unterhalb der Diagonalen keine Werte betragsmäßig größer als $10^{-5}$
-stehen. Aber auch hier konvergiert die inverse Iteration innerhalb
-eines Schritts praktisch bis auf Maschinengenauigkeit gegen den
-zugehörigen Eigenvektor.
+Wie sieht es nun mit größeren Matrizen aus? Ist eine Matrix
+$A\in\RR^{10,10}$ symmetrisch mit Standardzufallszahlen gefüllt,
+konvergiert das Verfahren in etwa 200 Schritten so, dass unterhalb der
+Diagonalen keine Werte betragsmäßig größer als $10^{-5}$ stehen. Auch
+hier konvergiert die inverse Iteration innerhalb eines Schritts
+praktisch bis auf Maschinengenauigkeit gegen den zugehörigen
+Eigenvektor.
 
 %%% Local Variables: 
 %%% mode: latex

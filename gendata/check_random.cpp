@@ -17,62 +17,17 @@
 /* Namespaces, um die C-RNGs aus der Vorlesung getrennt zu halten
  */
 namespace Rand {
-  unsigned int state = 1;
-
-  void seed(unsigned int seed)
-  {
-    state = seed;
-  }
-
-  unsigned int rand()
-  {
-    const unsigned int a = 1103515245, b = 12345;
-    state = a * state + b;
-    return state & ((1u<<31) - 1);
-  }
+  #include "../rand.c"
 }
 
 namespace Minstd {
-  int state = 1;
-
-  void seed(unsigned int seed)
-  {
-    state = seed;
-  }
-
-  unsigned int minstd()
-  {
-    const int m = (1u << 31) - 1, a = 16807;
-    state = ((long int)state)*a % m;
-    return state;
-  }
+  #include "../minstd.c"
 }
 
 namespace R250 {
-  /* Position des am weitesten verzögerten Beitrags x_{n-250}
-     Dieser wird im Ringspeicher durch den neuen Wert ersetzt,
-     da nicht mehr gebraucht */
-  int position = 0;
-  // Der Ringspeicher
-  unsigned int state[250];
-
-  void r250_seed(unsigned int seed) {
-    // minstd zur Initialisierung
-    Minstd::seed(seed);
-    for (int i = 0; i < 250; ++i)
-      state[i] = Minstd::minstd();
-    position = 0;
-  }
-
-  unsigned int r250() {
-    const unsigned int m = (1u << 31) - 1;
-    unsigned int newval =
-      (state[position] + state[(position + 250 - 103) % 250]) % m;
-    state[position] = newval;
-    // Ringspeicher weiterschieben
-    position = (position + 1) % 250;
-    return newval;
-  }
+  void minstd_seed(int _s) { Minstd::minstd_seed(_s); }
+  int minstd()             { return Minstd::minstd(); }
+  #include "../r250.c"
 }
 
 void test_rng(const char *name, const gsl_rng_type *T,
