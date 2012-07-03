@@ -56,7 +56,7 @@ so etwa \eqref{eq:laplacedisc} auf den Vektor $\Phi_n$
 die in Matrixform für $N=5$ zum Beispiel wie folgt aussehen:
 \begin{equation}
   \label{eq:2d-laplace}
-  \text{\raisebox{-4\baselineskip}{\includegraphics[height=8.5\baselineskip]{plots/2d-laplace}}}
+  \left( \text{\raisebox{-4\baselineskip}{\includegraphics[height=8.5\baselineskip]{plots/2d-laplace}}} \;\right)
   \;\cdot\begin{pmatrix}
     \Phi_0 = \phi(0,0)\\
     \Phi_1 = \phi(h,0)\\
@@ -184,7 +184,7 @@ Dreiecksmatrix mit verschwindender Diagonale zerlegt, also $A = L + D
 \end{equation}
 Die Diagonalmatrix $D$ soll dabei die Rolle der leicht zu
 invertierenden Matrix übernehmen. Dazu müssen die Diagonalelemente
-alle von Null verschieden sein, wass sich bei einer regulären Matrix
+alle von Null verschieden sein, was sich bei einer regulären Matrix
 $A$ durch Vertauschen von Zeilen und/oder Spalten immer erreichen
 lässt.
 
@@ -334,7 +334,7 @@ Insbesondere für die parallele Verarbeitung, die mit der heutigen
 weiten Verbreitung von Mehrkern-Prozessoren ein wichtiger Faktor ist,
 ist das Gauß-Seidel-Verfahren allerdings ungeeignet, da die Berechnung
 jeder Zeile die Ergebnisse der vorherigen erfordert. Das
-Jacobi-Verfahren kann hingegen auf soviele Prozessoren verteilt
+Jacobi-Verfahren kann hingegen auf so viele Prozessoren verteilt
 werden, wie die Matrix Zeilen hat, was eine effiziente Verarbeitung
 selbst auf modernen Graphikkarten ermöglicht.
 
@@ -358,9 +358,9 @@ durch Ausprobieren gefunden werden.
     \eqref{eq:2d-laplace} betrachtet, die wie gesagt nicht strikt
     diagonaldominant ist. Zum anderen wird eine Matrix $B$ mit
     genausovielen, normalverteilten Einträgen, betrachtet, die strikt
-    diagonal dominant gemacht wurde, in dem $b_{i,i} = 1+ \sum_{k\neq
+    diagonaldominant gemacht wurde, in dem $b_{i,i} = 1+ \sum_{k\neq
       i}\abs{b_{ik}}$ gesetzt wurde. Links sind die Fehler
-    $\norm{Ax-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
+    $\norm{Bx-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
     Matrix $B$ mit blauen Punkten bzw. roten Rauten eingezeichnet. Die
     roten Kreuze zeigen hingegen den Fehler des Gauß-Seidel-Verfahrens
     für die Matrix $A$, das nicht konvergiert. Grüne Sterne
@@ -557,7 +557,7 @@ gesichert, dass $q'_k\neq 0$ für alle $k$. Außerdem gilt
   (a_k, q_l) - \sum_{i=1}^{k-1} (a_k, q_i) \underbrace{(q_i,
     q_l)}_{=\delta_{il}} = 0.
 \end{align}
-Da zu $q'_k$ parallelen $q_k$ sind damit paarweise orthogonal.
+Die zu $q'_k$ parallelen $q_k$ sind damit paarweise orthogonal.
 
 Gleichung \eqref{eq:gs} zeigt auch, dass die orthonormale Basis nicht
 eindeutig ist, denn wir können genausogut
@@ -684,10 +684,10 @@ normalisiert werden:
 \index{Householder-Spiegelung}
 
 Wie bereits gesagt, sind unitäre Matrizen nichts anderes als
-verallgemeinerte Drehungen und Spiegelungen. Insbesonder ist das
+verallgemeinerte Drehungen und Spiegelungen. Insbesondere ist das
 Produkt von unitären Matrizen wieder unitär. Die beiden folgenden
 Verfahren zur QR-Zerlegung konstruieren $Q$ daher als Produkt von $l$
-einfacher elementarer unitärer Matrizen $Q_i$, wobei $l$ vom Verfahren
+einfachen elementaren unitären Matrizen $Q_i$, wobei $l$ vom Verfahren
 abhängt, wie auch der Typ der Matrizen $Q_i$. Diese transformieren $A$
 schrittweise in rechte obere Dreiecksform:
 \begin{equation}
@@ -962,7 +962,7 @@ wir die beiden untersten Zeilen der Matrix entsprechend:
   \end{pmatrix}
 \end{equation}
 mit $x=a_{n-1,1}$ und $y=a_{n,1}$ sowie $r=\sqrt{x^2 + y^2}$.  Die
-Sterne deuten dabei an, dass sich die gesamten beiden letzten Zielen
+Sterne deuten dabei an, dass sich die gesamten beiden letzten Zeilen
 potentiell ändern. Den Drehwinkel muss man dabei gar nicht explizit
 bestimmen, da $c=\cos(\phi) = x/r$ und $s=\cos(\phi) = y/r$
 (vergleiche Abbildung~\ref{fig:givens}).
@@ -1041,7 +1041,7 @@ seiner Hilfe die Eigenwerte im Prinzip bestimmen können.
 
 Das Problem ist, dass $\lambda$ eine Variable ist, so dass wir nicht
 auf die QR- oder LU-Zerlegung zurückgreifen können. Wir müssen also
-die Matrix zum Beispiel entlang der ersten Zeile entwicklen, und $n$
+die Matrix zum Beispiel entlang der ersten Zeile entwickeln, und $n$
 Unterdeterminanten der Größe $n-1$ berechnen. Diese wiederum erfordern
 $n-1$ Unterdeterminanten der Größe $n-2$, und so weiter. Ingesamt also
 sind $n!$ viele Unterteilungsschritte nötig, was selbst bei moderat
@@ -1171,9 +1171,9 @@ $x_-$ sind.
 \subsection{\keyword{QR-Algorithmus}}
 
 Da die Vektoriteration nicht alle Eigenwerte und -vektoren liefert,
-brauchen wir noch ein anderes Verfahren, das alle Eigenwerte
-liefert. Dieser Abschnitt führt hierzu den QR-Algorithmus von Francis
-und Kublanovskaya ein.
+brauchen wir noch ein anderes Verfahren, das alle Eigenwerte berechnen
+kann. Dieser Abschnitt führt hierzu den QR-Algorithmus von Francis und
+Kublanovskaya ein.
 
 Grundlage dieses iterativen Algorithmus ist, wie der Name schon sagt,
 die QR-Zerlegung. Wir starten mit $A^{(0)} = A\in\CC^{n,n}$. In jedem
@@ -1191,7 +1191,7 @@ Eigenwerte, so konvergieren die $A^{(k)}$ sogar gegen eine
 Diagonalmatrix. Dies gilt allerdings nur, solange der Algorithmus über
 komplexen Matrizen durchgeführt wird, die stets eine Schursche
 Normalform haben. Der reellwertige Algorithmus hingegen führt nur zu
-einer Matrix mit $2\times 2$-Blöcke auf der Diagonalen, die jeweils
+einer Matrix mit $2\times 2$-Blöcken auf der Diagonalen, die jeweils
 zwei komplex konjugierten Eigenwerten über $\CC$ entsprechen.
 
 Eine einfache Erweiterung des Verfahrens zerlegt nicht $A^{(k)}$,

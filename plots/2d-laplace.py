@@ -77,12 +77,13 @@ px, py = zip(*P)
 for y in range(N):
     graph.plot((y*N, y*N), (0,N*N), ":", color="#a0a0a0")
 
-graph.plot(mx, my, "o", markersize=2,
+graph.plot(mx, my, "v", 
            markerfacecolor="black", markeredgecolor="black")
-graph.plot(ox, oy, "D", markersize=2,
+graph.plot(ox, oy, "^", 
            markerfacecolor="green", markeredgecolor="green")
-graph.plot(px, py, "+", markersize=6,
+graph.plot(px, py, "o", 
            markerfacecolor="red", markeredgecolor="red")
 graph.axis((-0.5, N*N-0.5, N*N-0.5, -0.5))
 
+#pyplot.show()
 figure.savefig("2d-laplace.pdf")
