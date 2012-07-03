@@ -1208,28 +1208,11 @@ Rechenaufwand zu vermindern, kann man die Matrix zunächst durch
 Householder-Spiegelungen auf Hessenberg-Form bringen, die dann mit
 Hilfe von Givens-Rotationen sehr schnell QR-zerlegt werden kann.
 
-Die Eigenvektoren ergeben sich im Prinzip aus dem Produkt aller
-$Q^{(k)}$. Einfacher ist es aber, eine sogenannte
-\emph{\keyword{inverse Iteration}} durchzuführen. Ist $\lambda$ ein
-Eigenwert der Matrix $A\in\CC^{n,n}$, so ist $A-\lambda I$
-singulär. Trotzdem löst man
-\begin{align}
-  (A - \lambda I) \tilde{x}^{(i+1)} = x^{(i)}
-\end{align}
-durch Gaußelimination mit Pivotisierung und setzt
-\begin{equation}
-  x^{(i+1)} = \frac{\tilde{x}^{(i+1)}}{\norm{\tilde{x}^{(i+1)}}_2}.
-\end{equation}
-Trifft man bei der Gaußelimination auf eine exakte numerische Null,
-wird diese durch eine sehr kleine Zahl ersetzt. Da letztlich nur die
-Richtung ausschlaggebend ist, konvergiert dieses Verfahren extrem
-schnell gegen den zu $\lambda$ gehörigen Eigenvektor.
-
 Eine einfache Implementation des QR-Algorithmus mit Shift für eine
 Matrix mit reellen Eigenwerten kann wie folgt aussehen:
 \lstinputlisting[firstline=10]{qr.py}
-Die Routine liefert einen Vektor aus Eigenwerten zeigt.
-\argd{tolerance} gibt dabei den
+Die Routine liefert einen Vektor aus Eigenwerten mit Hilfe des
+Householder-Verfahrens von SciPy. \argd{tolerance} gibt dabei den
 maximalen Betrag eines Subdiagonalelements an, der noch akzeptiert
 wird.  Hat \argd{A} komplexe Eigenwerte, können auch Element eins
 unter der Diagonalen nicht verschwinden. Dann muss zum einen
@@ -1238,6 +1221,37 @@ kann dann natürlich nicht einfach die Diagonale zurückgeliefert
 werden. Echte, also reelle Eigenwerte sind dann solche, die weder
 links noch unterhalb auf der Subdiagonalen Nachbarn haben, die anderen
 entsprechen komplexen Eigenwerten.
+
+\subsection{Inverse Iteration}
+\index{inverse Iteration}
+
+Die Eigenvektoren ergeben sich im Prinzip aus dem Produkt aller
+$Q^{(k)}$. Einfacher ist es aber, eine sogenannte inverse Iteration
+durchzuführen. Ist $\lambda$ eine gute Approximation eines Eigenwerts
+$\lambda_0$ der Matrix $A\in\CC^{n,n}$, so ist $\mu = (\lambda_0
+-\lambda)^{-1}$ ein sehr großer Eigenwert von $(A-\lambda I)^{-1}$,
+und der Eigenvektor $v$ zu $\mu$ ist auch ein Eigenvektor von $A$ zu
+$\lambda$. Ist zum Beispiel $\lambda$ eine auf 5 Stellen genaue
+Näherung, so ist $\abs{\mu}\approx 100.000$.
+
+Da $\mu$ sehr groß ist, konvergiert die Vektoriteration für
+$(A-\lambda I)^{-1}$ sehr schnell. Dazu wird natürlich nicht die
+Inverse berechnet, sondern man startet wie gewohnt mit einem Startwert
+$x^{(0)}\neq 0$ und löst
+\begin{equation}
+  (A - \lambda I) \tilde{x}^{(i+1)} = x^{(i)}
+\end{equation}
+durch Gaußelimination mit Pivotisierung. Die neue Iterierte wird noch
+normiert:
+\begin{equation}
+  x^{(i+1)} = \frac{\tilde{x}^{(i+1)}}{\norm{\tilde{x}^{(i+1)}}_2}.
+\end{equation}
+Bei einer sehr guten Eigenwertnäherung oder auch durch kleine
+numerische Fehler kann es passieren, dass das Pivotelement der
+Gaußelimination numerisch exakt Null ist. In diesem Fall wird es
+einfach durch eine sehr kleine Zahl ersetzt. Da letztlich nur die
+Richtung ausschlaggebend ist, konvergiert dieses Verfahren extrem
+schnell gegen den zu $\lambda$ gehörigen Eigenvektor.
 
 Die inverse Iteration, die zu einem gegebenen nicht-entarteten
 Eigenwert den Eigenvektor bestimmt, sieht wie folgt aus:
