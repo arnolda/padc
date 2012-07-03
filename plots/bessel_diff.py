@@ -86,8 +86,8 @@ fx3l = solve(A, b)
 ############################################
 
 # alles wieder auf Null
-b = numpy.zeros(N)
-A = numpy.zeros((N, N))
+b = zeros(N)
+A = zeros((N, N))
 
 # Startwerte an den Raendern, wie zuvor
 A[0, 0]     = 1

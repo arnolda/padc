@@ -164,5 +164,3 @@ graph.axis((0,2,5e-3,20))
 graph.xaxis.set_label_text(u"ω")
 
 figure.savefig("iterative.pdf")
-
-pyplot.show()

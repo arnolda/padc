@@ -4,6 +4,7 @@ check:  check_random
 	python check_ortho.py 
 	python check_qr.py
 	python check_sor.py
+	python check_opt.py
 
 # output the raw tables that are inserted into the lecture
 tables:
