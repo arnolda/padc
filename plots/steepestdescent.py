@@ -80,8 +80,8 @@ def draw(f, gradf, x0, where, method, axis, levels, limit=None):
     # contour
     n=100
     rx = linspace(axis[0], axis[1], n)
-    rx = linspace(axis[2], axis[3], n)
-    x, y = meshgrid(rx, rx)
+    ry = linspace(axis[2], axis[3], n)
+    x, y = meshgrid(rx, ry)
     z = zeros_like(x)
     for k in range(n):
         for l in range(n):

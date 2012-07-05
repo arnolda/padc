@@ -80,20 +80,21 @@ $v_{m+2}$ zum Parameterraum hinzu. Diese soll nun stets $v_{m+2} =
 v_{m+2}$ für $i=1(1)n$. Damit wird aus \eqref{eq:mininf} eine
 Minimierungsaufgabe mit linearer Zielfunktion und Nebenbedingungen:
 \begin{equation}
+  \label{eq:chebyshevappr}
   \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
   \begin{pmatrix}
-    1 \ldots 1 & 1 \ldots 1\\
-    A^T & -A^T
-  \end{pmatrix}^T v \ge
+    A  & e\\
+    -A & e
+  \end{pmatrix} v \ge
   \begin{pmatrix}
     b\\
     -b
-  \end{pmatrix}.
+  \end{pmatrix},
 \end{equation}
-Eine solche Aufgabe heißt auch \emph{\keyword{lineares Programm}} und
-wird mit Verfahren wie den Simplexalgorithmus behandelt. Lineare
-Programme spielen auch in der Spiele- und Wirtschaftstheorie eine
-große Rolle.
+wobei $e=(1,\ldots,1)^T$. Eine solche Aufgabe heißt auch
+\emph{\keyword{lineares Programm}} und wird mit Verfahren wie den
+Simplexalgorithmus behandelt. Lineare Programme spielen auch in der
+Spiele- und Wirtschaftstheorie eine große Rolle.
 
 Die ursprünglich gestellte Aufgabe \eqref{eq:min} oder auch
 \eqref{eq:fit} sehen in ihrer allgemeinen Form natürlich auch
@@ -175,29 +176,33 @@ und wir finden die Lösung als
   x = (A^TA)^{-1}A^Tb.
 \end{equation}
 
-Hat $A$ linear unabhängige Zeilen, so ist $AA^T$ invertierbar, und wir
-können
+Die zweite Aufgabe, \eqref{eq:optnorm2}, können wir ganz ähnlich
+lösen. In diesem Fall hat $A$ weniger Zeilen als Spalten, ist also
+unterbestimmt. Hat $A$ aber wengistens linear unabhängige Zeilen, so
+ist $AA^T$ invertierbar, und wir können
 \begin{equation}
   x = A^T(AA^T)^{-1}b
 \end{equation}
 definieren. Dann erfüllt $x$ offenbar die Nebenbedingung $Ax=b$, und
-alle zulässigen $x'$ liegen in $x + \text{Kern}(A) = x +
-\text{Bild}(A^T)^\perp$. Da $x\in\text{Bild}(A)$, gilt somit
-$\norm{x'}=\norm{x} + \norm{x-x'}\ge \norm{x}$, $x$ löst also die
-Optimierungsaufgabe \eqref{eq:optnorm2bild}.
+alle anderen zulässigen $x'$ liegen in $x + \text{Kern}(A) = x +
+\text{Bild}(A^T)^\perp$. Da $x\in\text{Bild}(A)$, gilt
+$\norm{x'}=\norm{x} + \norm{x-x'}\ge \norm{x}$. Mit anderen Worten,
+$x$ löst die Optimierungsaufgabe \eqref{eq:optnorm2bild}.
 
 Die Matrizen $(A^TA)^{-1}A^T$ und $A^T(AA^T)^{-1}$ sind Spezialfälle
 der \emph{Pseudoinversen} oder \emph{Moore-Penrose-Inversen} für
 allgemeine Matrizen. Der Name Pseudoinverse rührt daher, dass diese
 unter den gegebenen Nebenbedingungen die Gleichungen, so gut es geht,
-invertieren. Moore und Penrose haben abstrakte Bedingungen für die
-Pseudoinverse definiert, die von den obigen Ausdrücken erfüllt
-werden. Die Pseudoinverse für beliebige Matrizen kann durch eine
-sogenannte Singulärwertzerlegung bestimmt werden kann. Diese kann in
-dieser Vorlesung leider nicht behandelt werden, aber wir werden jetzt
-sehen, wie man bei Matrizen mit maximalem Zeilen- oder Spaltenrang die
-Pseudoinverse auch mit Hilfe der QR-Zerlegung bestimmt werden kann,
-ohne $A^TA$ oder $AA^T$ invertieren zu müssen.
+invertieren, die Pseudoinverse findet also das $x$ mit minimaler Norm
+unter allen $x$, für die $\norm{Ax-b}_2$ minimal ist.  Moore und
+Penrose haben abstrakte Bedingungen für die Pseudoinverse definiert,
+die von den obigen Ausdrücken erfüllt werden. Die Pseudoinverse für
+beliebige Matrizen kann durch eine sogenannte Singulärwertzerlegung
+bestimmt werden kann. Diese kann in dieser Vorlesung leider nicht
+behandelt werden, aber wir werden jetzt sehen, wie man bei Matrizen
+mit maximalem Zeilen- oder Spaltenrang die Pseudoinverse auch mit
+Hilfe der QR-Zerlegung bestimmt werden kann, ohne $A^TA$ oder $AA^T$
+berechnen und invertieren zu müssen.
 
 Sei also $A\in\RR^{m,n}$ eine Matrix mit maximalem Spaltenrang,
 insbesondere $m \ge n$. Aus dem Householder- oder Givensverfahren
@@ -543,49 +548,414 @@ In der Praxis ist einerseits $g_i(x)$ im allgemeinen endlich,
 andererseits kennen wir aber auch kein Verfahren, um eine höchst
 unstetige Funktion zu minimieren. Wenn wir uns die Nebenbedingungen
 aber als Banden vorstellen, über die ein iterativer Algorithmus nicht
-hinausschreiten darf, könnte man diese zunächst weicher
-gestalten, so dass der Algorithmus den zulässigen Bereich etwas
-verlassen kann, und dann die Banden mit der Zeit immer härter
-gestalten, so dass der Algorithmus schließlich in den zulässigen
-Bereich gedrückt wird. Befindet sich das Minimum über $M$ am Rand von
-$M$, wird die gefundene Näherungslösung daher immer minimal außerhalb
-von $M$ liegen. Ist dies ein Problem, kann man zusätzlich die $g_i$
-leicht nach unten verschieben verschieben, so dass der Algorithmus
-stets im Inneren von $M$ bleibt.
-
-Letztlich betrachten wir also die Funktion
+hinausschreiten darf, könnte man diese zunächst weicher gestalten, so
+dass der Algorithmus den zulässigen Bereich etwas verlassen kann, und
+dann die Banden mit der Zeit immer härter gestalten, so dass der
+Algorithmus schließlich in den zulässigen Bereich gedrückt
+wird. Befindet sich das Minimum über $M$ am Rand von $M$, wird die
+gefundene Näherungslösung daher immer minimal außerhalb von $M$
+liegen. Ist dies ein Problem, etwa weil $f$ außerhalb $M$ nicht
+ausgewertet werden kann, kann man stattdessen auf Barrieremethoden
+ausweichen, bei denen die Banden bereits innerhalb von $M$ beginnen
+und am Rand von $M$ singulär sind.  Wir minimieren also die
+modifizierte Funktion
 \begin{equation}
   \label{eq:penalty}
-  q_{\sigma,\epsilon}(x) = f(x) + \sum_{i=1}^m \min(0,
-  \sigma g_i(x) - \epsilon)^2.
+  q_{\sigma}(x) = f(x) + \sum_{i=1}^m \min(0,
+  \sigma g_i(x))^2.
 \end{equation}
-Der hintere Teil $p_{\sigma,\epsilon}(x) = \sum_{i=1}^m \min(0, \sigma
-g_i(x)-\epsilon)^2$ wird dabei Straffunktion (Penalty function)
+Der hintere Teil $p_{\sigma}(x) = \sum_{i=1}^m \min(0, \sigma
+g_i(x))^2$ wird dabei Straffunktion (Penalty function)
 genannt, weil er Punkte außerhalb des zulässigen Bereichs mit höheren
 Funktionswerten bestraft.
 
-Um das Minimum zu finden, starten wir mit recht kleinem $\sigma_0>0$
-und großem $\epsilon_0>0$. Auf $q_{\sigma,\epsilon}$ wenden wir dann
-ein Optimierungsverfahren für freie Optimierung an, etwa das Verfahren
-des steilsten Abstiegs mit Schrittweitensteuerung.  Sinnvollerweise
-wählt man einen Startpunkt im Inneren von $M$. Ist im gefundenen
-Minimum $g_i(x)\ge - \tau$ mit der gewünschten Toleranz $\tau$, ist
-das Minimum gefunden. Ansonsten werden $\sigma_k$ und $\epsilon_k$
-erhöht und erneut die Minimierung gestartet, allerdings
-naheliegenderweise mit dem bereits gefundenen Minimum. Dies wird
-fortgesetzt, bis $g_i(x)\ge - \tau$ erreicht ist. $\sigma_k$ und
-$\epsilon_k$ können auf verschiedene Weisen gewählt werden, solange
-$\sigma_k\to \infty$ und $\epsilon_k\to 0$ für $k\to\infty$. Eine
-Möglichkeit ist etwa $\sigma_k=k^2$ und $\epsilon_k = k^{-2}$.
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/penalty}
+  \caption{Straffunktionsverfahren für einen Halbkreis. Die
+    durchgezogenen, gestrichelten, und gepunkteten Linien markieren
+    $p_{\sigma}(x)=\nicefrac{1}{2}$ in den Schritten 1,2 und 5. Minimiert wird
+    jeweils der Abstand zum den mit offenen Symbolen markierten drei
+    Punkten. Der rote Kreis liegt im inneren, das Verfahren braucht
+    nur einen Aufruf des freien Optimierers. Für die grünen und blauen
+    Dreiecke sind jeweils mehrere Aufrufe nötig, wobei das blaue, nach
+    unten zeigende Dreieck so gewählt ist, dass das Minimum in der
+    Ecke liegt. Im rechten Graphen sind die Straffunktionen entlang
+    der $y$-Achse, also $p_{\sigma}(0,y)$, für die selben Schritte
+    gezeigt. Dünner grün sind die korrespondieren Zielfunktionen
+    $q_{\sigma}(0,y)$ eingezeichnet.}
+  \label{fig:penalty}
+\end{figure}
 
-In Python sieht das Verfahren so aus:
-\lstinputlisting[firstline=20]{penalty.py}%
-Die Methode benutzt intern das Gradientenabstiegsverfahren mit
-Armijo-Schrittweiten aus Abschnitt~\ref{sec:armijosd}. Der Straffaktor
-$\sigma$ ist $k^\text{\argd{sigma_exp}}$ und der Shift
-$\epsilon=k^\text{\argd{eps_exp}}$, wobei $k$ der Schritt ist.
+Um das Minimum zu finden, starten wir mit recht kleinem
+$\sigma_0>0$. Auf $q_{\sigma}$ wenden wir dann ein
+Optimierungsverfahren für freie Optimierung an, etwa das Verfahren des
+steilsten Abstiegs mit Schrittweitensteuerung. Aufgrund der
+Konstruktion ist der Gradient von $q_{\sigma}$ recht einfach zu berechnen:
+\begin{equation}
+  \nabla q_{\sigma}(x) = \nabla f(x) + \sum_{i=1}^m 2\sigma\min(0,
+  \sigma g_i(x))\nabla g_i(x).
+\end{equation}
 
-%\section{Lineare Programme und Simplexalgorithmus}
+Sinnvollerweise wählt man einen Startpunkt im Inneren von $M$. Ist im
+gefundenen, freien Minimum von $q$ bereits $g_i(x)\ge - \tau$ mit
+gewünschter Toleranz $\tau$ erfüllt, ist das Minimum gefunden, und
+liegt sehr wahrscheinlich im Inneren vom $M$. Ansonsten wird
+$\sigma_k$ erhöht und erneut die Minimierung gestartet, allerdings
+naheliegenderweise mit dem bereits gefundenen Minimum als
+Startwert. Die Lage des Minimums ändert sich dabei, da ja wegen der
+Abbruchbedingung wenigstens eine Nebenbedingung noch nicht erfüllt
+war, und sich diese durch die Änderung von $\sigma_k$ ändert. Solange
+danach $g_i(x)\ge - \tau$ nicht erreicht ist, passen wir $\sigma_k$ an
+und iterieren weiter.
+
+$\sigma_k$ kann auf verschiedene Weisen gewählt werden, solange
+$\sigma_k\to \infty$ für $k\to\infty$. Eine Möglichkeit ist etwa
+$\sigma_k=k^a$ , wobei man $a>1$ nicht zu groß wählen sollte, zum
+Beispiel $a=2$.
+
+Abbildung~\ref{fig:penalty} illustriert das Verfahren am Beispiel
+einer Abstandsminimierung zu einem Halbkreis. Wir suchen also
+\begin{equation}
+  \min_{x\in M} \norm{x - p}_2\quad\text{mit}\;
+  M = \{ x | g_i(x) \ge 0, i=1,2 \}
+\end{equation}
+mit
+\begin{equation*}
+  g_1(x) = 4 - x^Tx\quad\text{und}\; g_2(x) = -10y.
+\end{equation*}
+Dies entspricht offenbar $\norm{x}^2_2\le 4$ und $y<0$, also dem
+Halbkreis. Im Beispiel werden drei verschiedene Punkte betrachtet und
+mit Hilfe des Straffunktionsverfahrens und einem
+schrittweitengesteuerten Gradientenverfahren der minimale Abstand zum
+Halbkreis gesucht. Der Straffaktor $\sigma$ wurde als $0,1\,k^2$
+gewählt, mit $k=1,2,\ldots$ der Iterationsnummer. Für $p=(-1,\,-1)$
+liegt das Minimum im Inneren des Halbkreises und wird daher gleich im
+ersten Optimierungsschritt gefunden. Für die beiden anderen Punkte,
+$p=(-1,\,1)$ und $p=(2,5,\,1)$, sind nur die Gerade beziehungsweise beide
+Ungleichungen gleichzeitig aktiv; auch diese Minima werden
+gefunden. Auf der rechten Seite sieht man, dass die Straffunktionen
+sehr steil werden. Daher ist eine Schrittweitensteuerung hier
+besonders wichtig.
+
+\section{Lineare Programme und Simplexalgorithmus}
+\index{lineares Programm}
+\index{Simplexalgorithmus}
+
+Wie wir in der Einleitung gesehen hatten, führt die lineare Regression
+mit Maximumsnorm zu einem ganz anderen Typ von Problemen, bei dem die
+Zielfunktion linear ist. Dadurch liegt das Minimum notwendigerweise
+auf dem Rand der zulässigen Menge. Sind zusätzlich noch die
+Nebenbedingungs(un-)gleichungen linear
+(vgl. Abbildung~\ref{fig:simplex}), spricht man von einem
+\emph{linearen Programm}. Programm hat hier also erst einmal nichts
+mit Computern zu tun. Solche linearen Programme spielen insbesondere
+in der Optimierung von Wirtschaftsprozessen eine wichtige Rolle
+("`Operations research"'), da Gewinn und produzierte Mengen bei
+unverändertem Preis linear von einander abhängen.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}[x=8em,y=8em]
+    \draw[->] (-0.1,0) -- (1.2,0);
+    \draw[->] (0,-0.1) -- (0,1.2);
+
+    % zulässiger Bereich
+    \draw (1,0) -- (0,1) ;
+    \fill[pattern=north east lines,rotate around={135:(1,0)}] (1,0) rectangle +(1.414,-0.1) ;
+    \fill[pattern=north east lines] (0,0) rectangle +(1,-0.1) ;
+    \fill[pattern=north east lines] (0,0) rectangle +(-0.1,1) ;
+
+    % Zielfunktion
+    \pgfmathsetmacro{\gradx}{0.3}
+    \pgfmathsetmacro{\grady}{-0.4}
+    \pgfmathsetmacro{\perpx}{\grady}
+    \pgfmathsetmacro{\perpy}{-\gradx}
+
+    \draw[very thick,->=triangle 45] (0.2,0.6) -- +(\gradx,\grady);
+
+    % Isolinien
+    \foreach \l in {0,0.2,0.4,...,0.8} {
+      \pgfmathsetmacro{\ll}{(1-\l)/(\perpx+\perpy)}     
+      \draw (0, \l) -- (\ll*\perpx,\l+\ll*\perpy);
+    }
+
+    \foreach \l in {0.2,0.2,0.4,...,0.8} {
+      \pgfmathsetmacro{\ll}{(1-\l)/(\perpx+\perpy)}     
+      \draw (\l, 0) -- (\l + \ll*\perpx, \ll*\perpy);
+    }
+
+    % Minimum
+    \filldraw (1, 0) circle (0.04);
+
+  \end{tikzpicture}
+  \hspace{4em}
+  \begin{tikzpicture}[x={(4em,2em)},y={(4em,-2em)},z={(0em,5em)}]
+    \draw (xyz cs:x=-.1) -- (xyz cs:x=0);
+    \draw (xyz cs:y=-.1) -- (xyz cs:y=0);
+    \draw (xyz cs:z=-.1) -- (xyz cs:z=0);
+
+    \draw[thick,->] (xyz cs:x=0) -- (xyz cs:x=1.3) node[right] {$x$};
+    \draw[thick,->] (xyz cs:y=0) -- (xyz cs:y=1.3) node[right] {$y$};
+    \draw[thick,->] (xyz cs:z=0) -- (xyz cs:z=1.3) node[above] {$z$};
+
+    \draw[color=green,fill=green!80!white,opacity=0.5]
+    (xyz cs:z=1) -- (xyz cs:x=0.7) -- (xyz cs:y=0.3) -- cycle;
+    \draw[color=green]
+    (xyz cs:z=1) -- (xyz cs:x=0.7) -- (xyz cs:y=0.3) -- cycle;
+
+    \draw[color=green]
+    (xyz cs:z=1) circle (0.02)
+    (xyz cs:x=0.7) circle (0.02)
+    (xyz cs:y=0.3) circle (0.02);
+
+    \draw[color=red]
+    (xyz cs:z=1,x=0.5) -- (xyz cs:z=0.2,y=0.8);
+
+    \draw[color=red]
+    (xyz cs:z=1,x=0.5)   circle (0.02)
+    (xyz cs:z=0.2,y=0.8) circle (0.02);
+  \end{tikzpicture}
+  \caption{Links: Illustration eines linearen Programms. Die
+    Nebenbedingungen sind $x\ge 0$, $y\ge 0$ und $1 - x \ge y$. Der
+    Pfeil deutet die Abstiegsrichtung an, die Linien sind Isolinien
+    des Potentials. Hier findet sich das Minimum in der mit einem
+    Punkt markierten rechten unteren Ecke. Rechts: 3d-Simplex mit
+    Nebenbedingung. Ist eine Nebenbedingung $a^Tx=b$ gegeben, so sind
+    nur Punkte mit Koordinaten $\ge 0$ aus dieser Ebene zulässig, also
+    aus dem grünen Dreieck. Die Ecken lassen sich durch die Menge der
+    Koordinaten, die nicht Null sind, vollständig beschreiben. Die
+    unterste Ecke etwa hat nur $y$ aktiv, die obere $z$. Sind zwei
+    Nebenbedingungen gegeben, so ist die resultierende zulässige Menge
+    eine Gerade (hier rot eingezeichnet). Die Ecken werden nun durch
+    zwei aktive Koordinaten beschrieben, hier $y$ und $z$ für die
+    vordere Ecke, und $x$ und $z$ für die hintere.}
+  \label{fig:simplex}
+\end{figure}
+
+Lineare Programme können in einer Vielzahl von Formen definiert
+werden, wir betrachten hier die Normalform
+\begin{equation}
+  \label{eq:simplexprob}
+  \min c^Tx \quad\text{unter den Nebenbedingungen}\; x\ge 0,\;Ax=b
+\end{equation}
+mit $c\in\RR^n$, $A\in\RR^{m,n}$ und $b\in\RR^{m}$. Die Anzahl $m$ der
+Gleichungsbedingungen ist dabei nicht festgelegt. Da $x$ ein Vektor
+ist, bedeutet $x\ge 0$ einfach, dass alle Komponenten größer als Null
+sein sollen. Alle linearen Nebenbedingungen lassen sich so
+formulieren, eventuell unter Zuhilfenahme von weiteren Variablen.
+
+Betrachten wir zwei Beispiele. Die in der Abbildung~\ref{fig:simplex}
+gegebene Nebenbedingung $1 - x \ge y$ ist offensichtlich nicht von der
+obigen Form. Wir führen deswegen eine neue Variable $z=1-x-y$ ein, die
+offenbar $z\ge 0$ erfüllen muss. Wir erhalten dann die Normalform mit
+$c'=(c_0, c_1, 0)$, da $z$ ja nicht zur eigentlich Zielfunktion
+beiträgt, sowie $A=(-1,-,1, -1)$ und $b=-1$.
+
+Auch \eqref{eq:chebyshevappr} für die lineare Regression mit
+Maximumsnorm ist nicht in Normalform. Zum einen müssen wir die
+Nebenbedingungsungleichungen in Gleichungen transformieren. Dazu
+führen wir einfach eine Schattenvariable $z_i=a_i^Tv - b_i$ pro
+Ungleichung $a_i^Tv\ge b_i$ ein. Dann ist $z_i\ge 0$ offenbar
+äquivalent zur Ungleichung. Zum anderen sind aber die Variablen $v$
+frei, während wir voraussetzen, dass $v\ge 0$. Um dies zu beheben,
+teilen wir jede Variable $v=v_+ - v_i$ auf und ergänzen $A$ und $c$
+entsprechend. Dadurch transformiert sich
+\begin{equation}
+  \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
+  \begin{pmatrix}
+    A & e\\
+    -A & e
+  \end{pmatrix} v \ge
+  \begin{pmatrix}
+    b\\
+    -b
+  \end{pmatrix}
+\end{equation}
+in die äquivalente Aufgabe
+\begin{equation}
+  \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
+  \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
+  \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T v
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[decorate,decoration=brace] ($(vpl) + (0,1em)$) --
+  node[above] {$v_+$} ($(vpr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(vml) + (0,1em)$) --
+  node[above] {$v_-$} ($(vmr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(zl) + (0,1em)$) --
+  node[above] {$z$} ($(zr) + (0,1em)$);
+\end{tikzpicture}
+mit der neuen Variablen $x=(v_+,v_-,z)$ und den Nebenbedingungen $x\ge 0$
+und
+\vspace{0.5em}% für die TikZ-Deko
+\begin{equation*}
+  \begin{pmatrix}
+    \tikzlabel{vpl}A  & e\tikzlabel{vpr} & 
+    \tikzlabel{vml}-A & -e\tikzlabel{vmr} &
+    \tikzlabel{zl} I & 0\tikzlabel{zr}\\
+    -A & e &  A & -e & 0 & I
+  \end{pmatrix}
+  x =
+  \begin{pmatrix}
+    b\\
+    -b
+  \end{pmatrix}.
+\end{equation*}
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[decorate,decoration=brace] ($(vpl) + (0,1em)$) --
+  node[above] {$v_+$} ($(vpr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(vml) + (0,1em)$) --
+  node[above] {$v_-$} ($(vmr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(zl) + (0,1em)$) --
+  node[above] {$z$} ($(zr) + (0,1em)$);
+\end{tikzpicture}
+
+Wie können wir Aufgabe \eqref{eq:simplexprob} lösen? Sofern die
+zulässige Menge beschränkt ist, beschreiben die Nebenbedingungen immer
+einen Polyeder. Man kann nun zeigen, dass sich ein Optimum immer in
+einer der Ecken dieses Polyeders befindet. Der Simplex-Algorithmus
+besucht nun nacheinander die Ecken des Polyeders, so dass die
+Zielfunktion fortlaufend minimiert wird. Daher zerfällt der
+Algorithmus in zwei Phasen. In der ersten Phase muss eine gültige Ecke
+bestimmt werden, in der zweiten Phase müssen wir dann von einer
+gültigen Ecke aus eine neue, benachbarte Ecke mit niedrigerer
+Zielfunktion finden.
+
+\subsubsection*{Phase II}
+
+Wir beginnen mit der zweiten Phase, da die die erste Phase letztlich
+auf denselben Ideen beruht. Wir nehmen daher an, dass die Matrix $A$
+maximalen Zeilenrang hat, also alle doppelten Gleichung eliminiert
+wurden; dies wird später die erste Phase automatisiert übernehmen.
+Außerdem sei $x$ eine Ecke des Polyeders.
+
+Wie stellen wir diese Ecke dar? Abbildung~\ref{fig:simplex}
+illustriert, dass die Ecken einfach durch die Menge der aktiven, also
+von Null verschiedenen Koordinaten beschrieben werden kann. Da wir
+angenommen haben,dass $A\in\RR^{m,n}$ linear unabhängige Zeilen hat,
+beschreibt $Ax=b$ einen $n-m$-dimensionalen Unterraum, dessen Ecken
+durch jeweils $m$ aktive Koordinaten haben. Sei $B=\{j_1,\ldots,k_m\}$
+die Menge der aktiven Koordinaten, die sogenannten Basiskoordinaten,
+und $N=\{1,\ldots,n\}\backslash B$ die Menge der
+Nichtbasiskoordinaten. $A_B = (a_{j_1},\ldots,a_{j_m})\in\RR^{m,m}$
+sei die zu den Basisvariablen $x_B = (x_{j_i})_i\in\RR^m$ gehörende
+Teilmatrix, sowie $A_N$ analog die zu den Nichtbasisvariablen
+gehörende Teilmatrix. Dann gilt $x_N=0$ und damit $A_Bx_b = b$.
+
+Damit ist der Zielfunktionswert in $x$
+*\begin{equation}
+  c^Tx = c_B^Tx_B = c_BA_B^{-1}b
+\end{equation}
+Wir betrachten nun eine beliebigen anderen Punkt $u\in M$, also $u\ge
+0$ und $Au=A_Bu_B + A_Nu_N = b$. Dann ist
+\begin{equation}
+  \label{eq:simplexub}
+  u_b = A_B^{-1}(b-A_Nu_N) = x_B - A_B^{-1}A_Nu_N
+\end{equation}
+und damit
+\begin{equation}
+  c^Tu = c_B^T(x_B - A_B^{-1}A_Nu_N) + c_N^Tu_N = c^Tx +
+  \underbrace{(c_N - A_B^{-1}A_Nu_N)^T}_{r}u_n.
+\end{equation}
+Da $u_N\ge 0$ ist, kann die Zielfunktion nur verkleinert werden, wenn
+eine Komponente $r_s < 0$ ist. Ist dies nicht der Fall, haben wir also
+unser Optimum gefunden.
+
+Sei nun also $r_s< 0$. Dann können wir unser Ergebnis verbessern, in
+dem wir $u_s>0$ wählen, aber alle anderen Elemente von $u_N$ weiterhin
+bei 0 belassen. Wir nehmen also $s$ in die Basiskoordinaten $B$
+auf. Damit diese eine Basis bleiben, müssen wir nun noch sehen, welche
+Gleichung dafür herausfällt. Aus \eqref{eq:simplexub} folgt, dass dann
+$u_B = x_B - u_s A_B^{-1}a_s$ und
+\begin{equation}
+  \label{eq:simplextgt}
+  c^Tu = c^Tx + u_s(c_s - c_B^T A_B^{-1}a_s)
+\end{equation}
+Auch im neuen Punkt muss aber $u_B\ge
+0$ gelten, daher können wir $u_N$ nur so groß wählen, bis für die erste
+Basisvariable $x_t= u_s (A_B^{-1}a_s)_t$ gilt. Dann gilt $u_t=0$,
+d.h. diese Basisvariable geht in die Nichtbasis über.
+
+Wir suchen also
+\begin{equation}
+  u_s = \min \left\{\frac{x_{j_k}}{(A_B^{-1}a_s)_k} | k\in B,
+      (A_B^{-1}a_s)_k > 0\right\} =:
+  \frac{x_{j_t}}{(A_B^{-1}a_s)_t}
+\end{equation}
+Sind dabei alle $(A_B^{-1}a_s)_k < 0$, so dass das Minimum gar nicht
+existiert, können wir $u_B$ unbegrenzt groß machen, also ist der
+zulässige Bereich unbeschränkt, und wir müssen abbrechen, da die
+Funktion beliebig klein werden kann.
+
+Wir tauschen nun in der Basis $B$ $j_t$ durch $s$ aus und erhalten die
+neue Basis $B'$. Für die Rechnungen benötigen wir nur $A_B^{-1}$, dass
+wir nun entsprechend anpassen müssen. Dies können wir mit Hilfe der
+Sherman-Morrison-Formel sehr bequem ähnlich einem Schritt der
+Gaußelimination berechnen:
+\begin{equation}
+  \label{eq:simplexex}
+  A_{B'}^{-1} = A_{B}^{-1} - \frac{A_B^{-1}a_s - e_t}{(A_B^{-1}a_s)_t}
+  \left(e_t^TA_{B}^{-1}\right)
+\end{equation}
+
+\subsubsection*{Phase I}
+
+Wie können wir nun eine zulässige erste Lösung mit zugehörigem
+Basissatz und $A_B^{-1}$ finden? Die Idee ist, zunächst die Matrix
+noch einmal stark zu erweitern, sodass eine gültige Lösung einfach zu
+finden ist, aber jede echte gültige Lösung günstiger. Daher fallen die
+zusätzlichen Variablen alle in die Nichtbasis und können eliminiert
+werden.
+
+Dazu betrachten wir also das neue Problem
+\begin{equation}
+  \min_z (\tikzlabel{xl}0,\ldots,\,0,\tikzlabel{xr},
+  \tikzlabel{yl}1,\ldots,\,1\tikzlabel{yr})^Tz
+\end{equation}
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[decorate,decoration=brace] ($(xl) + (0,1em)$) --
+  node[above] {$x$} ($(xr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(yl) + (0,1em)$) --
+  node[above] {$y$} ($(yr) + (0,1em)$);
+\end{tikzpicture}
+mit der neuen Variablen $z=(x,y)$ und den Nebenbedingungen $z\ge 0$
+und
+\begin{equation*}
+  \begin{pmatrix}
+    \tilde{A} & I 
+  \end{pmatrix}
+  z =
+  \begin{pmatrix}
+    \tilde{b}
+  \end{pmatrix}.
+\end{equation*}
+Dabei sind die $i$-ten Zeilen von $\tilde{A}$ und $\tilde{b}$
+identisch mit denen von $A$ und $b$, nur werden die Vorzeichen
+getauscht, falls $b_i<0$. Da also nur einige Zeilen mit $-1$
+multipliziert werden, wird die Lösung des Gleichungssystems nicht
+verändert, aber es gilt $\tilde{b}\ge 0$.
+
+Sofern die ursprüngliche zulässige Menge nicht leer war, ist das
+Minimum dieser Zielfunktion offenbar Null, nämlich dann, wenn alle
+$y=0$ sind. Andererseits kennen wir einen zulässigen Punkt des neuen
+Problems, nämlich $(0,\tilde{b})$. Außerdem hat die Matrix zu $z$
+maximalen Zeilenrang aufgrund der zu $y$ gehörigen Identität. Wir
+können also die Phase I des Simplex-Algorithmus unmittelbar auf diese
+Matrix anwenden.
+
+Findet der Simplex-Algorithmus nun ein Minimum, dass von Null
+verschieden ist, ist offenbar die ursprüngliche zulässige Menge leer
+gewesen, und wir müssen abbrechen. Ist das Minimum hingegen Null und
+alle $y=0$, also in der Nichtbasis, so haben wir unseren Startwert für
+die Phase II gefunden. Es kann allerdings auch passieren, dass noch zu
+$y$ gehörige Indizes $j_t>n$ in der Basis vorkommen. Dann müssen wir
+eine echte Koordinate $s<n$ finden, die mit $j_t$ getauscht werden
+kann. Dazu müssen wir ein $s$ mit $A_B^{-1}a_s)_t\neq 0$ finden, so
+dass wir wieder unsere Austauschformel \eqref{eq:simplexex} anwenden
+können. Finden wir diese nicht, dann kann man zeigen,dass die
+ursprüngliche Matrix nicht linear unabhängig gewesen war. In diesem
+Fall wird die $j_t-n$-te Zeile gestrichen.
 
 %\section{Globale Optimierung}
 %\subsection{Simulated annealing}

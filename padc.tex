@@ -37,7 +37,9 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 \usepackage{afterpage} % \afterpage command
 \usepackage{multirow}
 
-\usetikzlibrary{positioning,arrows,decorations.pathreplacing}
+\usetikzlibrary{positioning,arrows,decorations.pathreplacing,patterns,calc}
+
+\newcommand{\tikzlabel}[1]{\tikz[overlay, remember picture] \coordinate (#1);}
 
 \graphicspath{{figures/}}
 

@@ -50,37 +50,3 @@ res = solve(A, b)
 
 if norm(conjugate_gradient(A, b, zeros_like(b)) - res) > 1e-5:
     raise Exception("Conjugate Gradient hat das Minimum nicht gefunden")
-
-# Penalty
-#########################################
-
-from penalty import penalty
-
-p = array((-1, -2))
-
-# 1. NB: im Kreis vom Radius 5 um 0
-# g(x) = r^2 - x^Tx
-r = 5
-# 2. NB: nicht oberhalb von 2 -> Minimum im Schnitt rechs oben
-# g(x) = 2 - x.y 
-h = 2
-
-res = array((sqrt(r**2 - h**2), h))
-
-# -(x-p)^T(x-p)
-def f(x):
-    xx = x - p
-    return -dot(xx, xx)
-def gradf(x):
-    xx = x - p
-    return -2.0*xx
-
-# Die beiden NB
-def g(x):
-    return array((r**2 - dot(x, x), 2.0 - x[1]))
-def gradg(x):
-    return array(((-2.0*x[0], -2.0*x[1]), (0, -1.0)))
-
-if norm(penalty(f, gradf, g, gradg, array((0.0,0.0))) - res) > 1e-5:
-    raise Exception("Straffunktionen haben das Minimum nicht gefunden")
-

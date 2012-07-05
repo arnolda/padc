@@ -1132,7 +1132,7 @@ Vektoriteration schreiben:
 In diesem Fall ist es natürlich möglich, die Eigenwerte und -vektoren
 von $A$ analytisch zu bestimmen. Die Eigenwerte sind die Nullstellen
 \begin{equation}
-  det(A-\lambda I) = -\lambda(1-\lambda) - 2 = \left(\lambda
+  det(A-\lambda I) = -\lambda(1-\lambda) - 1 = \left(\lambda
     -\frac{1}{2}\right)^2 - \frac{5}{4},
 \end{equation}
 also $\lambda_{\pm} = \frac{1}{2} \left(1 \pm \sqrt{5}\right)$. Davon
@@ -1166,7 +1166,8 @@ Fibonaccizahlen auch als
 schreiben. Insbesondere ist $F_i = \O_{i\to\infty}\left(\left(\frac{1
       + \sqrt{5}}{2}\right)^i\right)$, unabhängig davon, welche
 Startwerte benutzt werden, solange diese nicht gerade parallel zu
-$x_-$ sind.
+$x_-$ sind. Für ganzzahlige Startwerte ist dies nur möglich, wenn
+$F_0=F_1=0$. 
 
 \subsection{\keyword{QR-Algorithmus}}
 
