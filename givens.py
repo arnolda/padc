@@ -43,7 +43,7 @@ def givens(a):
     r = a.copy()
     q = identity(r.shape[0])
     # Doppelschleife ueber alle Subdiagonalelemente von a bzw. r
-    for k in range(min(r.shape) - 1):
+    for k in range(min(r.shape[0] - 1, r.shape[1])):
         for i in range(r.shape[0] - 1, k, -1):
             c, s = calccs(r[i-1,k], r[i,k])
             # Matrix r updaten

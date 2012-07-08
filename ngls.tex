@@ -92,7 +92,7 @@ Dann gilt für alle $n,m\in\NN$ der \emph{Banachsche Fixpunktsatz}
   \label{eq:banach}
   \norm{x_{n+m} - x_n} \,=\, &\norm{\sum_{k=0}^{m-1} x_{n+k+1} - x_{n+k}}
   \,\le\, \sum_{k=0}^{m-1} \norm{x_{n+k+1} - x_{n+k}}\nonumber\\
-  \,=\, &\norm{g(g(...g(x_{n+1}))) - g(g(...g(x_{n})))}
+  \,=\, &\norm{g(g(\ldots g(x_{n+1}))) - g(g(\ldots g(x_{n})))}
   + \cdots\nonumber\\
   &+ \norm{g(g(x_{n+1})) - g(g(x_{n}))}
   + \norm{g(x_{n+1}) - g(x_{n})} + \norm{x_{n+1} - x_{n}}\nonumber\\
@@ -197,7 +197,7 @@ $x_{n+1}$ auf:
 \end{equation}
 wobei wir annehmen, dass $f'(x)\neq 0$ auf $[a,b]$.  Für eine
 Nullstelle $\overline{x}$ von $f$ gilt offenbar $g(\overline{x}) =
-\overline{x}$, d.h. wir suchen einen Fixpunkt von $g$, den wir wieder
+\overline{x}$, d.h.\ wir suchen einen Fixpunkt von $g$, den wir wieder
 durch sukzessive Substitution annähern können. Man bricht das
 Verfahren wie auch die sukzessive Substitution ab, wenn
 $\abs{x_{n}-x_{n-1}}$ bzw. $\abs{f(x_n)}$ hinreichend klein sind.
@@ -245,11 +245,11 @@ differenzierbare Funktion.
 
 Bis jetzt haben wir nur die lokale Konvergenz des
 Newton-Verfahrens. Ist die Zielfunktion $f\in C^1([a,b])$ allerdings
-konvex bzw. konkav, also $f'$ monoton wachsend bzw. fallend und
+konvex bzw.\ konkav, also $f'$ monoton wachsend bzw.\ fallend und
 beschränkt, und hat $f$ eine Nullstelle in $[a,b]$, so kann man
 zeigen, dass das Newtonverfahren global gegen eine Nullstelle
 $\overline{x}$ von $f$ in $[a,b]$ konvergiert. Dabei ist das Verfahren
-nach dem ersten Schritt monoton, d.h. entweder $x_1\le
+nach dem ersten Schritt monoton, d.h.\ entweder $x_1\le
 x_2\le\ldots\le\overline{x}$ oder $x_1\ge
 x_2\ge\ldots\ge\overline{x}$.
 
@@ -285,7 +285,7 @@ Newtonverfahren
 gegen die einzige Nullstelle, nämlich die $k$-te Wurzel aus
 $a$. Sinnvollerweise wählt man daher $x_0=a$ als Startwert. Für $k=2$
 ergibt sich das \emph{Heron-Verfahren} $x_{n+1} = \frac{1}{2}\left(x_n
-  + \frac{a}{x_n}\right)$, das bereits im 2. Jhdt. vor Christus zum
+  + \frac{a}{x_n}\right)$, das bereits im 2.\ Jhdt.\ vor Christus zum
 Wurzelziehen benutzt wurde.
 
 Für die Wurzel aus $a=2$ sind die ersten 5 Schritte des Heronverfahrens:
@@ -530,7 +530,7 @@ aber sehr ähnlich, wobei die Ableitung zur Jacobimatrix wird.
 
 Sei also $f\in C^1(M, \RR^n)$ eine stetig differenzierbare Abbildung
 von $M\in\RR^n$ in den $\RR^n$. Wir suchen nun eine Nullstelle
-$\overline{x}\in D$, d.h. eine Lösung des nichtlinearen
+$\overline{x}\in D$, d.h.\ eine Lösung des nichtlinearen
 Gleichungssystems $f(x) = 0$.
 
 Wie schon im Eindimensionalen starten wir mit einer Näherung

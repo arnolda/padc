@@ -85,7 +85,7 @@ Normierungseintrag mit Wert 1. Alle anderen Einträge sind Null.
 Durch die periodischen Randbedingungen in $x$ und $y$ sind zwei
 Nebendiagonalen weiter außen teilweise besetzt. Damit hat die
 entstehende Matrix zwar immer noch Bandstruktur hat und ist dünn
-besetzt, d.h. fast alle Einträge Null, allerdings ist sie nicht mehr
+besetzt, d.h.\ fast alle Einträge Null, allerdings ist sie nicht mehr
 tridiagonal. Auch durch Umsortieren lässt sich dies nicht wesentlich
 ändern, daher muss die volle Gaußelimination durchgeführt werden. Für
 Gitter von $5\times 5$ Punkten ist das zwar noch unproblematisch, bei
@@ -361,7 +361,7 @@ durch Ausprobieren gefunden werden.
     diagonaldominant gemacht wurde, in dem $b_{i,i} = 1+ \sum_{k\neq
       i}\abs{b_{ik}}$ gesetzt wurde. Links sind die Fehler
     $\norm{Bx-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
-    Matrix $B$ mit blauen Punkten bzw. roten Rauten eingezeichnet. Die
+    Matrix $B$ mit blauen Punkten bzw.\ roten Rauten eingezeichnet. Die
     roten Kreuze zeigen hingegen den Fehler des Gauß-Seidel-Verfahrens
     für die Matrix $A$, das nicht konvergiert. Grüne Sterne
     schließlich zeigen den Fehler des SOR-Verfahrens, das mit
@@ -1000,7 +1000,7 @@ In Python sieht das Givens-Verfahren so aus:
 \lstinputlisting[firstline=10]{givens.py}
 Die Routinen \lstinline!multiplyleft! und \lstinline!multiplyright!
 implementieren wieder die Multiplikation mit einer Givensmatrix von
-links bzw. rechts. Die Routine \lstinline!calccs! implementiert die
+links bzw.\ rechts. Die Routine \lstinline!calccs! implementiert die
 stabilisierte Berechnung der Sinus- und Cosinusterme gemäß \eqref{eq:calccs}.
 
 Bei einer vollbesetzten Matrix benötigt das Verfahren damit insgesamt
@@ -1064,8 +1064,8 @@ betragsmäßig größte Eigenwert $\lambda_1$ nicht entartet, so ist
 $\lambda_1^i\gg\lambda_k^i$ für große $i$. Daher wird $\tilde{x}_i$
 mit wachsender Anzahl Iterationen zunehmend parallel zu einem
 Eigenvektor zu $\lambda_1$. Allerdings wird dabei $\tilde{x}_i$
-gleichzeitg immer größer bzw. kleiner, wenn $\abs{\lambda_1} > 1$
-bzw. kleiner 1 ist. Um numerische Probleme zu vermeiden, muss
+gleichzeitg immer größer bzw.\ kleiner, wenn $\abs{\lambda_1} > 1$
+bzw.\ kleiner 1 ist. Um numerische Probleme zu vermeiden, muss
 $\tilde{x}_i$ noch normiert werden.
 
 Dies führt zum Verfahren der Vektoriteration oder von-Mises-Iteration.
@@ -1297,7 +1297,7 @@ schnell konvergiert, wie die folgende Tabelle illustriert:
   \end{tabular}
 \end{center}
 Die letzten beiden Spalten geben die Anzahl der korrekt bestimmten
-Nachkommastellen des größten bzw. kleinsten Eigenwerts an. Nach dem
+Nachkommastellen des größten bzw.\ kleinsten Eigenwerts an. Nach dem
 vierten Schritt verbessert sich daran nichts mehr, da beide Eigenwerte
 bis auf Maschinengenauigkeit bestimmt sind.  Um die zugehörigen
 Eigenvektoren zu bestimmen, können wir die inverse Iteration benutzen,

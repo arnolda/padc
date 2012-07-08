@@ -29,13 +29,17 @@ def householder(a):
     q = identity(r.shape[0])
     # Schleife ueber alle Spalten von a bzw. r,
     # die wenigstens ein Subdiagonalelement haben
-    for k in range(min(r.shape) - 1):
+    for k in range(min(r.shape[0] - 1, r.shape[1])):
         # Kopie von a_k, um Spiegelvektor zu bauen
         v = r[:,k].copy()
         # schon bearbeitete Komponenten auf Null
         v[:k] = 0
         # Spiegelvektor @$a + \text{sgn}(a_1)\norm{a} e_1$@ berechnen
-        v[k] += sign(v[k])*norm(v)
+        # Probleme durch sign(0) = 0 vermeiden  
+        if sign(v[k]) > 0:
+            v[k] += norm(v)
+        else:
+            v[k] -= norm(v)
         # normieren
         v = v / norm(v)
 

@@ -8,7 +8,7 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 #
-# Test der Optimierungsverfahren
+# Test des Steepest Descent
 ##############################################
 
 from scipy import *
@@ -34,19 +34,3 @@ from armijo import armijo_steepest_descent
 
 if norm(armijo_steepest_descent(rosenbrock, gradrosenbrock, array((0,0)), tol=1e-6) - array((1,1))) > 1e-5:
     raise Exception("Steepest Descent hat das Minimum nicht gefunden")
-
-# CG
-#########################################
-
-from cg import conjugate_gradient
-
-A = uniform(0, 1, 100)
-A = A.reshape((10,10))
-A = 0.5*(A + A.transpose())
-
-b = uniform(0, 1, 10)
-
-res = solve(A, b)
-
-if norm(conjugate_gradient(A, b, zeros_like(b)) - res) > 1e-5:
-    raise Exception("Conjugate Gradient hat das Minimum nicht gefunden")

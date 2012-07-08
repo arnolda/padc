@@ -70,7 +70,7 @@ bestimmt und nicht durch den durchschnittlichen Fehler.  Aus
 \begin{equation}
   \label{eq:mininf}
   \min_{v\in\RR^{m+1}} \norm{A v -
-    b}_\infty = \min_{v\in\RR^{m+1}} \max_{i=1}^n \abs{(A v)_i - b_i}.
+    b}_\infty = \min_{v\in\RR^{m+1}} \max_{i=1}^n \abs{(A v)_i - y_i}.
 \end{equation}
 Obwohl sich scheinbar nicht viel geändert hat, hat dieses Problem
 tatsächlich eine ganz andere Struktur, für die andere Lösungsmethoden
@@ -129,9 +129,9 @@ Suche nach Grundzuständen wichtig. Auch viele praktische Probleme,
 etwa die Fahrplanoptimierung, sind globale
 Optimierungsprobleme. Leider gibt es hier keine Verfahren mit
 gesicherten Konvergenzaussagen, wir werden aber zwei physikalisch
-bzw. biologisch motivierte Verfahren kennenlernen.
+bzw.\ biologisch motivierte Verfahren kennenlernen.
 
-\section{\keyword{Pseudoinverse}}
+\section{Ausgleichsrechnung und \keyword{Pseudoinverse}}
 \index{Moore-Penrose-Inverse}
 
 Wir betrachten zunächst lineare Optimierungsprobleme der Form
@@ -178,7 +178,7 @@ und wir finden die Lösung als
 
 Die zweite Aufgabe, \eqref{eq:optnorm2}, können wir ganz ähnlich
 lösen. In diesem Fall hat $A$ weniger Zeilen als Spalten, ist also
-unterbestimmt. Hat $A$ aber wengistens linear unabhängige Zeilen, so
+unterbestimmt. Hat $A$ aber wenigstens linear unabhängige Zeilen, so
 ist $AA^T$ invertierbar, und wir können
 \begin{equation}
   x = A^T(AA^T)^{-1}b
@@ -202,7 +202,9 @@ bestimmt werden kann. Diese kann in dieser Vorlesung leider nicht
 behandelt werden, aber wir werden jetzt sehen, wie man bei Matrizen
 mit maximalem Zeilen- oder Spaltenrang die Pseudoinverse auch mit
 Hilfe der QR-Zerlegung bestimmt werden kann, ohne $A^TA$ oder $AA^T$
-berechnen und invertieren zu müssen.
+berechnen und invertieren zu müssen. In SciPy berechnet
+\scipy{scipy.linalg.pinv(A)} bequem die Moore-Penrose-Pseudoinverse
+für eine beliebige Matrix \argd{A}.
 
 Sei also $A\in\RR^{m,n}$ eine Matrix mit maximalem Spaltenrang,
 insbesondere $m \ge n$. Aus dem Householder- oder Givensverfahren
@@ -244,13 +246,26 @@ das Optimierungs-Äquivalent von linearen Gleichungssystemen, lässt
 sich also das Optimierungsproblem mit Hilfe der QR-Zerlegung lösen.
 
 \section{Nichtlineare Optimierung}
+\index{Optimierung>lokale}
+\index{Optimierung>nichtlineare}
 
 Für nichtlineare, aber wenigstens zweifach stetig differenzierbare
 Zielfunktionen $f:\RR^n\to \RR$ gilt in freien Minima $x$
 \begin{equation}
+  \label{eq:mingrad}
   \nabla f(x) = 0.
 \end{equation}
-Für diese Gleichung können wir das mehrdimensionale Newtonverfahren
+Dies garantiert allerdings nicht, dass eine gefundene Nullstelle auch
+ein Minimum ist, dazu muss zusätzlich noch die Hessesche Matrix
+$f''(x)$ positiv definit sein. Selbst in diesem Fall ist der gefundene
+Punkt nur ein \emph{lokales} Minimum, also nur in einer kleinen
+Umgebung sind alle anderen Punkte höher. Eine Funktion kann aber
+natürlich ohne weiteres mehrere Minima haben, die sich nur durch
+erneute Suche finden lassen. Insbesondere ist es praktisch unmöglich,
+das \emph{globale} Minimum zu finden; damit werden wir uns später noch
+einmal beschäftigen.
+
+Für \eqref{eq:mingrad} können wir das mehrdimensionale Newtonverfahren
 formulieren. Wir wählen also einen Startpunkt $x^{(0)}$ in der Nähe
 des Minimums und setzen
 \begin{equation}
@@ -279,7 +294,7 @@ Verfahren, die ohne $f''(x)$ auskommen.
 
 Da das Newtonverfahren, das wir oben auf die Ableitung angewendet
 haben, auf einer Taylorentwicklung erster Ordnung
-basiert, basiert die Optimierung mit Hilfe des Taylorverfahrens in
+basiert, basiert die Optimierung mit Hilfe des Newtonverfahrens in
 gewisser Weise auf einer Taylorentwicklung zweiter Ordnung. Was können
 wir nun mit der praktikableren Taylorentwicklung erster Ordnung
 erreichen? Diese ist zunächst einmal
@@ -373,7 +388,7 @@ ebenfalls abgebrochen.
     Funktion (oben) und die Rosenbrockfunktion (unten). Links werden
     Armijo-Schrittweiten mit $\alpha=0,1$ und $\rho=0,5$, rechts eine
     konstante Schrittweite von $0,01$ verwendet. Die roten,
-    verbundenden Punkte markieren die Iterierten $x^{(k)}$, die
+    verbundenen Punkte markieren die Iterierten $x^{(k)}$, die
     Höhenlinien illustrieren die zu optimierende Funktion. Für die
     quadratische Funktion konvergieren beide Verfahren gegen das
     Minimum bei $(0,\,0)$, und auch das Armijo-Verfahren wählt eine
@@ -383,12 +398,12 @@ ebenfalls abgebrochen.
     benötigt alleine das schrittweitengesteuerte Verfahren etwa 1700
     Iterationen, um in die Nähe des Minimums bei $(1,1)$ zu kommen.  Jeder
     200. Punkt ist im Graphen grau gefärbt, um die extrem langsame
-    Konvergenz zu visualieren. Für die konstante Schrittweite $0,01$
+    Konvergenz zu visualisieren. Für die konstante Schrittweite $0,01$
     konvergiert das Verfahren gar nicht, wie die
     eingezeichneten ersten zehn Punkte zeigen.} \label{fig:armijo}
 \end{figure}
 
-\index{Rosenbrock-Funktion}%
+\index{Rosenbrockfunktion}%
 Als Beispiel betrachten wir das Verfahren des steilsten Abstiegs für
 zwei auf der Ebene definierte Funktionen. Die erste Funktion ist eine
 quadratische Funktion
@@ -749,7 +764,7 @@ Betrachten wir zwei Beispiele. Die in der Abbildung~\ref{fig:simplex}
 gegebene Nebenbedingung $1 - x \ge y$ ist offensichtlich nicht von der
 obigen Form. Wir führen deswegen eine neue Variable $z=1-x-y$ ein, die
 offenbar $z\ge 0$ erfüllen muss. Wir erhalten dann die Normalform mit
-$c'=(c_0, c_1, 0)$, da $z$ ja nicht zur eigentlich Zielfunktion
+$c'=(c_0, c_1, 0)$, da $z$ ja nicht zur eigentlichen Zielfunktion
 beiträgt, sowie $A=(-1,-,1, -1)$ und $b=-1$.
 
 Auch \eqref{eq:chebyshevappr} für die lineare Regression mit
@@ -773,28 +788,29 @@ entsprechend. Dadurch transformiert sich
   \end{pmatrix}
 \end{equation}
 in die äquivalente Aufgabe
-\begin{equation}
-  \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
-  \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
-  \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T v
-\end{equation}
-\begin{tikzpicture}[overlay, remember picture]
-  \draw[decorate,decoration=brace] ($(vpl) + (0,1em)$) --
-  node[above] {$v_+$} ($(vpr) + (0,1em)$);
-  \draw[decorate,decoration=brace] ($(vml) + (0,1em)$) --
-  node[above] {$v_-$} ($(vmr) + (0,1em)$);
-  \draw[decorate,decoration=brace] ($(zl) + (0,1em)$) --
-  node[above] {$z$} ($(zr) + (0,1em)$);
-\end{tikzpicture}
+{\samepage\begin{equation}
+    \label{eq:chebyshevapprnf}
+    \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
+    \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
+    \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T v
+  \end{equation}
+  \begin{tikzpicture}[overlay, remember picture]
+    \draw[decorate,decoration=brace] ($(vpl) + (0,1em)$) --
+    node[above] {$v_+$} ($(vpr) + (0,1em)$);
+    \draw[decorate,decoration=brace] ($(vml) + (0,1em)$) --
+    node[above] {$v_-$} ($(vmr) + (0,1em)$);
+    \draw[decorate,decoration=brace] ($(zl) + (0,1em)$) --
+    node[above] {$z$} ($(zr) + (0,1em)$);
+  \end{tikzpicture}}
 mit der neuen Variablen $x=(v_+,v_-,z)$ und den Nebenbedingungen $x\ge 0$
 und
-\vspace{0.5em}% für die TikZ-Deko
+{\samepage\vspace{0.2em}% für die TikZ-Deko
 \begin{equation*}
   \begin{pmatrix}
     \tikzlabel{vpl}A  & e\tikzlabel{vpr} & 
     \tikzlabel{vml}-A & -e\tikzlabel{vmr} &
-    \tikzlabel{zl} I & 0\tikzlabel{zr}\\
-    -A & e &  A & -e & 0 & I
+    \tikzlabel{zl} -I & 0\tikzlabel{zr}\\
+    -A & e &  A & -e & 0 & -I
   \end{pmatrix}
   x =
   \begin{pmatrix}
@@ -809,7 +825,7 @@ und
   node[above] {$v_-$} ($(vmr) + (0,1em)$);
   \draw[decorate,decoration=brace] ($(zl) + (0,1em)$) --
   node[above] {$z$} ($(zr) + (0,1em)$);
-\end{tikzpicture}
+\end{tikzpicture}}
 
 Wie können wir Aufgabe \eqref{eq:simplexprob} lösen? Sofern die
 zulässige Menge beschränkt ist, beschreiben die Nebenbedingungen immer
@@ -851,12 +867,12 @@ Wir betrachten nun eine beliebigen anderen Punkt $u\in M$, also $u\ge
 0$ und $Au=A_Bu_B + A_Nu_N = b$. Dann ist
 \begin{equation}
   \label{eq:simplexub}
-  u_b = A_B^{-1}(b-A_Nu_N) = x_B - A_B^{-1}A_Nu_N
+  u_b = A_B^{-1}(b - A_Nu_N) = x_B - A_B^{-1}A_Nu_N
 \end{equation}
 und damit
 \begin{equation}
   c^Tu = c_B^T(x_B - A_B^{-1}A_Nu_N) + c_N^Tu_N = c^Tx +
-  \underbrace{(c_N - A_B^{-1}A_Nu_N)^T}_{r}u_n.
+  \underbrace{\left(c_N - A_N^T\left(A_B^{-1}\right)^Tc_B\right)^T}_{r}u_n.
 \end{equation}
 Da $u_N\ge 0$ ist, kann die Zielfunktion nur verkleinert werden, wenn
 eine Komponente $r_s < 0$ ist. Ist dies nicht der Fall, haben wir also
@@ -870,12 +886,12 @@ Gleichung dafür herausfällt. Aus \eqref{eq:simplexub} folgt, dass dann
 $u_B = x_B - u_s A_B^{-1}a_s$ und
 \begin{equation}
   \label{eq:simplextgt}
-  c^Tu = c^Tx + u_s(c_s - c_B^T A_B^{-1}a_s)
+  c^Tu = c^Tx + u_s(c_s - c_B^T A_B^{-1}a_s).
 \end{equation}
 Auch im neuen Punkt muss aber $u_B\ge
 0$ gelten, daher können wir $u_N$ nur so groß wählen, bis für die erste
 Basisvariable $x_t= u_s (A_B^{-1}a_s)_t$ gilt. Dann gilt $u_t=0$,
-d.h. diese Basisvariable geht in die Nichtbasis über.
+d.h.\ diese Basisvariable geht in die Nichtbasis über.
 
 Wir suchen also
 \begin{equation}
@@ -889,14 +905,18 @@ zulässige Bereich unbeschränkt, und wir müssen abbrechen, da die
 Funktion beliebig klein werden kann.
 
 Wir tauschen nun in der Basis $B$ $j_t$ durch $s$ aus und erhalten die
-neue Basis $B'$. Für die Rechnungen benötigen wir nur $A_B^{-1}$, dass
-wir nun entsprechend anpassen müssen. Dies können wir mit Hilfe der
-Sherman-Morrison-Formel sehr bequem ähnlich einem Schritt der
-Gaußelimination berechnen:
+neue Basis $B'$. In $A_B$ wird dabei einfach die Spalte $t$ durch
+$a_s$ ersetzt, also
+\begin{equation}
+  A_{B'} = A_B + (a_s - a_{j_t})e_t^T
+\end{equation}
+Für die Rechnungen benötigen wir aber nur $A_B^{-1}$, dass wir
+allerdings auch mit einer solchen Rang-1-Formel anpassen können. Die
+Sherman-Morrison-Formel liefert
 \begin{equation}
   \label{eq:simplexex}
   A_{B'}^{-1} = A_{B}^{-1} - \frac{A_B^{-1}a_s - e_t}{(A_B^{-1}a_s)_t}
-  \left(e_t^TA_{B}^{-1}\right)
+  \left(e_t^TA_{B}^{-1}\right).
 \end{equation}
 
 \subsubsection*{Phase I}
@@ -909,7 +929,7 @@ zusätzlichen Variablen alle in die Nichtbasis und können eliminiert
 werden.
 
 Dazu betrachten wir also das neue Problem
-\begin{equation}
+{\samepage\vspace{0.2em}\begin{equation}
   \min_z (\tikzlabel{xl}0,\ldots,\,0,\tikzlabel{xr},
   \tikzlabel{yl}1,\ldots,\,1\tikzlabel{yr})^Tz
 \end{equation}
@@ -918,7 +938,7 @@ Dazu betrachten wir also das neue Problem
   node[above] {$x$} ($(xr) + (0,1em)$);
   \draw[decorate,decoration=brace] ($(yl) + (0,1em)$) --
   node[above] {$y$} ($(yr) + (0,1em)$);
-\end{tikzpicture}
+\end{tikzpicture}}
 mit der neuen Variablen $z=(x,y)$ und den Nebenbedingungen $z\ge 0$
 und
 \begin{equation*}
@@ -940,8 +960,10 @@ Sofern die ursprüngliche zulässige Menge nicht leer war, ist das
 Minimum dieser Zielfunktion offenbar Null, nämlich dann, wenn alle
 $y=0$ sind. Andererseits kennen wir einen zulässigen Punkt des neuen
 Problems, nämlich $(0,\tilde{b})$. Außerdem hat die Matrix zu $z$
-maximalen Zeilenrang aufgrund der zu $y$ gehörigen Identität. Wir
-können also die Phase I des Simplex-Algorithmus unmittelbar auf diese
+maximalen Zeilenrang aufgrund der zu $y$ gehörigen Identität. Und zu
+guter Letzt ist für den Startwert $A_B=I$, wir kennen also auch
+$A_B^{-1}=I$, das im folgenden dann nur angepasst werden muss. Wir
+können also die Phase I des Simplexalgorithmus unmittelbar auf diese
 Matrix anwenden.
 
 Findet der Simplex-Algorithmus nun ein Minimum, dass von Null
@@ -955,11 +977,379 @@ kann. Dazu müssen wir ein $s$ mit $A_B^{-1}a_s)_t\neq 0$ finden, so
 dass wir wieder unsere Austauschformel \eqref{eq:simplexex} anwenden
 können. Finden wir diese nicht, dann kann man zeigen,dass die
 ursprüngliche Matrix nicht linear unabhängig gewesen war. In diesem
-Fall wird die $j_t-n$-te Zeile gestrichen.
+Fall wird die $j_t-n$-te Zeile gestrichen. In $A_B^{-1}$ müssen
+entsprechend die $j_t-n$-te Spalte und $t$-te Spalte eliminiert
+werden.
 
-%\section{Globale Optimierung}
-%\subsection{Simulated annealing}
-%\subsection{Genetische Algorithmen}
+Quellcode~\ref{lst:simplex} zeigt eine Implementation des
+Simplexverfahrens in Python.
+
+\subsubsection{Beispiel: Polynomapproximation}
+\index{Polynomapproximation}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{plots/qr_simplex_example}
+  \caption{Polynomapproximation von $\exp(x)$ (durchgezogene Kurve
+    links) im Bereich $[-1,1]$. Die Punkte markieren die 10
+    Stützstellen. Anders als bei der Interpolation ist hier nur ein
+    Polynom zweiten Grades gesucht, dass $\exp(x)$ an den gegebenen
+    Stützstellen möglichst gut annähern soll. Die rot gestrichelte
+    Lösung ist dabei die Lösung der kleinsten Quadrate, die grün
+    gepunktete Lösung die mit minimaler maximaler Abweichung. Im
+    rechten Graphen sind die absoluten Abweichungen zwischen den
+    beiden Polynomnäherungen und $\exp(x)$ gezeigt. Die zweite Lösung
+    erkauft sich eine niedrigere Abweichung am rechten Rand durch
+    deutliche höhere Abweichung zwischen $-0,8$ und $0$. Die maximalen
+    Fehler sind dadurch gleichmäßig über das Interval verteilt.}
+  \label{fig:polyapprox}
+\end{figure}
+
+Als Beispiel für den Simplexalgorithmus und gleichzeitig noch einmal
+die Pseudoinversen soll das Beispiel der Polynomapproximation
+dienen. Gegeben Stützstellen $x_i, y_i$, $i=1(1)m$, suchen wir ein
+Polynom $p(x)=\sum_{i=0}^{n-1} c_ix^i$, so dass
+\begin{equation}
+  \norm{p(x_i) - y_i} = \norm{A c - b}
+\end{equation}
+minimal ist. Die Matrix $A$ ist dabei analog \eqref{eq:interpol} definiert:
+\begin{equation}
+  A=
+  \begin{pmatrix}
+    1 & x_1 & x_1^2 & \ldots & x_1^{n-1}\\
+    \vdots & \vdots & & \vdots \\
+    1 & x_1 & x_1^2 & \ldots & x_1^{n-1}\\
+  \end{pmatrix}
+\end{equation}
+und $b=(y_i)_i$. Anders als bei der Interpolation ist dabei $m\gg n$,
+das Polynom kann also nicht alle Stützstellen passieren, und wird im
+allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
+Polynomapproximation das Rungeproblem, da durch ausreichend viele
+Stützpunkte vermieden werden kann, dass das Polynom zu weit von der
+Zielfunktion abweicht. Ist allerdings $m=n$ und die $x$-Koordinaten
+der Stützstellen $x_i$ paarweise verschieden, fällt die
+Polynomapproximation mit der Interpolation zusammen, da der minimale
+Fehler $0$ offenbar durch das eindeutige interpolierende Polynom
+erreicht wird.
+
+Ist aber $m\gg n$, so hängt das Minimum und der Algorithmus, mit
+dessen Hilfe dieses berechnet werden kann, von der verwendeteten Norm
+ab. Ist $\norm{\cot}$ die aus dem üblichen Skalarprodukt abgeleitete
+2-Norm $\norm{\cot}_2$, so kann man das Minimum mit Hilfe der
+Pseudoinversen berechnen. Ist die Norm hingegen die Maximumsnorm,
+berechnet sich das Ergebnis mit Hilfe von \eqref{eq:chebyshevappr}
+bzw. \eqref{eq:chebyshevapprnf} und dem Simplexalgorithmus.
+
+Abbildung~\ref{fig:polyapprox} zeigt die Ergebnisse für die
+Approximation von $\exp(x)$ in diesen Normen. Beide Näherungen
+approximieren die Funktion hinreichend gut. Unterschiede zeigen sich
+allerdings in den Absolutdifferenzen $\abs{p(x) - exp(x)}$. Das in der
+2-Norm approximierende Polynom minimiert den mittleren Fehler, in dem
+es einen kleineren Fehler im Interval $<0$ durch eine höheren Fehler
+bei 1 erkauft. Da dies nur ein Punkt ist, wiegt der verringerte Fehler
+bei negativen Zahlen schwerer. Die Minimierung der maximalen
+Abweichung hingegen führt dazu, dass sich der maximale Fehler sehr
+gleichmäßig über das Interval verteilt, auch wenn dafür die Fehler bei
+negativen $x$ deutlich größer sind.
+
+\afterpage{\raggedbottom
+  \lstinputlisting[style=multipage,firstline=10,
+  caption={Simplexalgorithmus zur Lösung des linearen Programms $\min
+    c^Tx$ unter den Nebenbedingungen $Ax=b$, $x\ge 0$. Es werden keine
+    besonderen Eigenschaften von $A$ vorausgesetzt, der Algorithmus
+    eliminiert selbstständige redundante Zeilen.},
+  label=lst:simplex]{simplex.py} \clearpage }
+
+
+\section{Globale Optimierung}
+\index{Optimierung>globale}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/lj}
+  \caption{Links: das Lennard-Jones-Potential mit dem typischen Radius
+    $\sigma$ und der Tiefe des attraktiven Tals von
+    $\epsilon$. Rechts: Energielandschaft für ein LJ-Teilchen in einer
+    zweidimensionalen LJ-Flüssigkeit. Rote Punkte markieren die
+    Positionen anderer Teilchen, die Graustufen repräsentieren das
+    Potential. Die gelben Kreuze markieren lokale Minima. Um diese zu
+    finden, wurde zunächst das Potential an $100\times 100$ Punkten
+    ausgewerten, und von allen Punkten mit einem Potential kleiner als
+    1000 aus eine lokale Minimierung gestartet.}
+  \label{fig:ljminima}
+\end{figure}
+
+Die Ausgleichsrechnung, also $\min \norm{Ax-b}_2$, und die linearen
+Programme sind zwei Spezialfälle von Optimierung, bei denen ein
+gefundenes Optimum stehts auch ein globales Minimum ist. Das hängt
+damit zusammen, dass die Zielfunktionen im allgemeinen nur ein
+(Ausgleichsrechnung) oder gar kein lokales Minimum (lineare
+Programmierung) haben. Im Gegensatz dazu finden das Newtonverfahren
+oder das Verfahren des steilsten Abstiegs stets nur lokale Minima,
+also Punkte mit verschwindenem Gradienten, dafür aber bei fast
+beliebiger Zielfunktion.
+
+In der Praxis, und besonders in physikalischen Anwendungen, sind die
+Zielfunktionen meist stark nichtlinear und besitzen zahlreiche lokale
+Minima. Suchen wir etwa Grundzustände eines komplexen Systems, müssen
+wir Minima der Energiefunktion finden, die meist so lokale Nebenminima
+aufweist, dass es auch für einen Computer unmöglich, alle zu
+untersuchen.
+
+Als Beispiel betrachten wir eine in der statistischen Physik sehr
+beliebtes Modell, das Lennard-Jonesium (LJ). Dabei handelt es sich um
+Teilchen, die gemäß einem Potential
+\begin{equation}
+  \phi_{\text{LJ}}(r) = 4\epsilon\left(\frac{\sigma}{r}^{12} -
+    \frac{\sigma}{r}^{6}\right)
+\end{equation}
+wechselwirken (vgl. Abbildung~\ref{fig:ljminima} links). Das Potential
+hat ein Minimum der Tiefe $-\epsilon$ bei $\sqrt[6]{2}\sigma$ und wird
+unterhalb $\sigma$ rasch sehr groß. $\phi_{\text{LJ}}$ ist ein
+einfaches Modell für Edelgasatome mit einem Durchmesser von etwa
+$\sigma$, die sich auf längere Abstände dispersiv ($\sim r^{-6}$)
+anziehen.
+
+In einer solchen zweidimensionalen Lennard-Jones-Flüssigkeit aus 100
+Teilchen in einer $10\sigma\times 10\sigma$-Box wählen wir nun ein
+Teilchen aus und halten die Koordinaten aller anderen Teilchen
+fest. Abbildung~\ref{fig:ljminima} rechts zeigt die potentielle
+Energie in Abhängigkeit von der Position des ausgewählten
+Teilchens. Dies ist aber nichts anderes als ein zweidimensionaler
+Schnitt durch die potentielle Energie als Funktion \emph{aller}
+Teilchenkoordinaten. Um die lokalen Minima zu bestimmen, wurde
+zunächst auf einem $100\times 100$-Raster das Potential ausgewertet,
+und von allen hinreichend niedrigen Punkten aus eine lokale
+Minimierung gestartet. Da bereits dieser Schnitt zahlreiche lokale
+Minima aufweist, kann man sich vorstellen, wie viele lokale Minima die
+Energie als Funktion in 200 Variablen aufweist.  Wegen des ``Curse of
+dimension'' ist es gleichzeitig nicht mehr möglich, eine Rasterung
+vorzunehmen. Es ist also aussichtslos, sämtliche lokale Minima mit
+Hilfe eines lokalen Minimierungsverfahrens zu suchen.
+
+Im folgenden lernen wir zwei heuristische Methoden kennen, die auch
+unter solchen Bedingungen meist akzeptable Näherungen für das globale
+Minimum finden.
+
+\subsection{\keyword{Simulated annealing}}
+
+Simulated Annealing (Simulierte Abkühlung) basiert auf der
+Beobachtung, dass durch gesteuerte, langsame Abkühlung das Wachstum
+besonders gleichmäßiger Kristalle gefördert wird. Dies macht man sich
+zum Beispiel bei der Härtung von Stahl zu Nutze. Letztendlich ist
+Kristallisation aber nichts anderes als ein Optimierungsprozess, da
+der Einkristall die energetisch minimale Struktur ist. Um dies auf ein
+Optimierungsproblem zu übertragen, legt man die Boltzmann-Statistik
+der statistischen Physik zugrunde, die besagt, dass bei Temperatur $T$
+alle Zustände gemäß
+\begin{equation}
+  P_T(x)\sim e^{-beta E(x)}
+\end{equation}
+verteilt sind, wobei $E$ die potentielle Energie des Systems im
+Zustand $x$ ist, $1/\beta=k_BT$ und $k_B$ die
+Boltzmannkonstante.
+
+Sei nun $x_0$ das globale Minimum der Energiefunktion $E$. Dann ist
+für alle $x$
+\begin{equation}
+  P_T(x)\sim e^{-beta E(x)} = e^{-\beta E(x_o)}e^{\beta [E(x_0) - E(x)]}
+  \sim e^{-\beta [E(x) - E(x_0)]} \le 1,
+\end{equation}
+da $E(x) - E(x_0)\ge 0$. Bei niedrigen Temperaturen ist $\beta$ sehr
+groß, so dass alle Zustände mit einer größeren Energie als $E(x_0)$
+rasch sehr unwahrscheinlich werden. Durch Abkühlen wird es also
+tatsächlich sehr wahrscheinlich, das globale Minimum zu finden. Um
+damit ein Optimierungsproblem $\min_{x} E(x)$ global zu lösen, fassen
+wir die Elemente der zulässigen Menge als Zustände auf, und die zu
+minimierende Funktion $E$ als Energie dieser Zustände.
+
+Im Prinzip könnte man nun mit Hilfe der Verwerfungsmethode versuchen,
+$P_T$-verteilte zufällige Zustände zu erzeugen. Wie wir im
+Eingangsbeispiel gesehen haben, schwankt die Energielandschaft
+allerdings oft stark, so dass die meisten Punkte extrem kleine
+Akzeptanzraten hätten. Daher ist es mit dieser Methode unmöglich, die
+Boltzmann-Verteilung abzutasten. In der numerischen statistischen
+Physik benutzt man als Ausweg das \emph{Monte-Carlo-Sampling} von
+N. Metropolis.
+
+\index{Monte-Carlo-Sampling}\index{Metropolis-Methode} Ziel dieser
+Methode ist es, nacheinander Punkte $x_i$ zu erzeugen, die
+$P_T$-verteilt sind, so dass die Folge $x_i$ unsere Verteilung
+repräsentiert. Nehmen wir nun an, dass unser aktuelle Punkte bereits
+$P$-verteilt sind, müssen wir also den nächsten Punkt so wählen, dass
+wir die Verteilung nicht ändern. Dazu wählen wir zufällige Übergänge
+$x_i\to x_{i+1}$ so, dass für zwei beliebige Punkte $x$ und $y$ die
+Übergänge $x\to y$ und $y\to x$ mit gleicher Wahrscheinlichkeit
+ausgewählt werden. Eine Möglichkeit ist der klassische
+\emph{Metropolis-Schritt}
+\begin{equation}
+  y = x_i + d,\quad\text{mit}\; d\;\text{gleichverteilt auf
+    Kugel vom Radius}\; r.
+\end{equation}
+$r$ ist dabei in gewisser Weise die maximale Schrittweite dieses
+Algorithmus. Dies erzeugt eine Gleichverteilung der Punkte; um die
+korrekte Verteilung zu erzeugen, generieren wir $x_{i+1}=y$ mit
+Wahrscheinlichkeit proportional zu
+\begin{equation}
+  p(y) = \min(e^{-\beta [E(y) - E(x_i)]}, 1) = \min(P(y)/P(x_i), 1).
+\end{equation}
+Ist also $E(y) \le E(x_i)$, akzeptieren wir den Schritt immer, ist
+$E(y) > E(x_i)$, dann mit Wahrscheinlichkeit $e^{-\beta [E(y) -
+  E(x_i)]}$. Die Verwerfungsmethode liefert uns einen einfachen
+Algorithmus, diese Verteilung zu erzeugen --- wir ziehen eine
+Standardzufallszahl $u$ und setzen $x_{i+1}=y$, falls $u<p(y)$ und
+$x_{i+1}=x_i$ sonst.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/simulated_annealing}
+  \caption{Simulated Annealing eines zweidimensionalen
+    Salzschmelzemodells. Links sind die gefundenen Grundzustände für
+    verschiedene Abkühlraten $\epsilon$ gezeigt, rechts die
+    dazugehörigen potentiellen Energien als Funktion der Zeit (schwarz
+    gepunktet $\epsilon=0,1$, grün durchgezogen $\epsilon=0,05$, blau
+    gestrichelt $\epsilon=0,01$ und magentafarbene Strichpunkte
+    $\epsilon=0,005$). Der eigentlich Grundzustand wäre ein
+    NaCl-artiges Gitter, das aber nicht gefunden wird, auch wenn die
+    Simulationen immer größere Gitterflächen zeigen. Die Unterschiede
+    in den finalen Energien sind allerdings sehr klein, was zeigt,
+    dass auch dieses Problem sehr viele Nebenminima aufweist.}
+  \label{fig:simanneal}
+\end{figure}
+
+Beim Simulated Annealing werden die Punkte mit Hilfe der
+Metropolis-Methode $P_T$-verteilt erzeugt, und gleichzeitig die
+Temperatur langsam abgesenkt. Dadurch sollte die Verteilung langsam
+gegen $P_0$ konvergieren, in der nur noch das oder die globalen Minima
+eine nichtverschwindende Wahrscheinlichkeit haben. Dementsprechend
+konvergiert die Folge $x_i$ gegen ein globales Minimum. Problematisch
+kann, sein, dass die korrekte Verteilung der $x_i$ natürlich nur
+sichergestellt werden kann, wenn auch hinreichend viele $x_i$
+generiert werden. Das bedeutet, dass die Temperatur langsam abgesenkt
+werden sollte, wobei ``langsam'' vom Problem abhängt.
+
+Die funktionale Form der Temperaturkurve ist dabei ebenfalls
+frei. Typischerweise wählt man eine exponentielle Form
+\begin{equation}
+  T_{i+1} = (1-\delta)T
+\end{equation}
+mit kleinem $\delta > 0$ (etwa $10^{-6}$). Dann wird natürlich $T=0$
+nie erreicht, allerdings sind kleine $T$ meist ausreichend. Alternativ
+kann man eine lineare Form wählen
+\begin{equation}
+  T_{i+1} = T_i - \delta,\quad\text{solange}\; T_i>\delta.
+\end{equation}
+
+Simulated Annealing funktioniert natürlich nicht nur mit dem
+Metropolis-Schritt, sondern auch mit allen anderen möglichen
+Monte-Carlo-Schritten, wie sie in der Vorlesung
+"`Simulationsmethoden"' behandelt werden. Auch Molekulardynamik kann
+genutzt werden, um Zustände im kanonischen Ensemble, also bei
+konstanter Temperatur, zu erzeugen.
+
+\subsubsection{Beispiel: zweidimensionale Salzschmelze}
+Als Beispiel zeigt Abbildung~\ref{fig:simanneal} Daten zur
+Kristallisation eines einfachen NaCl-Modells. Hier wechselwirken die
+Teilchen mit einem Potential
+\begin{equation}
+  \phi_{ij} = \frac{q_iq_j 4\sigma\epsilon}{r}  +
+  \begin{cases}
+    4\epsilon\left(\frac{\sigma}{\norm{x_i-x_j}}^{12} -
+      \frac{\sigma}{\norm{x_i-x_j}}^{6}\right) + \epsilon
+    & \text{für}\; \norm{x_i-x_j} < \sqrt[6]{2}\sigma\\
+    0 & \text{sonst}.
+  \end{cases}
+\end{equation}
+Die Hälfte der Teilchen haben dabei Ladung $q_i=1$, die andere Hälfte
+$q_i=-1$. Der erste Teil des Potentials ist das Coulombpotential
+aufgrund der elektrostatischen Anziehung bzw. Abstoßung, der zweite
+besteht aus dem repulsiven Teil des LJ-Potentials und simuliert die
+Volumenausschlußwechselwirkung. Die Teilchen arrangieren sich aufgrund
+des Volumenausschlusses recht schnell in einem Gitter, es kostet
+allerdings sehr viel Energie, dann Plätze zu tauschen. Daher gibt es
+zahlreiche Nebenminima.
+
+Im Beispiel wurde statt des Metropolisalgorithmus eine
+Molekulardynamiksimulation mit Hilfe von ESPResSo~\cite{espresso}
+benutzt. Auch hier kann die Temperatur gesteuert werden. Links zeigt
+Abbildung~\ref{fig:simanneal} die gefundenen Annäherungen für
+Grundzustände, rechts sind deren Energien gezeigt. Trotz der recht
+langen Simulationszeiten sind die gefundenen Grundzustände noch nicht
+optimal --- das wäre ein quadratisches Gitter mit alternierender
+Besetzung. Eine Monte-Carlo-Simulation könnte hier übrigens deutlich
+effizienter sein, allerdings nur, wenn auch sogenannte
+Identitätstauschschritte benutzt werden, bei denen zwei beliebige
+Teilchen ihre Ladungen austauschen und so die Energiebarrieren
+umgehen.
+
+\subsection{Genetische Algorithmen}
+
+Für die Untersuchung noch komplexerer Kristallstrukturen, etwa mit -3-
+und 5-wertigen Ionen ist der obige Ansatz immer noch nicht effizient
+genug, da er noch zu sehr dazu neigt, in lokalen Minima stecken zu
+bleiben. Besser wäre es, Elementarzellen des Kristalls
+durchzuprobieren, und nach derjenigen mit minimaler Energie zu
+suchen. Leider ist auch diese Optimierung noch sehr umfangreich, und
+die Menge der möglichen Kristallstrukturen lässt nicht einfach als
+Vektorraum beschreiben.
+
+In solchen Fällen sind genetische Algorithmen ein biologisch
+inspirierter Ansatz, um trotzdem eine globale Minimierung durchführen
+zu können. Dabei ist das \emph{Genom} nicht mehr ein DNS-Molekül,
+sondern eine Zeichenkette aus reellen Zahlen, Bits oder ähnlichem, die
+jeweils ein Element der ursprünglichen zulässigen Menge codieren (also
+zum Beispiel eine mögliche Elementarzelle). Wir erzeugen zu Beginn der
+genetischen Algorithmus zufällig eine große Menge von Individuen (etwa
+einige 1000), indem wir zufällige entsprechende Zeichenketten
+generieren.
+
+Wie bei der natürlichen Evolution sollen sich im Verlauf die
+"`fittesten"' Individuen sich vermehren und ungeeignetere aussterben.
+Dazu definieren wir eine \emph{Fitnessfunktion}, die die Güte eines
+Genoms bzw.\ des dadurch codierten Individuums misst. Im Falle der
+Kristallgitteroptimierung wäre dies zum Beispiel die Energie eines
+Gitters, dass aus der Elementarzelle entsteht, die vom Genom codiert
+wird.
+
+Wie werden nun Individuen vermehrt? Einfach, in dem zufällige, kleine
+Änderungen am Genom des sich vermehrenden Individuums vorgenommen
+werden, und dieses neue Genom in den Pool der vorhanden Individuen
+aufgenommen. Dabei werden fittere Individuen häufiger vermehrt. Das
+kann man auf verschiedene Weisen erreichen, zum Beispiel, in dem stets
+eine kleine Anzahl von Individuen zufällig ausgewählt wird, und von
+diesen das fitteste vermehrt.  Dabei gibt es zwei Typen von Änderungen
+am Genom: \emph{Mutationen}, also kleine zufällige Änderungen im
+Genom, und \emph{Kreuzungen} zweier guter Individuen. Dabei werden
+zufällig Abschnitte der beiden ausgewählten Individuen zu einem neuen
+Genom kombiniert.
+
+Um die Menge der Genome konstant zu halten, können bei diesem Prozess
+auch Genome entfernt werden. Werden etwa die fittesten Individuen
+einer zufällig gewählten Gruppe zur Vermehrung herangezogen, kann
+gleichzeitig das am wenigste fitte Element dieser Gruppe gelöscht
+werden.
+
+L. Filion und M. Dijkstra~\cite{filion09a} haben einen solchen
+Algorithmus benutzt, um die möglichen Kristallstrukturen in binären
+kolloidalen Kristallen mit verschiedenen Größen und Ladungen
+vorherzusagen. Dabei werden die Elementarzellen durch eine feste
+Anzahl von Vektoren dargestellt. Hat die Elementarzelle $n$ Elemente,
+stellen $n-1$ Vektoren $B_i$ die Relativpositionen der Elemente in der
+Zelle dar, und 3 Vektoren $L_i$ legen die Relativpositionen der
+räumlichen Kopien der Elementarzelle fest. In den meisten zufällig so
+erzeugten Gittern überlappen Teilchen, so dass auch in diesem Fall ein
+weiches Lennard-Jones-Potential die Volumenausschlusswechselwirkung
+modelliert.
+
+Zur Vermehrung werden zufällig zwei Individuen gewählt, deren Vektoren
+$B_i$ zufällig um maximal $\pm 10\%$ gestreckt, und dann zufällig
+$B_1,\ldots,\,B_k$ vom ersten Individuum und $B_{k+1},\ldots,\,B_n$
+vom zweiten kombiniert, und analog die $L_i$. Zusätzlich wird sicher
+gestellt, dass die $L_i$ linear unabhängig sind, also tatsächlich ein
+Gitter aufspannen. Um die Chancen des neuen Genoms zu erhöhen, wird
+für dieses die Energie minimiert, in dem Darstellung geeignet verdreht
+wird. Es ist durchaus üblich, physikalisches Wissen in genetischen
+Algorithmen zu benutzen, um bessere Genome zu erzeugen. 
 
 %%% Local Variables: 
 %%% mode: latex

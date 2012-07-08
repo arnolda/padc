@@ -19,7 +19,6 @@ setmd time_step 0.01
 setmd skin      0.4
 
 thermostat langevin 1.0 1.0
-
 set tcl_precision 6
 
 #############################################################
@@ -29,6 +28,8 @@ set tcl_precision 6
 cellsystem nsquare
 
 set box_l [expr pow($n_part/$density, 1./3)]
+
+puts "box is $box_l"
 
 setmd box_l $box_l $box_l $box_l
 
@@ -56,7 +57,7 @@ puts "T=[expr [analyze energy kinetic]/$n_part/1.5]"
 
 puts "integration"
 
-set out [open "v_ac.data" "w"]
+set out [open "v_$density.data" "w"]
 puts $out "# time v"
 for {set i 0} {$i < $samples/$n_part} { incr i} {
     integrate 1
@@ -66,4 +67,5 @@ for {set i 0} {$i < $samples/$n_part} { incr i} {
     }
     puts $out ""
 }
+
 close $out

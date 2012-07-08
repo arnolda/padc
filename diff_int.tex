@@ -80,7 +80,7 @@ bzw.
 
 Mit Hilfe von Taylorentwicklungen lassen sich auch Näherungen mit mehr
 Stützpunkten und für höhere Ableitungen entwickeln.  Wir betrachten
-zum Beispiel die Punkte für $k=-2(1)2$, d.h. die 5 benachbarten
+zum Beispiel die Punkte für $k=-2(1)2$, d.h.\ die 5 benachbarten
 Punkte, und suchen Koeffizienten $c_k$ derart, dass
 \begin{equation}
   c_2 f(x_{i+2}) + c_1 f(x_{i+1})  + c_0 f(x_i) + c_{-1}f(x_{i-1}) +
@@ -93,7 +93,7 @@ Einsetzen der Taylorentwicklung
   k^3\,\frac{h^3}{6}f^{(3)}(x) + k^4\,\frac{h^4}{24}f^{(4)}(x) + \O(h^5)
 \end{equation}
 können wir nun die obige Gleichung auf beiden Seiten als Vielfache von
-$f(x)$, $f'(x)$, $f''(x)$ usw. schreiben. Da unsere Koeffizienten
+$f(x)$, $f'(x)$, $f''(x)$ usw.\ schreiben. Da unsere Koeffizienten
 unabhängig von diesen sein sollen, müssen die Vorfaktoren vor diesen
 auf beiden Seiten übereinstimmen. Diese sind, beginnend bei $f(x)$:
 \begin{align}
@@ -399,7 +399,7 @@ gebräuchlichsten werden im folgenden kurz diskutiert.
   + \bigl(f(b) - f(x)\bigr)\frac{x-a}{a-b}\, dx\\
   =  \int_a^b
   \frac{1}{a-b}\left(\frac{f(x) - f(a)}{x-a} + \frac{f(b) - f(x)}{x-b}\right)
-  \underbrace{(x-b)(x-a)}_{<0 \text{ in } [a,b]}\, dx\\
+  \underbrace{(x-b)(x-a)}_{<0\;\text{in}\;[a,b]}\, dx\\
   =
   \frac{f''(\xi)}{2}\int_a^b (x-b)(x-a)\, dx = -\frac{(b-a)^3}{12} f''(\xi)
 \end{multline}
@@ -752,7 +752,7 @@ Extrapolation noch etwas zu verbessern.
 \end{figure}
 
 Stattdessen wollen wir hier das Fehlerintegral $\int_0^1 e^{-x^2}\,dx
-= \sqrt{\pi}\erf(1)/2$ verwenden (siehe Abbildung \ref{fig:romberg}).
+= \sqrt{\pi}\erf(1)/2$ verwenden (siehe Abbildung~\ref{fig:romberg}).
 Dabei sind die Randwerte bereits der ersten Ableitung stark
 verschieden, so dass $T_f(h)$ tatsächlich polynomielle Form hat und um
 die Null herum in einer weiten Umgebung nahezu quadratisch ist. Daher
@@ -895,7 +895,7 @@ berechnen mit
   \alpha_i = \int_{-1}^1 L_i^2(x)w(x)\, dx.
 \end{equation}
 
-Die Legendrepolynome bzw. deren Nullstellen gehören also zur
+Die Legendrepolynome bzw.\ deren Nullstellen gehören also zur
 Gewichtsfunktion $w(x)=1$. Die Gewichtsfunktion
 $w(x)=\nicefrac{1}{\sqrt{1-x^2}}$ hingegen liefert als Stützstellen
 die Nullstellen der Chebyshev-Polynome $T_n(x)$, vergleiche
@@ -1158,19 +1158,19 @@ Nachkommastellen, in umgekehrter Reihenfolge:
     \centering
     \begin{tabular}[t]{l|r|l|l}
       $n$ & binär & Stellenumkehr & Ergebnis\\\hline
-      1 &   1 & .1 & \nicefrac{1}{2}\\\hline
-      2 &  10 & .01 & \nicefrac{1}{4}\\
-      3 &  11 & .11 & \nicefrac{3}{4}
+      1 &   1 & ,1 & \nicefrac{1}{2}\\\hline
+      2 &  10 & ,01 & \nicefrac{1}{4}\\
+      3 &  11 & ,11 & \nicefrac{3}{4}
     \end{tabular}
   \end{minipage}
   \begin{minipage}[t]{0.49\textwidth}
     \centering
     \begin{tabular}[t]{l|r|l|l}
       $n$ & binär & Stellenumkehr & Ergebnis\\\hline
-      4 & 100 & .001 & \nicefrac{1}{8}\\
-      5 & 101 & .101 & \nicefrac{5}{8}\\
-      6 & 110 & .011 & \nicefrac{3}{8}\\
-      7 & 111 & .111 & \nicefrac{7}{8}
+      4 & 100 & ,001 & \nicefrac{1}{8}\\
+      5 & 101 & ,101 & \nicefrac{5}{8}\\
+      6 & 110 & ,011 & \nicefrac{3}{8}\\
+      7 & 111 & ,111 & \nicefrac{7}{8}
     \end{tabular}
   \end{minipage}
 \end{center}
@@ -1180,20 +1180,20 @@ Für $p=3$ ergibt sich analog aus der ternären Darstellung
     \centering
     \begin{tabular}[t]{l|r|l|l}
       $n$ & ternär & Stellenumkehr & Ergebnis\\\hline
-      1 &   1 & .1 & \nicefrac{1}{3}\\
-      2 &   2 & .2 & \nicefrac{2}{3}\\\hline
-      3 &  10 & .01 & \nicefrac{1}{9}\\
-      4 &  11 & .11 & \nicefrac{4}{9}\\
+      1 &   1 & ,1 & \nicefrac{1}{3}\\
+      2 &   2 & ,2 & \nicefrac{2}{3}\\\hline
+      3 &  10 & ,01 & \nicefrac{1}{9}\\
+      4 &  11 & ,11 & \nicefrac{4}{9}\\
     \end{tabular}
   \end{minipage}
   \begin{minipage}[t]{0.49\textwidth}
     \centering
     \begin{tabular}[t]{l|r|l|l}
       $n$ & ternär & Stellenumkehr & Ergebnis\\\hline
-      5 &  12 & .21 & \nicefrac{7}{9}\\
-      6 &  20 & .02 & \nicefrac{2}{9}\\
-      7 &  21 & .12 & \nicefrac{5}{9}\\
-      8 &  22 & .22 & \nicefrac{8}{9}
+      5 &  12 & ,21 & \nicefrac{7}{9}\\
+      6 &  20 & ,02 & \nicefrac{2}{9}\\
+      7 &  21 & ,12 & \nicefrac{5}{9}\\
+      8 &  22 & ,22 & \nicefrac{8}{9}
     \end{tabular}
   \end{minipage}
 \end{center}

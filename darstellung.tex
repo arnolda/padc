@@ -31,7 +31,7 @@ notwendigen elementaren Operationen durch.
 \label{sec:horner}
 
 Die naive Auswertung eines Polynoms $\sum_{i=0}^{n} c_ix^{i}$ mit
-$n+1$ Termen bzw. vom Grad $n$ benötigt $n$ Additionen und $2n$
+$n+1$ Termen bzw.\ vom Grad $n$ benötigt $n$ Additionen und $2n$
 Multiplikationen sowie einen Zwischenspeicher für die Potenzen $x^i$
 des Arguments $x$. Besser ist die Auswertung des Polynoms nach dem
 Horner-Schema:
@@ -277,7 +277,7 @@ da ja an den inneren Stützstellen $x_l$, $l=i+1(1)i+k-2$,
 $P_{i,k-1}(x_l)=P_{i+1,k-1}(x_l) = y_l$ gilt, und per Konstruktion
 $P_{i,k}(x_i)=y_i$ und $P_{i,k}(x_{i+k-1})=y_{i+k-1}$. Durch
 sukzessives Berechnen zunächst der $P_{i,2}(x)$, dann der
-$P_{i,3}(x)$, usw. lässt sich das interpolierende Polynom bequem an
+$P_{i,3}(x)$, usw.\ lässt sich das interpolierende Polynom bequem an
 einer fixen Stelle auswerten. Als (Neville-)Schema sieht das so aus:
 \begin{center}
   \begin{tikzpicture}[on grid=true, node distance=1.5em and 10em]
@@ -552,7 +552,7 @@ Spline-Interpolation, nämlich \scipy{scipy.interpolate.interp1d(x, y,
   kind)}. (\argd{x},\argd{y}) sind dabei die Stützstellen, und
 \argd{kind} eine Zeichenkette, die den Typ des Splines
 bestimmt. Mögliche Werte sind zum Beispiel "`linear"' und "`cubic"'
-für lineare bzw. kubische interpolierende Splines.
+für lineare bzw.\ kubische interpolierende Splines.
 
 \section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
 \index{Ausgleichsrechnung}
@@ -884,7 +884,7 @@ Genau wie die komplexe Fourierreihe lässt sich natürlich auch die
 reelle Fourierreihe abschneiden, um Näherungen für Funktionen zu
 bekommen, vergleiche Abbildung~\ref{fig:fourier}. Es fällt auf, das
 die Fourierreihe besonders schlecht dort konvergieren, wo die Funktion
-nicht differenzierbar ist bzw. einen Sprung aufweist.
+nicht differenzierbar ist bzw.\ einen Sprung aufweist.
 
 \subsection{Diskrete Fouriertransformation}
 \index{Fouriertransformation>diskrete}
