@@ -25,16 +25,17 @@ beschrieben wird.
 
 Ein Beispiel einer solchen Aufgabe haben wir bereits im Zusammenhang
 mit Funktionsfits kennengelernt. Bei diesem Problem sind Daten $(x_i,
-y_i)\in\RR^{m+1}$, $i=1(1)n$ sowie eine parametrisierte Funktion
+y_i)\in\RR^m\times\RR$, $i=1(1)n$ sowie eine parametrisierte Funktion
 $f_v(x)$ gegeben, wobei $v$ freie Parameter sind. Gesucht
-wird dann
+wird
 \begin{equation}
   \label{eq:fit}
   \min_{v} \sum_{i=1}^n (f_v(x_i) - y_i)^2.
 \end{equation}
 
 Im Spezialfall, dass $f_v$ linear ist, also von der Form
-$f_{\tilde{v},v_0}(x) = \tilde{v}^Tx + v_0$, ergibt sich die Aufgabe
+$f_{\tilde{v},v_0}(x) = \tilde{v}^Tx + v_0$, ist dies in
+Vektorschreibweise äquivalent zur Aufgabe
 \begin{equation}
   \label{eq:min2}
   \min_{(\tilde{v},v_0)\in\RR^{m+1}} \sum_{i=1}^n (\tilde{v}^Tx_i -
@@ -72,13 +73,14 @@ bestimmt und nicht durch den durchschnittlichen Fehler.  Aus
   \min_{v\in\RR^{m+1}} \norm{A v -
     b}_\infty = \min_{v\in\RR^{m+1}} \max_{i=1}^n \abs{(A v)_i - y_i}.
 \end{equation}
-Obwohl sich scheinbar nicht viel geändert hat, hat dieses Problem
-tatsächlich eine ganz andere Struktur, für die andere Lösungsmethoden
-benutzt werden. Um dies zu verstehen, fügen wir eine weitere Variable
-$v_{m+2}$ zum Parameterraum hinzu. Diese soll nun stets $v_{m+2} =
-\norm{A v - b}_\infty$ erfüllen, also $-v_{m+2}\le (A v)_i - b_i \le
-v_{m+2}$ für $i=1(1)n$. Damit wird aus \eqref{eq:mininf} eine
-Minimierungsaufgabe mit linearer Zielfunktion und Nebenbedingungen:
+Obwohl sich scheinbar nicht viel geändert hat, hat dieses Problem eine
+ganz andere Struktur, für die andere Lösungsmethoden benutzt
+werden. Um dies zu verstehen, fügen wir eine weitere Variable
+$v_{m+2}$ zum Parameterraum hinzu. Diese soll $v_{m+2} = \norm{A v -
+  b}_\infty$ erfüllen, also $v_{m+2}$ minimal mit $-v_{m+2}\le (A v)_i
+- y_i \le v_{m+2}$ für $i=1(1)n$. Damit wird aus \eqref{eq:mininf}
+eine Minimierungsaufgabe mit linearer Zielfunktion und
+Nebenbedingungen:
 \begin{equation}
   \label{eq:chebyshevappr}
   \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
@@ -98,24 +100,27 @@ Spiele- und Wirtschaftstheorie eine große Rolle.
 
 Die ursprünglich gestellte Aufgabe \eqref{eq:min} oder auch
 \eqref{eq:fit} sehen in ihrer allgemeinen Form natürlich auch
-nichtlineare Funktionen vor, etwa wenn aufgrund theoretischer
-Vorhersagen eine Exponentialfunktion an Daten angeglichen werden soll.
-Sofern die Zielfunktion zweifach stetig differenzierbar ist, ist aus
-der Analysis ist bekannt, dass im Minimum die Ableitung
-verschwindet. Die Nullstellensuche lässt sich im Prinzip mit Hilfe des
-Newtonverfahrens behandeln, wir lernen aber noch weitere, auf die
-Optimierung zugeschnittene Varianten kennen.
+nichtlineare Funktionen vor, etwa wenn eine Exponentialfunktion an
+Daten angeglichen werden soll oder wenn das Minimum einer komplexeren
+Energiefunktion gesucht ist.  In diesem Fall spricht man von
+nichtlinearer Optimierung.  Sofern die Zielfunktion zweifach stetig
+differenzierbar ist, ist aus der Analysis bekannt, dass im Minimum die
+Ableitung verschwindet. Die Nullstellen der Ableitung lassen sich im
+Prinzip mit Hilfe des Newtonverfahrens finden, wir lernen aber
+bessere, auf die Optimierung zugeschnittene Varianten kennen.
 
-Wie wir gesehen hatten, konvergiert das Newtonverfahren im allgemeinen
-nur lokal. Zusätzlich kann eine Nullstelle der Ableitung auch zu einem
-Maximum oder Sattelpunkt gehören. Solche Optimierungsverfahren heißen
-dann \emph{lokal}\index{Optimierung>lokale} und finden im allgemeinen
-nicht das \emph{globale} Minimum \eqref{eq:min}. Dies gilt
-insbesondere, wenn Nebenbedingungen gegeben sind, weil sich dann das
-Minimum auch irgendwo auf dem Rand der zulässigen Menge befinden
-kann. Trotzdem spielen lokale Optimierungsmethoden eine wichtige
-Rolle, etwa bei der Energieminimierung. Bei diesem ersten Schritt
-typischer Molekulardynamiksimulationen werden die Teilchen zunächst so
+Eine nichtlineare Funktion kann mehrere Minima aufweisen. Ähnlich wie
+das Newtonverfahren konvergieren die Verfahren zur nichtlinearen
+Optimierung im allgemeinen nur lokal gegen das nächstgelegene Minimum.
+Solche Optimierungsverfahren heißen daher \emph{lokal}. Falls eine
+Zielfunktion sehr viele lokale Minima hat, ist es für diese Verfahren
+unter Umständen schwierig bis unmöglich, das \emph{globale} Minimum
+\eqref{eq:min} zu finden. Dies gilt insbesondere, wenn
+Nebenbedingungen gegeben sind, weil sich dann das Minimum auch
+irgendwo auf dem Rand der zulässigen Menge befinden kann. Trotzdem
+spielen lokale Optimierungsmethoden eine wichtige Rolle, etwa bei der
+Energieminimierung. Bei diesem ersten Schritt typischer
+Molekulardynamiksimulationen werden die Teilchen zunächst so
 verschoben, dass die Energie lokal minimiert wird. Dadurch kann die
 eigentliche Simulation mit größeren Zeitschritten begonnen
 werden. Eine globale Optimierung ist dabei unnötig, da das System
@@ -123,13 +128,16 @@ während der Simulation sowieso nicht im Energieminimum verharrt,
 sondern einen hoffentlich ausreichend großen Teil des Phasenraums
 besucht.
 
-Die globale Optimierung\index{Optimierung>globale}, also die Suche
-nach dem kleinsten lokalen Minimum, ist hingegen vor allem bei der
-Suche nach Grundzuständen wichtig. Auch viele praktische Probleme,
-etwa die Fahrplanoptimierung, sind globale
-Optimierungsprobleme. Leider gibt es hier keine Verfahren mit
-gesicherten Konvergenzaussagen, wir werden aber zwei physikalisch
-bzw.\ biologisch motivierte Verfahren kennenlernen.
+Die globale Optimierung, also die Suche nach dem kleinsten lokalen
+Minimum, ist hingegen vor allem bei der Suche nach Grundzuständen
+wichtig. Auch viele praktische Probleme, etwa die Fahrplanoptimierung,
+sind globale Optimierungsprobleme. Lokale Verfahren setzen außerdem
+die Differenzierbarkeit der Zielfunktion voraus. Ist dies nicht der
+Fall oder die zulässige Menge diskret, scheiden lokale Verfahren
+ebenfalls aus. Leider gibt es für die allgemeine globale Optimierung
+mit nichtlinearen Zielfunktionen oder über diskreten zulässigen Mengen
+keine Verfahren mit gesicherten Konvergenzaussagen, wir werden aber
+zwei physikalisch bzw.\ biologisch motivierte Verfahren kennenlernen.
 
 \section{Ausgleichsrechnung und \keyword{Pseudoinverse}}
 \index{Moore-Penrose-Inverse}
@@ -148,18 +156,7 @@ Ist $m = n$ und $A$ regulär, so ist die Lösung unmittelbar klar,
 nämlich $A^{-1}b$. Ist aber $m>n$, dann ist das Gleichungssystem
 $Ax=b$ im allgemeinen nicht lösbar; \eqref{eq:optnorm2} besagt dann,
 dass wir dasjenige $x$ suchen, dass das Gleichungssystem möglichst gut
-löst.
-
-Ist umgekehrt $m < n$, so ist das Gleichungssystem im allgemeinen
-nicht eindeutig zu lösen. Wir können nun aber die Lösung minimaler
-Norm $\norm{x}$ suchen. Dies führt zu einer Optimierungsaufgabe mit
-Nebenbedingungen:
-\begin{equation}
-  \label{eq:optnorm2bild}
-  \min_{x\in\RR^n} \norm{x}_2\quad\text{unter der Bedingung}\; Ax=b.
-\end{equation}
-
-Um Aufgabe \eqref{eq:optnorm2} zu lösen, formen wir sie zunächst etwas um:
+löst. Um diese Aufgabe zu lösen, formen wir sie zunächst etwas um:
 \begin{equation}
   \norm{Ax - b}^2_2 = (Ax - b)^T(Ax - b)
   = x^TA^TAx - 2b^TAx + b^Tb.
@@ -176,32 +173,40 @@ und wir finden die Lösung als
   x = (A^TA)^{-1}A^Tb.
 \end{equation}
 
-Die zweite Aufgabe, \eqref{eq:optnorm2}, können wir ganz ähnlich
-lösen. In diesem Fall hat $A$ weniger Zeilen als Spalten, ist also
-unterbestimmt. Hat $A$ aber wenigstens linear unabhängige Zeilen, so
-ist $AA^T$ invertierbar, und wir können
+Ist in \eqref{eq:optnorm2} $m < n$, so ist das Gleichungssystem im
+allgemeinen nicht eindeutig zu lösen. Wir können aber die Lösung
+minimaler Norm $\norm{x}$ suchen. Dies führt zu der
+Optimierungsaufgabe mit Nebenbedingungen
+\begin{equation}
+  \label{eq:optnorm2bild}
+  \min_{x\in\RR^n} \norm{x}_2\quad\text{unter der Bedingung}\; Ax=b.
+\end{equation}
+Diese Aufgabe können wir ganz ähnlich wie im Falle $m>n$ lösen. Hat
+$A$ wenigstens linear unabhängige Zeilen, so ist $AA^T$ invertierbar,
+und wir können
 \begin{equation}
   x = A^T(AA^T)^{-1}b
 \end{equation}
 definieren. Dann erfüllt $x$ offenbar die Nebenbedingung $Ax=b$, und
 alle anderen zulässigen $x'$ liegen in $x + \text{Kern}(A) = x +
-\text{Bild}(A^T)^\perp$. Da $x\in\text{Bild}(A)$, gilt
+\text{Bild}(A^T)^\perp$. Da $x\in\text{Bild}(A^T)$, gilt
 $\norm{x'}=\norm{x} + \norm{x-x'}\ge \norm{x}$. Mit anderen Worten,
 $x$ löst die Optimierungsaufgabe \eqref{eq:optnorm2bild}.
 
-Die Matrizen $(A^TA)^{-1}A^T$ und $A^T(AA^T)^{-1}$ sind Spezialfälle
-der \emph{Pseudoinversen} oder \emph{Moore-Penrose-Inversen} für
-allgemeine Matrizen. Der Name Pseudoinverse rührt daher, dass diese
-unter den gegebenen Nebenbedingungen die Gleichungen, so gut es geht,
-invertieren, die Pseudoinverse findet also das $x$ mit minimaler Norm
-unter allen $x$, für die $\norm{Ax-b}_2$ minimal ist.  Moore und
-Penrose haben abstrakte Bedingungen für die Pseudoinverse definiert,
-die von den obigen Ausdrücken erfüllt werden. Die Pseudoinverse für
-beliebige Matrizen kann durch eine sogenannte Singulärwertzerlegung
-bestimmt werden kann. Diese kann in dieser Vorlesung leider nicht
-behandelt werden, aber wir werden jetzt sehen, wie man bei Matrizen
-mit maximalem Zeilen- oder Spaltenrang die Pseudoinverse auch mit
-Hilfe der QR-Zerlegung bestimmt werden kann, ohne $A^TA$ oder $AA^T$
+Die auftretenden Matrizen $(A^TA)^{-1}A^T$ und $A^T(AA^T)^{-1}$ sind
+Spezialfälle der \emph{Pseudoinversen} oder
+\emph{Moore-Penrose-Inversen} für allgemeine Matrizen. Der Name
+Pseudoinverse rührt daher, dass diese unter den gegebenen
+Nebenbedingungen die Gleichungen invertieren, so gut es geht. Die
+Pseudoinverse findet also das $x$ mit minimaler Norm unter allen $x$,
+für die $\norm{Ax-b}_2$ minimal ist.  Moore und Penrose haben
+abstrakte Bedingungen für die Pseudoinverse definiert, die von den
+obigen Ausdrücken erfüllt werden. Die Pseudoinverse für beliebige
+Matrizen kann durch eine sogenannte Singulärwertzerlegung bestimmt
+werden kann. Diese kann in dieser Vorlesung leider nicht behandelt
+werden, aber wir werden zumindest sehen, wie bei Matrizen mit
+maximalem Zeilen- oder Spaltenrang die Pseudoinverse mit Hilfe
+der QR-Zerlegung bestimmt werden kann, ohne $A^TA$ oder $AA^T$
 berechnen und invertieren zu müssen. In SciPy berechnet
 \scipy{scipy.linalg.pinv(A)} bequem die Moore-Penrose-Pseudoinverse
 für eine beliebige Matrix \argd{A}.
@@ -228,8 +233,8 @@ Dann ist
   R_1^{-1}\left(R_1^T\right)^{-1}A^Tb,
 \end{equation}
 was durch bequemes Vorwärts- und Rückwärtseinsetzen ohne
-Matrixinversion gelöst werden kann. Wie man sieht, ist in diesem Fall
-die genaue Form der Matrix $Q$ unerheblich.
+Matrixinversion gelöst werden kann. Wie man sieht, wird in diesem Fall
+die Matrix $Q$ nicht benötigt.
 
 Hat umgekehrt $A$ maximalen Zeilenrang, insbesondere also $m \le n$,
 dann zerlegen wir $A^T$ mit Hilfe von Householder- oder
@@ -243,7 +248,8 @@ und $Q_2\in\RR^{n,n-m}$. Dann gilt entsprechend
 
 Für Zielfunktionen von der Form $\norm{Ax-b}_2$, also gewissermaßen
 das Optimierungs-Äquivalent von linearen Gleichungssystemen, lässt
-sich also das Optimierungsproblem mit Hilfe der QR-Zerlegung lösen.
+sich also das Optimierungsproblem mit Hilfe der Pseudoinversen
+geschlossen lösen.
 
 \section{Nichtlineare Optimierung}
 \index{Optimierung>lokale}
@@ -300,14 +306,14 @@ wir nun mit der praktikableren Taylorentwicklung erster Ordnung
 erreichen? Diese ist zunächst einmal
 \begin{equation}
   \label{eq:steepestdescentexpand}
-  f(x + \lambda d) = f(x) + \lambda \nabla f(x)d + \O(\lambda^2)
+  f(x + \lambda d) = f(x) + \lambda \nabla f(x)^Td + \O(\lambda^2)
 \end{equation}
 für eine Richtung $d$ und \emph{Schrittweite} $\lambda > 0$.  Anders
 als beim Newtonverfahren können wir nun nicht das Minimum dieser
 Näherung als neue Iterierte benutzen, da die Näherung linear ist und
 daher kein Minimum hat. Daher können wir lediglich versuchen, $f$ zu
 verringern. Da $\lambda>0$ ist und wir für kleine $\lambda$ die
-quadratischen Anteile vernachlässigen können, muss $\nabla f(x)d < 0$
+quadratischen Anteile vernachlässigen können, muss $\nabla f(x)^Td < 0$
 gelten. Eine Richtung $d$, die dies erfüllt, heißt
 \emph{Abstiegsrichtung}.
 
@@ -320,7 +326,7 @@ wählt man zunächst einen Startwert $x^{(0)}$ und setzt dann
   x^{(k+1)} = x^{(k)} - \lambda \nabla f\left(x^{(k)}\right)
 \end{equation}
 mit einer geeigneten Schrittweite $\lambda>0$. Im einfachsten Falle
-ist $\lambda$ einfach eine kleine Konstante, zum Beispiel 0.01.
+ist $\lambda$ eine kleine Konstante, zum Beispiel $0,01$.
 
 \subsection{\keyword{Schrittweitensteuerung}}
 \index{Armijo-Schrittweite}
@@ -332,13 +338,13 @@ werden.
 
 Entlang der festgelegten Richtung $d$ ist die Optimierung nur noch ein
 eindimensionales Problem, und wegen \eqref{eq:steepestdescentexpand}
-gilt in einer kleinen Umgebung von $x$ für alle
-$\alpha<\nicefrac{1}{2}$ stets
+gibt es für alle $\alpha<\nicefrac{1}{2}$ eine kleine Umgebung von
+$x$, in der
 \begin{equation}
   \label{eq:armijo}
-  f(x + \lambda d) \le f(x) + \alpha\lambda \nabla f(x)^Td.
+  f(x + \lambda d) \le f(x) + \alpha\lambda \nabla f(x)^Td
 \end{equation}
-Wir wählen $\lambda$ so, dass diese Bedingung erfüllt ist, und
+gilt. Wir wählen $\lambda$ so, dass diese Bedingung erfüllt ist, und
 natürlich möglichst groß. $\alpha\in(0,\,\nicefrac{1}{2})$ bestimmt
 dabei den Mindestabstieg, den wir erreichen wollen. Um $\lambda$ zu
 bestimmen, beginnen wir einfach mit $\lambda_0=1$, und setzen
@@ -350,7 +356,7 @@ die beiden reellen Konstanten $\nabla f(x)^Td$ und $f(x)$ und müssen
 in jedem Schritt $f(x + \lambda d)$ neu auswerten.  $\alpha$ wird
 meist eher klein gewählt, etwa $0,1$, denn je strikter diese
 Bedingung, desto kleiner wird die Schrittweite. Umgekehrt sollte man
-$\rho$ nicht zu klein wählen, weil sonst rasch sehr kleine
+$\rho$ nicht zu klein wählen, weil sonst unnötig kleine
 Schrittweiten benutzt werden.
 
 Die Schrittweitensteuerung setzt nur eine Abstiegsrichtung $d$ voraus,
@@ -375,11 +381,14 @@ zu minimierende Funktion und ihren Gradienten zurückliefern. Die
 Konstanten \argd{alpha} und \argd{rho} entsprechen den Konstanten
 $\alpha$ und $\rho$ des Armijo-Verfahrens. Die Vorgaben $\alpha=0,1$
 und $\rho=0,5$ sind übliche Werte, die meist zu guter Konvergenz
-führen. Das Verfahren bricht regulär ab, wenn $\norm{\nabla
-  f(x^{(k)})}<$ \argd{tol}. Um ein Einfrieren durch zu kleine
-Schrittweiten zu vermeiden, wird außerdem eine Mindestschrittweite von
-\argd{tol}$^2$ verlangt. Führt diese zu keinem Abstieg mehr, wird
-ebenfalls abgebrochen.
+führen. Das Verfahren bricht ab, wenn $\norm{\nabla f(x^{(k)})}<$
+\argd{tol}, also ein Minimum gefunden ist, oder wenn die Schrittweite
+\argd{tol}$^2/\norm{\nabla f(x^{(k)})}$ unterschreitet. Dies vermeidet
+ein Einfrieren durch zu kleine Schrittweiten. Schließlich bricht das
+Verfahren ab, wenn die gewählte Schrittweite zu keinem Abstieg mehr
+führt. Dies passiert insbesondere, wenn der Funktionswert im Minimum
+sehr groß oder klein ist, so dass nur wenige Stellen zur Optimierung
+verbleiben.
 
 \begin{figure}
   \centering
@@ -387,23 +396,22 @@ ebenfalls abgebrochen.
   \caption{Verfahren des steilsten Abstiegs für eine quadratische
     Funktion (oben) und die Rosenbrockfunktion (unten). Links werden
     Armijo-Schrittweiten mit $\alpha=0,1$ und $\rho=0,5$, rechts eine
-    konstante Schrittweite von $0,01$ verwendet. Die roten,
-    verbundenen Punkte markieren die Iterierten $x^{(k)}$, die
-    Höhenlinien illustrieren die zu optimierende Funktion. Für die
-    quadratische Funktion konvergieren beide Verfahren gegen das
-    Minimum bei $(0,\,0)$, und auch das Armijo-Verfahren wählt eine
-    konstante Schrittweite von etwa $0,0078$. Dies hat zur Folge, dass
-    das Verfahren wesentlich weniger über das Minimum hinauszielt und
-    nur 11 statt 35 Schritte benötigt. Für die Rosenbrockfunktion
-    benötigt alleine das schrittweitengesteuerte Verfahren etwa 1700
-    Iterationen, um in die Nähe des Minimums bei $(1,1)$ zu kommen.  Jeder
-    200. Punkt ist im Graphen grau gefärbt, um die extrem langsame
-    Konvergenz zu visualisieren. Für die konstante Schrittweite $0,01$
-    konvergiert das Verfahren gar nicht, wie die
+    konstante Schrittweite von $0,01$ verwendet. Die roten Punkte
+    markieren die Iterierten $x^{(k)}$, die Höhenlinien illustrieren
+    die zu optimierende Funktion. Für die quadratische Funktion
+    konvergieren beide Verfahren gegen das Minimum bei $(0,\,0)$, und
+    auch das Armijo-Verfahren wählt eine konstante Schrittweite von
+    etwa $0,0078$. Durch diesen etwas kleineren Wert zielt das das
+    schrittweitengesteuerte Verfahren weiger über das Minimum hinaus
+    und braucht nur 11 statt 35 Schritte für 10 Stellen
+    Genauigkeit. Bei der Rosenbrockfunktion benötigt das
+    schrittweitengesteuerte Verfahren etwa 1700 Iterationen dafür.
+    Jeder 200. Punkt ist im Graphen grau gefärbt, um die extrem
+    langsame Konvergenz zu visualisieren. Für die konstante
+    Schrittweite $0,01$ konvergiert das Verfahren gar nicht, wie die
     eingezeichneten ersten zehn Punkte zeigen.} \label{fig:armijo}
 \end{figure}
 
-\index{Rosenbrockfunktion}%
 Als Beispiel betrachten wir das Verfahren des steilsten Abstiegs für
 zwei auf der Ebene definierte Funktionen. Die erste Funktion ist eine
 quadratische Funktion
@@ -412,7 +420,7 @@ quadratische Funktion
   f(x, y) = 40 x^2 + 30(x + y)^2 + 20 y^2,
 \end{equation}
 die ihr Minimum bei $(0,0)$ hat, die zweite Funktion ist die
-Rosenbrockfunktion
+Rosenbrockfunktion\index{Rosenbrockfunktion}
 \begin{equation}
   f_{\text{Rosenbrock}}(x, y) = (1-x)^2 + 100(y-x^2)^2.
 \end{equation}
@@ -490,9 +498,10 @@ daher der Name des Verfahrens.
   \label{fig:cg}
 \end{figure}
 
-Um dies zu erzwingen, benutzt man das Gram-Schmidt-Verfahren, um die
-Gradientenabstiegsrichtungen $r^{(k)}$ zueinander senkrecht bezüglich
-$(\cdot,\cdot)_A$ zu machen. Dabei muss aufgrund der Wahl der
+Die $d^{(k)}$ werden konstruiert, in dem die
+Gradientenabstiegsrichtungen $r^{(k)}$ mit Hilfe des
+Gram-Schmidt-Verfahrens zueinander senkrecht bezüglich
+$(\cdot,\cdot)_A$ gemacht werden. Dabei muss aufgrund der Wahl der
 Richtungen $d^{(k+1)}$ nur senkrecht zu $d^{(k)}$ gemacht werden, zu
 den anderen bisherigen Richtungen steht $d^{(k+1)}$ dann automatisch
 senkrecht. Der Vorfaktor kann dabei vereinfacht werden:
@@ -538,11 +547,11 @@ SciPy-Implementation, \scipy{scipy.sparse.linalg.cg(A, b)}.
 
 Mit dem Verfahren des steilsten Abstiegs und den Armijo-Schrittweiten
 haben wir ein stabiles und meist schnell konvergierendes Verfahren, um
-freie Minima zu suchen. Was aber kann man tun, wenn zusätzlich noch
-Nebenbedingungen der Form $g(x)\ge 0$ gegeben sind? Wir suchen nun
-also $\min_{x\in M} f(x)$, wobei die zulässige Menge
+lokal freie Minima zu suchen. Was aber kann man tun, wenn zusätzlich
+noch Nebenbedingungen gegeben sind? Wir suchen nun also $\min_{x\in M}
+f(x)$, wobei die zulässige Menge
 \begin{equation}
-  M=\left\{ x | g_i(x)\ge 0\, \forall i \right\}
+  M=\left\{ x | g_i(x)\ge 0,\,i=1(1)m \right\}
 \end{equation}
 ist. Bekannte Verfahren sind etwa die sequenzielle quadratische
 Programmierung (SQP) oder das Verfahren von Gill und
@@ -551,10 +560,9 @@ motivierten Ansatz kennen.
 
 Dazu setzen wir voraus, dass nicht nur die zu minimierende Funktion
 $f:\RR^n\to\RR$ stetig differenzierbar ist, sondern auch die
-Funktionen $g_i:\RR^n\to\RR$, die die Nebenbedingungen $g_i(x)\ge 0$,
-$i=1(1)m$ definieren. Wäre nun $g_i(x)=-\infty$ für alle $x\notin M$
-oder zumindest kleiner als das gesuchte Minimum von $f$ in $M$, so
-wäre
+Funktionen $g_i:\RR^n\to\RR$, die die Nebenbedingungen
+definieren. Wäre nun $g_i(x)=-\infty$ für alle $x\notin M$ oder
+zumindest kleiner als das gesuchte Minimum von $f$ in $M$, so wäre
 \begin{equation}
   \min_{x\in M} f(x) = \min_{x\in\RR^n} f(x) + \sum_{i=1}^m \min(0,
   g_i(x))^2.
@@ -572,8 +580,10 @@ gefundene Näherungslösung daher immer minimal außerhalb von $M$
 liegen. Ist dies ein Problem, etwa weil $f$ außerhalb $M$ nicht
 ausgewertet werden kann, kann man stattdessen auf Barrieremethoden
 ausweichen, bei denen die Banden bereits innerhalb von $M$ beginnen
-und am Rand von $M$ singulär sind.  Wir minimieren also die
-modifizierte Funktion
+und am Rand von $M$ singulär sind.
+
+Beim Straffunktionsverfahren minimieren wir also die modifizierte
+Funktion
 \begin{equation}
   \label{eq:penalty}
   q_{\sigma}(x) = f(x) + \sum_{i=1}^m \min(0,
@@ -589,27 +599,27 @@ Funktionswerten bestraft.
   \includegraphics[width=\textwidth]{plots/penalty}
   \caption{Straffunktionsverfahren für einen Halbkreis. Die
     durchgezogenen, gestrichelten, und gepunkteten Linien markieren
-    $p_{\sigma}(x)=\nicefrac{1}{2}$ in den Schritten 1,2 und 5. Minimiert wird
-    jeweils der Abstand zum den mit offenen Symbolen markierten drei
-    Punkten. Der rote Kreis liegt im inneren, das Verfahren braucht
-    nur einen Aufruf des freien Optimierers. Für die grünen und blauen
-    Dreiecke sind jeweils mehrere Aufrufe nötig, wobei das blaue, nach
-    unten zeigende Dreieck so gewählt ist, dass das Minimum in der
-    Ecke liegt. Im rechten Graphen sind die Straffunktionen entlang
-    der $y$-Achse, also $p_{\sigma}(0,y)$, für die selben Schritte
-    gezeigt. Dünner grün sind die korrespondieren Zielfunktionen
-    $q_{\sigma}(0,y)$ eingezeichnet.}
+    die Isolinien $p_{\sigma}(x)=\nicefrac{1}{2}$ in den Schritten 1,2
+    und 5. Minimiert wird jeweils der Abstand zum den mit offenen
+    Symbolen markierten drei Punkten. Der rote Kreis liegt im inneren,
+    das Verfahren braucht nur einen Aufruf des freien Optimierers. Für
+    die grünen und blauen Dreiecke sind jeweils mehrere Aufrufe nötig,
+    wobei das blaue, nach unten zeigende Dreieck so gewählt ist, dass
+    das Minimum in der Ecke liegt. Im rechten Graphen sind die
+    Straffunktionen entlang der $y$-Achse, also $p_{\sigma}(0,y)$, für
+    dieselben Schritte gezeigt. Dünner grün sind die korrespondieren
+    Zielfunktionen $q_{\sigma}(0,y)$ eingezeichnet.}
   \label{fig:penalty}
 \end{figure}
 
 Um das Minimum zu finden, starten wir mit recht kleinem
-$\sigma_0>0$. Auf $q_{\sigma}$ wenden wir dann ein
+$\sigma_0>0$. Auf $q_{\sigma_0}$ wenden wir dann ein
 Optimierungsverfahren für freie Optimierung an, etwa das Verfahren des
 steilsten Abstiegs mit Schrittweitensteuerung. Aufgrund der
 Konstruktion ist der Gradient von $q_{\sigma}$ recht einfach zu berechnen:
 \begin{equation}
-  \nabla q_{\sigma}(x) = \nabla f(x) + \sum_{i=1}^m 2\sigma\min(0,
-  \sigma g_i(x))\nabla g_i(x).
+  \nabla q_{\sigma}(x) = \nabla f(x) + \sum_{i=1}^m 2\sigma^2\min(0,
+  g_i(x))\nabla g_i(x).
 \end{equation}
 
 Sinnvollerweise wählt man einen Startpunkt im Inneren von $M$. Ist im
@@ -623,51 +633,51 @@ Abbruchbedingung wenigstens eine Nebenbedingung noch nicht erfüllt
 war, und sich diese durch die Änderung von $\sigma_k$ ändert. Solange
 danach $g_i(x)\ge - \tau$ nicht erreicht ist, passen wir $\sigma_k$ an
 und iterieren weiter.
-
-$\sigma_k$ kann auf verschiedene Weisen gewählt werden, solange
-$\sigma_k\to \infty$ für $k\to\infty$. Eine Möglichkeit ist etwa
-$\sigma_k=k^a$ , wobei man $a>1$ nicht zu groß wählen sollte, zum
+$\sigma_k$ kann auf verschiedene Weisen gewählt werden, es muss nur
+$\sigma_k\to \infty$ für $k\to\infty$ gelten. Eine Möglichkeit ist
+etwa $\sigma_k=k^a$ , wobei man $a>1$ nicht zu groß wählen sollte, zum
 Beispiel $a=2$.
 
 Abbildung~\ref{fig:penalty} illustriert das Verfahren am Beispiel
 einer Abstandsminimierung zu einem Halbkreis. Wir suchen also
 \begin{equation}
   \min_{x\in M} \norm{x - p}_2\quad\text{mit}\;
-  M = \{ x | g_i(x) \ge 0, i=1,2 \}
+  M = \{ (x,y)\,|\, g_i(x,y) \ge 0, i=1,2 \}
 \end{equation}
 mit
 \begin{equation*}
-  g_1(x) = 4 - x^Tx\quad\text{und}\; g_2(x) = -10y.
+  g_1(x, y) = 4 - x^2-y^2\quad\text{und}\; g_2(x,y) = -10y.
 \end{equation*}
-Dies entspricht offenbar $\norm{x}^2_2\le 4$ und $y<0$, also dem
+Dies entspricht offenbar $\norm{(x,y)}_2\le 2$ und $y<0$, also dem
 Halbkreis. Im Beispiel werden drei verschiedene Punkte betrachtet und
 mit Hilfe des Straffunktionsverfahrens und einem
-schrittweitengesteuerten Gradientenverfahren der minimale Abstand zum
+schrittweitengesteuerten Gradientenverfahren der nächste Punkt im
 Halbkreis gesucht. Der Straffaktor $\sigma$ wurde als $0,1\,k^2$
-gewählt, mit $k=1,2,\ldots$ der Iterationsnummer. Für $p=(-1,\,-1)$
-liegt das Minimum im Inneren des Halbkreises und wird daher gleich im
-ersten Optimierungsschritt gefunden. Für die beiden anderen Punkte,
-$p=(-1,\,1)$ und $p=(2,5,\,1)$, sind nur die Gerade beziehungsweise beide
-Ungleichungen gleichzeitig aktiv; auch diese Minima werden
-gefunden. Auf der rechten Seite sieht man, dass die Straffunktionen
-sehr steil werden. Daher ist eine Schrittweitensteuerung hier
-besonders wichtig.
+gewählt, mit $k=1,2,\ldots$ der Iterationsschritt. $p=(-1,\,-1)$ liegt
+selber im Inneren des Halbkreises und wird daher gleich im ersten
+Optimierungsschritt als nächster Punkt gefunden. Für die beiden
+anderen Punkte, $p=(-1,\,1)$ und $p=(2,5,\,1)$, sind nur die Gerade
+beziehungsweise beide Ungleichungen gleichzeitig aktiv; auch hier
+werden die nächsten Punkte am Rand des Halbkreises innerhalb weniger
+Iterationen gefunden. Auf der rechten Seite sieht man, dass die
+Straffunktionen sehr steil werden. Daher ist eine
+Schrittweitensteuerung hier besonders wichtig.
 
 \section{Lineare Programme und Simplexalgorithmus}
 \index{lineares Programm}
 \index{Simplexalgorithmus}
 
 Wie wir in der Einleitung gesehen hatten, führt die lineare Regression
-mit Maximumsnorm zu einem ganz anderen Typ von Problemen, bei dem die
+mit Maximumsnorm zu einem ganz anderen Typ von Problem, bei dem die
 Zielfunktion linear ist. Dadurch liegt das Minimum notwendigerweise
 auf dem Rand der zulässigen Menge. Sind zusätzlich noch die
 Nebenbedingungs(un-)gleichungen linear
 (vgl. Abbildung~\ref{fig:simplex}), spricht man von einem
 \emph{linearen Programm}. Programm hat hier also erst einmal nichts
-mit Computern zu tun. Solche linearen Programme spielen insbesondere
-in der Optimierung von Wirtschaftsprozessen eine wichtige Rolle
-("`Operations research"'), da Gewinn und produzierte Mengen bei
-unverändertem Preis linear von einander abhängen.
+mit Computern zu tun. Solche linearen Programme spielen auch in der
+Optimierung von Wirtschaftsprozessen eine wichtige Rolle ("`Operations
+research"'), da Gewinn und produzierte Mengen bei unverändertem Preis
+linear von einander abhängen.
 
 \begin{figure}
   \centering
@@ -682,12 +692,12 @@ unverändertem Preis linear von einander abhängen.
     \fill[pattern=north east lines] (0,0) rectangle +(-0.1,1) ;
 
     % Zielfunktion
-    \pgfmathsetmacro{\gradx}{0.3}
-    \pgfmathsetmacro{\grady}{-0.4}
+    \pgfmathsetmacro{\gradx}{-0.3}
+    \pgfmathsetmacro{\grady}{ 0.4}
     \pgfmathsetmacro{\perpx}{\grady}
     \pgfmathsetmacro{\perpy}{-\gradx}
 
-    \draw[very thick,->=triangle 45] (0.2,0.6) -- +(\gradx,\grady);
+    \draw[very thick,->=triangle 45] (0.5,0.2) -- +(\gradx,\grady);
 
     % Isolinien
     \foreach \l in {0,0.2,0.4,...,0.8} {
@@ -715,14 +725,14 @@ unverändertem Preis linear von einander abhängen.
     \draw[thick,->] (xyz cs:z=0) -- (xyz cs:z=1.3) node[above] {$z$};
 
     \draw[color=green,fill=green!80!white,opacity=0.5]
-    (xyz cs:z=1) -- (xyz cs:x=0.7) -- (xyz cs:y=0.3) -- cycle;
+    (xyz cs:z=1) -- (xyz cs:x=1) -- (xyz cs:y=1) -- cycle;
     \draw[color=green]
-    (xyz cs:z=1) -- (xyz cs:x=0.7) -- (xyz cs:y=0.3) -- cycle;
+    (xyz cs:z=1) -- (xyz cs:x=1) -- (xyz cs:y=1) -- cycle;
 
     \draw[color=green]
     (xyz cs:z=1) circle (0.02)
-    (xyz cs:x=0.7) circle (0.02)
-    (xyz cs:y=0.3) circle (0.02);
+    (xyz cs:x=1) circle (0.02)
+    (xyz cs:y=1) circle (0.02);
 
     \draw[color=red]
     (xyz cs:z=1,x=0.5) -- (xyz cs:z=0.2,y=0.8);
@@ -732,13 +742,17 @@ unverändertem Preis linear von einander abhängen.
     (xyz cs:z=0.2,y=0.8) circle (0.02);
   \end{tikzpicture}
   \caption{Links: Illustration eines linearen Programms. Die
-    Nebenbedingungen sind $x\ge 0$, $y\ge 0$ und $1 - x \ge y$. Der
-    Pfeil deutet die Abstiegsrichtung an, die Linien sind Isolinien
-    des Potentials. Hier findet sich das Minimum in der mit einem
-    Punkt markierten rechten unteren Ecke. Rechts: 3d-Simplex mit
-    Nebenbedingung. Ist eine Nebenbedingung $a^Tx=b$ gegeben, so sind
-    nur Punkte mit Koordinaten $\ge 0$ aus dieser Ebene zulässig, also
-    aus dem grünen Dreieck. Die Ecken lassen sich durch die Menge der
+    Nebenbedingungen sind $x\ge 0$, $y\ge 0$ und $1 - x \ge y$; die
+    Schraffuren markieren den ausgeschlossenen Bereich. Der Pfeil
+    deutet den Gradienten der Zielfunktion an, die Linien im
+    zulässigen Bereich sind Isolinien des Potentials. Hier findet sich
+    das Minimum in der mit einem Punkt markierten rechten unteren
+    Ecke. Rechts: Dreidimensionaler zulässiger Bereich $x\ge 0$ mit
+    weiterer Nebenbedingung. Ist eine Nebenbedingung $a^Tx=b$ gegeben,
+    so sind nur Punkte mit Koordinaten $\ge 0$ aus dieser Ebene
+    zulässig, also aus dem grünen Dreieck. Die Projektion dieses
+    Dreiecks in die $xy$-Ebene entspricht dem zulässigen Bereich in
+    der linken Illustration. Die Ecken lassen sich durch die Menge der
     Koordinaten, die nicht Null sind, vollständig beschreiben. Die
     unterste Ecke etwa hat nur $y$ aktiv, die obere $z$. Sind zwei
     Nebenbedingungen gegeben, so ist die resultierende zulässige Menge
@@ -761,21 +775,14 @@ sein sollen. Alle linearen Nebenbedingungen lassen sich so
 formulieren, eventuell unter Zuhilfenahme von weiteren Variablen.
 
 Betrachten wir zwei Beispiele. Die in der Abbildung~\ref{fig:simplex}
-gegebene Nebenbedingung $1 - x \ge y$ ist offensichtlich nicht von der
-obigen Form. Wir führen deswegen eine neue Variable $z=1-x-y$ ein, die
-offenbar $z\ge 0$ erfüllen muss. Wir erhalten dann die Normalform mit
-$c'=(c_0, c_1, 0)$, da $z$ ja nicht zur eigentlichen Zielfunktion
-beiträgt, sowie $A=(-1,-,1, -1)$ und $b=-1$.
+gegebene Nebenbedingung $1 - x \ge y$ ist nicht von der obigen
+Form. Wir führen deswegen eine neue Variable $z=1-x-y$ ein, die dann
+$z\ge 0$ erfüllen muss. Wir erhalten die Normalform mit $c'=(c_0, c_1,
+0)$, da $z$ ja nicht zur Zielfunktion beiträgt, sowie $A=(1,\,1,\,1)$
+und $b=1$. Abbildung~\ref{fig:simplex} rechts zeigt den resultierenden
+zulässigen Bereich im dreidimensionalen Raum.
 
-Auch \eqref{eq:chebyshevappr} für die lineare Regression mit
-Maximumsnorm ist nicht in Normalform. Zum einen müssen wir die
-Nebenbedingungsungleichungen in Gleichungen transformieren. Dazu
-führen wir einfach eine Schattenvariable $z_i=a_i^Tv - b_i$ pro
-Ungleichung $a_i^Tv\ge b_i$ ein. Dann ist $z_i\ge 0$ offenbar
-äquivalent zur Ungleichung. Zum anderen sind aber die Variablen $v$
-frei, während wir voraussetzen, dass $v\ge 0$. Um dies zu beheben,
-teilen wir jede Variable $v=v_+ - v_i$ auf und ergänzen $A$ und $c$
-entsprechend. Dadurch transformiert sich
+Auch das Problem
 \begin{equation}
   \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
   \begin{pmatrix}
@@ -785,10 +792,20 @@ entsprechend. Dadurch transformiert sich
   \begin{pmatrix}
     b\\
     -b
-  \end{pmatrix}
+  \end{pmatrix},
 \end{equation}
-in die äquivalente Aufgabe
-{\samepage\begin{equation}
+das sich bei der linearen Regression mit Maximumsnorm ergibt
+(vgl.~\eqref{eq:chebyshevappr}), ist nicht in Normalform. Zum einen
+müssen wir die Nebenbedingungsungleichungen in Gleichungen
+transformieren. Dazu führen wir einfach eine Schattenvariable
+$z_i=a_i^Tv - b_i$ pro Ungleichung $a_i^Tv\ge b_i$ ein. Dann ist
+$z_i\ge 0$ offenbar äquivalent zur ursprünglichen Ungleichung. Zum
+anderen sind aber die Variablen $v$ frei, während wir voraussetzen,
+dass $v\ge 0$. Um dies zu beheben, teilen wir jede Variable in $v=v_+
+- v_-$ mit $v_\pm\ge 0$ auf und ergänzen $A$ und $c$ entsprechend. Das
+ergibt die äquivalente Aufgabe%
+{\samepage\vspace{0.2em}% für die TikZ-Deko
+  \begin{equation}
     \label{eq:chebyshevapprnf}
     \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
     \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
@@ -830,38 +847,44 @@ und
 Wie können wir Aufgabe \eqref{eq:simplexprob} lösen? Sofern die
 zulässige Menge beschränkt ist, beschreiben die Nebenbedingungen immer
 einen Polyeder. Man kann nun zeigen, dass sich ein Optimum immer in
-einer der Ecken dieses Polyeders befindet. Der Simplex-Algorithmus
-besucht nun nacheinander die Ecken des Polyeders, so dass die
-Zielfunktion fortlaufend minimiert wird. Daher zerfällt der
-Algorithmus in zwei Phasen. In der ersten Phase muss eine gültige Ecke
-bestimmt werden, in der zweiten Phase müssen wir dann von einer
-gültigen Ecke aus eine neue, benachbarte Ecke mit niedrigerer
-Zielfunktion finden.
+einer der Ecken dieses Polyeders befindet. Der
+\emph{Simplexalgorithmus} besucht nacheinander die Ecken des
+Polyeders, wobei die Zielfunktion ständig kleiner wird. Da es nur
+endliche viele Ecken gibt, findet der Algorithmus das Minimum
+irgendwann. Es gibt pathologische Beispiele, in denen der Algorithmus
+alle Ecken absuchen muss. Im allgemeinen konvergiert der
+Simplexalgorithmus aber schnell.
+
+Die Methode zerfällt dabei in zwei Phasen. In der ersten Phase muss
+eine gültige Ecke bestimmt werden, in der zweiten Phase müssen wir
+dann von einer gültigen Ecke aus eine neue, benachbarte Ecke mit
+niedrigerer Zielfunktion finden. Wir beginnen mit der Beschreibung der
+zweiten Phase, da die die erste Phase die zweite Phase benutzt, um ein
+erweitertes Problem zu lösen, dass erlaubt, eine erste Ecke zu finden.
 
 \subsubsection*{Phase II}
 
-Wir beginnen mit der zweiten Phase, da die die erste Phase letztlich
-auf denselben Ideen beruht. Wir nehmen daher an, dass die Matrix $A$
-maximalen Zeilenrang hat, also alle doppelten Gleichung eliminiert
-wurden; dies wird später die erste Phase automatisiert übernehmen.
-Außerdem sei $x$ eine Ecke des Polyeders.
+Wir nehmen an, dass die Matrix $A$ maximalen Zeilenrang hat, also alle
+doppelten Gleichung eliminiert wurden; dies wird später die erste
+Phase übernehmen.  Außerdem sei $x$ eine Ecke des Polyeders.
 
 Wie stellen wir diese Ecke dar? Abbildung~\ref{fig:simplex}
-illustriert, dass die Ecken einfach durch die Menge der aktiven, also
+illustriert, dass eine Ecke einfach durch die Menge der aktiven, also
 von Null verschiedenen Koordinaten beschrieben werden kann. Da wir
-angenommen haben,dass $A\in\RR^{m,n}$ linear unabhängige Zeilen hat,
+angenommen haben, dass $A\in\RR^{m,n}$ linear unabhängige Zeilen hat,
 beschreibt $Ax=b$ einen $n-m$-dimensionalen Unterraum, dessen Ecken
-durch jeweils $m$ aktive Koordinaten haben. Sei $B=\{j_1,\ldots,k_m\}$
-die Menge der aktiven Koordinaten, die sogenannten Basiskoordinaten,
-und $N=\{1,\ldots,n\}\backslash B$ die Menge der
+jeweils $m$ aktive Koordinaten haben.
+
+Sei $B=\{j_1,\ldots,k_m\}$ die Menge der in der aktuellen Ecke aktiven
+Koordinaten, die sogenannten Basiskoordinaten, und
+$N=\{1,\ldots,n\}\backslash B$ die Menge der
 Nichtbasiskoordinaten. $A_B = (a_{j_1},\ldots,a_{j_m})\in\RR^{m,m}$
 sei die zu den Basisvariablen $x_B = (x_{j_i})_i\in\RR^m$ gehörende
 Teilmatrix, sowie $A_N$ analog die zu den Nichtbasisvariablen
 gehörende Teilmatrix. Dann gilt $x_N=0$ und damit $A_Bx_b = b$.
-
-Damit ist der Zielfunktionswert in $x$
-*\begin{equation}
-  c^Tx = c_B^Tx_B = c_BA_B^{-1}b
+Der Zielfunktionswert in $x$ ist deshalb
+\begin{equation}
+  c^Tx = c_B^Tx_B = c_BA_B^{-1}b.
 \end{equation}
 Wir betrachten nun eine beliebigen anderen Punkt $u\in M$, also $u\ge
 0$ und $Au=A_Bu_B + A_Nu_N = b$. Dann ist
@@ -878,21 +901,16 @@ Da $u_N\ge 0$ ist, kann die Zielfunktion nur verkleinert werden, wenn
 eine Komponente $r_s < 0$ ist. Ist dies nicht der Fall, haben wir also
 unser Optimum gefunden.
 
-Sei nun also $r_s< 0$. Dann können wir unser Ergebnis verbessern, in
-dem wir $u_s>0$ wählen, aber alle anderen Elemente von $u_N$ weiterhin
-bei 0 belassen. Wir nehmen also $s$ in die Basiskoordinaten $B$
-auf. Damit diese eine Basis bleiben, müssen wir nun noch sehen, welche
-Gleichung dafür herausfällt. Aus \eqref{eq:simplexub} folgt, dass dann
-$u_B = x_B - u_s A_B^{-1}a_s$ und
-\begin{equation}
-  \label{eq:simplextgt}
-  c^Tu = c^Tx + u_s(c_s - c_B^T A_B^{-1}a_s).
-\end{equation}
-Auch im neuen Punkt muss aber $u_B\ge
-0$ gelten, daher können wir $u_N$ nur so groß wählen, bis für die erste
-Basisvariable $x_t= u_s (A_B^{-1}a_s)_t$ gilt. Dann gilt $u_t=0$,
-d.h.\ diese Basisvariable geht in die Nichtbasis über.
-
+Sei nun also $s$ so gewählt, dass $r_s< 0$ minimal. Dann können wir
+unser Ergebnis verbessern, in dem wir $u_s>0$ wählen, aber alle
+anderen Elemente von $u_N$ weiterhin bei 0 belassen. Wir nehmen also
+$s$ in die Basiskoordinaten $B$ auf. Damit diese eine Basis bleiben,
+müssen wir nun noch sehen, welche Gleichung dafür herausfällt. Aus
+\eqref{eq:simplexub} folgt, dass $u_B = x_B - u_s A_B^{-1}a_s$.  Auch
+im neuen Punkt muss aber $u_B\ge 0$ gelten, daher können wir $u_N$ nur
+so groß wählen, bis für die erste Basisvariable $x_t= u_s
+(A_B^{-1}a_s)_t$ gilt. Dann gilt $u_t=0$, d.h.\ diese Basisvariable
+geht in die Nichtbasis über.
 Wir suchen also
 \begin{equation}
   u_s = \min \left\{\frac{x_{j_k}}{(A_B^{-1}a_s)_k} | k\in B,
@@ -900,18 +918,19 @@ Wir suchen also
   \frac{x_{j_t}}{(A_B^{-1}a_s)_t}
 \end{equation}
 Sind dabei alle $(A_B^{-1}a_s)_k < 0$, so dass das Minimum gar nicht
-existiert, können wir $u_B$ unbegrenzt groß machen, also ist der
+existiert, können wir $u_B$ unbegrenzt groß machen. Also ist der
 zulässige Bereich unbeschränkt, und wir müssen abbrechen, da die
-Funktion beliebig klein werden kann.
+Funktion beliebig klein werden kann und also kein Minimum hat.
 
-Wir tauschen nun in der Basis $B$ $j_t$ durch $s$ aus und erhalten die
+Wir tauschen nun in der Basis $B$ die gefundene beschränkende
+Basisvariable  $j_t$ durch $s$ aus und erhalten die
 neue Basis $B'$. In $A_B$ wird dabei einfach die Spalte $t$ durch
 $a_s$ ersetzt, also
 \begin{equation}
   A_{B'} = A_B + (a_s - a_{j_t})e_t^T
 \end{equation}
-Für die Rechnungen benötigen wir aber nur $A_B^{-1}$, dass wir
-allerdings auch mit einer solchen Rang-1-Formel anpassen können. Die
+Für die Rechnungen benötigen wir aber $A_B^{-1}$, dass wir allerdings
+auch mit einer Rang-1-Formel anpassen können. Die
 Sherman-Morrison-Formel liefert
 \begin{equation}
   \label{eq:simplexex}
@@ -923,12 +942,11 @@ Sherman-Morrison-Formel liefert
 
 Wie können wir nun eine zulässige erste Lösung mit zugehörigem
 Basissatz und $A_B^{-1}$ finden? Die Idee ist, zunächst die Matrix
-noch einmal stark zu erweitern, sodass eine gültige Lösung einfach zu
-finden ist, aber jede echte gültige Lösung günstiger. Daher fallen die
-zusätzlichen Variablen alle in die Nichtbasis und können eliminiert
-werden.
+noch einmal stark zu erweitern, sodass eine gültige Ecke einfach zu
+finden ist, aber nur die Ecken des ursprünglichen zulässigen Bereichs
+optimal. Phase kann dann genutzt werden, um eine solche Ecke zu finden.
 
-Dazu betrachten wir also das neue Problem
+Dazu betrachten wir das neue Problem
 {\samepage\vspace{0.2em}\begin{equation}
   \min_z (\tikzlabel{xl}0,\ldots,\,0,\tikzlabel{xr},
   \tikzlabel{yl}1,\ldots,\,1\tikzlabel{yr})^Tz
@@ -939,32 +957,29 @@ Dazu betrachten wir also das neue Problem
   \draw[decorate,decoration=brace] ($(yl) + (0,1em)$) --
   node[above] {$y$} ($(yr) + (0,1em)$);
 \end{tikzpicture}}
-mit der neuen Variablen $z=(x,y)$ und den Nebenbedingungen $z\ge 0$
+mit der Variablen $z=(x,\,y)\in\RR^{n+m}$ und den Nebenbedingungen $z\ge 0$
 und
 \begin{equation*}
   \begin{pmatrix}
     \tilde{A} & I 
   \end{pmatrix}
   z =
-  \begin{pmatrix}
-    \tilde{b}
-  \end{pmatrix}.
+  \tilde{b}
 \end{equation*}
 Dabei sind die $i$-ten Zeilen von $\tilde{A}$ und $\tilde{b}$
 identisch mit denen von $A$ und $b$, nur werden die Vorzeichen
-getauscht, falls $b_i<0$. Da also nur einige Zeilen mit $-1$
-multipliziert werden, wird die Lösung des Gleichungssystems nicht
-verändert, aber es gilt $\tilde{b}\ge 0$.
+getauscht, falls $b_i<0$. Dies ändert die Lösungen des
+Gleichungssystems nicht, aber es gilt $\tilde{b}\ge 0$. Durch die
+Identität in den hinteren Spalten hat diese Matrix unabhängig vom
+ursprünglichen $A$ maximalen Zeilenrang.
 
 Sofern die ursprüngliche zulässige Menge nicht leer war, ist das
 Minimum dieser Zielfunktion offenbar Null, nämlich dann, wenn alle
-$y=0$ sind. Andererseits kennen wir einen zulässigen Punkt des neuen
-Problems, nämlich $(0,\tilde{b})$. Außerdem hat die Matrix zu $z$
-maximalen Zeilenrang aufgrund der zu $y$ gehörigen Identität. Und zu
-guter Letzt ist für den Startwert $A_B=I$, wir kennen also auch
-$A_B^{-1}=I$, das im folgenden dann nur angepasst werden muss. Wir
-können also die Phase I des Simplexalgorithmus unmittelbar auf diese
-Matrix anwenden.
+$y=0$ sind. Außerdem kennen wir einen zulässigen Punkt des neuen
+Problems, nämlich $(0,\,\tilde{b})$, und die zugehörige Matrix
+$A_B=I$.  Daher kennen wir auch $A_B^{-1}=I$, das im folgenden dann
+nur angepasst werden muss. Wir können also die Phase I des
+Simplexalgorithmus unmittelbar auf diese Matrix anwenden.
 
 Findet der Simplex-Algorithmus nun ein Minimum, dass von Null
 verschieden ist, ist offenbar die ursprüngliche zulässige Menge leer
@@ -973,11 +988,11 @@ alle $y=0$, also in der Nichtbasis, so haben wir unseren Startwert für
 die Phase II gefunden. Es kann allerdings auch passieren, dass noch zu
 $y$ gehörige Indizes $j_t>n$ in der Basis vorkommen. Dann müssen wir
 eine echte Koordinate $s<n$ finden, die mit $j_t$ getauscht werden
-kann. Dazu müssen wir ein $s$ mit $A_B^{-1}a_s)_t\neq 0$ finden, so
-dass wir wieder unsere Austauschformel \eqref{eq:simplexex} anwenden
-können. Finden wir diese nicht, dann kann man zeigen,dass die
-ursprüngliche Matrix nicht linear unabhängig gewesen war. In diesem
-Fall wird die $j_t-n$-te Zeile gestrichen. In $A_B^{-1}$ müssen
+kann. Dazu suchen wir ein $s$ mit $A_B^{-1}a_s)_t\neq 0$, so dass wir
+wieder unsere Austauschformel \eqref{eq:simplexex} auf die Spalten $s$
+und $j_t$ anwenden können. Finden wir kein solches $s$, dann kann man
+zeigen,dass die ursprüngliche Matrix linear abhängige Zeilen hatte. In
+diesem Fall wird die $j_t-n$-te Zeile gestrichen. In $A_B^{-1}$ müssen
 entsprechend die $j_t-n$-te Spalte und $t$-te Spalte eliminiert
 werden.
 
@@ -1018,32 +1033,31 @@ minimal ist. Die Matrix $A$ ist dabei analog \eqref{eq:interpol} definiert:
   \begin{pmatrix}
     1 & x_1 & x_1^2 & \ldots & x_1^{n-1}\\
     \vdots & \vdots & & \vdots \\
-    1 & x_1 & x_1^2 & \ldots & x_1^{n-1}\\
+    1 & x_m & x_m^2 & \ldots & x_m^{n-1}\\
   \end{pmatrix}
 \end{equation}
-und $b=(y_i)_i$. Anders als bei der Interpolation ist dabei $m\gg n$,
-das Polynom kann also nicht alle Stützstellen passieren, und wird im
-allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
-Polynomapproximation das Rungeproblem, da durch ausreichend viele
-Stützpunkte vermieden werden kann, dass das Polynom zu weit von der
-Zielfunktion abweicht. Ist allerdings $m=n$ und die $x$-Koordinaten
-der Stützstellen $x_i$ paarweise verschieden, fällt die
-Polynomapproximation mit der Interpolation zusammen, da der minimale
-Fehler $0$ offenbar durch das eindeutige interpolierende Polynom
-erreicht wird.
+und $b=(y_i)_i$. Ist $m=n$ und die $x$-Koordinaten der Stützstellen
+$x_i$ paarweise verschieden, fällt die Polynomapproximation mit der
+Interpolation zusammen, da der minimale Fehler $0$ offenbar durch das
+eindeutige interpolierende Polynom erreicht wird.
 
-Ist aber $m\gg n$, so hängt das Minimum und der Algorithmus, mit
-dessen Hilfe dieses berechnet werden kann, von der verwendeteten Norm
-ab. Ist $\norm{\cot}$ die aus dem üblichen Skalarprodukt abgeleitete
-2-Norm $\norm{\cot}_2$, so kann man das Minimum mit Hilfe der
-Pseudoinversen berechnen. Ist die Norm hingegen die Maximumsnorm,
-berechnet sich das Ergebnis mit Hilfe von \eqref{eq:chebyshevappr}
-bzw. \eqref{eq:chebyshevapprnf} und dem Simplexalgorithmus.
+Anders als bei der Interpolation wählt man aber im allgemeinen $m\gg
+n$, das Polynom kann also nicht alle Stützstellen passieren, und wird
+im allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
+Polynomapproximation das Rungeproblem, da die zusätzlichen Stützpunkte
+verhindern, dass das Polynom zu weit von der Zielfunktion abweicht.
+Das Minimum und der Algorithmus, mit dessen Hilfe dieses berechnet
+werden kann, hängen von der verwendeteten Norm ab. Ist $\norm{\cdot}$
+die aus dem üblichen Skalarprodukt abgeleitete 2-Norm $\norm{\cdot}_2$,
+so kann man das Minimum mit Hilfe der Pseudoinversen berechnen. Ist
+die Norm hingegen die Maximumsnorm, berechnet sich das Ergebnis mit
+Hilfe von \eqref{eq:chebyshevappr} bzw. \eqref{eq:chebyshevapprnf} und
+dem Simplexalgorithmus.
 
 Abbildung~\ref{fig:polyapprox} zeigt die Ergebnisse für die
 Approximation von $\exp(x)$ in diesen Normen. Beide Näherungen
 approximieren die Funktion hinreichend gut. Unterschiede zeigen sich
-allerdings in den Absolutdifferenzen $\abs{p(x) - exp(x)}$. Das in der
+allerdings in den Absolutdifferenzen $\abs{p(x) - \exp(x)}$. Das in der
 2-Norm approximierende Polynom minimiert den mittleren Fehler, in dem
 es einen kleineren Fehler im Interval $<0$ durch eine höheren Fehler
 bei 1 erkauft. Da dies nur ein Punkt ist, wiegt der verringerte Fehler
@@ -1092,16 +1106,16 @@ beliebiger Zielfunktion.
 In der Praxis, und besonders in physikalischen Anwendungen, sind die
 Zielfunktionen meist stark nichtlinear und besitzen zahlreiche lokale
 Minima. Suchen wir etwa Grundzustände eines komplexen Systems, müssen
-wir Minima der Energiefunktion finden, die meist so lokale Nebenminima
-aufweist, dass es auch für einen Computer unmöglich, alle zu
-untersuchen.
+wir Minima der Energiefunktion finden, die meist so viele lokale
+Nebenminima aufweist, dass es auch für einen Computer unmöglich ist,
+alle zu untersuchen.
 
-Als Beispiel betrachten wir eine in der statistischen Physik sehr
+Als Beispiel betrachten wir ein in der statistischen Physik sehr
 beliebtes Modell, das Lennard-Jonesium (LJ). Dabei handelt es sich um
 Teilchen, die gemäß einem Potential
 \begin{equation}
-  \phi_{\text{LJ}}(r) = 4\epsilon\left(\frac{\sigma}{r}^{12} -
-    \frac{\sigma}{r}^{6}\right)
+  \phi_{\text{LJ}}(r) = 4\epsilon\left[\left(\frac{\sigma}{r}\right)^{12} -
+    \left(\frac{\sigma}{r}\right)^{6}\right]
 \end{equation}
 wechselwirken (vgl. Abbildung~\ref{fig:ljminima} links). Das Potential
 hat ein Minimum der Tiefe $-\epsilon$ bei $\sqrt[6]{2}\sigma$ und wird
@@ -1120,12 +1134,12 @@ Schnitt durch die potentielle Energie als Funktion \emph{aller}
 Teilchenkoordinaten. Um die lokalen Minima zu bestimmen, wurde
 zunächst auf einem $100\times 100$-Raster das Potential ausgewertet,
 und von allen hinreichend niedrigen Punkten aus eine lokale
-Minimierung gestartet. Da bereits dieser Schnitt zahlreiche lokale
-Minima aufweist, kann man sich vorstellen, wie viele lokale Minima die
-Energie als Funktion in 200 Variablen aufweist.  Wegen des ``Curse of
-dimension'' ist es gleichzeitig nicht mehr möglich, eine Rasterung
-vorzunehmen. Es ist also aussichtslos, sämtliche lokale Minima mit
-Hilfe eines lokalen Minimierungsverfahrens zu suchen.
+Minimierung gestartet. Da bereits dieser Schnitt über 20 lokale Minima
+aufweist, kann man sich vorstellen, wie viele lokale Minima die
+Energie als Funktion aller 200 Teilchenkoordinaten aufweist.  Wegen
+des ``Curse of dimension'' ist es in diesem Fall nicht mehr möglich,
+eine Rasterung vorzunehmen. Es ist also aussichtslos, sämtliche lokale
+Minima mit Hilfe eines lokalen Minimierungsverfahrens zu suchen.
 
 Im folgenden lernen wir zwei heuristische Methoden kennen, die auch
 unter solchen Bedingungen meist akzeptable Näherungen für das globale
@@ -1138,21 +1152,21 @@ Beobachtung, dass durch gesteuerte, langsame Abkühlung das Wachstum
 besonders gleichmäßiger Kristalle gefördert wird. Dies macht man sich
 zum Beispiel bei der Härtung von Stahl zu Nutze. Letztendlich ist
 Kristallisation aber nichts anderes als ein Optimierungsprozess, da
-der Einkristall die energetisch minimale Struktur ist. Um dies auf ein
-Optimierungsproblem zu übertragen, legt man die Boltzmann-Statistik
-der statistischen Physik zugrunde, die besagt, dass bei Temperatur $T$
-alle Zustände gemäß
+der Einkristall die energetisch minimale Struktur ist.
+
+Um dies auf ein Optimierungsproblem zu übertragen, legt man die
+Boltzmann-Statistik der statistischen Physik zugrunde, die besagt,
+dass bei Temperatur $T$ alle Zustände gemäß
 \begin{equation}
-  P_T(x)\sim e^{-beta E(x)}
+  P_T(x)\sim e^{-\beta E(x)}
 \end{equation}
 verteilt sind, wobei $E$ die potentielle Energie des Systems im
-Zustand $x$ ist, $1/\beta=k_BT$ und $k_B$ die
-Boltzmannkonstante.
+Zustand $x$ ist und $1/\beta=k_BT$ mit der Boltzmannkonstanten $k_B$.
 
 Sei nun $x_0$ das globale Minimum der Energiefunktion $E$. Dann ist
 für alle $x$
 \begin{equation}
-  P_T(x)\sim e^{-beta E(x)} = e^{-\beta E(x_o)}e^{\beta [E(x_0) - E(x)]}
+  P_T(x)\sim e^{-\beta E(x)} = e^{-\beta E(x_o)}e^{\beta [E(x_0) - E(x)]}
   \sim e^{-\beta [E(x) - E(x_0)]} \le 1,
 \end{equation}
 da $E(x) - E(x_0)\ge 0$. Bei niedrigen Temperaturen ist $\beta$ sehr
@@ -1167,28 +1181,29 @@ Im Prinzip könnte man nun mit Hilfe der Verwerfungsmethode versuchen,
 $P_T$-verteilte zufällige Zustände zu erzeugen. Wie wir im
 Eingangsbeispiel gesehen haben, schwankt die Energielandschaft
 allerdings oft stark, so dass die meisten Punkte extrem kleine
-Akzeptanzraten hätten. Daher ist es mit dieser Methode unmöglich, die
-Boltzmann-Verteilung abzutasten. In der numerischen statistischen
+Akzeptanzraten hätten. Dies sorgt für astronomisch hohe
+Verwerfungsraten, so dass es mit dieser Methode unmöglich ist, die
+Boltzmann-Verteilung abzutasten. In der statistischen
 Physik benutzt man als Ausweg das \emph{Monte-Carlo-Sampling} von
 N. Metropolis.
 
 \index{Monte-Carlo-Sampling}\index{Metropolis-Methode} Ziel dieser
 Methode ist es, nacheinander Punkte $x_i$ zu erzeugen, die
 $P_T$-verteilt sind, so dass die Folge $x_i$ unsere Verteilung
-repräsentiert. Nehmen wir nun an, dass unser aktuelle Punkte bereits
-$P$-verteilt sind, müssen wir also den nächsten Punkt so wählen, dass
-wir die Verteilung nicht ändern. Dazu wählen wir zufällige Übergänge
-$x_i\to x_{i+1}$ so, dass für zwei beliebige Punkte $x$ und $y$ die
-Übergänge $x\to y$ und $y\to x$ mit gleicher Wahrscheinlichkeit
-ausgewählt werden. Eine Möglichkeit ist der klassische
-\emph{Metropolis-Schritt}
+repräsentiert. Nehmen wir nun an, dass unser aktueller Punkt bereits
+$P_T$-verteilt gezogen wurde, müssen wir also den nächsten Punkt so
+wählen, dass wir die Verteilung nicht ändern. Dazu wählen wir
+zufällige Übergänge $x_i\to x_{i+1}$ so, dass für zwei beliebige
+Punkte $x$ und $y$ die Übergänge $x\to y$ und $y\to x$ mit gleicher
+Wahrscheinlichkeit ausgewählt werden. Eine Möglichkeit ist der
+klassische \emph{Metropolis-Schritt}
 \begin{equation}
-  y = x_i + d,\quad\text{mit}\; d\;\text{gleichverteilt auf
+  y = x_i + d,\quad\text{mit}\; d\;\text{gleichverteilt auf einer
     Kugel vom Radius}\; r.
 \end{equation}
 $r$ ist dabei in gewisser Weise die maximale Schrittweite dieses
 Algorithmus. Dies erzeugt eine Gleichverteilung der Punkte; um die
-korrekte Verteilung zu erzeugen, generieren wir $x_{i+1}=y$ mit
+korrekte Verteilung zu erzeugen, setzen wir $x_{i+1}=y$ mit
 Wahrscheinlichkeit proportional zu
 \begin{equation}
   p(y) = \min(e^{-\beta [E(y) - E(x_i)]}, 1) = \min(P(y)/P(x_i), 1).
@@ -1212,7 +1227,7 @@ $x_{i+1}=x_i$ sonst.
     $\epsilon=0,005$). Der eigentlich Grundzustand wäre ein
     NaCl-artiges Gitter, das aber nicht gefunden wird, auch wenn die
     Simulationen immer größere Gitterflächen zeigen. Die Unterschiede
-    in den finalen Energien sind allerdings sehr klein, was zeigt,
+    in den finalen Energien sind sehr klein, was nochmals zeigt,
     dass auch dieses Problem sehr viele Nebenminima aufweist.}
   \label{fig:simanneal}
 \end{figure}
@@ -1223,13 +1238,13 @@ Temperatur langsam abgesenkt. Dadurch sollte die Verteilung langsam
 gegen $P_0$ konvergieren, in der nur noch das oder die globalen Minima
 eine nichtverschwindende Wahrscheinlichkeit haben. Dementsprechend
 konvergiert die Folge $x_i$ gegen ein globales Minimum. Problematisch
-kann, sein, dass die korrekte Verteilung der $x_i$ natürlich nur
+kann sein, dass die korrekte Verteilung der $x_i$ natürlich nur
 sichergestellt werden kann, wenn auch hinreichend viele $x_i$
 generiert werden. Das bedeutet, dass die Temperatur langsam abgesenkt
 werden sollte, wobei ``langsam'' vom Problem abhängt.
 
-Die funktionale Form der Temperaturkurve ist dabei ebenfalls
-frei. Typischerweise wählt man eine exponentielle Form
+Die funktionale Form der Temperaturkurve ist frei
+wählbar. Typischerweise wählt man eine exponentielle Form
 \begin{equation}
   T_{i+1} = (1-\delta)T
 \end{equation}
@@ -1240,7 +1255,7 @@ kann man eine lineare Form wählen
   T_{i+1} = T_i - \delta,\quad\text{solange}\; T_i>\delta.
 \end{equation}
 
-Simulated Annealing funktioniert natürlich nicht nur mit dem
+Simulated Annealing funktioniert nicht nur mit dem
 Metropolis-Schritt, sondern auch mit allen anderen möglichen
 Monte-Carlo-Schritten, wie sie in der Vorlesung
 "`Simulationsmethoden"' behandelt werden. Auch Molekulardynamik kann
@@ -1252,7 +1267,7 @@ Als Beispiel zeigt Abbildung~\ref{fig:simanneal} Daten zur
 Kristallisation eines einfachen NaCl-Modells. Hier wechselwirken die
 Teilchen mit einem Potential
 \begin{equation}
-  \phi_{ij} = \frac{q_iq_j 4\sigma\epsilon}{r}  +
+  \phi_{ij} = q_iq_j\frac{4\sigma\epsilon}{r}  +
   \begin{cases}
     4\epsilon\left(\frac{\sigma}{\norm{x_i-x_j}}^{12} -
       \frac{\sigma}{\norm{x_i-x_j}}^{6}\right) + \epsilon
@@ -1285,13 +1300,12 @@ umgehen.
 \subsection{Genetische Algorithmen}
 
 Für die Untersuchung noch komplexerer Kristallstrukturen, etwa mit -3-
-und 5-wertigen Ionen ist der obige Ansatz immer noch nicht effizient
-genug, da er noch zu sehr dazu neigt, in lokalen Minima stecken zu
-bleiben. Besser wäre es, Elementarzellen des Kristalls
-durchzuprobieren, und nach derjenigen mit minimaler Energie zu
-suchen. Leider ist auch diese Optimierung noch sehr umfangreich, und
-die Menge der möglichen Kristallstrukturen lässt nicht einfach als
-Vektorraum beschreiben.
+und 5-wertigen Ionen, ist der obige Ansatz immer noch nicht effizient
+genug, da er dazu neigt, in lokalen Minima stecken zu bleiben. Besser
+wäre es, Elementarzellen des Kristalls durchzuprobieren, und nach
+derjenigen mit minimaler Energie zu suchen. Leider ist auch diese
+Optimierung noch sehr umfangreich, und die Menge der möglichen
+Kristallstrukturen lässt nicht einfach als Vektorraum beschreiben.
 
 In solchen Fällen sind genetische Algorithmen ein biologisch
 inspirierter Ansatz, um trotzdem eine globale Minimierung durchführen
@@ -1313,15 +1327,15 @@ wird.
 
 Wie werden nun Individuen vermehrt? Einfach, in dem zufällige, kleine
 Änderungen am Genom des sich vermehrenden Individuums vorgenommen
-werden, und dieses neue Genom in den Pool der vorhanden Individuen
-aufgenommen. Dabei werden fittere Individuen häufiger vermehrt. Das
-kann man auf verschiedene Weisen erreichen, zum Beispiel, in dem stets
-eine kleine Anzahl von Individuen zufällig ausgewählt wird, und von
-diesen das fitteste vermehrt.  Dabei gibt es zwei Typen von Änderungen
-am Genom: \emph{Mutationen}, also kleine zufällige Änderungen im
-Genom, und \emph{Kreuzungen} zweier guter Individuen. Dabei werden
-zufällig Abschnitte der beiden ausgewählten Individuen zu einem neuen
-Genom kombiniert.
+werden und dieses neue Genom in den Pool der vorhanden Individuen
+aufgenommen wird. Dabei werden fittere Individuen häufiger
+vermehrt. Das kann man auf verschiedene Weisen erreichen, zum
+Beispiel, in dem stets eine kleine Anzahl von Individuen zufällig
+ausgewählt wird, und von diesen das fitteste vermehrt.  Dabei gibt es
+zwei Typen von Änderungen am Genom: \emph{Mutationen}, also kleine
+zufällige Änderungen im Genom, und \emph{Kreuzungen} zweier guter
+Individuen. Dabei werden zufällig Abschnitte der beiden ausgewählten
+Individuen zu einem neuen Genom kombiniert.
 
 Um die Menge der Genome konstant zu halten, können bei diesem Prozess
 auch Genome entfernt werden. Werden etwa die fittesten Individuen
@@ -1339,17 +1353,18 @@ Zelle dar, und 3 Vektoren $L_i$ legen die Relativpositionen der
 räumlichen Kopien der Elementarzelle fest. In den meisten zufällig so
 erzeugten Gittern überlappen Teilchen, so dass auch in diesem Fall ein
 weiches Lennard-Jones-Potential die Volumenausschlusswechselwirkung
-modelliert.
+modelliert. Dadurch werden undefinierte Energiewerte vermeiden.
 
 Zur Vermehrung werden zufällig zwei Individuen gewählt, deren Vektoren
-$B_i$ zufällig um maximal $\pm 10\%$ gestreckt, und dann zufällig
-$B_1,\ldots,\,B_k$ vom ersten Individuum und $B_{k+1},\ldots,\,B_n$
-vom zweiten kombiniert, und analog die $L_i$. Zusätzlich wird sicher
-gestellt, dass die $L_i$ linear unabhängig sind, also tatsächlich ein
-Gitter aufspannen. Um die Chancen des neuen Genoms zu erhöhen, wird
-für dieses die Energie minimiert, in dem Darstellung geeignet verdreht
-wird. Es ist durchaus üblich, physikalisches Wissen in genetischen
-Algorithmen zu benutzen, um bessere Genome zu erzeugen. 
+$B_i$ zufällig um maximal $\pm 10\%$ gestreckt werden. Dann wird
+zufällig $B_1,\ldots,\,B_k$ vom ersten Individuum mit
+$B_{k+1},\ldots,\,B_n$ vom zweiten kombiniert, und analog die
+$L_i$. Zusätzlich wird sicher gestellt, dass die $L_i$ linear
+unabhängig sind, also tatsächlich ein Gitter aufspannen. Um die
+Chancen des neuen Genoms zu erhöhen, wird für dieses die Energie lokal
+minimiert, in dem Darstellung geeignet verdreht wird. Es ist durchaus
+üblich, physikalisches Wissen in genetischen Algorithmen zu benutzen,
+um bessere Genome zu erzeugen.
 
 %%% Local Variables: 
 %%% mode: latex
