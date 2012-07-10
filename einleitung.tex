@@ -296,16 +296,17 @@ erhalten.
 
 Für kleine Winkel gilt $\sin(\alpha)\approx\alpha$, und damit
 \begin{equation}
+  \label{eq:harmosz}
   \ddot\alpha \approx = -\frac{g}{l}\alpha.
 \end{equation}
-Diese Differentialgleichung hat die allgemeine Lösung
+Diese Differentialgleichung beschreibt einen harmonischen Oszillator
+mit Eigenfrequenz $\omega=\sqrt{g/l}$ und hat die allgemeine Lösung
 \begin{equation}
   \alpha(t) = A \sin(\omega t + \phi)
   \label{eq:naeherung}
 \end{equation}
-mit $\omega=\sqrt{g/l}$, wie man sich leicht durch Einsetzen
-überzeugt. Die Größen $A$ und $\phi$ ergeben sich aus den
-Anfangsbedingungen, nämlich der Anfangsposition
+wie leicht durch Einsetzen überprüft. Die Größen $A$ und $\phi$
+ergeben sich aus den Anfangsbedingungen, nämlich der Anfangsposition
 \begin{equation}
   \alpha_0 = A \sin(\phi)
 \end{equation}
@@ -400,6 +401,7 @@ fest, dass $E(t)$ erheblich schwankt, vergleiche
 Graph~\ref{fig:energie}. Dies lässt sich durch Verringern des
 Zeitschritts beheben, das kostet aber entsprechend mehr Rechenzeit.
 
+\todo{Überarbeiten!}
 Eine bessere Alternative ist, den Algorithmus zu verbessern, was
 wiederum etwas analytische Arbeit erfordert. Wir betrachten die
 Taylorentwicklungen

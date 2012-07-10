@@ -1,0 +1,364 @@
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Axel Arnold, Universitaet Stuttgart.
+% 
+% Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
+% Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
+% zugänglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
+% http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
+% schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
+% View, California, 94041, USA.
+
+\chapter{Differentialgleichungen}
+\index{Differentialgleichung}
+
+Fast alle physikalischen Probleme können durch Differentialgleichungen
+(DGLs) beschrieben werden. Auch das einleitende Problem des
+Fadenpendels ist wurde ja durch die Differentialgleichung
+\begin{equation}
+  \ddot\alpha = -\frac{g}{l}\sin(\alpha)
+\end{equation}
+beschrieben. Die analytische Lösung dieser und der meisten
+Differentialgleichungen ist schwierig oder unmöglich, und daher sind
+numerische Verfahren zum Lösen von DGLs wichtige Hilfsmittel, um
+Modelle mit komplexen DGLs untersuchen zu können.
+
+Im folgenden werden wir numerische Löser für verschiedene Klassen von
+Differentialgleichungen kennenlernen. Für gewöhnliche
+Differentialgleichungen mit skalarer Variable sind das die
+Runge-Kutta-Verfahren, sowie das bereits in der Einleitung
+besprochene, sehr gebräuchliche Velocity-Verlet-Verfahren.
+
+Schwieriger ist die Lösung partieller Differentialgleichungen, die
+mehrdimensionale Variablen und deren Ableitungen enthalten.  Diese
+spielen besonders in der Physik eine wichtige Rolle, weil sie bei bei
+zeit- und ortsabhängigen Prozessen quasi automatisch auftreten. Hier
+lernen wir einige Bespiele kennen und wie diese mit Hilfe finiter
+Differenzen oder Fouriertransformationen numerisch gelöst werden
+können.
+
+\section{Gewöhnliche Differentialgleichungen}
+\index{Differentialgleichung>gewöhnliche}
+\index{Differentialgleichung>explizite}
+
+Wir betrachten Differentialgleichungen der Form
+\begin{equation}
+  \label{eq:explicitode}
+  f^{(m)}(t) = F(t, f(t), \dot f(t), \ldots, f^{(m-1)}(t))
+\end{equation}
+mit $f:\RR\to\RR^n$. Diese heißen gewöhnlich, da sie nur von einer
+Variablen, $t$ abhängen. Wie der Name $t$ schon vermuten lässt, wird
+diese Variable meist mit der Zeit assoziert. Die spezielle Form
+\eqref{eq:explicitode} wird auch \emph{explizite} gewöhnliche
+Differentialgleichung $m$-ter Ordnung genannt, da wir voraussetzen,
+dass sich die Gleichung global nach $f^{(m)}(t)$ auflösen lässt, und
+$m$ Ableitungen involviert sind. \emph{Implizite} Gleichungen der Form
+$F(t, f(t), \dot f(t), \ldots, f^{(m-1)}(t),f^{(m)}(t)) = 0$ sind
+numerisch sehr viel schwieriger zu lösen, tauchen aber in der Physik
+auch seltener auf, und werden daher hier nicht weiter besprochen.
+
+Für die numerische Lösung beschränken wir uns weiter auf gewöhnliche
+Differentialgleichungen erster Ordnung, also von der Form
+\begin{equation}
+  \label{eq:1storderode}
+  \dot f(t) = F(t, f(t)),\quad f(0)\;\text{gegeben}.
+\end{equation}
+Dies ist tatsächlich keine Einschränkung, da sich jede explizite
+Differentialgleichung $m$-ter Ordnung in eine höherdimensionale
+Gleichung erster Ordnung transformieren lässt:
+\begin{equation}
+  \frac{d}{dt}\begin{pmatrix}
+    f(t)\\
+    \dot f(t)\\
+    \vdots\\
+    f^{(m-1)}(t)
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \dot f(t)\\
+    \ddot f(t)\\
+    \vdots\\
+    f^{(m)}(t) = F(t, f(t), \dot f(t), \ldots, f^{(m-1)}(t))
+  \end{pmatrix}
+\end{equation}
+
+Die Differentialgleichung des einleitenden Beispiels
+\begin{equation}
+  \ddot \alpha(t) = -\frac{g}{l}\sin(\alpha(t)),
+\end{equation}
+oder allgemeiner eine Kraftgleichung der Form
+\begin{equation}
+  \ddot x(t) = F[x(t)]
+\end{equation}
+wird so zum Beispiel zu
+\begin{equation}
+  \label{eq:explicitode}
+  \frac{d}{dt}\begin{pmatrix}
+    x(t)\\
+    \dot x(t)
+  \end{pmatrix}
+  =
+  \begin{pmatrix}
+    \dot x(t)\\
+    F[x(t)]
+  \end{pmatrix}.
+\end{equation}  
+Der Startwert ist dann $(x(0), \dot x(0))$, also Anfangsposition und
+-geschwindigkeit.
+
+\subsection{\keyword{Runge-Kutta-Verfahren}}
+
+Wir betrachten nun das allgemeine Problem~\eqref{eq:1storderode}, also
+\begin{equation*}
+  \dot f(t) = F[t, f(t)],\quad f(0)\;\text{gegeben}.
+\end{equation*}
+Wir suchen eine diskretisierte Näherung $y_n \approx f(t_n)$ mit
+äquidistanten Zeitpunkten $t_n=n h$, $n=0,1,\ldots$, also Schrittweite
+$h$. Es gilt
+\begin{equation}
+  f(t_{n+1}) = f(t_n+h) = f(t_n) + \int_{t_n}^{t_n+h} \dot f(t)\,dt
+  =  f(t_n) + \int_{t_n}^{t_n+h} F[t, f(t)]\,dt.
+\end{equation}
+Da $y_0 = f(0)$ gegeben ist, liegt es nahe, $y_1 \approx f(h)$ durch
+numerische Integration zu bestimmen, dann $y_2 \approx f(2h)$ durch
+numerische Integration aus $y_1$ und so weiter. Das Problem dabei ist,
+dass der Integrand $F[t, f(t)]$ die zu findende Funktion $f$
+enthält. Um also $f(t)$ an Stellen $t\in [t_n, t_n + h]$ annähern zu
+können, müssen wir die Zwischenwerte von $f$ wiederum durch
+Integration gewinnen. Dies führt zur allgemeinen Form eines
+$s$-stufigen Runge-Kutta-Verfahrens
+\begin{equation}
+  y_{n+1} = y_n + h\sum_{j=1}^s b_j k_j
+\end{equation}
+mit
+\begin{equation}
+  \label{eq:rkkj}
+  k_j = F(t + h c_j, y_n + h \sum_{k=1}^s a_{jk} k_k)
+\end{equation}
+und Verfahrenskonstanten $b,c\in\RR^s$ und
+$A=(a_{jk})\in\RR^{s,s}$. Die $k_j$ sind also Näherungen für $F[t + h
+c_j, f(t_n + h c_j)]$ und erscheinen auf beiden Seiten
+von~\eqref{eq:rkkj}. Ist $F(t,y)$ eine nichtlineare Funktion, ist eine
+solche implizite Gleichung nur aufwändig zu lösen.
+
+\index{Runge-Kutta-Verfahren>explizite}%
+Daher werden meist \emph{explizite} Runge-Kutta-Verfahren verwendet,
+bei denen $A$ eine linke untere Dreiecksmatrix mit Nulldiagonale ist,
+also $a_{jk} = 0$ für $k\ge j$. Dann werden zur Berechnung von $k_j$
+nur $k_k$, $k=1(1)j-1$ benötigt, die bereits berechnet sind. Eine
+Implementierung eines Runge-Kutta-Verfahrens ähnelt dann sehr dem
+Gauß-Seidel-Verfahren, dass ebenfalls die Zeilen der zu lösenden
+Matrix sequentiell abarbeitet.
+
+Das man trotzdem auch implizite Verfahren, also mit allgemeiner
+Matrix, in Betracht zieht, hängt damit zusammen, dass diese stabiler
+sind, und auch sogenannte steife DGLs lösen können. Ist $A$ linke
+untere Dreiecksmatrix, aber die Diagonale nicht Null, spricht man von
+DIRKs, diagonal-impliziten Runge-Kutta-Verfahren. Diese lassen sich
+noch mit verhältnismäßig begrenztem Aufwand lösen, da pro $k_j$
+lediglich eine eindimensionale Gleichung gelöst werden muss.
+
+Der Fehler von Runge-Kutta-Verfahren wird üblicherweise durch die
+Konvergenz- und Konsistenzordnung beschrieben. Die Konvergenzordnung
+$p$ besagt, dass $\max \norm{y_n - f(t_n)} = \O(h^p)$, d.h.\ die
+Näherung konvergiert gleichmäßig gegen $f(t_n)$. Die Konvergenz ist
+meist schwer zu beweisen, einfacher ist die Konsistenzordnung $p$, die
+nur fordert, dass $\norm{y_{n+1} - f(t_{n+1})} = \O(h^p)$, falls
+$y_n=f(t_n)$. Konsistenz besagt also lediglich, dass ein Schritt
+prinzipiell konvergiert. Ist die Funktion $F$ Lipschitz-stetig, also
+etwa genügend glatt, dann gilt allerdings Konsistenzordnung =
+Konvergenzordnung.
+
+\index{Butcher-Tableau}%
+Im folgenden werden einige der gebräuchlicheren Runge-Kutta-Verfahren
+angegeben. Dabei hat sich das \emph{Butcher-Tableau}
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{r|l}
+    c & A \\\hline
+    & $b^T$
+  \end{tabular}
+\end{center}
+als kurze Darstellung etabliert. Die $j$-te Zeile gibt an, zu welchen
+Zeitpunkt $t_n + hc_j$ die Näherung $k_j$ berechnet wird, $a_{jk}$
+sind die zu den benutzten Elementen $k_k$ gehörigen Gewichte der
+numerischen Integration, und $b_j$ sind die Gewichte der
+Näherungen $k_j$ in der Integration zu $y_{n+1}$.
+
+Die Konstanten ergeben sich aus den benutzten
+Quadraturformeln. Allerdings gibt es neben der Bedingung, dass die
+Formeln möglichst explizit sein sollten, noch weitere
+Stabilitätsbedingungen, die hier aber nicht beschrieben werden
+können. Daher kann man nicht einfach beliebige Quadraturformeln
+kombinieren, sondern sollte bei den im folgenden beschriebenen,
+gebräuchlichen Formeln bleiben.
+
+\subsubsection{Explizites Eulerverfahren}
+\index{Eulerverfahren>explizites}
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{r|l}
+    0 & \\\hline
+    & 1
+  \end{tabular}
+\end{center}
+
+Das Butcher-Tableau besagt nichts anders, als dass
+\begin{equation}
+  y_{n+1} = y_n + h F(t_n, y_n) \approx f(t_n) + h f'(t_n).
+\end{equation}
+Es handelt sich als um die direkte Integration per Rechteckregel, und
+damit um ein Verfahren der Ordnung 1, d.h.\ der globale Fehler
+$\O(h)$. Diese Verfahren entspricht der einfachen
+Integration~\eqref{eq:simple} im einleitenden Beispiel. Das explizite
+Eulerverfahren ist nicht sehr genau und nur für global
+Lipschitz-stetige $F$ stabil. Daher sollte man es bei praktischen
+Anwendungen im allgemeinen vermeiden.
+
+\subsubsection{Implizites Eulerverfahren}
+\index{Eulerverfahren>implizites}
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{r|l}
+    1 & 1\\\hline
+    & 1
+  \end{tabular}
+\end{center}
+
+Wie der Name schon sagt, ist dies ein implizites Verfahren, genauer,
+ein DIRK, bei dem in jedem Schritt die Gleichung
+\begin{equation}
+  k_1 = F(t_{n+1}, y_n + h k_1)
+\end{equation}
+gelöst werden muss. Dann ist die neue Näherung $y_{n+1} = y_n + h
+k_1$. Durch Einsetzen ergibt sich 
+\begin{equation}
+  y_{n+1} = y_n + h F(t_{n+1}, y_{n+1}),
+\end{equation}
+das implizite Eulerverfahren ist also ebenfalls eine Rechteckregel,
+aber mit dem neu zu bestimmenden Punkt $y_{n+1}$ als Aufpunkt. Die
+Ordnung dieses Verfahrens ist ebenfalls 1. Anders als das explizite
+Eulerverfahren ist das implizite Eulerverfahren ziemlich stabil, auch
+wenn $F$ nicht Lipschitz-stetig ist. Der Nachteil ist, dass in jedem
+Schritt eine nichtlineare Gleichung gelöst werden muss, was das
+Verfahren recht aufwändig macht.
+
+\subsubsection{Das Runge-Kutta-Verfahren}
+\index{Runge-Kutta-Verfahren>4. Ordnung}
+
+\begin{center}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{r|llll}
+    0 & \\
+    $\nicefrac{1}{2}$ & $\nicefrac{1}{2}$ \\
+    $\nicefrac{1}{2}$ & 0 & $\nicefrac{1}{2}$ \\
+    1 & 0 & 0 & 1 \\
+    \hline
+    & $\nicefrac{1}{6}$ &  $\nicefrac{1}{3}$ & 
+    $\nicefrac{1}{3}$ &  $\nicefrac{1}{6}$
+  \end{tabular}
+\end{center}
+
+Dies ist das erste Runge-Kutta-Verfahren, das zuerst 1901 von Kutta
+beschrieben wurde. Wird von dem Runge-Kutta-Verfahren gesprochen, ist
+daher dieses Verfahren gemeint. Bei genügend glattem $f$ hat es
+Konvergenzordnung 4, ist also deutlich besser als die Eulerverfahren.
+
+Wie können wir das Tableau verstehen?  Wir setzen
+$\tau=\nicefrac{h}{2}$. Die zweite und dritte Zeile bestimmen zwei
+Näherungen für $F[t_n+\tau, f(t_n+\tau)]$, zunächst mit Hilfe der
+linken ($k_2$), und dann der rechten Ableitung ($k_3$). $k_4$ ist dann
+eine Näherung für $F[t_n+h, f(t_n+h)]$. Diese Näherungen werden in die
+Simpsonregel eingebracht, wobei $k_2$ und $k_3$ mit gleichen Gewichten
+eingehen.
+
+%Lotka-Volterra?
+
+
+% \subsection{Velocity-Verlet-Integration}
+
+% In der Einleitung hatten wir bereits besprochen, wie diese Gleichung
+% mit Hilfe des Velocity-Verlet-Verfahrens numerisch gelöst werden kann.
+% Dazu hatten wir die Lösung $f(t)$ äquidistant diskretisiert, also an
+% Zeitpunkten $t_n=n\delta t$, $n=0,1,\ldots$, betrachtet.
+
+% Wir setzen $\tau=\delta t/2$ und betrachten dann die
+% Taylorentwicklungen für $t$ und $t+\delta t= t + 2\tau$ um $t + \tau$:
+% \begin{align*}
+%   f(t+\delta t) =& f(t+\tau) + \tau
+%   \dot f(t + \tau) + \frac{\tau^2}{2}F[f(t+\tau)]
+%   + \frac{\tau^3}{6}
+%   \frac{d^3}{dt^3} f(t+\tau) + \O(\delta t^4)
+%   \intertext{und}
+%   f(t) =& f(t+\tau) - \tau
+%   \dot f(t + \tau) + \frac{\tau^2}{2}F[f(t+\tau)]
+%   - \frac{\tau^3}{6}
+%   \frac{d^3}{dt^3} f(t+\tau) + \O(\delta t^4).
+% \end{align*}
+% und durch Subtraktion
+% \begin{equation}
+%   f(t+\delta t) = f(t) + 2\tau\,\dot f(t+\tau) + \frac{\tau^3}{3}
+%   \frac{d^3}{dt^3} f(t+\tau)+ \O(\tau^4).
+% \end{equation}
+% Die Geschwindigkeiten an den halben Zeitschritten erhält man einfach
+% durch $\dot f(t + \delta t /2) = \dot f(t) + \delta t\, F(t, f(t)) /
+% 2$.
+
+% Zusammengefasst ergibt sich der folgende \emph{Velocity-Verlet-Algorithmus}:
+% \begin{align}
+%   v\left(t + \frac{\delta t}{2}\right) &= v(t) + \frac{\delta t}{2} F(t) \\
+%   f(t + \delta t) &= f(t) + v\left(t + \frac{\delta t}{2}\right) \\
+%   v(t + \delta t) &= v\left(t + \frac{\delta t}{2}\right) + \frac{\delta t}{2}
+%   F(t + \delta t),
+% \end{align}
+% der anders als die direkte Vorgehensweise vorher numerisch stabil ist
+% und quasi keine Energieschwankungen aufzeigt, vergleiche
+% Graph~\ref{fig:energie}. 
+% Im Quellcode~\ref{lst:pendel} ist alternativ auch dieser Integrator
+% implementiert. Obwohl er nur unwesentlich komplizierter ist als der
+% einfache Integrator zuvor, erreicht etwa dieselbe Genauigkeit wie
+% dieser mit einem Zehntel der Zeitschritte.
+
+% Ist symplektisch
+
+%3-Körperproblem?
+
+
+% \section{Partielle Differentialgleichungen}
+
+
+% \section{Lineare Differentialgleichungen}
+% \index{Differentialgleichung>lineare}
+
+% Wir betrachten Differentialgleichungen der Form
+% \begin{equation}
+%   \sum_{i=0}^n c_n(x)f^{(n)}(x) = d(x).
+% \end{equation}
+% Beispiele, die wir bereits kennengelernt haben, sind der harmonische
+% Oszillator~\ref{eq:harmosz}, die Besselsche
+% Differentialgleichung~\eqref{eq:besselode} und die
+% Laplace-Gleichung~\eqref{eq:laplace}. Sind die Funktionen $c_n(x)$
+% sogar konstant, lassen sich die Lösungen analytisch finden, ansonsten
+% bieten sich finite Differenzen oder der Übergang in den Fourierraum
+% an.
+
+% Als Beispielproblem betrachten wir wieder die Laplace-Gleichung in
+% zwei Dimensionen. 
+% \subsection{Lösung durch Diskretisierung}
+
+% Bsp: 2d-Laplace
+
+% \subsection{Lösung im Fourierraum}
+% Bsp: 2d-Laplace
+
+% FEM FVM erwähnen
+% Wärmeleitung, Diffusion
+% Advektionsgleichung?
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "padc.tex"
+%%% TeX-PDF-mode: t
+%%% End: 
