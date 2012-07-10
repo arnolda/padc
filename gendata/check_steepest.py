@@ -32,5 +32,5 @@ def gradrosenbrock(x):
 
 from armijo import armijo_steepest_descent
 
-if norm(armijo_steepest_descent(rosenbrock, gradrosenbrock, array((0,0)), tol=1e-6) - array((1,1))) > 1e-5:
+if norm(armijo_steepest_descent(rosenbrock, gradrosenbrock, array((0.99,0.99)), tol=1e-6, maxiter=10000) - array((1,1))) > 1e-2:
     raise Exception("Steepest Descent hat das Minimum nicht gefunden")

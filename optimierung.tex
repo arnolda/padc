@@ -382,13 +382,12 @@ Konstanten \argd{alpha} und \argd{rho} entsprechen den Konstanten
 $\alpha$ und $\rho$ des Armijo-Verfahrens. Die Vorgaben $\alpha=0,1$
 und $\rho=0,5$ sind übliche Werte, die meist zu guter Konvergenz
 führen. Das Verfahren bricht ab, wenn $\norm{\nabla f(x^{(k)})}<$
-\argd{tol}, also ein Minimum gefunden ist, oder wenn die Schrittweite
-\argd{tol}$^2/\norm{\nabla f(x^{(k)})}$ unterschreitet. Dies vermeidet
-ein Einfrieren durch zu kleine Schrittweiten. Schließlich bricht das
-Verfahren ab, wenn die gewählte Schrittweite zu keinem Abstieg mehr
-führt. Dies passiert insbesondere, wenn der Funktionswert im Minimum
-sehr groß oder klein ist, so dass nur wenige Stellen zur Optimierung
-verbleiben.
+\argd{tol}, also die Tangente hinreichend flach und damit ein Minimum
+hinreichend gut gefunden ist, oder wenn eine maximale Anzahl an
+Schritten, \argd{maxiter}, überschritten wird. Dies vermeidet ein
+Einfrieren durch zu kleine Schrittweiten. Dies passiert insbesondere,
+wenn der Funktionswert im Minimum sehr groß oder klein ist, so dass
+nur wenige Stellen zur Optimierung verbleiben.
 
 \begin{figure}
   \centering
