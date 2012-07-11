@@ -122,7 +122,13 @@ sondern dritten Zeile. Das ergibt
   \label{eq:3order2diff}
   \frac{1}{h^2}\left(-\frac{1}{12} f(x_{i+2}) + \frac{4}{3} f(x_{i+1}) +
   \frac{5}{2} f(x_i)  + \frac{4}{3} f(x_{i-1}) -
-  \frac{1}{12}f(x_{i-2})\right) = f''(x_i) + \O(h^3).
+  \frac{1}{12}f(x_{i-2})\right) = f''(x_i) + \O(h^4).
+\end{equation}
+Die Fehlerordnung ist hier um eins höher als man erwarten würde, da für den
+Term dritter Ordnung der Vorfaktor ebenfalls verschwindet:
+\begin{equation}
+  \frac{1}{12} \cdot 8 - \frac{4}{3} +
+  \frac{4}{3} - \frac{1}{12}\cdot 8 = 0.
 \end{equation}
 
 Mit drei Stützpunkten ergibt sich die Näherung für die zweite
@@ -133,7 +139,7 @@ Ableitung analog als
   2f(x_i)  + f(x_{i-1})\bigr) =
   \frac{\frac{f(x_{i+1}) - f(x_i)}{h}  -
     \frac{f(x_i) - f(x_{i-1})}{h}}{h}
-  = f''(x_i) + \O(h).
+  = f''(x_i) + \O(h^2).
 \end{multline}
 Die mittlere Form zeigt, dass sich diese einfachste Form der zweiten
 Ableitung auch als dividierte Differenz der dividierten Differenzen
@@ -269,7 +275,7 @@ Abweichungen mehr.
 
 Alternativ können wir statt der Dirichlet-Randbedingungen auch
 Funktion $f(0) = F_0$ und Ableitung $f'(0)=F'_0$ am linken Rand
-festlegen. Dann sieht das Gleichungssystem wie folgt aus:
+festlegen. Das ergibt:
 \begin{equation}
   \begin{pmatrix}
     1 & 0         & 0         &\ldots & \ldots & 0\\
@@ -366,7 +372,7 @@ bis Ordnung $n$ exakt. Allerdings verstärkt sich bei allgemeinen
 Funktion das Rungephänomen bei der Integration, und ab Ordnung $n=9$
 treten negative Koeffizienten $\alpha_i$ auf, was die Näherung
 verschlechtert. Daher sind nur kleine $n$ sinnvoll, und in der Praxis
-werden meist nur Formeln bis Ordnung $n=8$ benutzt. Die
+werden nur Formeln bis Ordnung $n=8$ benutzt. Die
 gebräuchlichsten werden im folgenden kurz diskutiert.
 
 \newcommand{\topillu}[1]{%
@@ -1097,9 +1103,9 @@ $\chi_{D^2}$, rechts zeigt sie gemessene Fehler bei
 Monte-Carlo-Integration und Mittelpunktsregel. Dabei wurde neben
 $\chi_{D^2}$ auch $\chi_{D^5}$ integriert, also das Volumen der
 fünfdimensionalen Kugel ($8\pi^2/15$). Der Fehler der
-Monte-Carlo-Integration ist jeweils als mittlerer Fehler von zwanzig
-Aufrufen gemessen, wobei durch die große Anzahl von Abtastungen die
-Schwankungen nicht sehr hoch sind.
+Monte-Carlo-Integration ist als mittlerer Fehler von zwanzig Aufrufen
+gemessen, wobei durch die große Anzahl von Abtastungen die
+Schwankungen klein sind.
 
 Für das ursprüngliche, zweidimensionale Problem (blaue Punkte und rote
 Kreuze) ist die Trapezregel überlegen, auch wenn sie in zwei

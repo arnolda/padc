@@ -83,27 +83,23 @@ Gleichung erster Ordnung transformieren lässt:
 
 Die Differentialgleichung des einleitenden Beispiels
 \begin{equation}
+  \label{eq:fadenpendel2}
   \ddot \alpha(t) = -\frac{g}{l}\sin(\alpha(t)),
-\end{equation}
-oder allgemeiner eine Kraftgleichung der Form
-\begin{equation}
-  \ddot x(t) = F[x(t)]
 \end{equation}
 wird so zum Beispiel zu
 \begin{equation}
-  \label{eq:explicitode}
   \frac{d}{dt}\begin{pmatrix}
-    x(t)\\
-    \dot x(t)
+    \alpha(t)\\
+    \dot \alpha(t)
   \end{pmatrix}
   =
   \begin{pmatrix}
-    \dot x(t)\\
-    F[x(t)]
+    \dot \alpha(t)\\
+    -\frac{g}{l}\sin(\alpha(t)),
   \end{pmatrix}.
 \end{equation}  
-Der Startwert ist dann $(x(0), \dot x(0))$, also Anfangsposition und
--geschwindigkeit.
+Der Startwert ist dann $(\alpha(0), \dot \alpha(0))$, also
+Anfangsposition und -geschwindigkeit.
 
 \subsection{\keyword{Runge-Kutta-Verfahren}}
 
@@ -135,10 +131,13 @@ mit
   k_j = F(t + h c_j, y_n + h \sum_{k=1}^s a_{jk} k_k)
 \end{equation}
 und Verfahrenskonstanten $b,c\in\RR^s$ und
-$A=(a_{jk})\in\RR^{s,s}$. Die $k_j$ sind also Näherungen für $F[t + h
-c_j, f(t_n + h c_j)]$ und erscheinen auf beiden Seiten
-von~\eqref{eq:rkkj}. Ist $F(t,y)$ eine nichtlineare Funktion, ist eine
-solche implizite Gleichung nur aufwändig zu lösen.
+$A=(a_{jk})\in\RR^{s,s}$. Diese Konstanten sind dabei nicht nur nicht
+von $F$ abhängig, sondern auch von der Schrittweite $h$. Ein
+Runge-Kutta-Schema kann daher durch Verkleinern der Schrittweite im
+Prinzip beliebig genau gemacht werden.  Die $k_j$ sind Näherungen für
+$F[t + h c_j, f(t_n + h c_j)]$ und erscheinen auf beiden Seiten
+von~\eqref{eq:rkkj}.  Ist $F(t,y)$ eine nichtlineare Funktion, ist
+eine solche implizite Gleichung nur aufwändig zu lösen.
 
 \index{Runge-Kutta-Verfahren>explizite}%
 Daher werden meist \emph{explizite} Runge-Kutta-Verfahren verwendet,
@@ -159,8 +158,8 @@ lediglich eine eindimensionale Gleichung gelöst werden muss.
 
 Der Fehler von Runge-Kutta-Verfahren wird üblicherweise durch die
 Konvergenz- und Konsistenzordnung beschrieben. Die Konvergenzordnung
-$p$ besagt, dass $\max \norm{y_n - f(t_n)} = \O(h^p)$, d.h.\ die
-Näherung konvergiert gleichmäßig gegen $f(t_n)$. Die Konvergenz ist
+$p$ besagt, dass die Näherung gleichmäßig gegen $f(t_n)$ konvergiert, also
+$\max \norm{y_n - f(t_n)} = \O(h^p)$. Die Konvergenz ist
 meist schwer zu beweisen, einfacher ist die Konsistenzordnung $p$, die
 nur fordert, dass $\norm{y_{n+1} - f(t_{n+1})} = \O(h^p)$, falls
 $y_n=f(t_n)$. Konsistenz besagt also lediglich, dass ein Schritt
@@ -273,57 +272,155 @@ eine Näherung für $F[t_n+h, f(t_n+h)]$. Diese Näherungen werden in die
 Simpsonregel eingebracht, wobei $k_2$ und $k_3$ mit gleichen Gewichten
 eingehen.
 
-%Lotka-Volterra?
+\subsection{Beispiel: Lotka-Volterra-Gleichungen}
+\index{Lotka-Volterra-Gleichungen}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/lotka-volterra}
+  \caption{Lösungen der Lotka-Volterra-Gleichungen mit dem einfachen
+    Eulerverfahren (oben links) und dem Runge-Kutta-Verfahren (unten
+    links). Blau gepunktet ist die Beutepopulation, rot gestrichelt
+    die Räuberpopulation. Rechts das Räuber-Beute-Diagramm für das
+    Eulerverfahren (blau gestrichelt) und das Runge-Kutta-Verfahren
+    (rot durchgezogen). Während das Verfahren vierter Ordnung die
+    erwartete periodische Trajektorie ergibt, wächst mit dem
+    Eulerverfahren die Spitzenpopulation immer weiter. Dies zeigt die
+    Instabilität des Eulerverfahrens.}
+  \label{fig:lotka}
+\end{figure}
 
-% \subsection{Velocity-Verlet-Integration}
+Die Lotka-Volterra-Gleichungen sind nach A.~J.~Lotka und V.~Volterra
+benannt, die diese 1925 als einfaches Modell für die
+Populationsdynamik eines Räuber-Beute-Systems angegeben hatten, also,
+wie sich die Anzahlen von Räubern und Beute im zeitlichen Verlauf
+ändern.
 
-% In der Einleitung hatten wir bereits besprochen, wie diese Gleichung
-% mit Hilfe des Velocity-Verlet-Verfahrens numerisch gelöst werden kann.
-% Dazu hatten wir die Lösung $f(t)$ äquidistant diskretisiert, also an
-% Zeitpunkten $t_n=n\delta t$, $n=0,1,\ldots$, betrachtet.
+Die Lotka-Volterra-Gleichungen sind zwei gekoppelte
+Differentialgleichungen für die Populationen $N_R$ der Räuber und
+$N_B$ der Beutetiere (zum Beispiel Hai und Fische, Wölfe und Hasen,
+...):
+\begin{equation}
+  \label{eq:lotka-volterra}
+  \frac{d}{dt}
+  \begin{pmatrix}
+    N_B\\
+    N_R
+  \end{pmatrix}
+  = F(N_B, N_R) = 
+  \begin{pmatrix}
+    A N_B  - B N_BN_R\\
+    -C N_R  D N_BN_R
+  \end{pmatrix}.
+\end{equation}
+Dabei gibt $A$ die Vermehrungsrate der Beutetiere an und $B$ die Rate,
+mit der ein Räuber ein Beutetier auffrisst. $C$ gibt die Sterberate
+der Räuber an und $D$ die Rate, mit der sich ein Räuber vermehrt, wenn
+es ein Beutetier gefangen hat. Die Räuber müssen also Beutetiere
+fangen, um sich zu vermehren, während die Beutetier sich von selber
+vermehren. Dieses sehr einfache Modell kennt also keine begrenzten
+Resourcen, es gibt aber entsprechende Erweiterungen. Ebenso kann es
+mehrstufige Systeme geben.
 
-% Wir setzen $\tau=\delta t/2$ und betrachten dann die
-% Taylorentwicklungen für $t$ und $t+\delta t= t + 2\tau$ um $t + \tau$:
-% \begin{align*}
-%   f(t+\delta t) =& f(t+\tau) + \tau
-%   \dot f(t + \tau) + \frac{\tau^2}{2}F[f(t+\tau)]
-%   + \frac{\tau^3}{6}
-%   \frac{d^3}{dt^3} f(t+\tau) + \O(\delta t^4)
-%   \intertext{und}
-%   f(t) =& f(t+\tau) - \tau
-%   \dot f(t + \tau) + \frac{\tau^2}{2}F[f(t+\tau)]
-%   - \frac{\tau^3}{6}
-%   \frac{d^3}{dt^3} f(t+\tau) + \O(\delta t^4).
-% \end{align*}
-% und durch Subtraktion
-% \begin{equation}
-%   f(t+\delta t) = f(t) + 2\tau\,\dot f(t+\tau) + \frac{\tau^3}{3}
-%   \frac{d^3}{dt^3} f(t+\tau)+ \O(\tau^4).
-% \end{equation}
-% Die Geschwindigkeiten an den halben Zeitschritten erhält man einfach
-% durch $\dot f(t + \delta t /2) = \dot f(t) + \delta t\, F(t, f(t)) /
-% 2$.
+Im folgenden betrachten wir ein solches System aus Hasen und
+Wölfen. Es sei $A=2$ Hasen pro Jahr, d.h.\ ein Hasenpaar hat vier
+Nachkommen im Jahr, und $B=0,1$, ein Wolf fängt also im Schnitt alle
+10 Jahre einen bestimmten Hasen. Die tatsächliche Fangrate hängt von
+der Menge der Wölfe und Hasen ab. Gibt es viele Wölfe, wird es für die
+Hasen eng...
 
-% Zusammengefasst ergibt sich der folgende \emph{Velocity-Verlet-Algorithmus}:
-% \begin{align}
-%   v\left(t + \frac{\delta t}{2}\right) &= v(t) + \frac{\delta t}{2} F(t) \\
-%   f(t + \delta t) &= f(t) + v\left(t + \frac{\delta t}{2}\right) \\
-%   v(t + \delta t) &= v\left(t + \frac{\delta t}{2}\right) + \frac{\delta t}{2}
-%   F(t + \delta t),
-% \end{align}
-% der anders als die direkte Vorgehensweise vorher numerisch stabil ist
-% und quasi keine Energieschwankungen aufzeigt, vergleiche
-% Graph~\ref{fig:energie}. 
-% Im Quellcode~\ref{lst:pendel} ist alternativ auch dieser Integrator
-% implementiert. Obwohl er nur unwesentlich komplizierter ist als der
-% einfache Integrator zuvor, erreicht etwa dieselbe Genauigkeit wie
-% dieser mit einem Zehntel der Zeitschritte.
+Die Wölfe hingegen sind recht hungrig, wir setzen daher $C=12$. Ein
+Wolf stirbt also in etwa einem Monat, wenn er keinen Hasen
+fängt. Umgekehrt reicht ein Hase kaum, um sich zu vermehren, daher
+setzen wir $D=0,1$, so dass etwa 10 Hasen zur erfolgreichen Vermehrung
+gefressen werden müssen.
 
-% Ist symplektisch
+Nachdem wir nun die Raten festgelegt haben, können wir zum Beispiel
+das klassische Runge-Kutta-Verfahren benutzen, um
+\eqref{eq:lotka-volterra} zu lösen. Dazu müssen wir noch einen
+Startwert festlegen, zum Beispiel hundert Hasen und einen Wolf, und
+eine Schrittweite, die wir auf einen Tag, also $1/365$-tel,
+setzen. Abbildung~\ref{fig:lotka} zeigt die resultierenden
+Populationen, einmal als Funktion der Zeit und einmal als
+Räuber-Beute-Diagramm.
+
+Charakteristisch für die Lotka-Volterra-Gleichungen ist ein
+periodisches Verhalten, wie man relativ leicht analytisch zeigen
+kann. Dabei gibt es lediglich zwei Gleichgewichtszustände, den man
+leicht bestimmen kann:
+\begin{equation}
+  0 \stackrel{!}{=}
+  \begin{pmatrix}
+    N_B (A - B N_R)\\
+    N_R (-C + D N_B)
+  \end{pmatrix}
+  \implies N_B=N_R=0\;
+  \text{oder}\;N_B=\frac{C}{D}\;\text{und}\;N_R=\frac{A}{B}.
+\end{equation}
+In unserem Fall wären die Populationen also bei $N_B=120$ und $N_R=20$
+stabil. Unser davon leicht abweichender Startwert sollte zu einer
+Trajektorie führen, die um diesen Fixpunkt periodisch kreist. Dies ist
+auch tatsächlich der Fall, wenn das Runge-Kutta-Verfahren, das vierte
+Ordnung hat, benutzt wird. Beim Eulerverfahren hingegen nehmen beide
+Populationen mit der Zeit zu. Selbst wenn der Zeitschritt um einen
+Faktor 10 gesenkt wird, driften die Populationen während der gezeigten
+10 Jahre um etwa 10 Individuen. Dies zeigt eindrücklich die
+Instabilität des Eulerverfahrens.
+
+\subsection{Velocity-Verlet-Verfahren}
+\index{Velocity-Verlet-Verfahren}
+
+In der Einleitung hatten wir bereits besprochen, dass die
+Fadenpendelgleichung~\eqref{eq:fadenpendel2} mit Hilfe des
+Velocity-Verlet-Verfahrens numerisch gelöst werden kann. Dieses dient
+zur Lösung von Differentialgleichungen der Form
+\begin{equation}
+  \ddot x(t) = F[t, x(t)],
+\end{equation}
+also gewöhnlichen Differentialgleichungen zweiter Ordnung, die nicht
+von der Geschwindigkeit $x'(t) = v(t)$ abhängen. Diese Form ist
+typisch für Bewegungsgleichungen mit konservativen Kräften, daher ist
+das Velocity-Verlet-Verfahren zum Beispiel das Standard-Verfahren für
+die Propagation von klassischen Vielteilchensystemen.
+
+Auch bei dieser Methode wird die Lösung $x_n\approx x(t_n)$
+äquidistant mit Schrittweite $h$ diskretisiert und wie folgt
+berechnet:
+\begin{align}
+  v_{n+\nicefrac{1}{2}} &= v_n + \frac{h}{2} F(t_n, x_n) \nonumber\\
+  x_{n+1} &= x_n + h v_{n+\nicefrac{1}{2}} \\
+  v_{n+1} &= v_{n+\nicefrac{1}{2}} + \frac{h}{2} F(t_{n+1}, x_{n+1}).\nonumber
+\end{align}
+Ähnlich wie bei den Runge-Kutta-Verfahren wird ein Zwischenschritt bei
+$h/2$ eingelegt, allerdings nur für die Berechnung von
+$v_{n+\nicefrac{1}{2}}\approx x'(t_n + \nicefrac{h}{2})$. Um die
+Ordnung dieses Verfahrens zu bestimmen, eliminieren wir die
+Geschwindigkeiten:
+\begin{align}
+  x_{n+1} &= x_n + h v_n + \frac{h^2}{2} F(t_n, x_n)\nonumber\\
+  &=  x_n + h v_{n-\nicefrac{1}{2}} + h^2F(t_n, x_n)\nonumber\\
+  &=  x_n + x_n - x_{n-1} + h^2F(t_n, x_n)
+  =  2 x_n - x_{n-1} + h^2F(t_n, x_n)
+\end{align}
+Gemäß \eqref{eq:1order2diff} gilt aber
+\begin{equation}
+  \frac{x_{n+1}  - 2 x_n + x_{n-1}}{h^2} = F(t_n, x_n) + \O(h^2),
+\end{equation}
+also ist der Fehler in $x_{n+1}$ von der Größenordnung $\O(h^4)$,
+sofern $x_n$ und $x_{n-1}$ oder $v_n$ exakt waren, die
+Geschwindigkeiten haben offenbar einen Fehler der Ordnung $\O(h^2)$.
+
+Das Velocity-Verlet-Verfahren ist von der Implementation her
+vergleichbar einfach wie das Eulerverfahren, aber anders als dieses
+recht stabil und hat, wie gezeigt, eine sehr gute Konsistenzordnung,
+vergleichbar mit dem Runge-Kutta-Verfahren. Es hat aber noch eine
+andere wichtige Eigenschaft: anders als die Runge-Kutta-Verfahren ist
+das Verfahren \emph{symplektisch}, was bedeutet, dass es zum einen die
+Energie bis auf numerische Fehler strikt erhält, und zum anderen
+besonders gut geeignet ist, in Molekulardynamiksimulationen
+Observablen über den Phasenraum zu mitteln.
 
 %3-Körperproblem?
-
 
 % \section{Partielle Differentialgleichungen}
 

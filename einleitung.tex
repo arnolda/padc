@@ -401,34 +401,22 @@ fest, dass $E(t)$ erheblich schwankt, vergleiche
 Graph~\ref{fig:energie}. Dies lässt sich durch Verringern des
 Zeitschritts beheben, das kostet aber entsprechend mehr Rechenzeit.
 
-\todo{Überarbeiten!}
 Eine bessere Alternative ist, den Algorithmus zu verbessern, was
-wiederum etwas analytische Arbeit erfordert. Wir betrachten die
-Taylorentwicklungen
-\begin{align}
-  \alpha\left(t+\delta t\right) &= \alpha\left(t+\frac{\delta t}{2}\right) + \frac{\delta t}{2}
-  v\left(t+\frac{\delta t}{2}\right) + \frac{\delta t^2}{8} F\left(t+\frac{\delta t}{2}\right) + \O(\delta t^3)
-  \intertext{und}
-  \alpha\left(t\right) &= \alpha\left(t+\frac{\delta t}{2}\right) - \frac{\delta t}{2}
-  v\left(t+\frac{\delta t}{2}\right) + \frac{\delta t^2}{8} F\left(t+\frac{\delta t}{2}\right) - \O(\delta t^3).
-\end{align}
-Durch Subtraktion ergibt sich
-\begin{align}
-  \alpha(t+\delta t) = \alpha(t) + \delta t\,v\left(t+\frac{\delta t}{2}\right) + \O(\delta t^4).
-\end{align}
-Die Geschwindigkeiten an den halben Zeitschritten erhält man einfach
-durch $v(t + \delta t /2) = v(t) + \delta t F(t) / 2$.
-Zusammengefasst ergibt sich der folgende \emph{Velocity-Verlet-Algorithmus}:
+wiederum etwas analytische Arbeit erfordert. Wir werden im Laufe der
+Vorlesung verstehen, wie mit Hilfe von Taylorentwicklungen ein
+besseres Verfahren gefunden werden kann, der sogenannte
+\emph{Velocity-Verlet-Algorithmus}:
 \begin{align}
   v\left(t + \frac{\delta t}{2}\right) &= v(t) + \frac{\delta t}{2} F(t) \\
-  \alpha(t + \delta t) &= \alpha(t) + v\left(t + \frac{\delta t}{2}\right) \\
+  \alpha(t + \delta t) &= \alpha(t) + \delta t\, v\left(t + \frac{\delta t}{2}\right) \\
   v(t + \delta t) &= v\left(t + \frac{\delta t}{2}\right) + \frac{\delta t}{2}
   F(t + \delta t),
 \end{align}
-der anders als die direkte Vorgehensweise vorher numerisch stabil ist
-und quasi keine Energieschwankungen aufzeigt, vergleiche
-Graph~\ref{fig:energie}. 
-Im Quellcode~\ref{lst:pendel} ist alternativ auch dieser Integrator
+der anders als die zuerst angegebene Vorgehensweise numerisch stabil
+ist und quasi keine Energieschwankungen aufzeigt, vergleiche
+Graph~\ref{fig:energie}.  Interessant ist, dass formal die
+Geschwindigkeiten zu halben Zeitschritten eingehen. Im
+Quellcode~\ref{lst:pendel} ist alternativ auch dieser Integrator
 implementiert. Obwohl er nur unwesentlich komplizierter ist als der
 einfache Integrator zuvor, erreicht etwa dieselbe Genauigkeit wie
 dieser mit einem Zehntel der Zeitschritte.

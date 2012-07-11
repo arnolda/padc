@@ -91,4 +91,3 @@ graph.plot(support, abs(polyval(csimplex, support) - f(support)),
            "gD", markersize=5, clip_on=False)
 
 figure.savefig("qr_simplex_example.pdf")
-pyplot.show()
