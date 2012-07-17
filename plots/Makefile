@@ -28,7 +28,8 @@ rw.pdf dla.pdf percolation.pdf \
 2d-laplace.pdf iterative.pdf \
 steepestdescent.pdf cg.pdf penalty.pdf qr_simplex_example.pdf \
 lj.pdf simulated_annealing.pdf \
-lotka-volterra.pdf
+lotka-volterra.pdf planets.pdf \
+waermeleitung.pdf poisson.pdf pb.pdf
 
 trapezregel.pdf mittelpunktsregel.pdf simpsonregel.pdf rechteckregel.pdf trapezzusammen.pdf: num_int.py
 	python $<

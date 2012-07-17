@@ -15,6 +15,9 @@
 from scipy import *
 from scipy.linalg import *
 import matplotlib.pyplot as pyplot
+import sys
+# da liegt der Integrator da er Teil des Skripts ist
+sys.path.append("..")
 
 # Ein Beutetier vermehrt sich einmal pro Jahr
 A =  2.0
@@ -35,40 +38,7 @@ print "Stationaer:", C/D, A/B
 # Loeser
 #############################################
 
-def rkstep_explicit(hc, hA, hb, f, yn, tn):
-    k = []
-    for i in range(len(hc)):
-        k.append(f(tn + hc[i], yn + dot(hA[i,:i], k[:i])))
-    return yn + dot(hb, k)
-
-def rk_explicit(c, A, b, f, y0, tmax, h):
-    hA = h*A
-    hc = h*c
-    hb = h*b
-
-    tn = 0.0
-    yn = y0.copy()
-    tnyns = [ concatenate(((tn,), yn.copy())) ]
-
-    while tn < tmax:
-        yn = rkstep_explicit(hc, hA, hb, f, yn, tn)
-        tn += h
-        tnyns.append(concatenate(((tn,), yn.copy())))
-    return array(tnyns)
-
-# Explizier Euler
-ee_c = array((0,))
-ee_A = array(((0,),))
-ee_b = array((1,))
-
-# RK klassisch
-rk_c = array((0,0.5,0.5,1))
-rk_A = array(((0  ,  0, 0),
-              (0.5,  0, 0),
-              (0  ,0.5, 0),
-              (0  ,  0, 1),
-              ))
-rk_b = array((1./6,1./3,1./3,1./6))
+from rk import rk_explicit, euler, rk_klassisch
 
 y0 = array((100,1))
 
@@ -82,7 +52,7 @@ figure.subplots_adjust(left=0.15, right=0.95,wspace=0.3)
 #############################################
 graph = figure.add_subplot(221)
 
-tnyns_ee = rk_explicit(ee_c, ee_A, ee_b, f, y0, 50, 1./365)
+tnyns_ee = rk_explicit(euler, f, y0, 50, 1./365)
 
 t, beute, raeuber = zip(*tnyns_ee)
 
@@ -95,7 +65,7 @@ graph.yaxis.set_label_text("Populationen")
 #############################################
 graph = figure.add_subplot(223)
 
-tnyns_rk = rk_explicit(rk_c, rk_A, rk_b, f, y0, 50, 1./365)
+tnyns_rk = rk_explicit(rk_klassisch, f, y0, 50, 1./365)
 
 t, beute, raeuber = zip(*tnyns_rk)
 

@@ -11,9 +11,11 @@
 \chapter{Differentialgleichungen}
 \index{Differentialgleichung}
 
-Fast alle physikalischen Probleme können durch Differentialgleichungen
-(DGLs) beschrieben werden. Auch das einleitende Problem des
-Fadenpendels ist wurde ja durch die Differentialgleichung
+Fast alle physikalischen Vorgänge können durch Differentialgleichungen
+(DGLs) beschrieben werden, von der Schrödingergleichung für
+Quantensysteme, den Newtonschen Gesetzen bis hin zu den
+Navier-Stokes-Gleichungen für Strömungen. Auch das einleitende Problem
+des Fadenpendels wird durch die Differentialgleichung
 \begin{equation}
   \ddot\alpha = -\frac{g}{l}\sin(\alpha)
 \end{equation}
@@ -272,6 +274,25 @@ eine Näherung für $F[t_n+h, f(t_n+h)]$. Diese Näherungen werden in die
 Simpsonregel eingebracht, wobei $k_2$ und $k_3$ mit gleichen Gewichten
 eingehen.
 
+\subsubsection{Beispielimplementation}
+
+Eine Python-Implementation des allgemeinen Runge-Kutta-Schemas für
+$\dot y(t) = $\argd{f}$[t, y(t)]$, $y(0) =$ \argd{y0} könnte wie folgt
+aussehen:%
+\lstinputlisting[firstline=10]{rk.py}%
+Die Lösung $y(t)$ kann dabei auch vektorwertig sein, dann müssen
+\argd{y0} und der Rückgabewert der Funktion \argd{f} gleichgroße
+NumPy-Arrays sein. Die Funktion \lstinline!rk_explicit! erwartet als
+ersten Parameter ein Wörterbuch, dass das Butchertableau für das zu
+benutzende Runge-Kutta-Verfahren beschreibt. Beispiele solcher
+Wörterbücher sind \lstinline!euler! und \lstinline!rk_klassisch! für
+das explizite Eulerverfahren bzw.\ das klassische
+Runge-Kutta-Verfahren. Die Integration findet stets von $t=0$ bis
+\argd{tmax} statt, in Schritten der Weite \argd{h}. Die Routine
+liefert das Ergebnis als Matrix aus den Zeit- und Lösungspunkten
+zurück. Die erste Spalte enthält den Zeitpunkt $t_n$, die zweite die
+erste Komponente von $y_n$, die dritte die zweite Komponente usw.
+
 \subsection{Beispiel: Lotka-Volterra-Gleichungen}
 \index{Lotka-Volterra-Gleichungen}
 
@@ -317,8 +338,8 @@ Dabei gibt $A$ die Vermehrungsrate der Beutetiere an und $B$ die Rate,
 mit der ein Räuber ein Beutetier auffrisst. $C$ gibt die Sterberate
 der Räuber an und $D$ die Rate, mit der sich ein Räuber vermehrt, wenn
 es ein Beutetier gefangen hat. Die Räuber müssen also Beutetiere
-fangen, um sich zu vermehren, während die Beutetier sich von selber
-vermehren. Dieses sehr einfache Modell kennt also keine begrenzten
+fangen, um sich zu vermehren, während die Beutetiere sich von selber
+vermehren. Dieses sehr einfache Modell kennt keine begrenzten
 Resourcen, es gibt aber entsprechende Erweiterungen. Ebenso kann es
 mehrstufige Systeme geben.
 
@@ -327,10 +348,8 @@ Wölfen. Es sei $A=2$ Hasen pro Jahr, d.h.\ ein Hasenpaar hat vier
 Nachkommen im Jahr, und $B=0,1$, ein Wolf fängt also im Schnitt alle
 10 Jahre einen bestimmten Hasen. Die tatsächliche Fangrate hängt von
 der Menge der Wölfe und Hasen ab. Gibt es viele Wölfe, wird es für die
-Hasen eng...
-
-Die Wölfe hingegen sind recht hungrig, wir setzen daher $C=12$. Ein
-Wolf stirbt also in etwa einem Monat, wenn er keinen Hasen
+Hasen eng. Die Wölfe hingegen sind recht hungrig, wir setzen daher
+$C=12$. Ein Wolf stirbt also in etwa einem Monat, wenn er keinen Hasen
 fängt. Umgekehrt reicht ein Hase kaum, um sich zu vermehren, daher
 setzen wir $D=0,1$, so dass etwa 10 Hasen zur erfolgreichen Vermehrung
 gefressen werden müssen.
@@ -338,8 +357,8 @@ gefressen werden müssen.
 Nachdem wir nun die Raten festgelegt haben, können wir zum Beispiel
 das klassische Runge-Kutta-Verfahren benutzen, um
 \eqref{eq:lotka-volterra} zu lösen. Dazu müssen wir noch einen
-Startwert festlegen, zum Beispiel hundert Hasen und einen Wolf, und
-eine Schrittweite, die wir auf einen Tag, also $1/365$-tel,
+Startwert festlegen, hier hundert Hasen und einen Wolf, und eine
+Schrittweite, die wir auf einen Tag, also $1/365$-tel,
 setzen. Abbildung~\ref{fig:lotka} zeigt die resultierenden
 Populationen, einmal als Funktion der Zeit und einmal als
 Räuber-Beute-Diagramm.
@@ -361,11 +380,23 @@ In unserem Fall wären die Populationen also bei $N_B=120$ und $N_R=20$
 stabil. Unser davon leicht abweichender Startwert sollte zu einer
 Trajektorie führen, die um diesen Fixpunkt periodisch kreist. Dies ist
 auch tatsächlich der Fall, wenn das Runge-Kutta-Verfahren, das vierte
-Ordnung hat, benutzt wird. Beim Eulerverfahren hingegen nehmen beide
-Populationen mit der Zeit zu. Selbst wenn der Zeitschritt um einen
-Faktor 10 gesenkt wird, driften die Populationen während der gezeigten
-10 Jahre um etwa 10 Individuen. Dies zeigt eindrücklich die
-Instabilität des Eulerverfahrens.
+Ordnung hat, benutzt wird. Dabei ist gut zu beobachten, dass die
+Wolfspopulation der Hasenpopulation folgt. Die Wölfe dezimieren die
+Hasenpopulation stark und sterben in der Folge selber nahezu
+aus. Dadurch nimmt die Hasenpopulation stark zu, und erst mit einiger
+Verzögerung auch die Wolfspopulation. Dieses Nachlaufen ist
+charakteristisch für die Lotka-Volterra-Gleichungen und kann auch in
+der Natur beobachtet werden.
+
+Wird zur Integration statt der Runge-Kutta-Verfahrens das
+Eulerverfahren benutzt, nehmen beide Populationen mit der Zeit zu. Wie
+vorher gesagt, sind die Lösungen der Lotka-Volterra-Gleichungen aber
+immer periodisch, mit Ausnahme von Startwerten, bei denen es nur
+Beutetiere gibt, die sich dann exponentiell vermehren. Selbst wenn der
+Zeitschritt um einen Faktor 10 gesenkt wird, driften die mit dem
+Eulerverfahren berechneten Populationen während der gezeigten 10 Jahre
+um etwa 10 Individuen. Dies zeigt eindrücklich die Instabilität des
+Eulerverfahrens.
 
 \subsection{Velocity-Verlet-Verfahren}
 \index{Velocity-Verlet-Verfahren}
@@ -393,8 +424,16 @@ berechnet:
 \end{align}
 Ähnlich wie bei den Runge-Kutta-Verfahren wird ein Zwischenschritt bei
 $h/2$ eingelegt, allerdings nur für die Berechnung von
-$v_{n+\nicefrac{1}{2}}\approx x'(t_n + \nicefrac{h}{2})$. Um die
-Ordnung dieses Verfahrens zu bestimmen, eliminieren wir die
+$v_{n+\nicefrac{1}{2}}\approx x'(t_n + \nicefrac{h}{2})$.
+
+Wie man sieht, wird dieselbe Beschleunigung $F(t_n, x_n)$ in
+aufeinanderfolgenden Zeischritten zweimal benötigt. Bei
+Molekulardynamiksimulationen wechselwirkt ein Teilchen aber oft mit
+über 20 Nachbarn, und man berücksichtigt daneben auch die
+rechenzeitintensive, langreichweitige Coulombwechselwirkung. Deswegen
+ist es sinnvoll, die Kräfte zwischenzuspeichern.
+
+Um die Ordnung dieses Verfahrens zu bestimmen, eliminieren wir die
 Geschwindigkeiten:
 \begin{align}
   x_{n+1} &= x_n + h v_n + \frac{h^2}{2} F(t_n, x_n)\nonumber\\
@@ -415,44 +454,479 @@ vergleichbar einfach wie das Eulerverfahren, aber anders als dieses
 recht stabil und hat, wie gezeigt, eine sehr gute Konsistenzordnung,
 vergleichbar mit dem Runge-Kutta-Verfahren. Es hat aber noch eine
 andere wichtige Eigenschaft: anders als die Runge-Kutta-Verfahren ist
-das Verfahren \emph{symplektisch}, was bedeutet, dass es zum einen die
-Energie bis auf numerische Fehler strikt erhält, und zum anderen
-besonders gut geeignet ist, in Molekulardynamiksimulationen
-Observablen über den Phasenraum zu mitteln.
+das Verfahren \emph{symplektisch}, was bedeutet, dass es keine
+Energiedrift zulässt, und zum anderen besonders gut geeignet ist, in
+Molekulardynamiksimulationen Observablen über den Phasenraum zu
+mitteln.  Auch das Simulationspaket ESPResSo, mit dem zum Beispiel im
+vorigen Kapitel die Simulationen zum Simulated Annealing durchgeführt
+wurden, oder das in der Biophysik populäre NAMD~\cite{namd} benutzen
+daher einen Velocity-Verlet-Integrator.
 
-%3-Körperproblem?
+\subsubsection{Beispielimplementation}
 
-% \section{Partielle Differentialgleichungen}
+Eine Python-Implementation des Velocity-Verlet-Verfahrens für $\ddot
+x(t) = $\argd{F}$[t, x(t)]$ mit $x(0) =$ \argd{x0} und $v(0) =$
+\argd{v0} könnte wie folgt aussehen:%
+\lstinputlisting[firstline=10]{vv.py}%
+Genau wie beim Runge-Kutta-Beispiel kann die Lösung $x(t)$ auch
+vektorwertig sein, wenn \argd{x0}, \argd{v0} und der Rückgabewert der
+Beschleunigungsfunktion \argd{F} gleichgroße NumPy-Arrays
+sind. Integriert wird von $t=0$ bis \argd{tmax} in Schritten der Weite
+\argd{h}. Die Routine liefert das Ergebnis als Matrix aus den Zeit-
+und Lösungspunkten sowie den Geschwindigkeiten zurück. Ein Eintrag hat
+also die Form $\left(t^{(k)}, x^{(k)}_1,\ldots,x^{(k)}_n,
+v^{(k)}_1,\ldots,v^{(k)}_n\right)$.
 
+Die obige Implementation ist nicht sehr effizient, da die
+Kraftfunktion in zwei aufeinanderfolgenden Zeitschritten zweimal an
+der selben Stelle ausgewertet wird, statt die Werte
+zwischenzuspeichern.
 
-% \section{Lineare Differentialgleichungen}
-% \index{Differentialgleichung>lineare}
+\subsubsection{Beispiel: 3-Körperproblem}
+\index{Mehrkörperproblem}
 
-% Wir betrachten Differentialgleichungen der Form
-% \begin{equation}
-%   \sum_{i=0}^n c_n(x)f^{(n)}(x) = d(x).
-% \end{equation}
-% Beispiele, die wir bereits kennengelernt haben, sind der harmonische
-% Oszillator~\ref{eq:harmosz}, die Besselsche
-% Differentialgleichung~\eqref{eq:besselode} und die
-% Laplace-Gleichung~\eqref{eq:laplace}. Sind die Funktionen $c_n(x)$
-% sogar konstant, lassen sich die Lösungen analytisch finden, ansonsten
-% bieten sich finite Differenzen oder der Übergang in den Fourierraum
-% an.
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/planets}
+  \caption{Oben: Simulierte Bahn der Erde um die Sonne während 10
+    Jahren (links) und des Monds um die Erde während eines halben
+    Jahres (rechts). Rot gestrichelt sind die vom
+    Velocity-Verlet-Verfahren berechneten Bahnen, blau gepunktet die
+    des Runge-Kutta-Verfahrens. Rote Sterne bzw.\ blaue Rauten
+    bezeichen Punkte im Abstand von 365 Tagen, also etwa einem
+    Jahr. Aufgrund der kleinen Abstände sind die Schwankungen in der
+    Mondbahn größer, aber bei beiden Verfahren akzeptabel. Unten:
+    Energien bei einer Rechnung mit größerer Simulationslänge und
+    Zeitschritt. Hier zeigt sich die Symplektizität des
+    Velocity-Verlet-Verfahrens, das die Energie im Mittel erhält,
+    während das Runge-Kutta-Verfahren driftet.}
+  \label{fig:planets}
+\end{figure}
 
-% Als Beispielproblem betrachten wir wieder die Laplace-Gleichung in
-% zwei Dimensionen. 
-% \subsection{Lösung durch Diskretisierung}
+Wir betrachten die klassischen Bahnen von Sonne, Erde und Mond unter
+Vernachlässigung anderer Himmelskörper und der nicht ganz korrekten
+Annahme, dass alle drei Körper in einer Ebene kreisen. Dieses System
+hat den Vorteil, dass die Kreisbahn des Mondes um die Erde sehr klein
+gegenüber der Kreisbahn des Erde-Mond-Systems um die Sonne ist, so
+dass das Problem sehr unterschiedliche Längenskalen aufweist, die der
+Integrator stabil integrieren muss.
 
-% Bsp: 2d-Laplace
+Zwischen den Objekten mit Positionen $r_i$ und Massen $m_i$ wirkt die
+nichtrelativistische Gravitationskraft
+\begin{equation}
+  F_{ij} = -\frac{G m_1 m_2}{\norm{r_i - r_j}^3}\left(r_i - r_j\right)
+\end{equation}
+mit der Gravitationskonstanten $G$. Die gesamte Kraft auf ein Objekt
+berechnet sich als
+\begin{equation}
+  F_{i} = \sum_{j\neq i} F_{ij}.
+\end{equation}
+Letztere Gleichung gilt natürlich für ein beliebiges
+Mehrkörperproblem, nur die Paarwechselwirkungen $F_{ij}$ ändern sich
+je nach den wirkenden Kräften. Auf molekularer Ebene ist die
+Gravitation vernachlässigbar, dafür wirken zum Beispiel
+elektrostatische und van der Waals-Kräfte.
 
-% \subsection{Lösung im Fourierraum}
-% Bsp: 2d-Laplace
+Wie eingangs besprochen, ist es sinnvoll, die Einheiten so zu wählen,
+dass die relevanten Variablen in der Größenordnung von eins liegen, so
+dass Werte etwa von $10^{30}$ meist auf Implementationsfehler
+hindeuten. In diesem Fall wählen wir als Längeneinheit die
+astronomische Einheit, die dem mittleren Abstand zwischen Sonne und
+Erde entspricht. Die Zeiten messen wir in Jahren, was in etwa der
+Umdrehungszeit der Erde um die Sonne entspricht. Massen schliesslich
+messen wir entsprechend in Erdenmassen $m_E$. In diesem System ist zum
+Beispiel $G=1,1858\cdot 10^{-4} AU^3 m_E^{-1} a^{-2}$. Die Sonne hat
+$333,000$ Erdenmassen, der Mond wiegt hingegen nur $0,0123m_E$ und
+befindet sich etwa $0,00257AU$ von der Erde entfernt. Das verdeutlicht
+nochmals die unterschiedlichen Skalen, mit denen der Integrator
+zurechtkommen muss.
 
-% FEM FVM erwähnen
-% Wärmeleitung, Diffusion
-% Advektionsgleichung?
+Abbildung~\ref{fig:planets} oben zeigt die resultierenden Bahnen der
+Erde um die Sonne und des Monds um die Erde für die Dauer von 10
+Jahren. Die Schrittweite beträgt ein $\nicefrac{1}{365}$-tel Jahr,
+also etwa einem Tag, integriert wird mit dem Velocity-Verlet-Verfahren
+und dem Runge-Kutta-Verfahren, die beide vierter Ordnung sind. Wie
+gezeigt, reproduzieren beide die Erd- und auch Mondbahnen recht gut,
+wenn auch die Mondbahn aufgrund der kleinen Abstände stärkere
+Schwankungen zeigt, als man erwarten würde. Auf der Erdbahn wurden
+Punkte im Abstand eines Jahres markiert, die, wie man erwarten würde,
+dicht beieinander liegen. Für die Qualität dieser Kurzzeitbahnen
+ist der Velocity-Verlet also mit dem Runge-Kutta-Verfahren der
+gleichen Ordnung vergleichbar.
 
+Im unteren Teil ist gezeigt, wie sich die beiden Verfahren verhalten,
+wenn nicht nur deutlich länger, sondern auch mit größeren Zeitschritt
+simuliert wird. In diesem Fall ist der Velocity-Verlet-Integrator
+überlegen, denn er zeigt zwar kurzzeitig größere Energieschwankungen,
+aber langfristig bleibt die Energie erhalten. Allerdings sind für
+beide Integratoren die Mondbahnen vollkommen falsch, der Mond verlässt
+sogar seine Erdumlaufbahn. Für astrophysische Simulationen ist so
+etwas natürlich nicht akzeptabel, aber in der Molekulardynamik spielen
+die exakten Trajektorien der Moleküle keine Rolle, da sie sowieo nicht
+gemessen werden können. Zudem sind molekulare Systeme hochchaotisch,
+d.h.\ selbst bei winzigen Störungen weichen Trajektorien nach kurzer
+Zeit stark ab. In diesem Fall ist die Energieerhaltung des
+Velocity-Verlet-Algorithmus sehr wichtig, denn sie garantiert, dass
+trotzdem das korrekte statistische Ensemble simuliert wird und die
+Messungen sinnvoll sind.
+
+\section{Partielle Differentialgleichungen}
+\index{Differentialgleichung>partielle}
+
+Die numerische Lösung von partiellen Differentialgleichungen, also
+Differentialgleichungen in mehreren Variablen, ist erheblich
+komplexer. Meist werden diese Art von Differentialgleichungen über
+Finite-Element-Methoden (FEM) gelöst, andere Methoden sind
+Finite-Volumen-Methoden (FVM) oder die Finite-Differenzen-Methode
+(FDM). In einigen Fällen können Differentialgleichungen auch durch
+schnelle Fouriertransformation numerisch gelöst werden.
+
+Die Finite-Differenze-Methode hatten wir bereits bei der Lösung der
+Besselschen Differentialgleichung oder der Poissongleichung gesehen.
+Im folgenden wird angerissen, wie die Finite-Element-Methode
+funktioniert, sowie auf die Lösung einiger spezieller partieller
+Differentialgleichungen eingegangen.
+
+\subsection{Finite-Element-Methode}
+\index{Finite-Element-Methode}
+\index{FEM}
+
+Die Finite-Element-Methode (FEM) ist ein Verfahren zur Lösung
+partielle Differentialgleichungen der Form $L\cdot u = f$, wobei $L$
+ein linearer Differentialoperator ist, $f:\Omega\to\RR^n$ eine
+konstante Funktion und $u:\Omega\to\RR^n$ die gesuchte Lösung.
+
+Die FEM beruht auf einer schwachen Formulierung der zu lösenden
+Differentialgleichung. Diese beschreibt $u$ als diejenige, eindeutig
+bestimmte Funktion, die
+\begin{equation}
+  \label{eq:fem}
+  \int_\Omega Lu\cdot v = \int_\Omega f\cdot v\quad\forall v\in
+  C^\infty(\Omega, \RR^n)
+\end{equation}
+erfüllt. Nun wählt man statt der unendlich vielen Testfunktionen aus
+$C^\infty(\Omega, \RR^n)$ einen endlichdimensionalen Unterraum $V$,
+zum Beispiel für $n=1$ alle linearen Splines mit gegebenen, endlich
+vielen Stützpunkten. Sind die Funktionen $v_p$, $p=1(1)N$ eine Basis
+dieses Unterraums, dann lässt sich eine Näherungslösung $u$ als
+Linearkombination in dieser Basis schreiben, $u=\sum_{p=1}^N
+u_pv_p$. Da $L$ ein linearer Differentialoperator sein soll, wird aus
+\eqref{eq:fem} ein gewöhnliches lineares Gleichungssystem:
+\begin{equation}
+  \int_\Omega L\left(\sum_{q=1}^N
+    u_qv_q\right)\cdot v_P \,=\, \sum_{q=1}^N
+  u_q A_{pq} \,\stackrel{!}{=}\,
+  \int_\Omega f\cdot v_p = b_p\quad\forall p=1(1)N.
+\end{equation}
+Die Koeffizienten
+\begin{equation}
+  \label{eq:femA}
+  A_{pq} = \int_\Omega L v_q\cdot v_P
+\end{equation}
+und
+\begin{equation}
+  \label{eq:femb}
+  b_p = \int_\Omega f\cdot v_p
+\end{equation}
+können wir nun zum Beispiel durch numerische Integration
+berechnen und das Gleichungssystem etwa mit dem SOR-Verfahren
+lösen.
+
+Woher kommt der Name "`finite Elemente"'? Die FEM wird meist auf
+realistische dreidimensionale Differentialgleichungen angewandt, so
+dass die Basis üblicherweise viele tausende von Testfunktionen
+enthält. Das bedeutet, dass wir das Koeffizientenintegral
+\eqref{eq:femA} mehrere Millionen mal auswerten müssten. Um diesen
+Aufwand drastisch zu reduzieren, macht man sich zu Nutze, dass
+$A_{pq}$ offenbar nur dann nicht verschwindet, wenn sich die Träger
+von $v_p$ und $v_q$, also die Bereiche, in denen die Funktionen nicht
+Null sind, überschneiden. Daher wählt die Basisfunktionen so, dass sie
+nur sehr kleine Träger haben.
+
+Eine typische Wahl von Basisfunktionen sind lineare Splines. Dabei
+wird ein beliebiges Dreiecksgitter über den Bereich $\Omega$ gelegt
+(Triangulierung), und die Testfunktionen als linear auf diesen
+Dreiecken angenommen. Als Basis wählt man dann diejenigen Splines, die
+nur an einem einzigen Stützpunkt ungleich Null sind, kleine Pyramiden
+sozusagen. Dann gibt es nur dann Wechselwirkungen zwischen zwei
+Basisfunktionen, wenn diese eine gemeinsame Kante haben.
+
+Um die Genauigkeit zu verbessern, können zusätzliche Gitterpunkte
+eingefügt werden, oder von vorne herein das Gitter dort feiner gewählt
+werden, wo die Funktion vermutlich stark variiert (zum Beispiel in der
+Nähe einer Wärmequelle, wenn es um Wärmeleitung geht). Dadurch sind
+FEM-Gitter allerdings sehr komplex und ihre Erzeugung selber schon
+eine Kunst. Da FEM vor allem in den Ingenieurwissenschaften benutzt
+wird, gibt es sehr leistungsfähige, kommerzielle Softwarepakete für
+die FEM-Modellierung. Eine freie Alternative ist das Softwarepaket
+DUNE~\cite{dune,duneweb}.
+
+\subsection{Wärmeleitungsgleichung}
+\index{Diffusionsgleichung}
+\index{Wärmeleitungsgleichung}
+\index{Schrödingergleichung}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/waermeleitung}
+  \caption{Näherungen für die Diffusionsgleichung. Oben die Lösungen
+    zu unterschiedlichen Zeitpunkten $t$ für eine $\delta$-verteilte
+    Anfangsverteilung (links) und zwei Quellen konstanter Rate 1 bei 0
+    und $\nicefrac{1}{2}$ bei -5 (rechts). Unten sind die
+    korrespondieren Gesamtmassen angegeben. Für die
+    $\delta$-Verteilung sind die Gesamtmassen auch bei geringfügig
+    höheren Zeitschritten $\delta t$ angegeben, wobei bei $\delta
+    t=0,014$ die Näherung versagt.}
+  \label{fig:waermeleitung}
+\end{figure}
+
+Wir betrachten die Differentialgleichung
+\begin{equation}
+  \label{eq:diffdgl}
+  \frac{\delta p}{\delta t} p(x, t) =
+  D\frac{\delta^2 p}{\delta x^2} p(x, t).
+\end{equation}
+Gesucht ist $p:\RR^n\times\RR\to\RR$. Diese Differentialgleichung
+hatten wir in Abschnitt~\ref{sec:rw} als Diffusionsgleichung
+kennengelernt. Meist wird diese Gleichung aber als
+Wärmeleitungsgleichung bezeichnet, weil sie auch die Wärmeleitung
+beschreibt. Auch die zeitabhängige Schrödingergleichung hat diese
+Form, ist allerdings komplexwertig.
+
+Um die Differentialgleichung zu lösen, diskretisieren wir wie gewohnt
+die Raumkoordinate äquidistant mit $N$ Punkten mit Abstand $h$ im
+Intervall $[-L/2,L/2)$ mit $L=Nh$.  Am Rand benutzen wir diesmal keine
+periodischen Randbedingungen, sondern setzen die Funktion außerhalb
+des Intervalls auf 0. Für die zweite Ableitung kennen wir bereits eine
+einfache Strategie: wir ersetzen sie durch eine finite Differenz auf
+dem Gitter, etwa \eqref{eq:1order2diff}. Das ergibt
+\begin{equation}
+  \frac{\delta p}{\delta t} p(x_n, t) =
+  \frac{D}{h^2} \left(p(x_{n-1}, t) - 2 p(x_n, t) + p(x_{n+1}, t)\right).
+\end{equation}
+Aus der partiellen Differentialgleichung ist eine gewöhnliche
+Differentialgleichung in $t$ geworden, mit Variablen
+$p(x_1,t),\ldots,p(x_N, t)$. Diese DGL lösen wir nun mit dem
+Runge-Kutta-Verfahren. Das hat den großen Vorteil, dass wir die
+Verteilungen $p(x_n, t)$, die bei großem $N$ oder mehreren Dimensionen
+sehr groß werden können, nur für wenige Zeitschritte speichern müssen.
+
+Quellcode~\ref{lst:waermeleitung} zeigt den resultierenden Code, der
+die Runge-Kutta-Implementierung aus diesem Kapitel als Black Box
+nutzt. Typische Ergebnisse zeigt Abbildung~\ref{fig:waermeleitung},
+für einen Zeitschritt von $\delta t=0,01$ und Gitterabstand
+$0,1$. Links ist zunächst die Diffusionsgleichung für $D=0,5$ und eine
+$\delta$-Verteilung zum Zeitpunkt $t=0$ dargestellt, was dem einfachen
+Random walk aus Abschnitt~\ref{sec:rw} entspricht. In der
+Diskretisierung wird die $\delta$-Funktion an der Stelle $x_n$ dadurch
+dargestellt, dass $p(x_n)=1/h$ und $p(x_m)=0$ sonst. Die beobachteten
+Verteilungen bei $t=5$ und $t=80$ entsprechen gut den entsprechenden
+Verteilungen in Abbildung~\ref{fig:rw}.
+
+In der unteren Reihe ist die zugehörige Gesamtmasse
+\begin{equation}
+  \int_{-L}^L p(x, t)\, dt \approx \sum h p(x_n, t)
+\end{equation}
+aufgetragen. Bei unendlichem Intervall ist die Masse offenbar
+erhalten. In unserem Fall ist die Masse ebenfalls zunächst erhalten
+und gleich 1, da wir ja mit einer $\delta$-Verteilung begonnen
+haben. Sobald die Verteilung am Rand des Intervalls ankommt, verlieren
+wir dort wegen der Null-Randbedingung Masse.
+
+\lstinputlisting[style=floating,firstline=10, caption={Python-Code zur
+  Wärmeleitungsgleichung. Räumlich ist die Lösung mittels finiter
+  Differenzen erster Ordnung diskretisiert, zeitlich wird das
+  Runge-Kutta-Verfahren benutzt. Zusätzlich wird der Massenverlust
+  durch die Randbedingungen dargestellt.},label=lst:waermeleitung]{waermeleitung.py}%
+
+Die Abbildung zeigt auch die (In-)Stabilität dieses Ansatzes. Durch
+geringfügige Vergrößerung des Zeitschritts von $0,01$ auf $0,014$ bei
+konstantem Gitterabstand wird die Lösung nach nicht einmal hundert
+Schritten instabil und erreicht sogar negative Massen. Bei Änderung
+der Raumdiskretisierung muss der Zeitschritt ebenfalls angepasst
+werden. Je kleiner $h$, desto kleiner muss auch $\delta t$
+werden.
+
+Auf der rechten Seite ist eine Gleichung mit zwei konstanten
+Teilchenquellen bzw. Heizungen, wenn man die Gleichung als
+Wärmeleitung interpretiert. Dazu ergänzen wir einfach einen Term
+$0,5\delta(x+\nicefrac{L}{4}) + \delta(x)$ auf der rechten Seite, wir
+haben also eine Quelle mit einem halben Teilchen pro Zeiteinheit bei
+$-\nicefrac{L}{4}$ und eine zweite bei $0$ mit einem Teilchen pro
+Zeiteinheit. Wie man erwarten würde, nehmen die Verteilungen dabei zu,
+bis eine stationäre Verteilung erreicht wird, die sich sogar
+analytisch bestimmen lässt. In diesem Fall erfüllt die stationäre
+Lösung die Poisson-Gleichung
+\begin{equation}
+  0 = D\frac{\delta^2}{\delta x^2} p(x) +
+  0,5\,\delta\left(x+\frac{L}{4}\right) + \delta(x).
+\end{equation}
+Die Lösung verbinden also die $\delta$-Quellen durch Geraden, deren
+Steigungen sich wegen der $\delta$-Terme bei $-L/4$ um 0,5 und bei 0
+um 1 ändern. Mit dem Randbedingungen bei $\pm L/2$ lassen sich die
+Steigungen bestimmen, und damit auch die Masse $137,5$ des
+Gleichgewichtszustandes, die in der Simulation gut reproduziert wird.
+
+\subsection{Lösung der Poisson-Gleichung}
+\index{Poisson-Boltzmann-Gleichung}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/poisson}
+  \caption{Näherungslösung mit $50\times 50$ Gitterpunkten für die
+    Poissongleichung $\Delta \Phi=\rho$. Die Ladungsdichte $\rho$ ist
+    rechts oben gezeigt und beinhaltet zwei normalverteilte
+    Ladungen. Die Lösungen $\Phi_\text{FD}$ mit finiten Differenzen
+    (links oben) und $\Phi_\text{FFT}$ im Fourierraum mittels FFT
+    (links unten) sind praktisch identisch. Dies zeigt auch der
+    relative Fehler $\abs{\Phi_\text{FD} -
+      \Phi_\text{FFT}}/\abs{\Phi_\text{FFT}}$ (rechts unten), der
+    weniger als 2 Promille beträgt. }
+  \label{fig:poisson}
+\end{figure}
+
+Die eben schon genannte Poisson-Gleichung
+\begin{equation}
+  \label{eq:poissonreal}
+  \Delta = \nabla \cdot \nabla \Phi(x)  = \rho(x)
+\end{equation}
+spielt auch in der Elektrostatik eine Rolle, wobei $\Phi$ in diesem
+Fall das Potential ist, und $\rho$ die Ladungsverteilung. Im
+Kapitel~\ref{chap:la} wurde bereits erläutert, dass sich auch diese
+Gleichung gut mit Hilfe von finiten Differenzen lösen lässt, und die
+Wiedergabe der stationären Lösung aus dem vorigen Abschnitt
+unterstreicht dies.
+
+Wie alle lineare partiellen Differentialgleichungen mit konstanten
+Koeffizienten, kann Gleichung \eqref{eq:poissonreal} unter
+periodischen Randbedingungen einfach in den Fourierraum übertragen
+werden:
+\begin{equation}
+  \label{eq:poissonft}
+  -n^2\omega^2\hat\Phi_n  = \hat\rho_n
+\end{equation}
+wobei $\hat\Phi_n$ und $\hat\rho_n$ gemäß \eqref{eq:fouriercoeff}
+definiert sind. Ist $x$ mehrdimensional, wird entlang jeder Dimension
+nacheinander transformiert, und $n$ entspricht $n\cdot n =
+\norm{n}^2$. Danach muss notwendigerweise $\hat\rho_0 = 0$ gelten, das
+System also ladungsneutral sein. Für die übrigen Frequenzen lässt sich
+die Poissongleichung nun ganz einfach durch
+$\hat\Phi_n  = -\hat\rho_n/(n\omega)^2$ lösen. Um also $\Phi(x)$ zu
+berechnen, transformieren wir eine diskrete Ladungsverteilung $\rho$
+mit Hilfe der FFT in den Fourierraum, lösen dort trivial die
+Poissongleichung, und transformieren $\hat\Phi$ zurück.
+
+\lstinputlisting[style=floating,firstline=10, caption={Lösung der
+  Poisson-Gleichung im Fourierraum.},label=lst:poisson]{poisson.py}%
+
+Dieses Vorgehen spielt eine wichtige Rolle bei der Berechnung der
+Schwerkraft oder elektrostatischer Wechselwirkungen in
+astrophysikalischen oder Molekulardynamiksimulationen. Bei den
+sogenannten Particle-Mesh-Ewald-Methoden werden dabei die
+$\delta$-Spitzen diskreter Punktladungen durch verschmierte,
+normalverteilte Ladungen ersetzt, deren Wechselwirkung mit Hilfe von
+schnellen Fouriertransformationen wie beschrieben im Fourierraum
+berechnet wird. Mit einer weiteren, kleinen Korrektur für die
+Ladungsverschmierung lassen sich so die elektrostatischen
+Wechselwirkungen von Millionen von Teilchen in Bruchteilen von
+Sekunden auf einem Großrechner berechnen.
+
+Codebeispiel~\ref{lst:poisson} zeigt, wie eine solche Lösung für eine
+beliebige Ladungsverteilung im Fourierraum berechnet werden
+kann. Diese stimmen bis auf eine Konstante gut mit den Berechnungen
+mittels finiter Differenzen überein, wie Abbildung~\ref{fig:poisson}
+zeigt. Die Konstante rührt daher, dass die Lösung im Fourierraum stets
+eine verschwindende Null-Frequenz hat, also im Mittel Null ist. Bei
+der Finite-Differenzen-Lösung wird hingegen der Wert von $\Phi$ an
+einer Stelle vorgegeben. Abgesehen davon beträgt der maximale
+Unterschied zwischen den Lösungen weniger als 2 Promille, und zwar
+genau auf den Ladungen. Ist die Ladungsverteilung nicht glatt, so ist
+der Fehler größer, da die Fouriertransformation unstetiger Funktionen
+ja nur langsam konvergiert.
+
+\subsection{Lösung der Poisson-Boltzmann-Gleichung}
+\index{Poisson-Boltzmann-Gleichung}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/pb}
+  \caption{Näherungslösung der Poisson-Boltzmann-Gleichung mittels
+    iterativer Lösung des Finite-Differenzen-Gleichungssystems. Die
+    Ladungsdichte konvergiert innerhalb von 6 Schritten zu einer
+    Genauigkeit von $10^{-4}$. Links ist die resultierende Verteilung
+    der negativen Ionen gezeigt, die schwarzen Flächen deuten die
+    homogenen, fixen Ladungen an. Der rechte Graph stellt das
+    resultierende elektrostatische Potential dar.}
+  \label{fig:pb}
+\end{figure}
+
+Als letztes Beispiel wollen wir eine wichtige Erweiterung der
+Poisson-Gleichung lösen, die Poisson-Boltzmann-Gleichung. Für die
+Herleitung dieser Gleichung nehmen wir, dass neben der fixen
+Ladungsverteilung $\rho_\text{fix}(x)$ noch ein Salz aus einwertigen,
+punktförmigen Ionen im System ist. Das Salz kann sich frei in einem
+Bereich $\Omega$ bewegen. Dieser wird durch die charakteristische
+Funktion $\chi(x)$ charakterisiert, die für $x\in\Omega$ 1 ist, sonst
+0. Die räumliche Verteilung dieser Ionen im Gleichgewicht ist durch
+die Boltzmannverteilung gegeben und proportional zu
+$e^{-q\beta\psi(x)}$, wobei $\beta=k_BT$ mit der Boltzmann-Konstanten
+$k_B$ und Temperatur $T$. $q=\pm 1$ ist dabei die Wertigkeit der
+Ionen. Hier taucht also das Potential in der Verteilung der Ionen auf,
+so dass wir eine nichtlineare Differentialgleichung erhalten:
+\begin{align}
+  \label{eq:pb}
+  \epsilon\Delta \Phi(x)  &=
+  -\rho_\text{fix} - c_\infty\left(\underbrace{e^{-\beta
+        \Phi(x)}}_\text{positive Ionen} - \underbrace{e^{\beta
+        \Phi(x)}}_\text{negative Ionen}\right)\chi(x)\nonumber\\
+  &=
+  -\rho_\text{fix} - 2c_\infty\sinh[-\beta \Phi(x)]\chi(x).
+\end{align}
+$c_\infty$ ist dabei die Konzentration der Ionen weit von allen
+Ladungen entfernt, also dort, wo $\Phi=0$, und $\epsilon$ ist die
+dielektrische Konstante. Durch die Multiplikation mit $\chi(x)$
+befinden sich die Ionen nur im zulässigen Bereich.
+
+Die Poisson-Boltzmann-Gleichung wird benutzt, um die Ladungsverteilung
+um makroskopische Ionen zu modellieren. Dies ist bei Simulationen zum
+Beispiel von kolloidalen Teilchen wichtig, in denen das Salz nicht
+explizit modelliert wird, um die Zahl der Teilchen in Grenzen zu
+halten. In der Biophysik wird die Poisson-Boltzmann-Verteilung auch
+gerne zur Visualisierung der Ladungsverteilung von Proteinen benutzt.
+
+Ist das Potential relativ flach, lässt sich die
+Poisson-Boltzmann-Gleichung mittels $\sinh(\Phi)\approx \Phi$
+linearisieren und in manchen Geometrien analytisch lösen. Die volle,
+nichtlineare Poisson-Boltzmann-Gleichung muss aber numerisch gelöst
+werden. Dazu diskretisieren wir $\Phi$ wieder äquidistant in beiden
+Raumrichtungen, und ersetzen den Laplace-Operator durch eine finite
+Differenz. Im Prinzip könnten wir nun das Gleichungssystem mit Hilfe
+des Newtonverfahrens lösen, einfach ist aber die iterative Lösung
+mittels
+\begin{equation}
+  \Phi^{(n+1)}\Phi(x)  = -\frac{1}{\epsilon}\Delta^{-1}\left\{
+    \rho_\text{fix} + 2c_\infty\sinh[-\beta \Phi(x)]\chi(x)\right\}.
+\end{equation}
+Dabei wird natürlich nicht die Inverse des diskretisierten
+Laplace-Operators berechnet, sondern das Gleichungssystem gelöst. Zur
+Beschleunigung könnte eine LR-Berechnung vorberechnet und benutzt
+werden, da sich der Laplace-Operator ja nicht ändert. Diese Iteration
+konvergiert im allgemeinen recht schnell.
+
+Listing~\ref{lst:pb} zeigt eine Implementation dieses iterativen
+Poisson-Boltzmann-Lösers, Abbildung~\ref{fig:pb} die Lösung für ein
+sehr einfaches Modell eines Wasseratoms in zwei Dimensionen. Dabei
+sind die Atome zur Illustration durch homogene Ladungskugeln
+ersetzt. Wie erwartet finden sich die negativen Ionen bevorzugt in der
+Umgebung der beiden positiven Kugeln unten. In diesem Beispiel
+konvergiert die Iteration in nur sechs Schritten auf $10^{-4}$
+Genauigkeit in der Ladungsverteilung.
+
+\lstinputlisting[style=floating,firstline=10, caption={Python-Code zur
+  Poisson-Boltzmann-Gleichung. Die Lösung wird räumlich mittels
+  finiter Differenzen erster Ordnung diskretisiert und anschließend
+  durch Bestimmen des Potentials aus der aktuellen Ladungsdichte
+  iterativ bestimmt.},label=lst:pb]{pb.py}%
 
 %%% Local Variables: 
 %%% mode: latex

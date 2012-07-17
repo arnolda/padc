@@ -776,6 +776,7 @@ gelten. Dies ist in Abbildung~\ref{fig:fft_tests} rechts
 demonstriert.
 
 \section{Beispiel: \keyword{Random walk}}
+\label{sec:rw}
 
 \begin{figure}
   \centering
@@ -895,10 +896,10 @@ bezeichnet.
 
 \subsubsection{Diffusion}
 
-Was ist nun die Bedeutung von der Konstanten $D=\sigma^2(u) =
+Was ist nun die Bedeutung der Konstanten $\sigma^2(u) =
 \sigma^2(x_t)/t$?  Wir verallgemeinern den Random walk, der bisher in
 Zeit um $\Delta t=1$ und Raum um $\pm\Delta x = \pm 1$ gesprungen ist,
-auf beliebige Werte $\Delta x$ und $\Delta t$. Dann gilt offenbar $D =
+auf beliebige Werte $\Delta x$ und $\Delta t$. Dann gilt offenbar $
 \sigma^2(u) = \Delta x^2/\Delta t$. Wir betrachten nun die
 Master-Gleichung der diskreten Wahrscheinlichkeitspopulationen
 \begin{equation}
@@ -927,21 +928,21 @@ Wir multiplizieren nun linker Hand mit $\Delta t^{-1}$ und rechter Hand mit
 $\Delta x^{-2}$:
 \begin{equation}
   \frac{\Delta p(x, t + \Delta t)}{\Delta t} =
-  \frac{D}{2\Delta x^2} \left(p(x - \Delta x, t) +
+  \frac{\sigma^2(u)}{2\Delta x^2} \left(p(x - \Delta x, t) +
     p(x + \Delta x, t) - 2 p(x, t)\right).
 \end{equation}
 Lassen wir nun $\Delta t\to 0$ und $\Delta x\to 0$ gehen, wird aus
 dieser Gleichung die Differentialgleichung
 \begin{equation}
-  \frac{\delta p}{\delta t} p(x, t) =
-  D\frac{\delta^2 p}{\delta x^2} p(x, t).
+  \frac{\delta}{\delta t} p(x, t) =
+  D\frac{\delta^2}{\delta x^2} p(x, t)
 \end{equation}
-Dies ist nichts anderes als die Diffusionsgleichung mit
-Diffusionskonstante $D$. Die Varianz $D=\sigma^2(u)$ unseres
-Zufallsschritts ist also genau die Diffusionskonstante unserer
-makroskopischen Teilchen, und durch geeignete Wahl von $\sigma^2(u)$
-können wir die Diffusionskonstante unserer Random walk-Teilchen
-einstellen.
+mit $D=\sigma^2(u)/2$.  Dies ist nichts anderes als die
+Diffusionsgleichung mit Diffusionskonstante $D$. Die Varianz
+$\sigma^2(u)$ unseres Zufallsschritts ist also genau die doppelte
+Diffusionskonstante unserer makroskopischen Teilchen, und durch
+geeignete Wahl von $\sigma^2(u)$ können wir die Diffusionskonstante
+unserer Random walk-Teilchen einstellen.
 
 \subsubsection{Random walks als Polymermodell}
 \index{Random walk>kontinuierlicher}
