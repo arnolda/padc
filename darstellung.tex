@@ -48,9 +48,9 @@ Hornerschemas so aus:
 \begin{lstlisting}[language=C]
 double horner(double *series, int n, double x)
 {
-    double r = c[n];
+    double r = series[n];
     for(int i = n-1; i >= 0; --i)
-        r = r*x + c[i];
+        r = r*x + series[i];
     return r;
 }
 \end{lstlisting}
@@ -130,7 +130,7 @@ Entwicklungspunkt $x_0$ exakt; dort stimmen allerdings gleich die
 ersten $i$ Ableitungen.
 
 Um  zum  Beispiel die  oben  angeführte  Sinusfunktion  mit 7  Stellen
-Genauigkeit im Interval $[0:\pi/2]$  auszuwerten, genügen die ersten 7
+Genauigkeit im Intervall $[0:\pi/2]$  auszuwerten, genügen die ersten 7
 Terme der Taylorreihe. Mit Hilfe der Symmetrien der Funktion lässt sie
 sich damit bereits für alle Argumente auswerten. Da
 \begin{equation*}
@@ -223,7 +223,7 @@ das interpolierende Polynom durch die Stützstellen (\argd{x[i]},
 
 \subsection{\keyword{Lagrangepolynome}}
 
-Die Koeffiziente $a_i$ können im Prinzip als Lösung von
+Die Koeffizienten $a_i$ können im Prinzip als Lösung von
 Gleichung~\eqref{eq:interpol} mit geeigneten Lösern für lineare
 Gleichungssysteme gefunden werden, was im allgemeinen allerdings recht
 langsam ist. Daher benutzt man besser eine direkte Darstellung mit
@@ -386,7 +386,7 @@ Werte nicht zu überschreiben.
 Bis jetzt haben wir wenig zur Wahl der Stützstellen gesagt. Oft liegt
 es auch nahe, äquidistante Stützstellen zu verwenden wie im
 Fadenpendel-Beispiel. Man kann allerdings zeigen, dass die
-Chebychev-Stützstellen den Fehler der Polynominterpolation minimieren.
+Chebyshev-Stützstellen den Fehler der Polynominterpolation minimieren.
 Diese sind definiert als die Nullstellen der Polynome (!)
 \begin{equation}
   \label{eq:chebyshev}
@@ -394,7 +394,7 @@ Diese sind definiert als die Nullstellen der Polynome (!)
 \end{equation}
 die offensichtlich zwischen -1 und 1 liegen und daher geeignet
 skaliert werden müssen für die Interpolation in einem allgemeinen
-Interval. Die Chebychev-Polynome $T_n$, $n\ge 0$, bilden eine
+Intervall. Die Chebyshev-Polynome $T_n$, $n\ge 0$, bilden eine
 orthogonale Basis der Funktionen über $[-1,1]$ bezüglich des mit
 $1/\sqrt{1-x^2}$ gewichteten Skalarprodukts. Daher kann jede genügend
 glatte Funktion auf $[-1:1]$ als eine Reihe
@@ -473,7 +473,7 @@ Aus der Gleichheit der Funktionswerte an den Stützstellen ergibt sich
   m_i = \frac{y_{i+1} - y_i}{x_{i+1}-x_i} -
   \frac{1}{6}(x_{i+1}-x_i)(2M_i + M_{i+1}).
 \end{equation}
-Aus der Gleichheit der ersten Ableitungen ergibt sich schliesslich ein
+Aus der Gleichheit der ersten Ableitungen ergibt sich schließlich ein
 Gleichungssystem für die $M_i$. Hier kommen in den Gleichungen
 gleichzeitig $M_{i-1}$, $M_i$ und $M_{i+1}$ vor, daher müssen für die
 Randwerte weitere Vorgaben gemacht werden. Sollen die Splines am Rand
@@ -552,7 +552,7 @@ Spline-Interpolation, nämlich \scipy{scipy.interpolate.interp1d(x, y,
   kind)}. (\argd{x},\argd{y}) sind dabei die Stützstellen, und
 \argd{kind} eine Zeichenkette, die den Typ des Splines
 bestimmt. Mögliche Werte sind zum Beispiel "`linear"' und "`cubic"'
-für lineare bzw.\ kubische interpolierende Splines.
+für lineare bzw..\ kubische interpolierende Splines.
 
 \section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
 \index{Ausgleichsrechnung}
@@ -663,7 +663,7 @@ sind. Splines können zwar auch periodisch gemacht werden, aber
 trotzdem sind trigonometrische Funktionen besser geeignet, um
 periodische Funktionen darzustellen. Fourierreihen und
 -transformationen stellen Funktionen als trigonometrische Reihen dar,
-die meist gut konvergieren und darüberhinaus einige nützliche
+die meist gut konvergieren und darüber hinaus einige nützliche
 Eigenschaften haben.
 
 Es gibt zwei Hauptanwendungen der Fourierdarstellung: die Analyse und
@@ -741,8 +741,8 @@ haben, anders als Taylorreihen oder Splines.
 
 Weiter gilt:
 \begin{itemize}
-\item Die Fourierreihe über einem Interval $[0,T)$ kann aus der
-  Fourierreihe für das Interval $[0,2\pi)$ durch Streckung mit
+\item Die Fourierreihe über einem Intervall $[0,T)$ kann aus der
+  Fourierreihe für das Intervall $[0,2\pi)$ durch Streckung mit
   $\omega$ berechnet werden:
   \begin{equation}
     \widehat{f(t)}_n = \frac{1}{T}\int_0^T f(t)e^{-i n\omega t}\, dt
@@ -819,7 +819,7 @@ Funktionen $a_n=0$.
   \centering
   \includegraphics[width=\textwidth]{plots/fourier}
   \caption{Abgeschnittene Fourierreihen der Rechteckfunktion (links)
-    und eines Dreeieckpulses (rechts). Die Funktionen sind jeweils als
+    und eines Dreieckpulses (rechts). Die Funktionen sind jeweils als
     schwarze durchgezogene Linien eingezeichnet, die Näherungen mit
     einem Term blau gestrichelt, mit zwei Termen rot gepunktet, und
     mit 20 Termen grün durchgezogen. Für den Dreieckpuls ist letztere
@@ -866,7 +866,7 @@ Einige reelle Fourierreihen sind zum Beispiel:
     \widehat{\left(f_S\right)}_n \xrightarrow{S\to 0} \frac{1}{T} = \hat\delta_n
     \quad\text{für alle}\;n\in\ZZ
   \end{equation}
-  bzw. $a_n\to 2/T$ und $b_n\to 0$. Die $\delta$-Funktion, die ja der
+  bzw.. $a_n\to 2/T$ und $b_n\to 0$. Die $\delta$-Funktion, die ja der
   formale Grenzwert der $f_S$ ist, und den kleinstmöglichen
   Träger hat, hat also in gewisser Weise die am schlechtesten
   (tatsächlich gar nicht!) konvergierende Fourierreihe.
@@ -884,7 +884,7 @@ Genau wie die komplexe Fourierreihe lässt sich natürlich auch die
 reelle Fourierreihe abschneiden, um Näherungen für Funktionen zu
 bekommen, vergleiche Abbildung~\ref{fig:fourier}. Es fällt auf, das
 die Fourierreihe besonders schlecht dort konvergieren, wo die Funktion
-nicht differenzierbar ist bzw.\ einen Sprung aufweist.
+nicht differenzierbar ist bzw..\ einen Sprung aufweist.
 
 \subsection{Diskrete Fouriertransformation}
 \index{Fouriertransformation>diskrete}
@@ -922,8 +922,8 @@ nicht differenzierbar ist bzw.\ einen Sprung aufweist.
 \end{figure}
 
 Bei praktischen Anwendungen sind die Integrale zur Bestimmung der
-Koeffiziente oft nicht analytisch lösbar, oder die Funktion ist von
-vorneherein nur an diskreten Punkten gegeben, etwa weil es sich um
+Koeffizienten oft nicht analytisch lösbar, oder die Funktion ist von
+vornherein nur an diskreten Punkten gegeben, etwa weil es sich um
 Messdaten handelt. In diesem Fall müssen die Integrale numerisch
 approximiert werden. Wir betrachten nun also nicht mehr eine
 kontinuierliche Funktion $f$, sondern Daten $f_k = f(t_k)$ mit
@@ -962,10 +962,10 @@ Die Koeffizienten sind offenbar periodisch, da
   \sum_{k=0}^{N-1} f_k e^{-i\frac{2\pi}{N} n k} \underbrace{e^{-2\pi i k}}_{=1} = g_n.
 \end{equation}
 Insbesondere ist $g_{-k} = g_{N-k}$, und es gibt nur $N$ echt
-verschiedene Koeffizienten bzw. Frequenzen $n/T$. DFT-Bibliotheken
+verschiedene Koeffizienten bzw.. Frequenzen $n/T$. DFT-Bibliotheken
 speichern die Koeffizienten daher meist als Vektor
 $(g_{0},\ldots,g_{N-1})$
-bzw. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
+bzw.. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
 reell, so gilt noch dazu $g_{-k} = \overline{g_{k}}$, sodass lediglich
 $\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Allerdings
 sind diese im allgemeinen komplex, so dass die $N$ reellen
@@ -1016,7 +1016,7 @@ den Datenpunkten $f_{2k}$, $k=0(1)M-1$, bezeichnet. Gemäß
 \eqref{eq:dftper} ist dabei $\text{DFT}(f_{2k})_n =
 \text{DFT}(f_{2k})_{n-M}$ für $n>M$.
 
-Die Fouriertransformatierte der $N$ Datenpunkte ergibt sich also als
+Die Fouriertransformierte der $N$ Datenpunkte ergibt sich also als
 einfache Summe von zwei
 Fouriertransformierten mit lediglich der halben Menge $M$ an
 Datenpunkten, wobei die ungerade Hälfte mit der \emph{Einheitswurzel}
@@ -1140,7 +1140,7 @@ trigonometrische Funktionen darstellt, gibt es für die MSA
 verschiedene Sätze von Basisfunktionen mit verschiedenen Eigenschaften
 wie Differenzierbarkeit und Lokalität. Im folgenden soll die MSA mit
 Hilfe des Haar-Wavelets dargestellt werden, dass das einfachste und
-älteste bekannte Wavelet ist. Zunächste betrachten wir die
+älteste bekannte Wavelet ist. Zunächst betrachten wir die
 \emph{Skalierungsfunktion}
 \begin{equation}
   \phi(x) = \chi_{(0,1]} =
@@ -1203,7 +1203,7 @@ Codebeispiel~\ref{lst:dwt}. Der Kern dieser Transformation liegt
 darin, die Transformierte von der höchsten Detailauflösung herab
 aufzubauen, und dadurch die die Integrale approximierenden Summen
 schrittweise aufzubauen (\emph{Downsampling}). Für genauere
-Informationen siehe zum Bespiel \textcite{daubechies92a}.
+Informationen siehe zum Beispiel \textcite{daubechies92a}.
 
 Abbildung~\ref{fig:dwt} zeigt einige Detailstufen der
 Wavelet-Zerlegung der verrauschten Sinusfunktionen analog

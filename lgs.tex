@@ -12,7 +12,7 @@
 
 Lineare Gleichungssysteme sind die einfachste Art von
 Gleichungssystemen, für die sich zum Beispiel leicht bestimmen lässt,
-ob und wieviele Lösungen es gibt. Daher führt man auch die Lösung
+ob und wie viele Lösungen es gibt. Daher führt man auch die Lösung
 komplexerer Probleme, wie zum Beispiel Differentialgleichungen, oft
 auf die Lösung eines Satzes von linearen Gleichungssystemen
 zurück. Lineare Gleichungssysteme sind in diesem Sinne eine der
@@ -147,7 +147,7 @@ Verfügung, die offensichtlich die Lösung nicht verändern:
 \item Addieren eines Vielfachen einer Zeile zu einer anderen
 \item Multiplikation einer Zeile mit einer Konstanten ungleich 0
 \end{enumerate}
-Die Gausselimination nutzt nun diese Operationen, um die Matrix
+Die Gaußelimination nutzt nun diese Operationen, um die Matrix
 spaltenweise auf die gewünschte Dreiecksform zu bringen. Dazu werden
 Vielfache der ersten Zeile von allen anderen abgezogen, so dass die
 Gleichung die Form
@@ -225,7 +225,7 @@ bringen. Folgende Verfahren werden unterschieden
   unverändert. Ist die Matrix $A$ quadratisch, bricht das Verfahren
   genau dann ab, wenn $A$ singulär ist.
 \item \emph{Totalpivotwahl}: wie oben im 2. Fall wird stets das maximale
-  Matrixelement im gesamten Resttableau gensucht, also
+  Matrixelement im gesamten Resttableau gesucht, also
   \begin{equation}
     i_0,k_0 = \text{argmax}_{i,k>r} \lvert a_{ik}^{(r-1)}\rvert.
   \end{equation}
@@ -240,7 +240,7 @@ quadratischen Matrizen im wesentlichen $\O(n^3)$
 Fließkommaoperationen. Das ist relativ langsam, daher werden wir
 später bessere approximative Verfahren kennenlernen. Für Matrizen
 bestimmter Struktur, zum Beispiel Bandmatrizen, ist die
-Gaußelimination aber gut geeignet. NumPy bzw. SciPy stellen daher auch
+Gaußelimination aber gut geeignet. NumPy bzw.. SciPy stellen daher auch
 keine Gaußelimination direkt zur Verfügung.
 \scipy{scipy.linalg.solve(A, b)} ist ein Löser für Gleichungssysteme
 $Ax=b$, der immerhin auf der LU-Zerlegung durch Gaußelimination
@@ -271,7 +271,7 @@ schrittweise die Form
     \end{array}\right)
 \end{equation}
 annimmt. Das Verfahren ist allerdings numerisch nicht sehr stabil, und
-generell sollte die explizite Berechnung der Inversen wann inner
+generell sollte die explizite Berechnung der Inversen wann immer
 möglich vermieden werden. SciPy stellt die Matrixinversion als
 Funktion \scipy{scipy.linalg.inv(A)} zur Verfügung.
 
@@ -332,7 +332,7 @@ Dreiecksform transformierte Matrix, und durch die Matrix
 der Updatekoeffizienten aus \eqref{eq:gausseli} gegeben.
 
 Wie bereits gesagt, ist die Voraussetzung, dass die Gaußelimination
-mit kanonischer Pivotwahl durchgeführt werden kann, stark, und
+mit kanonischer Pivotwahl durchgeführt werden kann, sehr restriktiv, und
 schließt selbst einfache Matrizen wie {\tiny $\begin{pmatrix} 0 & 1\\
     1 & 0\end{pmatrix}$} aus. Wie man sich leicht überlegt, besitzt
 diese Matrix allerdings keine LU-Zerlegung.
@@ -411,7 +411,7 @@ besetzt sind. Diagonalmatrizen sind also 1-Bandmatrizen, eine
 Für Matrizen dieser Form ist die Gaußelimination mit kanonischer
 Pivotwahl sehr effizient, da pro Iteration jeweils nur die erste Zeile
 des Resttableaus verändert werden muss. Dadurch ist der Rechenaufwand
-nur noch linear in der Matrixgröße bzw. Länge der Bänder. Die
+nur noch linear in der Matrixgröße bzw.. Länge der Bänder. Die
 Dreiecksmatrizen $L$ und $U$ der LU-Zerlegung sind zusätzlich
 (Drei-) Bandmatrizen, wobei $L$ nur auf der Haupt und der unteren
 Nebendiagonalen von Null verschiedene Einträge hat, $U$ nur auf der
