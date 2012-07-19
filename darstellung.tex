@@ -552,7 +552,7 @@ Spline-Interpolation, nämlich \scipy{scipy.interpolate.interp1d(x, y,
   kind)}. (\argd{x},\argd{y}) sind dabei die Stützstellen, und
 \argd{kind} eine Zeichenkette, die den Typ des Splines
 bestimmt. Mögliche Werte sind zum Beispiel "`linear"' und "`cubic"'
-für lineare bzw..\ kubische interpolierende Splines.
+für lineare bzw.\ kubische interpolierende Splines.
 
 \section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
 \index{Ausgleichsrechnung}
@@ -866,7 +866,7 @@ Einige reelle Fourierreihen sind zum Beispiel:
     \widehat{\left(f_S\right)}_n \xrightarrow{S\to 0} \frac{1}{T} = \hat\delta_n
     \quad\text{für alle}\;n\in\ZZ
   \end{equation}
-  bzw.. $a_n\to 2/T$ und $b_n\to 0$. Die $\delta$-Funktion, die ja der
+  bzw. $a_n\to 2/T$ und $b_n\to 0$. Die $\delta$-Funktion, die ja der
   formale Grenzwert der $f_S$ ist, und den kleinstmöglichen
   Träger hat, hat also in gewisser Weise die am schlechtesten
   (tatsächlich gar nicht!) konvergierende Fourierreihe.
@@ -884,7 +884,7 @@ Genau wie die komplexe Fourierreihe lässt sich natürlich auch die
 reelle Fourierreihe abschneiden, um Näherungen für Funktionen zu
 bekommen, vergleiche Abbildung~\ref{fig:fourier}. Es fällt auf, das
 die Fourierreihe besonders schlecht dort konvergieren, wo die Funktion
-nicht differenzierbar ist bzw..\ einen Sprung aufweist.
+nicht differenzierbar ist bzw.\ einen Sprung aufweist.
 
 \subsection{Diskrete Fouriertransformation}
 \index{Fouriertransformation>diskrete}
@@ -962,10 +962,10 @@ Die Koeffizienten sind offenbar periodisch, da
   \sum_{k=0}^{N-1} f_k e^{-i\frac{2\pi}{N} n k} \underbrace{e^{-2\pi i k}}_{=1} = g_n.
 \end{equation}
 Insbesondere ist $g_{-k} = g_{N-k}$, und es gibt nur $N$ echt
-verschiedene Koeffizienten bzw.. Frequenzen $n/T$. DFT-Bibliotheken
+verschiedene Koeffizienten bzw. Frequenzen $n/T$. DFT-Bibliotheken
 speichern die Koeffizienten daher meist als Vektor
 $(g_{0},\ldots,g_{N-1})$
-bzw.. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
+bzw. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
 reell, so gilt noch dazu $g_{-k} = \overline{g_{k}}$, sodass lediglich
 $\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Allerdings
 sind diese im allgemeinen komplex, so dass die $N$ reellen

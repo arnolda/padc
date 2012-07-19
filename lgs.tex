@@ -240,7 +240,7 @@ quadratischen Matrizen im wesentlichen $\O(n^3)$
 Fließkommaoperationen. Das ist relativ langsam, daher werden wir
 später bessere approximative Verfahren kennenlernen. Für Matrizen
 bestimmter Struktur, zum Beispiel Bandmatrizen, ist die
-Gaußelimination aber gut geeignet. NumPy bzw.. SciPy stellen daher auch
+Gaußelimination aber gut geeignet. NumPy bzw. SciPy stellen daher auch
 keine Gaußelimination direkt zur Verfügung.
 \scipy{scipy.linalg.solve(A, b)} ist ein Löser für Gleichungssysteme
 $Ax=b$, der immerhin auf der LU-Zerlegung durch Gaußelimination
@@ -411,7 +411,7 @@ besetzt sind. Diagonalmatrizen sind also 1-Bandmatrizen, eine
 Für Matrizen dieser Form ist die Gaußelimination mit kanonischer
 Pivotwahl sehr effizient, da pro Iteration jeweils nur die erste Zeile
 des Resttableaus verändert werden muss. Dadurch ist der Rechenaufwand
-nur noch linear in der Matrixgröße bzw.. Länge der Bänder. Die
+nur noch linear in der Matrixgröße bzw. Länge der Bänder. Die
 Dreiecksmatrizen $L$ und $U$ der LU-Zerlegung sind zusätzlich
 (Drei-) Bandmatrizen, wobei $L$ nur auf der Haupt und der unteren
 Nebendiagonalen von Null verschiedene Einträge hat, $U$ nur auf der
