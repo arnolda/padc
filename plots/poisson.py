@@ -18,8 +18,9 @@ import matplotlib.pyplot as pyplot
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 
-L=1.0 # Kantenlaenge des Quadrats
-N=50  # Punkte der Diskretisierung, gerade fuer FFT
+L=1.0    # Kantenlaenge des Quadrats
+N=50     # Punkte der Diskretisierung, gerade fuer FFT
+eps=0.02 # dielektrische Konstante
 
 h = L/N
 # rho aufsetzen
@@ -64,7 +65,7 @@ for y in range(N):
         else:
             rho_fd_flat[linindex(x,y)] = rho[x,y]
 
-psi_fd_flat = solve(Laplace, -rho_fd_flat)
+psi_fd_flat = solve(Laplace, -rho_fd_flat/eps)
 
 psi_fd = empty((N, N))
 for y in range(N):
@@ -90,7 +91,7 @@ for kx in range(N/2 + 1):
             if kx > 0 and ky > 0 and kx < N/2 and ky < N/2:
                 rho_fft[N-kx, N-ky] /= k2
 
-psi_fft = ifft2(rho_fft)
+psi_fft = ifft2(rho_fft/eps)
 
 print "Imaginaerteil, sollte verschwinden:", amax(imag(psi_fft))
 psi_fft = real(psi_fft)
@@ -105,23 +106,49 @@ figure.subplots_adjust(left=0.05, right=0.95, top=0.95, bottom=0.05)
 #############################################
 graph = figure.add_subplot(222)
 
+# relevanter Bereich fuer den Colorbar:
+rng = (-3.5, +3.5)
+
+# Entsprechende Colormap mit Rueckskalierung
+# weiss bei neutral, also 0 urspruenglich
+white = -rng[0]/(rng[1] - rng[0])
+
+cmdict = {'red':   ((0.0,   0.0, 0.0),
+                    (white, 1.0, 1.0),
+                    (1.0,   1.0, 1.0),
+                    ),
+          'green': ((0.0,   0.0, 0.0),
+                    (white, 1.0, 1.0),
+                    (1.0,   0.0, 0.0),
+                    ),
+          'blue':  ((0.0,   1.0, 1.0),
+                    (white, 1.0, 1.0),
+                    (1.0,   0.0, 0.0),
+                    )}
+cm_densities = colors.LinearSegmentedColormap('densmap', cmdict, 256)
+
 im = graph.imshow(rho, interpolation="bilinear", origin="lower",
-                  extent=(0,L,0,L))
+                  cmap = cm_densities,
+                  extent=(0,L,0,L), norm = colors.Normalize(rng[0], rng[1]))
 figure.colorbar(im,shrink=0.8)
 
 # links oben: FD
 #############################################
 graph = figure.add_subplot(221)
 
+print "Reichweite im Potential", amin(psi_fd), amax(psi_fd)
+
 graph.imshow(psi_fd, interpolation="bilinear", origin="lower",
-             extent=(0,L,0,L))
+             cmap = cm_densities,
+             extent=(0,L,0,L), norm = colors.Normalize(rng[0], rng[1]))
 
 # links unten: FFT
 #############################################
 graph = figure.add_subplot(223)
 
 graph.imshow(psi_fft, interpolation="bilinear", origin="lower",
-             extent=(0,L,0,L))
+                  cmap = cm_densities,
+                  extent=(0,L,0,L), norm = colors.Normalize(rng[0], rng[1]))
 
 # rechts unten: Differenz
 #############################################

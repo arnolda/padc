@@ -13,12 +13,12 @@ from scipy import *
 from scipy.linalg import *
 import matplotlib.pyplot as pyplot
 
-L = 1.0     # Kantenlaenge des Quadrats
-N = 50      # Punkte der Diskretisierung
-eps = 1     # Dielektrische Konstante
-cinf = 1    # Salzkonzentration am Rand
-tol = 1e-4  # maximales Residuum
-h = L/N     # Schrittweite
+L    = 5.0   # Kantenlaenge des Quadrats
+N    = 50    # Punkte der Diskretisierung
+lb   = 0.7   # Bjerrumlaenge
+cinf = 1e-3  # Salzkonzentration am Rand, 1-mmolar
+tol  = 1e-2  # maximales Residuum
+h    = L/N   # Schrittweite
 
 # Fortran/NumPy-artige Indizierung
 def linindex(x, y): return y + N*x
@@ -46,16 +46,16 @@ for y in range(N):
 # Iterativer Loeser
 ##############################################
 psi = zeros(N*N) # Potential
+lu = lu_factor(Laplace)
 while True:
     # aktuelle vollstaendige Ladungsdichte
     rho = rho_fix + cinf*2*sinh(-psi)*chi
-    residual = eps*dot(Laplace, psi) + rho
+    residual = dot(Laplace, psi)/(4*pi*lb) + rho
     print "Residuum ist", norm(residual)
     if norm(residual) < tol: break
-    psi = solve(Laplace, -rho)/eps
+    psi = lu_solve(lu, -4*pi*lb*rho)
 
 # Ausgabe der resultierende positiven Ionendichte
-##############################################
 n = (cinf*exp(-psi)*chi).reshape((N,N))
 im = pyplot.imshow(n, origin="lower", extent=(0,L,0,L))
 pyplot.colorbar(im)

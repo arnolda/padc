@@ -32,20 +32,20 @@ rho -= sum(rho)/N**2
 ##############################################
 
 rho_fft = fft2(rho)
-# Laplace-Operator (2 pi/k L)^2
-for kx in range(N/2 + 1):
-    for ky in range(N/2+1):
-        if kx == 0 and ky == 0:
-            rho_fft[kx,ky] = 0
+# Laplace-Operator (2 pi/n L)^2
+for nx in range(N/2 + 1):
+    for ny in range(N/2+1):
+        if nx == 0 and ny == 0:
+            rho_fft[nx,ny] = 0
         else:
-            k2 = (kx**2 + ky**2)*(2*pi/L)**2
-            rho_fft[      kx,   ky] /= k2
-            if kx > 0 and kx < N/2:
-                rho_fft[N-kx,   ky] /= k2
-            if ky > 0 and ky < N/2:
-                rho_fft[  kx, N-ky] /= k2
-            if kx > 0 and ky > 0 and kx < N/2 and ky < N/2:
-                rho_fft[N-kx, N-ky] /= k2
+            n2 = (nx**2 + ny**2)*(2*pi/L)**2
+            rho_fft[      nx,   ny] /= n2
+            if nx > 0 and nx < N/2:
+                rho_fft[N-nx,   ny] /= n2
+            if ny > 0 and ny < N/2:
+                rho_fft[  nx, N-ny] /= n2
+            if nx > 0 and ny > 0 and nx < N/2 and ny < N/2:
+                rho_fft[N-nx, N-ny] /= n2
 psi_fft = ifft2(rho_fft)
 psi_fft = real(psi_fft)
 
