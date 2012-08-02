@@ -14,7 +14,7 @@ In diesem Kapitel geht es darum, was man mit einem gemessenen Signal
 machen kann und muss. Ein gemessenes Signal kann dabei entweder
 tatsächlich von einem Messgerät kommen oder aber das Ergebnis einer
 Computersimulation sein. Zwei Fragen sind dabei vor allem wichtig:
-welche Eigenschaften hat das Signal, und wie vertrauenswürdig sind die
+Welche Eigenschaften hat das Signal, und wie vertrauenswürdig sind die
 Werte?
 
 Um die Eigenschaften von Signalen zu untersuchen, ist die
@@ -133,10 +133,10 @@ zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
   Spektrum. 
 \item Aus der Linearität folgt, dass stets gilt:
   $\FT(\overline{f})(\omega) = \overline{\FT(f)(\omega)}$.
-\item Ist Funktion $f$ symmetrisch, also $f(t) = f(-t)$, so ist
-  $\FT(f)(-\omega) = \FT(f)(\omega)$, also symmetrisch
-\item Ist Funktion $f$ ungerade, also $f(t) = -f(-t)$, so ist
-  $\FT(f)(-\omega) = -\FT(f)(\omega)$, also ungerade.
+\item Ist Funktion $f$ gerade (symmetrisch), also $f(t) = f(-t)$, so ist
+  $\FT(f)(-\omega) = \FT(f)(\omega)$, also gerade (symmetrisch).
+\item Ist Funktion $f$ ungerade (antisymmetrische), also $f(t) = -f(-t)$, so ist
+  $\FT(f)(-\omega) = -\FT(f)(\omega)$, ungerade (antisymmetrische).
 \item Ist Funktion $f$ reellwertig, also $f(t) = \overline{f(t)}$, so
   ist $\FT(f)(-\omega) = \overline{\FT(f)(\omega)}$, aber im
   allgemeinen komplexwertig!
@@ -410,13 +410,13 @@ Funktion $g$ wird mit der Funktion $f$ gefiltert.
 
 Außerdem lässt \eqref{eq:fourierfaltung} noch eine weitere
 Interpretation der Faltung der Funktion $g$ mit der Funktion $f$ zu:
-ist $f$ bzw. $\FT(f)$ reellwertig und symmetrisch, so werden die
+Ist $f$ bzw. $\FT(f)$ reellwertig und symmetrisch, so werden die
 einzelnen Frequenzkomponenten der Funktion $g$ mit den
 Frequenzanteilen von $f$ gestreckt bzw.\ gestaucht, $g$ also
 frequenzgefiltert. Man beachte, dass $g$ für die Definition
 \eqref{eq:fourierfaltung} nicht quadratintegrabel sein muss, sofern
 der Filter $f$ schnell genug abfällt. Insbesondere kann $g$ eine nur
-beschränkte, aber nicht abklingende Funktion seinm, wie etwa ein
+beschränkte, aber nicht abklingende Funktion sein, wie etwa ein
 Messsignal.
 
 Durch Wahl einer symmetrischen und reellwertigen
@@ -522,7 +522,7 @@ können auch endliche, aber hohe Energiebarrieren zu einem
 systematischen Fehler führen.
 
 $\mean{A}$ bzw. $\mean{B}$ sind oft gar nicht genau bekannt, und
-müssen numerisch durch (Zeit-)Mittelung der Daten bestimmt werden. Da
+müssen numerisch durch \mbox{(Zeit--)}Mittelung der Daten bestimmt werden. Da
 hier aber normalerweise dieselben Daten zugrunde gelegt werden, die
 auch zu Berechnung der Kreuzkorrelation selber genutzt werden, sind
 diese notwendigerweise korreliert, was zu kleinen Abweichungen in der
@@ -564,7 +564,7 @@ und kann damit effizient im Frequenzraum bestimmt werden:
 Kommen wir nun zu unserem Ausgangsproblem mit zwei stochastischen,
 zeitinvarianten Variablen $A$ und $B$ und dem Zeitmittel zurück. Wie
 üblich nehmen wir an, dass $A$ und $B$ an endlich vielen, diskreten
-Zeitpunkten $tk\Delta$, $k=0(1)n-1$, gemessen wurden. Die Messung
+Zeitpunkten $k\Delta$, $k=0(1)n-1$, gemessen wurden. Die Messung
 erstreckt sich also über den Zeitraum $[0,T]$ mit $T=n\Delta$. Dann
 ist eine Näherung für die Kreuzkorrelation von $A$ und $B$ gegeben
 durch
@@ -630,7 +630,7 @@ symmetrisch, daher sind nur Zeitversätze $\tau\ge 0$ von
 Interesse. Die Autokorrelationsfunktion misst gewissermaßen, wie lange
 es dauert, bis die Observable nicht mehr von seinem vorherigen Wert
 abhängt, wann es diesen sozusagen "`vergisst"'. In dem häufigen Fall,
-dass die Autokorrelationsfunktion zunächst expontentiell abfällt,
+dass die Autokorrelationsfunktion zunächst exponentiell abfällt,
 lässt sich dem Gedächtnis eine Zeitkonstante $\tau_c$, die
 \emph{\keyword{Korrelationszeit}}, zuordnen. Diese kann man entweder
 durch einen geeigneten Funktionsfit bestimmen, oder aber durch

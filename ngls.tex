@@ -83,7 +83,7 @@ etwa die Dreiecksungleichung, erfüllt.
 Lipschitz-Konstante $L<1$, so heißt $g$ \emph{kontrahierend}, weil
 zwei verschiedene Punkte durch die Abbildung stets näher aneinander
 geschoben werden. Wir betrachten nun einen beliebigen Startpunkt
-$x_0\in M$ und definieren damit die Folge der \emph{sukzessive Substitution}:
+$x_0\in M$ und definieren damit die Folge der \emph{sukzessiven Substitution}:
 \begin{equation}
   x_{n} := g(x_{n-1}) \quad\text{für}\; n\ge 1.
 \end{equation}
@@ -184,8 +184,8 @@ noch, aber nicht mehr exponentiell.
 \index{Newtonverfahren}
 \index{Nullstellensuche}
 
-Nachdem wir bis jetzt die suzessive Substitution zur Bestimmung von
-Fixpunkten betrachten haben, geht es nun um die Nullstellensuche. Sei
+Nachdem wir bis jetzt die sukzessive Substitution zur Bestimmung von
+Fixpunkten betrachtet haben, geht es nun um die Nullstellensuche. Sei
 also zunächst eine stetig differenzierbare Funktion $f:[a,b]\to\RR$
 gegeben und deren Nullstellen $x$, $f(x) = 0$, gesucht. Ähnlich wie
 bei der sukzessiven Iteration starten wir mit einem Startwert
@@ -301,13 +301,13 @@ Für die Wurzel aus $a=2$ sind die ersten 5 Schritte des Heronverfahrens:
   \end{tabular}
 \end{center}
 Mit der auf Rechnern üblichen doppelten Genauigkeit ist das Verfahren
-damit konvergiert.
+damit konvergent.
 
 Die Anzahl der Rechenoperationen für $n$ Schritte entspricht der
 Auswertung eines Polynoms mit $3n/2$ Koeffizienten. Wäre man zum
 Beispiel nur an der Wurzel im Bereich $[0,5]$ interessiert und würde
-hierzu eine interpolierendes Polynom mit 7 Chebyshev-Stützstellen
-nutzen, wäre $\sqrt{2}\approx 1.40966$ mit gerade einmal einerq
+hierzu ein interpolierendes Polynom mit 7 Chebyshev-Stützstellen
+nutzen, wäre $\sqrt{2}\approx 1.40966$ mit gerade einmal einer
 korrekten Stelle. Mit einer Taylorentwicklung um 1 würde es etwas
 besser. Bei 7 Termen liefert diese $\sqrt{2}\approx 1.4214$ mit 2
 korrekten Stellen.
@@ -336,11 +336,11 @@ bestimmt werden können:
 \begin{lstlisting}[language=C]
 double newton_step(double *series, int n, double xn)
 {
-  double p = c[n];
-  double dp = n*c[n];
+  double p = series[n];
+  double dp = n*series[n];
   for(int i = n-1; i >= 0; --i) {
-    p  =  p*xn +   c[i];
-    dp = dp*xn + i*c[i];
+    p  =  p*xn +   series[i];
+    dp = dp*xn + i*series[i];
   }
   return xn - p/dp;
 }
