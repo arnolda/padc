@@ -16,11 +16,12 @@ from scipy.linalg import *
 import matplotlib.pyplot as pyplot
 import matplotlib.colors as colors
 
-L = 1.0     # Kantenlaenge des Quadrats
-N = 50      # Punkte der Diskretisierung
-eps = 1     # Dielektrische Konstante
-cinf = 1    # Salzkonzentration am Rand
-tol = 1e-4  # maximales Residuum
+L    = 2.0     # Kantenlaenge des Quadrats
+N    = 50      # Punkte der Diskretisierung
+lb   = 0.7     # Bjerrumlaenge
+cinf = 0.2*0.6 # Molaritaet der Salzkonzentration am Rand
+tol  = 1e-2    # maximales Residuum
+h    = L/N     # Schrittweite
 
 # Schrittweite
 h = L/N
@@ -30,20 +31,25 @@ def linindex(x, y): return y + N*x
 # Fixes rho und zugaenglichen Bereich aufsetzen. Ueberall dort, wo
 # feste Ladung sitzt, geht es nicht hin
 rho_fix, chi = zeros(N*N), zeros(N*N)
-# Radius der beiden Ladungen
-r = 0.1
+# Radius der drei Ladungen
+r = 0.15
+# Position und Ladung
+chrg=(( 0,   0.7, -2, "2-", "#8080ff"),
+      ( 0.5,-0.7,  1, "+",  "#ff8080"),
+      (-0.5,-0.7,  1, "+",  "#ff8080"))
+
 for i in range(N):
     for k in range(N):
-        x, y = k*h, i*h
-
-        d = sqrt((x-0.5*L)**2 + (y-0.6*L)**2)
-        if d <= r:     rho_fix[linindex(i, k)] += -2/pi/r**2
-        d = sqrt((x-0.37*L)**2 + (y-0.4*L)**2)
-        if d <= r:     rho_fix[linindex(i, k)] += 1/pi/r**2
-        d = sqrt((x-0.63*L)**2 + (y-0.4*L)**2)
-        if d <= r:     rho_fix[linindex(i, k)] += 1/pi/r**2
-
+        x, y = k*h -0.5*L, i*h-0.5*L
+        
+        for px, py, q, str, col in chrg:
+            d = sqrt((x-px)**2 + (y-py)**2)
+            if d <= r:
+                rho_fix[linindex(i, k)] += q/pi/r**2
+                
         chi[linindex(i,k)] = (rho_fix[linindex(i,k)] == 0.0)
+
+print "Nettoladung", sum(rho_fix*h**2)
 
 # 2d-Laplace, 0-Rand (Neutral am Rand)
 Laplace=zeros((N*N, N*N))
@@ -62,114 +68,146 @@ for y in range(N):
 # Potential
 psi = zeros(N*N)
 
-converged = False
-while not converged:
+lu = lu_factor(Laplace)
+
+while True:
     rho = rho_fix + cinf*2*sinh(-psi)*chi
-    residual = eps*dot(Laplace, psi) + rho
+    residual = dot(Laplace, psi)/(4*pi*lb) + rho
 
     print "Residual is", norm(residual)
 
     if norm(residual) < tol:
-        converged = True
         break
 
-    psi = solve(Laplace, -rho)/eps
+    psi = lu_solve(lu, -4*pi*lb*rho)
+
+# Direkter Loeser, nicht PB
+##############################################
+
+psi_fix = solve(Laplace, -4*pi*lb*rho_fix)
 
 # Ausgabe
 #############################################
 
-figure = pyplot.figure(figsize=(8,4))
-figure.subplots_adjust(bottom=0.05,top=0.95,
-                       left=0.05,right=0.9,wspace=0.3)
+figure = pyplot.figure(figsize=(8,8))
+figure.subplots_adjust(bottom=0.05,top=0.95, left=0.05,right=0.9)
 
-# links, positive Ionen
+print "Reichweite in der festen Ladungsdichte", amin(rho_fix), amax(rho_fix)
+n = 2*cinf*sinh(psi)*chi
+print "Reichweite in der Ionenladungsdichte ausserhalb der Ladungen", amin(n), amax(n)
+print "Reichweite im PB-Potential ausserhalb der Ladungen", amin(psi*chi), amax(psi*chi)
+print "Reichweite im reinen Potential ausserhalb der Ladungen", amin(psi_fix*chi), amax(psi_fix*chi)
+
+# links oben, negative Ionen
 #############################################
 
 # Codierung
-# 0 verboten
 # relevanter Bereich fuer den Colorbar:
-rng = (0.8, 1.5)
+rng = (0, 1.0)
 
-# Colormap mit Schwarz fuer verbotene Dichten und weiss-blau sonst
-white = 0.8/1.5
-cmdict = {'red':   ((0.0,   0.0, 0.0),
-                    (white, 0.0, 1.0),
+# Colormap weiss-blau
+cmdict = {'red':   ((0.0,   1.0, 1.0),
                     (1.0,   0.0, 0.0),
                     ),
-          'green': ((0.0,   0.0, 0.0),
-                    (white, 0.0, 1.0),
+          'green': ((0.0,   1.0, 1.0),
                     (1.0,   0.0, 0.0),
                     ),
-          'blue':  ((0.0,   0.0, 0.0),
-                    (white, 0.0, 1.0),
+          'blue':  ((0.0,   1.0, 1.0),
                     (1.0,   1.0, 1.0),
                     )}
-cm_densities = colors.LinearSegmentedColormap('densmap', cmdict, 256)
+cm_densities = colors.LinearSegmentedColormap('densmap', cmdict, 512)
 
-graph = figure.add_subplot(121)
+graph = figure.add_subplot(221)
 
-n = cinf*exp(psi)
+n = cinf*exp(psi)*chi
 print "Reichweite in der Dichte", amin(n), amax(n)
 
-n = (n*chi).reshape((N,N))
+n = n.reshape((N,N))
 
 im = graph.imshow(n, interpolation="bilinear", origin="lower",
                   cmap = cm_densities,
                   extent=(0,L,0,L), norm = colors.Normalize(0, rng[1]))
-figure.colorbar(im,shrink=0.66, boundaries=linspace(rng[0], rng[1], 33))
+figure.colorbar(im,shrink=0.66)
 
-graph.text(0.5*L, 0.6*L, "2-", fontsize=14, family="bold",
-           va="center", ha="center", color="#a0a0ff")
-graph.text(0.37*L, 0.4*L, "+", fontsize=14, family="bold",
-           va="center", ha="center", color="#ffa0a0")
-graph.text(0.63*L, 0.4*L, "+", fontsize=14, family="bold",
-           va="center", ha="center", color="#ffa0a0")
+for px, py, q, chstring, color in chrg:
+    graph.text(0.5*L+px, 0.5*L+py, chstring, fontsize=14, weight="bold",
+               va="center", ha="center", color=color)
 
-#        d = sqrt((x-0.37*L)**2 + (y-0.4*L)**2)
-#        if d <= r:     rho_fix[linindex(i, k)] += -1/pi/r**2
-#        d = sqrt((x-0.63*L)**2 + (y-0.4*L)**2)
-#        if d <= r:     rho_fix[linindex(i, k)] += -1/pi/r**2
-
-# rechts, Nettoladung
+# rechts oben, positive Ionen
 #############################################
 
-# Codierung
-# -1 im verbotenen Bereich
+# Colormap rot statt blau
+cmdict = { 'red':   cmdict['blue'],
+           'green': cmdict['green'],
+           'blue':  cmdict['red'] }
+
+cm_densities = colors.LinearSegmentedColormap('densmap', cmdict, 256)
+
+graph = figure.add_subplot(222)
+
+n = cinf*exp(-psi)*chi
+print "Reichweite in der Dichte", amin(n), amax(n)
+
+n = n.reshape((N,N))
+
+im = graph.imshow(n, interpolation="bilinear", origin="lower",
+                  cmap = cm_densities,
+                  extent=(0,L,0,L), norm = colors.Normalize(0, rng[1]))
+figure.colorbar(im,shrink=0.66, extend="max")
+
+for px, py, q, chstring, color in chrg:
+    graph.text(0.5*L+px, 0.5*L+py, chstring, fontsize=14, weight="bold",
+               va="center", ha="center", color=color)
+
+# links unten, Potential
+#############################################
+
 # relevanter Bereich fuer den Colorbar:
-rng = (-0.41, +0.2)
+rng = (-1.5, +2.5)
 
 # Entsprechende Colormap mit Rueckskalierung
 # weiss bei neutral, also 0 urspruenglich
-white = 1.0/(1 + rng[1])
-# rot und blau symmetrisch
-blue = (1.0 + rng[0])/(1 + rng[1])
+white = -rng[0]/(rng[1] - rng[0])
 
 cmdict = {'red':   ((0.0,   0.0, 0.0),
-                    (blue,  0.0, 0.0),
                     (white, 1.0, 1.0),
                     (1.0,   1.0, 1.0),
                     ),
           'green': ((0.0,   0.0, 0.0),
-                    (blue,   0.0, 0.0),
                     (white, 1.0, 1.0),
                     (1.0,   0.0, 0.0),
                     ),
-          'blue':  ((0.0,   0.0, 0.0),
-                    (blue,  0.0, 1.0),
+          'blue':  ((0.0,   1.0, 1.0),
                     (white, 1.0, 1.0),
                     (1.0,   0.0, 0.0),
                     )}
 cm_densities = colors.LinearSegmentedColormap('densmap', cmdict, 256)
 
-graph = figure.add_subplot(122)
+graph = figure.add_subplot(223)
 
 n = psi.reshape((N,N))
 
-print "Reichweite im Potential", amin(n), amax(n)
-
 im = graph.imshow(n, interpolation="bilinear", origin="lower",
                   cmap = cm_densities,
-                  extent=(0,L,0,L), norm = colors.Normalize(-1, rng[1]))
-figure.colorbar(im,shrink=0.66, boundaries=linspace(rng[0], rng[1], 101))
+                  extent=(0,L,0,L), norm = colors.Normalize(rng[0], rng[1]))
+figure.colorbar(im,shrink=0.66)
+
+# rechts unten, Potentiallinien
+#############################################
+
+graph = figure.add_subplot(4,2,6)
+
+psi = psi.reshape((N,N))
+psi_fix = psi_fix.reshape((N,N))
+
+graph.plot(linspace(0, L, N+1), concatenate((psi[:, N/2], (0,))), "r--")
+graph.plot(linspace(0, L, N+1), concatenate((psi_fix[:, N/2], (0,))), "k-")
+#graph.axis(())
+
+graph = figure.add_subplot(4,2,8)
+
+graph.plot(linspace(0, L, N+1), concatenate((psi[N/4, :], (0,))), "r--")
+graph.plot(linspace(0, L, N+1), concatenate((psi_fix[N/4, :], (0,))), "k-")
+#graph.axis(())
 
 figure.savefig("pb.pdf")
