@@ -33,7 +33,7 @@ Die erste Ableitung einer Funktion $f\in C^1([a,b])$ ist definiert als
 \begin{equation}
   \lim_{h\to 0} \frac{f(x+h) - f(x)}{h}.
 \end{equation}
-Um den Grenzwert abzuschätzten, liegt es nahe, die Ableitung durch die
+Um den Grenzwert abzuschätzen, liegt es nahe, die Ableitung durch die
 dividierte Differenz
 \begin{equation}
   f'(\xi) \approx f[x,y] := \frac{f(x) - f(y)}{x - y}
@@ -48,7 +48,7 @@ wie wir nun per Taylorentwicklung sehen werden. Mit Entwicklung um $m$
 und $h=x-y$ gilt
 \begin{align}
   \frac{f(x) - f(y)}{x-y} &= \frac{1}{h}
-  \biggl(+f(m) + \frac{h}{2}f'(m) + \frac{h^2}{8}f''(m) + \O(h^3)\nonumber\\
+  \biggl(f(m) + \frac{h}{2}f'(m) + \frac{h^2}{8}f''(m) + \O(h^3)\nonumber\\
   &\phantom{= \frac{1}{h}\biggl(}-f(m) + \frac{h}{2}f'(m) - \frac{h^2}{8}f''(m) + \O(h^3)
   \biggr)\nonumber\\
   &=  f'(m) + \O(h^2).
@@ -76,7 +76,7 @@ bzw.
   \frac{f(x_{i}) - f(x_{i-1})}{h} = f[x_{i},x_{i-1}] = f'(x_i) + \O(h).
 \end{equation}
 
-\subsection{Näherungen höhererer Ordnung und höhere Ableitungen}
+\subsection{Näherungen höherer Ordnung und höhere Ableitungen}
 
 Mit Hilfe von Taylorentwicklungen lassen sich auch Näherungen mit mehr
 Stützpunkten und für höhere Ableitungen entwickeln.  Wir betrachten
@@ -86,7 +86,7 @@ Punkte, und suchen Koeffizienten $c_k$ derart, dass
   c_2 f(x_{i+2}) + c_1 f(x_{i+1})  + c_0 f(x_i) + c_{-1}f(x_{i-1}) +
   c_{-2}f(x_{i-2}) = f'(x_i) + \O(h^5),
 \end{equation}
-unabhänging von der Form von $f$ und seiner Ableitungen. Durch
+unabhängig von der Form von $f$ und seiner Ableitungen. Durch
 Einsetzen der Taylorentwicklung
 \begin{equation}
   f(x + k h) = f(x) + k\, hf'(x) + k^2\,\frac{h^2}{2} f''(x_i) +
@@ -154,9 +154,9 @@ Differenzen approximieren.
 \begin{figure}
   \centering
   \includegraphics[width=0.5\textwidth]{plots/num_diff}
-  \caption{Maximale Abweichung $\max_{x\in[-\pi,pi]} \abs{f'(x) - a(h;
+  \caption{Maximale Abweichung $\max_{x\in[-\pi,\pi]} \abs{f'(x) - a(h;
       x)}$ für verschiedene Näherungen $a(h; x)$, als Funktion der
-    Schrittweite $h$. Die Funktion ist $f(x)=sin(100x^2)$. Rot
+    Schrittweite $h$. Die Funktion ist $f(x)=\sin(100x^2)$. Rot
     durchgezogen ist die linksseitige Differenz $a(h; x) = (f(x) -
     f(x-h))/h$, die zentrale Differenz $a(h; x) = (f(x+h) -
     f(x-h))/2h$ ist grün gepunktet und die Näherung 4. Ordnung
@@ -267,7 +267,7 @@ hat, können wir dieses lineare Gleichungssystem effizient mit dem
 Gaußverfahren lösen.
 
 Beispielcode~\ref{lst:bessel} zeigt ein Pythonskript zur Lösung dieses
-Gleichungsssystems. Dessen Lösung für $h=0,5$ ist in
+Gleichungssystems. Dessen Lösung für $h=0,5$ ist in
 Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten gezeigt und
 weicht noch signifikant ab, was allerdings durch die hohe Schrittweite
 bedingt ist. Mit einer Schrittweite $h < 0,1$ gäbe es keine sichtbaren
@@ -484,7 +484,7 @@ Für die bei der Interpolation üblicherweise verwendeten kubischen
 Splines wird die Stetigkeit der zweiten Ableitung zweier Teilstücke an
 den gemeinsamen Stützstellen gefordert.  Diese Forderung ist bei der
 Integration unnötig.  Zudem erfordert die Auswertung der Splines die
-ziemlich aufwendige Lösung eines linearen Gleichungssystems.  Daher
+ziemlich aufwändige Lösung eines linearen Gleichungssystems.  Daher
 greift man bei der numerischen Integration üblicherweise auf
 stückweise Polynome niedrigerer Ordnung ohne Anschlussbedingungen an
 den Stützstellen zurück.
@@ -747,7 +747,7 @@ Extrapolation noch etwas zu verbessern.
   \caption{Romberg-Integration am Beispiel von $\int_0^1 e^{-x^2}\,dx
     = \sqrt{\pi}\erf(1)/2 =: T_0$. Aufgetragen ist der Fehler $\Delta
     T_f(h) = T_f(h) - T_0$ als Funktion der Schrittweite $h$ (im Einschub
-    in doppeltlogarithmischer Skala). Sowohl Kreuze also auch blaue
+    in doppelt logarithmischer Skala). Sowohl Kreuze also auch blaue
     Kreise markieren Berechnungen mit der Trapezregel. Durch die mit
     blauen Kreisen markierten Datenpunkte wurde dann das
     interpolierende Polynom bestimmt und rot gestrichelt
@@ -842,7 +842,7 @@ Wir suchen also ein Polynom $\omega_n$ mit Höchstkoeffizient $1$ und
 Grad $n$, dass senkrecht auf alles Polynomen vom Grad $n-1$ steht. Die
 Nullstellen dieses Polynoms sind dann die gesuchten Stützstellen
 $x_i$.  Die Existenz und Eindeutigkeit von $\omega_n$ kann man mit
-Hilfe des Gram-Schmidt-Orthogonalisierungserfahrens konstruktiv
+Hilfe des Gram-Schmidt-Orthogonalisierungsverfahrens konstruktiv
 zeigen, dass wir später genauer kennenlernen werden. Die Idee ist
 dabei, die Basisvektoren $\{1, x, x^2,\ldots\}$ schrittweise so zu
 transformieren, dass sie senkrecht zu einanderstehen.
@@ -912,7 +912,7 @@ der die orthogonalen Polynome die Hermitepolynome sind.
 
 Als letztes soll noch erwähnt werden, dass die Gauß-Quadratur für alle
 Gewichtsfunktionen mit steigender Anzahl von Stützstellen gegen das
-tatsächliche Integral konvergiert, im Gegensatz zun den
+tatsächliche Integral konvergiert, im Gegensatz zu den
 Newton-Cotes-Formeln.
 
 \subsection{Unendliche Integrale und Singularitäten}
@@ -938,10 +938,10 @@ ersterem Falle müssen sehr viele Stützpunkte in der Nähe der
 Singularität liegen, im zweiten Fall muss das unendliche Integral
 durch ein möglichst großes, endliches Intervall approximiert
 werden. Allerdings ist es oft möglich, solche Probleme durch
-Variablensubstitution zu umgehen.  So ist zum Beispiel
+Variablensubstitution zu umgehen. So ist zum Beispiel
 \begin{equation}
   \int_1^{\infty} \frac{f(x)}{x^2}dx \stackrel{z = \frac{1}{x}}{=}
-  \int_0^1 f\left(\frac{1}{z}\right)dz.
+  - \int_0^1 f\left(\frac{1}{z}\right)dz.
 \end{equation}
 Fällt $f'(x)$ für große $x$ gegen $0$ ab, so dass $f$ gegen eine
 Konstante strebt, dann ist die Ableitung von $f(1/z)$ gegen $0$
@@ -1051,9 +1051,9 @@ der Monte-Carlo-Integration mehr als eine Größenordnung mehr Punkte
 aufwenden, um dieselbe Verbesserung in der Genauigkeit zu erreichen!
 
 Bei mehrdimensionalen Integralen sieht die Situation allerdings anders
-aus. Bei der Trapezregel mit ingesamt $N$ Stützstellen entfallen pro
+aus. Bei der Trapezregel mit insgesamt $N$ Stützstellen entfallen pro
 Dimension $N^{1/n}$ viele Stützstellen, wenn diese auf einem Würfel
-gleichmässig in allen Dimensionen verteilt werden.  Die Genauigkeit
+gleichmäßig in allen Dimensionen verteilt werden.  Die Genauigkeit
 ist damit $\O(N^{-2/n})$.  Ab fünf Dimensionen ist damit die
 Monte-Carlo-Integration der Trapezregel überlegen.  Ein anderer Fall,
 in dem die Monte-Carlo-Integration der Trapezregel überlegen sein
@@ -1127,7 +1127,7 @@ Bei der Monte-Carlo-Integration nutzen wir (Pseudo-)Zufallszahlen, um
 durch zufällige Abtastung möglichst gut den mittleren Wert der zu
 integrierenden Funktion zu bestimmen. Wie wir gesehen haben, sind im
 Mehrdimensionalen Zufallszahlen zu diesem Zweck besser geeignet als
-ein regelmäßiges Gitter --- das entspräche der ja der
+ein regelmäßiges Gitter --- das entspräche ja der
 Trapezregel. Aber sind Zufallszahlen optimal?
 
 Tatsächlich nicht, denn etwa Abbildung~\ref{fig:optical_test} links
