@@ -103,10 +103,10 @@ meisten Anwendungen ausreichend sein dürfte.
 In Python stellt das Modul \texttt{random} verschiedene effiziente und
 hochwertige Methoden zur Zufallszahlenberechnung bereit. Die Methode
 \scipy{random.randint(a,b)} etwa liefert eine gleichverteilte
-Zufallszahl aus dem Interval $[a,b]$; anders als bei \lstinline!range!
+Zufallszahl aus dem Intervall $[a,b]$; anders als bei \lstinline!range!
 etwa ist also auch die obere Grenze
 einbegriffen. \scipy{random.unifom(a,b)} liefert analog eine
-gleichverteilte Fließkommazahl im Interval
+gleichverteilte Fließkommazahl im Intervall
 $[a,b]$. \scipy{random.gauss(mu, sigma)} schließlich liefert eine
 normalverteilte Fließkommazahl mit Erwartungswert \argd{mu} und
 Standardabweichung \argd{sigma}.
@@ -172,7 +172,7 @@ generiert werden.  Insbesondere wechselt das unterste Bit mit jedem
 Schritt seinen Wert oder ist konstant.  Dies ist der Grund, warum
 \texttt{rand48} die untersten 17 Bit verwirft.
 
-Dieses Problem lässt sich umgehen, in dem der Modul als Primzahl
+Dieses Problem lässt sich umgehen, indem der Modul als Primzahl
 gewählt wird. In diesem Fall kann $b=0$ gewählt werden, so dass
 \begin{equation}
   x_{i+1} = a x_i = a^i x_0 \bmod m,
@@ -634,15 +634,15 @@ zu transformieren.
 Um die Qualität eines Zufallszahlengenerators zu testen, gibt es eine
 Vielzahl von Standardtests. Der Grund dafür ist, dass es leider keinen
 einzelnen Test gibt, der sicherstellt, dass es keinerlei Korrelationen
-in der generierten Folge gibt. Ein solcher Test müßte jede mögliche
+in der generierten Folge gibt. Ein solcher Test müsste jede mögliche
 Teilmenge bilden und mit allen Zahlen korrelieren, was praktisch nicht
 möglich ist. Daher sollte ein guter Zufallszahlengenerator möglichst
 viele der folgenden Tests erfüllen, auch wenn dies keine Garantie ist,
 dass er im Einzelfall nicht doch zu kritischen Korrelationen führt,
-die im schlimmsten Fall das Ergebnis beieinflussen.
+die im schlimmsten Fall das Ergebnis beeinflussen.
 
 Für eine bestimmte Anwendung genügt es natürlich, wenn er nur die
-Tests erfüllt, deren getestete Korrelationen Einfluß auf das System
+Tests erfüllt, deren getestete Korrelationen Einfluss auf das System
 haben. Zum Beispiel werden bei einer Molekulardynamiksimulation in
 drei Dimensionen Paarkorrelationen unwichtig sein, aber
 Tripletkorrelationen problematisch.  Bei einem zweidimensionalen
@@ -689,7 +689,7 @@ i=1(1)N\}$ gemessen, so sollte $\overline{x}$ außerdem für große $N$
 gemäß dem Gesetz der großen Zahlen praktisch normalverteilt sein, mit
 der oben angegebenen Varianz. Dies kann mit Hilfe von
 \eqref{eq:varest} überprüft werden, man kann aber auch direkt das
-Histogram der Verteilung von $\overline{x}$ darauf überprüfen, dass es
+Histogramm der Verteilung von $\overline{x}$ darauf überprüfen, dass es
 wie erwartet normalverteilt ist.  Abbildung~\ref{fig:statistics_test}
 zeigt die Verteilung von $\overline{x}$ am Beispiel von
 \texttt{MINSTD} und \texttt{rand}, sowie die erwartete
@@ -752,7 +752,7 @@ Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
 Wird eine lange Reihe von Standardzufallszahlen diskret
 Fourier-transformiert, so sollte die 0-te Mode eine Amplitude von
 $N/2$ aufweisen, da diese ja die Summe der Zufallszahlen angibt. Alle
-anderen Moden sollten vernachlässigbar kleine, gleichmässige
+anderen Moden sollten vernachlässigbar kleine, gleichmäßige
 Amplituden haben, entsprechend einem weißen Rauschen. Die Amplituden
 aller Frequenzen ungleich $0$ sollte außerdem mit der Länge der
 transformierten Zufallszahlenreihe sinken. Dieser Test wird auch als
@@ -805,7 +805,7 @@ Milliarde Lösungsmittelmoleküle. Deren Bewegung explizit simulieren zu
 wollen, ist aussichtslos. Auf der anderen Seite passieren selbst in
 kurzer Zeit genügend Zusammenstöße, so dass die zeitdiskretisierte
 Kraft auf das Teilchen gut als zufällig und, wegen des Gesetzes der
-großen Zahlen, normalverteilt angenommen werden kann. Der Mittelwert
+großen Zahlen, als normalverteilt angenommen werden kann. Der Mittelwert
 ist dabei offenbar Null, da die Zufallsstöße keine Vorzugsrichtung
 haben sollten, die Varianz werden wir mit der Diffusionskonstanten in
 Verbindung bringen.
@@ -876,7 +876,7 @@ Verschiebungsquadrat $\sigma^2(x_t)$, gemittelt über 1,000 Random
 walks. $\sigma^2(x_t)$ ist tatsächlich mit guter Genauigkeit ungefähr
 $t$, wobei die Abweichung für große $t$ größer sind, da dort die
 Verteilung von $x_t$ breiter ist, und damit auch der Fehlerbalken der
-Varianz. Rechs unten werden für $t=5$ und $t=80$ die Verteilungen der
+Varianz. Rechts unten werden für $t=5$ und $t=80$ die Verteilungen der
 Positionen gezeigt. Selbst für $t=5$ werden diese gut durch die
 Gaußglocke beschreiben.  Trotzdem sollte man sich erinnern, dass die
 Verteilung nicht wirklich Gaußsch ist, da offenbar $\abs{x_t}\le t$
@@ -1124,7 +1124,7 @@ entsprechendes Python-Skript ist in Listing~\ref{lst:percolation} zu
 sehen.
 
 Abbildung~\ref{fig:percolation} zeigt links einen perkolierenden
-Cluster für ein Gitter mit Besetzungwahrscheinlichkeit $p=0,6$, es
+Cluster für ein Gitter mit Besetzungswahrscheinlichkeit $p=0,6$, es
 sind also etwas mehr als die Hälfte der Punkte besetzt. Rechts ist für
 verschiedene Besetzungswahrscheinlichkeiten aufgetragen, wie
 wahrscheinlich es ist, einen perkolierenden Cluster zu beobachten. Wie
