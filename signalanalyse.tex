@@ -287,9 +287,9 @@ Frequenzspektrum aus den diskreten Datenpunkten rekonstruieren kann.
 
 Hierzu betrachten wir zunächst ein \emph{bandbreitenbeschränktes
   Signal} $f$, d.h.\ ein Signal, dessen Fouriertransformierte einen
-kompakten Träger $[-\omega_0,\omega_0]$ hat. Dann besagt die
+kompakten Träger $[-\omega_\text{max},\omega_\text{max}]$ hat. Dann besagt die
 Poissonsche Summenformel~\eqref{eq:poissonsumme}, dass für
-$\omega\in[-\omega_0,\omega_0]$
+$\omega\in[-\omega_\text{max},\omega_\text{max}]$
 \begin{equation}
   \FT(f)(\omega) =
   \sum_{k\in\ZZ}\FT(e^{-i\omega \cdot} f)\left(2k\omega_0\right)
@@ -297,7 +297,7 @@ $\omega\in[-\omega_0,\omega_0]$
   \frac{1}{\sqrt{2\pi}}
   \sum_{n\in\ZZ} e^{-i \omega n \Delta}f\left(n \Delta\right)
 \end{equation}
-mit $\Delta=\pi/\omega_0$. Die Fouriertransformierte eines
+mit $\Delta=\pi/\omega_\text{max}$. Die Fouriertransformierte eines
 bandbreitenbeschränkten Signals lässt sich also \emph{exakt} nur aus
 den Funktionswerten an den äquidistanten diskreten Stellen mit
 Abtastrate $\Delta$ berechnen. Dadurch kann natürlich auch die
@@ -306,19 +306,19 @@ Funktion exakt aus ihrer Fouriertransformierten rekonstruiert werden:
   \label{eq:ftreconst}
   f(t)
   = \frac{\Delta}{2\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
-  \int_{-\omega_0}^{\omega_0} e^{-i \omega (t - n\Delta)} \,d\omega
+  \int_{-\omega_0}^{\omega_\text{max}} e^{-i \omega (t - n\Delta)} \,d\omega
   = \frac{\Delta}{\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
-  \frac{\sin(\omega_0(t-n\Delta))}{t-n\Delta}.
+  \frac{\sin(\omega_\text{max}(t-n\Delta))}{t-n\Delta}.
 \end{equation}
 
-Ist nun umgekehrt eine Signal $f(n\Delta)$ an äquidistanten diskreten
-Stellen gegeben, so lässt sich diesem umgekehrt gemäß
-\eqref{eq:ftreconst} ein kontinuierliches Signal zuordnen, dessen
-Fouriertransformierte nur in $[-\omega_0,\omega_0]$ nicht
-verschwindet, wobei $\omega_0 = \pi/\Delta$. Das bedeutet, dass bei
-Abtastrate $\Delta$ nur Frequenzen bis zur Nyquist-Frequenz
-$f_\text{Nyquist}=\frac{1}{2\Delta}$ eindeutig abgetastet werden
-können, ähnlich wie im periodischen Fall.
+Ist nun umgekehrt ein Signal $f$ an äquidistanten diskreten Stellen
+$n\Delta$ gegeben, so lässt sich diesem gemäß \eqref{eq:ftreconst} ein
+kontinuierliches Signal zuordnen, dessen Fouriertransformierte nur in
+$[-\omega_\text{max},\omega_\text{max}]$ nicht verschwindet, wobei $\omega_\text{max} =
+\pi/\Delta$. Das bedeutet, dass bei Abtastrate $\Delta$ nur Frequenzen
+bis zur Nyquist-Frequenz $f_\text{Nyquist}=\frac{1}{2\Delta} =
+\frac{\omega_\text{max}}{2\pi}$ eindeutig abgetastet werden können, ähnlich wie
+im periodischen Fall.
 
 \section{Faltungen}
 \index{Faltung}
@@ -352,7 +352,7 @@ bzw.\ geglättet, siehe Abbildung~\ref{fig:fourierfaltung}.
     quasi ungestörte langsame Schwingung ohne die höherfrequente
     Schwingung, die weggeglättet wurde. Oben rechts:
     Fouriertransformierte der Funktionen. Klar sichtbar ist die
-    hochfrequente Störung mit einer Frequenz von 7,5, die im
+    hochfrequente Störung mit einer Frequenz von $7,5$, die im
     gefilterten Signal fehlt. In der unteren Reihe wurde eine
     frequenzverschobene Gaußglocke benutzt, um statt der langsamen die
     schnelle Schwingung zu filtern; die Farbcodierung ist wie

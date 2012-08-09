@@ -279,7 +279,7 @@ festlegen. Das ergibt:
 \begin{equation}
   \begin{pmatrix}
     1 & 0         & 0         &\ldots & \ldots & 0\\
-    -\nicefrac{1}{2h} & 0         & \nicefrac{1}{2h} &\ldots & \ldots & 0\\
+    -\nicefrac{1}{h} & \nicefrac{1}{h} & 0 & \ldots & \ldots & 0\\
     \nicefrac{1}{2} & -\lambda & \nicefrac{3}{2} & 0 & \ldots & 0\\
     0 & 3         & -4\lambda & 5 & 0\quad \ldots & 0\\
     & & \ddots & \ddots & \ddots\qquad\qquad \\
@@ -298,11 +298,18 @@ festlegen. Das ergibt:
     0 \\
   \end{pmatrix}.
 \end{equation}
-Abbildung~\ref{fig:bessel_diff} zeigt, dass die Lösung in diesem Fall
-am linken Rand genauer ist, während sie zum rechten Rand hin
-abweicht. Das ist ist zu erwarten, da unsere Bedingung die Lösung ja
-nur am linken Rand zwingen, mit der analytischen Lösung
-übereinzustimmen.
+Dabei wird für die Ableitung am linken Rand statt der (nicht
+möglichen) zentralen Differenz der rechtsseitige Differenzenquotient
+benutzt.
+Allerdings zeigt Abbildung~\ref{fig:bessel_diff} dass dies die Lösung
+am linken Rand nicht verbessert. Schuld ist die geringe Genauigkeit
+des rechtsseitigen Differenzenquotienten. Da $f'(0)=0$ sein soll,
+führt er dazu, dass $f_0=f_1$ gefordert wird, wie man auch gut in der
+Abbildung sieht, was aber mit der tatsächlichen Lösung nichts zu tun
+hat. Wird statt dessen $f_1$ korrekt vorgegeben, ist die Lösung links
+tatsächlich genauer, allerdings ist bei praktischen Problemen meist
+$f(h)$ nicht bekannt --- sonst müsste man die Differentialgleichung ja
+nicht mehr lösen.
 
 Generell zeigen allerdings sowohl Dirichlet- wie auch gemischte
 Randbedingungen noch leichte Artefakte. Diese lassen sich durch

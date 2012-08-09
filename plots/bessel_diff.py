@@ -66,12 +66,12 @@ A = zeros((N, N))
 A[0, 0] = 1
 b[0]    = jn(nu, 0)
 # Ableitung
-A[1, 0] = -0.5/h
-A[1, 2] = 0.5/h
+A[1, 0] = -1.0/h
+A[1, 1] =  1.0/h
 if nu == 0:
-    b[1]    = -jn(1, h)
+    b[1]    = -jn(1, 0)
 else:
-    b[1]    = 0.5*(jn(nu-1)-jn(nu+1))
+    b[1]    = 0.5*(jn(nu-1, 0)-jn(nu+1, 0))
 
 # N-2 innere Punkte von 1 bis N-2
 for n in range(1, N-1):
