@@ -592,12 +592,13 @@ Es ergeben für gleich lange Messreihen $A$ und $B$:
   \bigl(\overline{\text{DFT}(A)(n)}\,\text{DFT}(B)(n)\bigr)(k).
 \end{equation}
 Der Faktor $(-1)^n$ fehlt hier, weil in diesem Fall sowohl $A$ als
-auch $B$ als bei $t=0$ starten betrachtet werden. Man sollte beachten,
-dass durch die Benutzung der DFT das Signal implizit mit Periode
-$N\Delta$ periodisiert wird. Daher sollte $C(A,B)(k\Delta)$ nur für
-$k\ll N/2$ interpretiert werden. Die Berechnung der 2 DFTs sowie der
-inversen DFT braucht etwa $6 N\log N$ Operationen, was normalerweise
-wesentlich weniger als die $2NK$ der direkten Berechnung ist.
+auch $B$ als bei $t=0$ startend betrachtet werden. Man sollte
+beachten, dass durch die Benutzung der DFT das Signal implizit mit
+Periode $N\Delta$ periodisiert wird. Daher sollte $C(A,B)(k\Delta)$
+nur für $k\ll N/2$ interpretiert werden. Die Berechnung der 2 DFTs
+sowie der inversen DFT braucht etwa $6 N\log N$ Operationen, was
+normalerweise wesentlich weniger als die $2NK$ der direkten Berechnung
+ist.
 
 In Python sieht die Berechnung der Kreuzkorrelation so aus:
 \begin{lstlisting}
@@ -628,10 +629,10 @@ Im Spezialfall $A=B$ spricht man von der
 \emph{\keyword{Autokorrelationsfunktion}}. Diese ist offenbar
 symmetrisch, daher sind nur Zeitversätze $\tau\ge 0$ von
 Interesse. Die Autokorrelationsfunktion misst gewissermaßen, wie lange
-es dauert, bis die Observable nicht mehr von seinem vorherigen Wert
+es dauert, bis die Observable nicht mehr von ihrem vorherigen Wert
 abhängt, wann es diesen sozusagen "`vergisst"'. In dem häufigen Fall,
-dass die Autokorrelationsfunktion zunächst exponentiell abfällt,
-lässt sich dem Gedächtnis eine Zeitkonstante $\tau_c$, die
+dass die Autokorrelationsfunktion zunächst exponentiell abfällt, lässt
+sich dem Gedächtnis eine Zeitkonstante $\tau_c$, die
 \emph{\keyword{Korrelationszeit}}, zuordnen. Diese kann man entweder
 durch einen geeigneten Funktionsfit bestimmen, oder aber durch
 Integration aus
@@ -666,11 +667,11 @@ führen zum Durchschwingen der Autokorrelationsfunktion.
 \index{Messfehler}
 
 In diesem letzten Abschnitt zur Datenanalyse geht es darum, wie der
-der Messfehler bei der Messung des Erwartungswerts einer
-stochastischen Observable abgeschätzt werden kann. Wir betrachten also
-eine Messreihe $x_i$, $i=1(1)N$, die verschiedene Messungen einer
-stochastischen Observablen $x$ darstellen. Der Erwartungswert dieser
-Observablen lässt sich dann bekanntermaßen als
+Messfehler bei der Messung des Erwartungswerts einer stochastischen
+Observable abgeschätzt werden kann. Wir betrachten also eine Messreihe
+$x_i$, $i=1(1)N$, die verschiedene Messungen einer stochastischen
+Observablen $x$ darstellen. Der Erwartungswert dieser Observablen
+lässt sich dann bekanntermaßen als
 \begin{equation}
   \label{eq:mean}
   \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^N x_i
@@ -738,7 +739,7 @@ diesen Ausdruck gilt:
   = \frac{N-1}{N}\left(\mean{x^2} - \mean{x}^2\right),
 \end{equation}
 wobei wir wieder annehmen, dass die Messungen unabhängig voneinander
-sind. Das der Ausdruck auf der linken Seite selber kein guter
+sind. Dass der Ausdruck auf der linken Seite selber kein guter
 Schätzer ist, liegt also daran, dass für $\bar{x}$ zweimal derselbe
 Datensatz benutzt wurde. Ein guter Schätzer für $\sigma^2(x)$ ergibt
 sich aus der Umkehrung von \eqref{eq:varestalmost}:
@@ -782,8 +783,8 @@ für diese gilt nun
 \end{align}
 d.h., die Varianz wird zusätzlich noch um
 $\frac{1}{(N-1)N^2}\sum_{i\neq j} \mean{x_ix_j}$
-\emph{unterschätzt}. Insgesamt wird der quadratischen Fehler also
-um ebenfalls
+\emph{unterschätzt}. Insgesamt wird der quadratische Fehler also um
+ebenfalls
 \begin{align}
   F&=\mean{(\overline{x} - \mean{x})^2} -
   \frac{1}{N}\frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}\nonumber\\
