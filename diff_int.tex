@@ -394,8 +394,8 @@ gebräuchlichsten werden im folgenden kurz diskutiert.
   Die Trapezregel benutzt als Stützstellen $x_0=a$ und $x_1=b$, die
   dementsprechend durch eine Gerade verbunden werden:
   \begin{align}
-    \int_a^b f(x)\, dx &\approx \int_a^b f(a)\frac{x-b}{a-b} \,+\,
-    f(b)\frac{x-a}{b-a}\,dx\nonumber\\
+    \int_a^b f(x)\, dx &\approx \int_a^b \left [ f(a)\frac{x-b}{a-b} \,+\,
+    f(b)\frac{x-a}{b-a}\,\right ] dx\nonumber\\
     &= f(a)\int_a^b \frac{x-b}{a-b}\,dx \,+\,
     f(b)\int_a^b \frac{x-a}{b-a}\,dx\nonumber\\
     &= \frac{b-a}{2} \Bigl(f(a) + f(b)\Bigr).
