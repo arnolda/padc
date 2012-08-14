@@ -29,7 +29,6 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 \usepackage{icomma} % correct decimal commas in formulas
 \usepackage{nicefrac} % \nicefrac -> e.g. ½
 \usepackage{fancybox}
-\usepackage[style=alphabetic]{biblatex}
 \usepackage{makeidx}
 \usepackage{todonotes} % comments and todos
 \usepackage{cclicenses} % license symbols
@@ -43,9 +42,13 @@ pdftitle={Physik auf dem Computer Sommersemester 2012}]{hyperref}
 
 \graphicspath{{figures/}}
 
-\bibliography{padc}
-
 \makeindex
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% bibliography
+
+\usepackage[style=alphabetic,backend=bibtex]{biblatex}
+\bibliography{padc}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % formatting
