@@ -47,7 +47,7 @@ Alternativ können wir für eine Funktion $g:M\in\RR^n\to\RR^n$ die
 \end{equation}
 also die Lösungen der Gleichung $g(x) = x$. Eine Fixpunktgleichung
 lässt sich natürlich stets auch als Nullstellenproblem mit $f(x) =
-g(x) - x$ formulieren; anders herum geht dies im allgemeinen nicht.
+g(x) - x$ formulieren; anders herum geht dies im Allgemeinen nicht.
 
 Die beiden Formulierungen unterscheiden sich allerdings im natürlichen
 Lösungsansatz. Die Nullstellengleichung \eqref{eq:nullstellen} ähnelt
@@ -167,7 +167,7 @@ Die linke Seite ist eine auf $[0,\infty)$ L-stetige Funktion mit
 $L=1/\phi_0$, wie man durch Ableiten leicht sieht.
 
 Abbildung~\ref{fig:banach} zeigt die sukzessive Substitution für
-$g(r)$. Graphisch lässt sich das Verfahren visualisieren, in dem in
+$g(r)$. Graphisch lässt sich das Verfahren visualisieren, indem in
 jeder Iteration der Funktionswert $x_{n+1} = y =g(x_{n})$ an der
 Winkelhalbierenden $y=x$ auf die $x$-Achse zurückgespiegelt wird. Im
 linken Graph ist $\phi_0=2$ und damit $L=1/2$, so dass die sukzessive
@@ -371,7 +371,7 @@ einer Funktion zu bestimmen. In diesem Fall kann man die Ableitung
 durch die dividierte Differenz annähern, wobei nun zwei Startpunkte
 $x_0$ und $x_1$ gebraucht werden. Dies führt dazu, dass die
 Näherungsfunktion keine Tangente mehr ist, wie beim Newtonverfahren,
-sondern im allgemeinen eine Sekante. Daher rührt der Name der
+sondern im Allgemeinen eine Sekante. Daher rührt der Name der
 \emph{Sekantenmethode}
 \begin{equation}
   x_{n+1} = x_n - f(x_n)\frac{x_n - x_{n-1}}{f(x_n) - f(x_{n-1})},
@@ -425,7 +425,7 @@ Intervallmittelpunkt
 \begin{equation}
   m_{n} = \frac{a_n + b_n}{2}.
 \end{equation}
-Ist $f(m_n)f(a_n) < 0$, haben also unterschiedliche Vorzeichen, so
+Ist $f(m_n)f(a_n) < 0$, hat die Funktion also bei $m_n$ und $a_n$ unterschiedliche Vorzeichen, so
 muss eine Nullstelle im halb so großen Interval $a_1=a_0$, $b_1=m_0$
 liegen, mit dem wir nun weiter verfahren. Anderfalls ist
 notwendigerweise $f(m_n)f(b_n)\le 0$, und die Nullstelle ist im neuen
@@ -435,14 +435,14 @@ ab. $m_n$ ist dann die endgültige Näherung für die Nullstelle.
 
 Das Verfahren halbiert in jedem Schritt die Intervallgröße und damit
 auch den maximalen Abstand der Näherung zur tatsächlichen
-Nullstelle $\overline{x}$. Es gilt als
+Nullstelle $\overline{x}$. Es gilt also
 \begin{equation}
   \frac{\abs{m_{n+1} - \overline{x}}}{\abs{m_{n} - \overline{x}}}\le \frac{1}{2},
 \end{equation}
 das Verfahren konvergiert also nur linear, dafür aber global.
 
-In der Praxis kombiniert man die Bisektion mit dem Newtonverfahren, in
-dem zunächst einige Schritte des Bisektionsverfahrens gestartet
+In der Praxis kombiniert man die Bisektion mit dem Newtonverfahren, indem
+zunächst einige Schritte des Bisektionsverfahrens gestartet
 werden, und dann vom Intervallmittelpunkt aus das
 Newtonverfahren. Konvergiert dieses, so ist man fertig. Läuft das
 Newtonverfahren hingegen aus dem Bisektionsinterval heraus,
@@ -500,7 +500,7 @@ Da $f(a)f(b)<0$, schneidet die Sekante die Nulllinie immer im
 Interval.  Dadurch verkleinert sich das Interval schneller, sofern die
 Nullstelle der Sekante dicht an der echten Nullstelle liegt, und die
 Funktion im Intervall nicht streng konkav oder konvex ist, also einen
-Wendepunkt hat. Diese Bedingung ist leider im allgemeinen nicht
+Wendepunkt hat. Diese Bedingung ist leider im Allgemeinen nicht
 gegeben, so dass oft die einfache Bisektion schneller ist. In diesem
 Fall wird die Regula falsi sehr langsam, was auch als Lethargie
 bezeichnet wird. Dies ist zum Beispiel in
@@ -508,14 +508,14 @@ Abbildung~\ref{fig:bisektion} rechts gezeigt.
 
 Die Regula falsi ist also die schnellste und stabilste
 Nullstellensuche, falls die Ableitung der Funktion nicht bekannt
-ist. Insbesondere funktioniert diese Methode im allgemeinen auch noch
+ist. Insbesondere funktioniert diese Methode im Allgemeinen auch noch
 einigermaßen zufriedenstellend, falls die Funktionswerte gar nicht
 mehr genau bekannt sind. Dies wäre zum Beispiel bei der bereits
 angesprochenen Messung des Drucks in einer Simulation der Fall, da
 dieser starken Schwankungen unterliegt. Dadurch kann man meist den
 Druck in akzeptabler Rechenzeit nicht so gut mitteln, dass dessen
 Messfehler vernachlässigt werden kann.  Trotzdem konvergiert die
-Regula falsi im allgemeinen zufriedenstellend, solange keine zu hohen
+Regula falsi im Allgemeinen zufriedenstellend, solange keine zu hohen
 Ansprüche an die Genauigkeit gestellt werden. Die Methode muss in
 diesem Fall abgebrochen werden, sobald die Grenzen innerhalb des
 Fehlerbalkens Null sind.
@@ -564,7 +564,7 @@ ist dann also
 \end{equation}
 Die \emph{Newtonkorrektur} $d^{(m)}$ wird als aus der Lösung eines
 linearen Gleichungssystems gewonnen, zum Beispiel mit Hilfe der
-Gaußelimination. Allerdings ist $f'$ im allgemeinen vollbesetzt, daher
+Gaußelimination. Allerdings ist $f'$ im Allgemeinen vollbesetzt, daher
 verwendetet man normalerweise schnellere, approximative Verfahren, die
 wir später kennenlernen werden. Ist $F'(x^{(m)})$ in einem Schritt
 singulär, so bricht das Verfahren ab. Ansonsten wird weiter iteriert,

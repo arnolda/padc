@@ -193,7 +193,7 @@ arbeitet, und der Fehler steigt wieder an.
   \caption{Numerische Lösungen der Besselschen Differentialgleichung
     auf $[0,15]$ mit Schrittweite $h=0,5$ und $N=31$ Stützpunkten. Die
     durchgezogene schwarze Linie markiert die analytische Lösung. Mit
-    grünen Diamanten ist die Lösung mit Hilfe von
+    grünen Rauten ist die Lösung mit Hilfe von
     \eqref{eq:besseldiscrete} und Dirichletrandbedingungen
     dargestellt, für die roten Sterne wurden Funktionswert und
     Ableitung bei $0$ festgelegt. Blaue Punkte schließlich markieren
@@ -268,7 +268,7 @@ Gaußverfahren lösen.
 
 Beispielcode~\ref{lst:bessel} zeigt ein Pythonskript zur Lösung dieses
 Gleichungssystems. Dessen Lösung für $h=0,5$ ist in
-Abbildung~\ref{fig:bessel_diff} mit grünen Diamanten gezeigt und
+Abbildung~\ref{fig:bessel_diff} mit grünen Rauten gezeigt und
 weicht noch signifikant ab, was allerdings durch die hohe Schrittweite
 bedingt ist. Mit einer Schrittweite $h < 0,1$ gäbe es keine sichtbaren
 Abweichungen mehr.
@@ -347,7 +347,7 @@ zeigt den Nutzen von Ableitungsnäherungen höherer Ordnung.
 \section{\keyword{Quadratur}: \keyword{numerische Integration}}
 \index{Integration>numerische}
 
-Bei der numerischen Integration geht es genau wie beim Differenzieren
+Bei der numerischen Integration geht es, analog zum Differenzieren,
 darum, aus endlich vielen Stützwerten das Integral einer Funktion in
 einem endlichen Intervall abzuschätzen. Wir suchen also Gewichte
 $\alpha_{i}\in\RR$, so dass möglichst genau
@@ -359,7 +359,7 @@ abhängen, aber nicht von $f$. Dadurch, dass die Funktion über dem
 ganzen Intervall $[a,b]$ in das Integral eingeht, wird man für die
 numerische Integration natürlich mehr Punkte als beim Differenzieren
 einbeziehen wollen, und hat dementsprechend auch mehr Möglichkeiten,
-die Gewichte zu wählen. Im folgenden werden wir einige der
+die Gewichte zu wählen. Im Folgenden werden wir einige der
 gebräuchlichsten Verfahren kennenlernen.
 
 \subsection{\keyword{Newton-Cotes-Formeln}}
@@ -380,7 +380,7 @@ Funktion das Rungephänomen bei der Integration, und ab Ordnung $n=9$
 treten negative Koeffizienten $\alpha_i$ auf, was die Näherung
 verschlechtert. Daher sind nur kleine $n$ sinnvoll, und in der Praxis
 werden nur Formeln bis Ordnung $n=8$ benutzt. Die
-gebräuchlichsten werden im folgenden kurz diskutiert.
+gebräuchlichsten werden im Folgenden kurz diskutiert.
 
 \newcommand{\topillu}[1]{%
   \begin{tikzpicture}[overlay,x=\textwidth,y=\baselineskip]
@@ -481,7 +481,7 @@ ermöglicht.
 
 Wie weiter oben erwähnt, sind Newton-Cotes-Formeln höherer Ordnung
 numerisch noch ungünstiger als die Polynominterpolation, auf der sie
-basieren. Im allgemeinen konvergiert bei steigender Anzahl der
+basieren. Im Allgemeinen konvergiert bei steigender Anzahl der
 Stützstellen die Näherung für das Integral nicht einmal. Genauso wie
 bei der Interpolation liegt es nahe, auf stückweise Polynome, also
 Splines, überzugehen, wenn die Funktion $f$ an sehr vielen
@@ -687,7 +687,7 @@ Für $b-a$-periodische $C^\infty$-Funktionen sind offenbar alle
 $\alpha_i=0$, daher strebt die Trapezformel $T_f(h)$ für diese
 schneller als jede Potenz von $h$ gegen das gesuchte Integral.
 
-Für nichtperiodische Funktionen kann man im allgemeinen die $\alpha_i$
+Für nichtperiodische Funktionen kann man im Allgemeinen die $\alpha_i$
 nicht analytisch bestimmen, weil das die Kenntnis hoher Ableitungen
 erfordert. Um das gesuchte Polynom $T_f(h)$, und damit die $\alpha_i$,
 trotzdem zu bestimmen, berechnet man zunächst $T_{i,0}=T_f(h_i)$ für
@@ -829,7 +829,7 @@ mit
 \end{equation}
 
 \noindent Ziel ist nun, die Lage der Knoten $x_i$ so zu wählen, dass
-die Ableitungen, die wir ja im allgemeinen gar nicht kennen, aus der
+die Ableitungen, die wir ja im Allgemeinen gar nicht kennen, aus der
 Näherungen entfallen:
 \begin{equation}
   \label{eq:gaussortho}
@@ -1051,7 +1051,7 @@ def montecarlo(f, a, b, c, d, N):
 \end{lstlisting}
 
 Da die Standardabweichung eine Konstante ist, fällt der Fehler der
-Monte-Carlo-Integration im allgemeinen wie $\O(N^{-1/2})$. Im
+Monte-Carlo-Integration im Allgemeinen wie $\O(N^{-1/2})$. Im
 Vergleich dazu fällt der Fehler der Trapezregel im eindimensionalen
 wie $\O(N^{-2})$, sofern $f$ genügend glatt ist. Wenn man bei der
 Trapezregel die Anzahl der Stützpunkte verdoppelt, dann muss man bei
@@ -1274,7 +1274,7 @@ und so weiter.
     grün. Auf der rechten Seite sind die Ergebnisse der Integration zu
     sehen, wobei blaue Kreise die Monte-Carlo-Integration mit
     Pseudozufallszahlen angeben, grüne Kreuze die Trapezregel und rote
-    Diamanten die Quasi-Monte-Carlo-Integration.}
+    Rauten die Quasi-Monte-Carlo-Integration.}
   \label{fig:qmc}
 \end{figure}
 
