@@ -111,7 +111,7 @@ bessere, auf die Optimierung zugeschnittene Varianten kennen.
 
 Eine nichtlineare Funktion kann mehrere Minima aufweisen. Ähnlich wie
 das Newtonverfahren konvergieren die Verfahren zur nichtlinearen
-Optimierung im allgemeinen nur lokal gegen das nächstgelegene Minimum.
+Optimierung im Allgemeinen nur lokal gegen das nächstgelegene Minimum.
 Solche Optimierungsverfahren heißen daher \emph{lokal}. Falls eine
 Zielfunktion sehr viele lokale Minima hat, ist es für diese Verfahren
 unter Umständen schwierig bis unmöglich, das \emph{globale} Minimum
@@ -154,7 +154,7 @@ ergeben sich zum Beispiel bei der Ausgleichsrechnung
 
 Ist $m = n$ und $A$ regulär, so ist die Lösung unmittelbar klar,
 nämlich $A^{-1}b$. Ist aber $m>n$, dann ist das Gleichungssystem
-$Ax=b$ im allgemeinen nicht lösbar; \eqref{eq:optnorm2} besagt dann,
+$Ax=b$ im Allgemeinen nicht lösbar; \eqref{eq:optnorm2} besagt dann,
 dass wir dasjenige $x$ suchen, dass das Gleichungssystem möglichst gut
 löst. Um diese Aufgabe zu lösen, formen wir sie zunächst etwas um:
 \begin{equation}
@@ -497,7 +497,7 @@ daher der Name des Verfahrens.
   \label{fig:cg}
 \end{figure}
 
-Die $d^{(k)}$ werden konstruiert, in dem die
+Die $d^{(k)}$ werden konstruiert, indem die
 Gradientenabstiegsrichtungen $r^{(k)}$ mit Hilfe des
 Gram-Schmidt-Verfahrens zueinander senkrecht bezüglich
 $(\cdot,\cdot)_A$ gemacht werden. Dabei muss aufgrund der Wahl der
@@ -566,7 +566,7 @@ zumindest kleiner als das gesuchte Minimum von $f$ in $M$, so wäre
   \min_{x\in M} f(x) = \min_{x\in\RR^n} f(x) + \sum_{i=1}^m \min(0,
   g_i(x))^2.
 \end{equation}
-In der Praxis ist einerseits $g_i(x)$ im allgemeinen endlich,
+In der Praxis ist einerseits $g_i(x)$ im Allgemeinen endlich,
 andererseits kennen wir aber auch kein Verfahren, um eine höchst
 unstetige Funktion zu minimieren. Wenn wir uns die Nebenbedingungen
 aber als Banden vorstellen, über die ein iterativer Algorithmus nicht
@@ -851,7 +851,7 @@ einer der Ecken dieses Polyeders befindet. Der
 Polyeders, wobei die Zielfunktion ständig kleiner wird. Da es nur
 endliche viele Ecken gibt, findet der Algorithmus das Minimum
 irgendwann. Es gibt pathologische Beispiele, in denen der Algorithmus
-alle Ecken absuchen muss. Im allgemeinen konvergiert der
+alle Ecken absuchen muss. Im Allgemeinen konvergiert der
 Simplexalgorithmus aber schnell.
 
 Die Methode zerfällt dabei in zwei Phasen. In der ersten Phase muss
@@ -901,7 +901,7 @@ eine Komponente $r_s < 0$ ist. Ist dies nicht der Fall, haben wir also
 unser Optimum gefunden.
 
 Sei nun also $s$ so gewählt, dass $r_s< 0$ minimal. Dann können wir
-unser Ergebnis verbessern, in dem wir $u_s>0$ wählen, aber alle
+unser Ergebnis verbessern, indem wir $u_s>0$ wählen, aber alle
 anderen Elemente von $u_N$ weiterhin bei 0 belassen. Wir nehmen also
 $s$ in die Basiskoordinaten $B$ auf. Damit diese eine Basis bleiben,
 müssen wir nun noch sehen, welche Gleichung dafür herausfällt. Aus
@@ -976,7 +976,7 @@ Sofern die ursprüngliche zulässige Menge nicht leer war, ist das
 Minimum dieser Zielfunktion offenbar Null, nämlich dann, wenn alle
 $y=0$ sind. Außerdem kennen wir einen zulässigen Punkt des neuen
 Problems, nämlich $(0,\,\tilde{b})$, und die zugehörige Matrix
-$A_B=I$.  Daher kennen wir auch $A_B^{-1}=I$, das im folgenden dann
+$A_B=I$.  Daher kennen wir auch $A_B^{-1}=I$, das im Folgenden dann
 nur angepasst werden muss. Wir können also die Phase I des
 Simplexalgorithmus unmittelbar auf diese Matrix anwenden.
 
@@ -1040,9 +1040,9 @@ $x_i$ paarweise verschieden, fällt die Polynomapproximation mit der
 Interpolation zusammen, da der minimale Fehler $0$ offenbar durch das
 eindeutige interpolierende Polynom erreicht wird.
 
-Anders als bei der Interpolation wählt man aber im allgemeinen $m\gg
+Anders als bei der Interpolation wählt man aber im Allgemeinen $m\gg
 n$, das Polynom kann also nicht alle Stützstellen passieren, und wird
-im allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
+im Allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
 Polynomapproximation das Rungeproblem, da die zusätzlichen Stützpunkte
 verhindern, dass das Polynom zu weit von der Zielfunktion abweicht.
 Das Minimum und der Algorithmus, mit dessen Hilfe dieses berechnet
@@ -1057,7 +1057,7 @@ Abbildung~\ref{fig:polyapprox} zeigt die Ergebnisse für die
 Approximation von $\exp(x)$ in diesen Normen. Beide Näherungen
 approximieren die Funktion hinreichend gut. Unterschiede zeigen sich
 allerdings in den Absolutdifferenzen $\abs{p(x) - \exp(x)}$. Das in der
-2-Norm approximierende Polynom minimiert den mittleren Fehler, in dem
+2-Norm approximierende Polynom minimiert den mittleren Fehler, indem
 es einen kleineren Fehler im Interval $<0$ durch eine höheren Fehler
 bei 1 erkauft. Da dies nur ein Punkt ist, wiegt der verringerte Fehler
 bei negativen Zahlen schwerer. Die Minimierung der maximalen
@@ -1095,7 +1095,7 @@ negativen $x$ deutlich größer sind.
 Die Ausgleichsrechnung, also $\min \norm{Ax-b}_2$, und die linearen
 Programme sind zwei Spezialfälle von Optimierung, bei denen ein
 gefundenes Optimum stehts auch ein globales Minimum ist. Das hängt
-damit zusammen, dass die Zielfunktionen im allgemeinen nur ein
+damit zusammen, dass die Zielfunktionen im Allgemeinen nur ein
 (Ausgleichsrechnung) oder gar kein lokales Minimum (lineare
 Programmierung) haben. Im Gegensatz dazu finden das Newtonverfahren
 oder das Verfahren des steilsten Abstiegs stets nur lokale Minima,
@@ -1140,7 +1140,7 @@ des ``Curse of dimension'' ist es in diesem Fall nicht mehr möglich,
 eine Rasterung vorzunehmen. Es ist also aussichtslos, sämtliche lokale
 Minima mit Hilfe eines lokalen Minimierungsverfahrens zu suchen.
 
-Im folgenden lernen wir zwei heuristische Methoden kennen, die auch
+Im Folgenden lernen wir zwei heuristische Methoden kennen, die auch
 unter solchen Bedingungen meist akzeptable Näherungen für das globale
 Minimum finden.
 
@@ -1324,12 +1324,12 @@ Kristallgitteroptimierung wäre dies zum Beispiel die Energie eines
 Gitters, dass aus der Elementarzelle entsteht, die vom Genom codiert
 wird.
 
-Wie werden nun Individuen vermehrt? Einfach, in dem zufällige, kleine
+Wie werden nun Individuen vermehrt? Einfach, indem zufällige, kleine
 Änderungen am Genom des sich vermehrenden Individuums vorgenommen
 werden und dieses neue Genom in den Pool der vorhanden Individuen
 aufgenommen wird. Dabei werden fittere Individuen häufiger
 vermehrt. Das kann man auf verschiedene Weisen erreichen, zum
-Beispiel, in dem stets eine kleine Anzahl von Individuen zufällig
+Beispiel, indem stets eine kleine Anzahl von Individuen zufällig
 ausgewählt wird, und von diesen das fitteste vermehrt.  Dabei gibt es
 zwei Typen von Änderungen am Genom: \emph{Mutationen}, also kleine
 zufällige Änderungen im Genom, und \emph{Kreuzungen} zweier guter
@@ -1361,7 +1361,7 @@ $B_{k+1},\ldots,\,B_n$ vom zweiten kombiniert, und analog die
 $L_i$. Zusätzlich wird sicher gestellt, dass die $L_i$ linear
 unabhängig sind, also tatsächlich ein Gitter aufspannen. Um die
 Chancen des neuen Genoms zu erhöhen, wird für dieses die Energie lokal
-minimiert, in dem die Darstellung geeignet verdreht wird. Es ist durchaus
+minimiert, indem die Darstellung geeignet verdreht wird. Es ist durchaus
 üblich, physikalisches Wissen in genetischen Algorithmen zu benutzen,
 um bessere Genome zu erzeugen.
 

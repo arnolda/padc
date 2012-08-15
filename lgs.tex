@@ -25,7 +25,7 @@ allerdings schnell und zuverlässig lösen. In diesem Kapitel lernen wir
 die grundlegende Methode zum Lösen von Gleichungssystemen kennen,
 nämlich die allgemeine, aber langsame Gaußelimination. Daneben lernen
 wir noch die LU-Zerlegung und die Choleskyzerlegung kennen, die mit
-etwas Vorarbeit eine effizientere Lösung erlauben und im folgenden oft
+etwas Vorarbeit eine effizientere Lösung erlauben und im Folgenden oft
 zum Einsatz kommen werden.
 
 Wir betrachten also folgendes Problem: Sei $A=(a_{ik})\in\RR^{m\times
@@ -112,7 +112,7 @@ $K\in\RR^{k\times l}$ beliebig ist, und $x'$ eine Permutation
 (Umordnung) von $x$. Dieses Gleichungssystem hat offenbar nur dann
 eine Lösung, wenn $b_i'=0$ für $i=m-k+1(1)m$.
 
-Diese ist im allgemeinen auch nicht eindeutig, vielmehr können die
+Diese ist im Allgemeinen auch nicht eindeutig, vielmehr können die
 freien Variablen $x_\text{K} = (x'_i)_{i=n-k+1}^{n}$ frei gewählt
 werden. Ist $x_\text{R} = (x'_i)_{i=1}^{n-k}$ der Satz der
 verbleibenden Lösungsvariablen, so gilt also
@@ -138,7 +138,7 @@ $\left<\right>$ den aufgespannten Vektorraum bezeichnet. Die
 Ausdrücke, die $R^{-1}$ enthalten, können durch Rücksubstitution bestimmt
 werden.
 
-Um das System $Ax=b$, das wir im folgenden als $A|b$ zusammenfassen,
+Um das System $Ax=b$, das wir im Folgenden als $A|b$ zusammenfassen,
 auf diese Form zu bringen, stehen folgende Elementaroperationen zur
 Verfügung, die offensichtlich die Lösung nicht verändern:
 \begin{enumerate}
@@ -204,7 +204,7 @@ Ist während eines Schrittes $a_{rr}^{(r-1)} = 0$ und
 Das Element $a_{rr}^{(r-1)}$ heißt auch \emph{Pivotelement}, da es
 sozusagen der Dreh- und Angelpunkt des iterativen Verfahrens ist.  In
 der Praxis ist es numerisch günstiger, wenn dieses Element möglichst
-groß ist. Das lässt sich erreichen, in dem wie in den singulären
+groß ist. Das lässt sich erreichen, indem wie in den singulären
 Fällen verfahren wird, also Zeilen oder Spalten getauscht werden, um
 das betragsmäßig maximale $a_{ik}^{(r-1)}$ nach vorne zu
 bringen. Folgende Verfahren werden unterschieden
@@ -353,7 +353,7 @@ Zerlegung der Matrix A) und \scipy{scipy.linalg.lu_solve((lu,piv), b)}
 \section{Cholesky-Zerlegung}
 \index{Cholesky>-Zerlegung}
 
-Wir betrachten im folgenden nur symmetrische, positiv definite
+Wir betrachten im Folgenden nur symmetrische, positiv definite
 Matrizen, wie sie gerade in der Physik oft vorkommen. Auch in der
 Optimierung spielen diese eine wichtige Rolle. Sei $A=LDU$ eine
 LDU-Zerlegung einer symmetrischen Matrix, dann gilt
@@ -396,7 +396,7 @@ Cholesky-Zerlegung als \scipy{scipy.linalg.cholesky(A)} implementiert.
 
 \section{\keyword{Bandmatrizen}}
 
-Im folgenden werden wir oft mit $k$-Bandmatrizen zu tun haben, also
+Im Folgenden werden wir oft mit $k$-Bandmatrizen zu tun haben, also
 Matrizen, bei denen nur die Diagonale und einige Nebendiagonalen
 besetzt sind. Diagonalmatrizen sind also 1-Bandmatrizen, eine
 \emph{Dreibandmatrix}\index{Dreibandmatrizen} hat die Form

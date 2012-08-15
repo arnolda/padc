@@ -126,7 +126,7 @@ Der (lineare) Kongruenzgenerator (LCG) ist der einfachste Typ eines
 Zufallszahlengenerators. Der interne Zustand ist dabei lediglich eine
 ganze Zahl $x_i$ von $0$ bis $m-1$, die gemäß
 \begin{equation}
-  x_{i+1} = a x_i + b \bmod m
+  x_{i+1} = (a x_i + b) \bmod m
 \end{equation}
 in den neuen inneren Zustand $x_{i+1}$ transformiert wird.  Die
 eigentliche Zufallszahl sind einige (oder alle) der Bits des Zustands
@@ -206,9 +206,9 @@ Zahlen großer Bitlänge ist aufwändiger. Eine einfache Alternative
 sind \emph{verzögerte Fibonaccigeneratoren}, die ähnlich wie ein LCG
 funktionieren, aber mehrere vorherige Werte benutzen:
 \begin{equation}
-  x_n = x_{n-a} + x_{n-b} \bmod m,
+  x_n = (x_{n-a} + x_{n-b}) \bmod m,
 \end{equation}
-wobei diesmal $m$ beliebig ist und im allgemeinen einfach als die
+wobei diesmal $m$ beliebig ist und im Allgemeinen einfach als die
 Bittiefe des Rechners gewählt wird. Anstelle der Addition kann auch
 die bitweise Addition modulo 2 benutzt werden.  Diese
 Exklusiv-Oder-Operation war früher schneller als eine Addition und
@@ -559,8 +559,8 @@ Da, falls mit $p$ auch $p-1$ gleichverteilt auf $[0,1]$ ist, ergibt
 sich durch Rücktransformation in kartesische Koordinaten das
 Box-Muller-Verfahren als
 \begin{align}
-  x  = \sqrt{-2\log(u)}\cos(2\pi u')\\
-  y = \sqrt{-2\log(u)}\sin(2\pi u')
+  z  &= \sqrt{-2\log(u)}\cos(2\pi u')\\
+  z' &= \sqrt{-2\log(u)}\sin(2\pi u')
 \end{align}
 mit zwei Standardzufallszahlen $u$, $u'$. Diese werden in zwei
 unabhängige, normalverteilte Zufallszahlen $z$ und $z'$
@@ -649,7 +649,7 @@ Tripletkorrelationen problematisch.  Bei einem zweidimensionalen
 Isingmodell hingegen wird es genau umgekehrt sein.  In jedem Fall aber
 sollte die Periode des Generators wie besprochen groß genug sein.
 
-Für die im folgenden beschriebenen Tests nehmen wir an, dass der zu
+Für die im Folgenden beschriebenen Tests nehmen wir an, dass der zu
 testende Zufallszahlengenerator Standardzufallszahlen liefert, also
 gleichverteilt im Intervall $[0,1]$.  Solche Zufallszahlen werden wie
 beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall
@@ -714,7 +714,7 @@ Lineare Kongruenzgeneratoren haben nach einem Satz von Marsaglia die
 Eigenschaft, dass im $\RR^n$ $n$ aufeinanderfolgende Zufallszahlen,
 als Vektor aufgefasst, auf Hyperebenen liegen. Problematisch wird
 dies, wenn die Anzahl der Hyperebenen sehr klein ist. Für $n=2$ und
-$3$ kann man das sehr bequem überprüfen, in dem man den
+$3$ kann man das sehr bequem überprüfen, indem man den
 Poincar\'e-Schnitt $(x_k, x_{k+1})$, $k=0,1,\ldots$ bzw.\ sein
 dreidimensionales Äquivalent $(x_k, x_{k+1}, x_{k+2})$, $k=0,1,\ldots$
 betrachtet. Da alle Punkte in $[0,1]^2$ bzw $[0,1]^3$ liegen, heißen
@@ -1100,7 +1100,7 @@ dieser Liste Punkte am gegenüberliegenden Rand auftauchen.
     $p=0,6$. Blaue Punkte markieren den Cluster, Kreuze andere, mit
     diesem Cluster nicht verbundene, aber besetzte Gitterpunkte. Im
     rechten Graph ist für $L=5$ (grüne Sterne), $L=20$ (blaue
-    Diamanten) und $L=100$ mit welcher Wahrscheinlichkeit bei
+    Rauten) und $L=100$ mit welcher Wahrscheinlichkeit bei
     Besetzung $p$ ein perkolierender Cluster gefunden wurde. Für
     $L=100$ ist dies ein bereits sehr scharfer 0--1-Übergang in Nähe
     von $0,6$.}

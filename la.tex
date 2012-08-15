@@ -16,7 +16,7 @@ Wie wir bereits an der Besselgleichung gesehen haben, lassen sich
 gewöhnliche Differentialgleichungen in einer Dimension recht einfach
 auf lineare Gleichungssysteme abbilden. Diese haben Bandstruktur und
 sind effizient zu lösen.  In mehr als einer Dimension ist das
-allerdings im allgemeinen nicht mehr der Fall. Betrachten wir zum
+allerdings im Allgemeinen nicht mehr der Fall. Betrachten wir zum
 Beispiel die Poissongleichung in zwei Dimensionen:
 \begin{equation}
   \label{eq:laplace}
@@ -107,7 +107,7 @@ Matrizen bewältigen. Auf derartigen Datenstrukturen kann die
 Gaußelimination allerdings nicht effizient eingesetzt werden, da diese
 die Matrixstruktur durch die Zeilenadditionen rasch zerstört.
 
-Im folgenden lernen wir nun schnellere, iterative Gleichungslöser
+Im Folgenden lernen wir nun schnellere, iterative Gleichungslöser
 kennen, mit denen auch solche und größere Gleichungssysteme handhabbar
 werden. Außerdem können diese Verfahren auch auf große, dünn besetzte
 Matrizen angewandt werden. Weiter lernen wir die QR-Zerlegung als
@@ -359,7 +359,7 @@ durch Ausprobieren gefunden werden.
     \eqref{eq:2d-laplace} betrachtet, die wie gesagt nicht strikt
     diagonaldominant ist. Zum anderen wird eine Matrix $B$ mit
     genausovielen, normalverteilten Einträgen, betrachtet, die strikt
-    diagonaldominant gemacht wurde, in dem $b_{i,i} = 1+ \sum_{k\neq
+    diagonaldominant gemacht wurde, indem $b_{i,i} = 1+ \sum_{k\neq
       i}\abs{b_{ik}}$ gesetzt wurde. Links sind die Fehler
     $\norm{Bx-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
     Matrix $B$ mit blauen Punkten bzw.\ roten Rauten eingezeichnet. Die
@@ -508,7 +508,7 @@ verwandte Optimierungsaufgaben löst.
   \end{tikzpicture}
 
   \caption{Gram-Schmidt-Orthogonalisierung. $a_2$ wird in den Vektor
-    $q'_2$ transformiert, der zu $q_1$ senkrecht steht, in dem die
+    $q'_2$ transformiert, der zu $q_1$ senkrecht steht, indem die
     Projektion von $q_1$ auf $a_2$ (blau gepunktet) von $a_2$
     abgezogen wird. $q'_2$ wird schließlich noch normiert, um den
     nächsten Basisvektor $q_2$ zu erhalten.}
@@ -534,7 +534,7 @@ müssen:
 \end{equation}
 Den nächsten Vektor, $a_2$, dürfen wir nun nicht einfach normieren und
 hinzufügen, da er ja nicht notwendigerweise orthogonal zu $q_1$
-ist. Das können wir aber erreichen, in dem wir einfach die Anteile
+ist. Das können wir aber erreichen, indem wir einfach die Anteile
 parallel zu $q_1$ abziehen (vergleiche Abbildung~\ref{fig:gs}):
 \begin{align*}
   q'_2 &= a_2 - (a_2, q_1)\,q_1\\
@@ -836,7 +836,7 @@ Spiegelungen multiplizieren, was analog \eqref{eq:hhupdate} geht:
 \end{equation}
 Vielfach ist es aber gar nicht nötig, $Q$ explizit zu kennen, dann
 kann man einfach die Vektoren $v^{(k)}$ speichern und bei Bedarf $Qw$
-für einen beliebigen Vektor $w$ ausrechnen, in dem die Spiegelungen in
+für einen beliebigen Vektor $w$ ausrechnen, indem die Spiegelungen in
 umgekehrter Reihenfolge auf $w$ angewandt werden.
 
 In Python könnte eine QR-Zerlegung mittels Householder-Spiegelungen
@@ -1023,7 +1023,7 @@ daher lediglich 50 statt 300 Drehungen nötig.
 \index{Eigenvektor}
 
 In der Quantenmechanik spielt die Berechnung von Eigenwerten- und
-Vektoren, also von Eigenenergien und -zuständen, eine zentrale Rolle.
+vektoren, also von Eigenenergien und -zuständen, eine zentrale Rolle.
 
 Gegeben ist wieder eine Matrix $A\in\RR^{n,n}$. Wir suchen
 nichttriviale Vektoren $v\in\RR^n$ und Skalare $\lambda$, so dass
@@ -1065,7 +1065,7 @@ betragsmäßig größte Eigenwert $\lambda_1$ nicht entartet, so ist
 $\lambda_1^i\gg\lambda_k^i$ für große $i$. Daher wird $\tilde{x}_i$
 mit wachsender Anzahl Iterationen zunehmend parallel zu einem
 Eigenvektor zu $\lambda_1$. Allerdings wird dabei $\tilde{x}_i$
-gleichzeitg immer größer bzw.\ kleiner, wenn $\abs{\lambda_1} > 1$
+gleichzeitig immer größer bzw.\ kleiner, wenn $\abs{\lambda_1}$ größer
 bzw.\ kleiner 1 ist. Um numerische Probleme zu vermeiden, muss
 $\tilde{x}_i$ noch normiert werden.
 
@@ -1092,11 +1092,11 @@ größte Eigenwerte (etwa $\pm 1$), konvergiert dieses Verfahren nicht.
 Das Verfahren konvergiert vergleichsweise langsam, und findet nur den
 betragsmäßig größten Eigenwert. Man könnte zwar versuchen, den neuen
 Startwert durch Orthogonalisierung senkrecht zum Eigenraum des größten
-Eigenvektors zu wählen, aber im allgemeinen verhindern wieder numerische
+Eigenvektors zu wählen, aber im Allgemeinen verhindern wieder numerische
 Ungenauigkeiten, dass das Verfahren gegen einen anderen Eigenwert
 konvergiert.
 
-Zumindest einen weiteren Eigenwert kann man finden, in dem man die
+Zumindest einen weiteren Eigenwert kann man finden, indem man die
 \emph{geshiftete} Matrix $A - \lambda_1I$ betrachtet, für die
 $\lambda_1$ notwendigerweise dem betragsmäßig kleinsten Eigenwert,
 nämlich 0, entspricht. Der gefundene Eigenwert $\mu_1$ entspricht

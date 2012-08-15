@@ -225,7 +225,7 @@ das interpolierende Polynom durch die Stützstellen (\argd{x[i]},
 
 Die Koeffizienten $a_i$ können im Prinzip als Lösung von
 Gleichung~\eqref{eq:interpol} mit geeigneten Lösern für lineare
-Gleichungssysteme gefunden werden, was im allgemeinen allerdings recht
+Gleichungssysteme gefunden werden, was im Allgemeinen allerdings recht
 langsam ist. Daher benutzt man besser eine direkte Darstellung mit
 Hilfe der \emph{Lagrangepolynome}, die wie folgt definiert sind:
 \begin{equation}
@@ -448,7 +448,7 @@ der lineare interpolierende Spline
   \label{fig:spline}
 \end{figure}
 
-Diese Funktionen sind aber an den Stützstellen im allgemeinen nicht
+Diese Funktionen sind aber an den Stützstellen im Allgemeinen nicht
 differenzierbar. Soll die Interpolierende differenzierbar sein, müssen
 Polynome höherer Ordnung genutzt werden. Solche stückweise definierten
 Polynome heißen \emph{Splines} --- das englische Wort Splines
@@ -628,7 +628,7 @@ Berechnung, der nicht zu weit vom (unbekannten) Optimum entfernt
 liegen darf. \argd{delta} ist eine Python-Funktion, die als Argumente
 $v$, $x_i$ und $y_i$ nimmt und $f_v(x_i) - y_i$ zurückliefert.  Da
 $f_v(x)$ eine beliebig komplizierte Form annehmen kann, ist diese
-Aufgaben im allgemeinen nicht lösbar, allerdings funktioniert ein
+Aufgaben im Allgemeinen nicht lösbar, allerdings funktioniert ein
 solcher \emph{Fit} für einfache Funktionen meistens recht
 gut. Abbildung~\ref{fig:leastsq} zeigt einen solchen Funktionsfit an
 eine verrauschte Sinusfunktion, die mit 200 Datenpunkten auf etwa 2\%
@@ -696,7 +696,7 @@ berechnen als
   \label{eq:fouriercoeff}
   \hat{f}_n = \frac{1}{T}\int_0^T f(t)e^{-i n\omega t}\, dt
 \end{equation*}
-und sind im allgemeinen komplex, auch wenn $f$ reellwertig ist. Die
+und sind im Allgemeinen komplex, auch wenn $f$ reellwertig ist. Die
 Beiträge $\hat{f}_{\pm n}$ haben dieselbe Frequenz $\pm n/T$,
 unterscheiden sich aber in ihrer Phase. Die \emph{Leistung} zu dieser
 Frequenz ist $\hat{f}_{n}\hat{f}_{-n}$.
@@ -763,7 +763,7 @@ Weiter gilt:
   $\hat{f}_{-n} = -\hat{f}_n$, also $\hat{f}$ ungerade.
 \item Ist Funktion $f$ reellwertig, also $f(t) = \overline{f(t)}$, so
   ist $\hat{f}_{-n} = \overline{\hat{f}_n}$. Allerdings sind die
-  Fourierkoeffizienten im allgemeinen komplex!
+  Fourierkoeffizienten im Allgemeinen komplex!
 \item 
   Ist die komplexwertige Funktion $f(t)=g(t) + ih(t)$ mit $g$, $h$
   reellwertig, gilt also
@@ -942,7 +942,7 @@ Die Koeffizienten
   \text{DFT}(f_k)_n = g_n = \sum_{k=0}^{N-1} f_k e^{-i \frac{2\pi}{N} n k}
 \end{equation}
 werden als die \emph{diskrete Fouriertransformierte} bezeichnet, die
-sehr effizient berechnet werden kann, wie wir im folgenden sehen
+sehr effizient berechnet werden kann, wie wir im Folgenden sehen
 werden. Analog wird die \emph{inverse diskrete Fouriertransformation}
 \begin{equation}
   \label{eq:idft}
@@ -950,7 +950,7 @@ werden. Analog wird die \emph{inverse diskrete Fouriertransformation}
 \end{equation}
 definiert, die aus den Koeffizienten wieder die Funktion $f$ an den
 diskreten Eingangspunkten $t_k$
-berechnet. Abbildung~\ref{fig:fouriersin} zeigt zum die DFT der Summe
+berechnet. Abbildung~\ref{fig:fouriersin} zeigt die DFT der Summe
 zweier verrauschter Sinusfunktionen, aus der die beiden
 Basisfrequenzen und deren Amplituden klar gegenüber dem Rauschen zu
 erkennen sind.
@@ -968,7 +968,7 @@ $(g_{0},\ldots,g_{N-1})$
 bzw. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
 reell, so gilt noch dazu $g_{-k} = \overline{g_{k}}$, sodass lediglich
 $\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Allerdings
-sind diese im allgemeinen komplex, so dass die $N$ reellen
+sind diese im Allgemeinen komplex, so dass die $N$ reellen
 Freiheitsgrade der Eingangsfunktion erhalten bleiben.
 
 % verhindert zwei ziemlich unterfüllte Seiten
@@ -1138,7 +1138,7 @@ lokal ist.
 Anders als bei der Fouriertransformation, die eine Zerlegung in
 trigonometrische Funktionen darstellt, gibt es für die MSA
 verschiedene Sätze von Basisfunktionen mit verschiedenen Eigenschaften
-wie Differenzierbarkeit und Lokalität. Im folgenden soll die MSA mit
+wie Differenzierbarkeit und Lokalität. Im Folgenden soll die MSA mit
 Hilfe des Haar-Wavelets dargestellt werden, dass das einfachste und
 älteste bekannte Wavelet ist. Zunächst betrachten wir die
 \emph{Skalierungsfunktion}
