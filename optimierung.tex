@@ -291,7 +291,7 @@ wobei
 \end{equation}
 Bei großen Dimensionen $n$ kann es rasch sehr aufwendig werden,
 $f''(x)$ zu berechnen, dies ist aber auch nötig, um zu überprüfen,
-ob das gefundenene Extremum auch tatsächlich ein Minimum ist. Daher
+ob das gefundene Extremum auch tatsächlich ein Minimum ist. Daher
 ist dieses Verfahren nicht optimal. Besser sind die folgenden
 Verfahren, die ohne $f''(x)$ auskommen.
 
@@ -401,7 +401,7 @@ nur wenige Stellen zur Optimierung verbleiben.
     konvergieren beide Verfahren gegen das Minimum bei $(0,\,0)$, und
     auch das Armijo-Verfahren wählt eine konstante Schrittweite von
     etwa $0,0078$. Durch diesen etwas kleineren Wert zielt das das
-    schrittweitengesteuerte Verfahren weiger über das Minimum hinaus
+    schrittweitengesteuerte Verfahren weniger über das Minimum hinaus
     und braucht nur 11 statt 35 Schritte für 10 Stellen
     Genauigkeit. Bei der Rosenbrockfunktion benötigt das
     schrittweitengesteuerte Verfahren etwa 1700 Iterationen dafür.
@@ -443,7 +443,7 @@ Abstiegs dazu, sich dem Minimum in Zick-Zack-Kurven mit sehr geringer
 Schrittweite zu nähern.
 
 Bei zu großer Schrittweite kann das Verfahren sogar gar nicht
-konvergieren. Da von vorneherein die maximale Ableitung meist nicht
+konvergieren. Da von vornherein die maximale Ableitung meist nicht
 bekannt ist, ist also eine Schrittweitensteuerung unerlässlich.
 
 \subsection{\keyword{CG-Verfahren}}
@@ -1015,7 +1015,7 @@ Simplexverfahrens in Python.
     beiden Polynomnäherungen und $\exp(x)$ gezeigt. Die zweite Lösung
     erkauft sich eine niedrigere Abweichung am rechten Rand durch
     deutliche höhere Abweichung zwischen $-0,8$ und $0$. Die maximalen
-    Fehler sind dadurch gleichmäßig über das Interval verteilt.}
+    Fehler sind dadurch gleichmäßig über das Intervall verteilt.}
   \label{fig:polyapprox}
 \end{figure}
 
@@ -1046,7 +1046,7 @@ im Allgemeinen keine Stützstelle exakt treffen. Dafür vermeidet die
 Polynomapproximation das Rungeproblem, da die zusätzlichen Stützpunkte
 verhindern, dass das Polynom zu weit von der Zielfunktion abweicht.
 Das Minimum und der Algorithmus, mit dessen Hilfe dieses berechnet
-werden kann, hängen von der verwendeteten Norm ab. Ist $\norm{\cdot}$
+werden kann, hängen von der verwendeten Norm ab. Ist $\norm{\cdot}$
 die aus dem üblichen Skalarprodukt abgeleitete 2-Norm $\norm{\cdot}_2$,
 so kann man das Minimum mit Hilfe der Pseudoinversen berechnen. Ist
 die Norm hingegen die Maximumsnorm, berechnet sich das Ergebnis mit
@@ -1058,11 +1058,11 @@ Approximation von $\exp(x)$ in diesen Normen. Beide Näherungen
 approximieren die Funktion hinreichend gut. Unterschiede zeigen sich
 allerdings in den Absolutdifferenzen $\abs{p(x) - \exp(x)}$. Das in der
 2-Norm approximierende Polynom minimiert den mittleren Fehler, indem
-es einen kleineren Fehler im Interval $<0$ durch eine höheren Fehler
+es einen kleineren Fehler im Intervall $<0$ durch eine höheren Fehler
 bei 1 erkauft. Da dies nur ein Punkt ist, wiegt der verringerte Fehler
 bei negativen Zahlen schwerer. Die Minimierung der maximalen
 Abweichung hingegen führt dazu, dass sich der maximale Fehler sehr
-gleichmäßig über das Interval verteilt, auch wenn dafür die Fehler bei
+gleichmäßig über das Intervall verteilt, auch wenn dafür die Fehler bei
 negativen $x$ deutlich größer sind.
 
 \afterpage{\raggedbottom
@@ -1087,19 +1087,19 @@ negativen $x$ deutlich größer sind.
     Positionen anderer Teilchen, die Graustufen repräsentieren das
     Potential. Die gelben Kreuze markieren lokale Minima. Um diese zu
     finden, wurde zunächst das Potential an $100\times 100$ Punkten
-    ausgewerten, und von allen Punkten mit einem Potential kleiner als
+    ausgewertet, und von allen Punkten mit einem Potential kleiner als
     1000 aus eine lokale Minimierung gestartet.}
   \label{fig:ljminima}
 \end{figure}
 
 Die Ausgleichsrechnung, also $\min \norm{Ax-b}_2$, und die linearen
 Programme sind zwei Spezialfälle von Optimierung, bei denen ein
-gefundenes Optimum stehts auch ein globales Minimum ist. Das hängt
+gefundenes Optimum stets auch ein globales Minimum ist. Das hängt
 damit zusammen, dass die Zielfunktionen im Allgemeinen nur ein
 (Ausgleichsrechnung) oder gar kein lokales Minimum (lineare
 Programmierung) haben. Im Gegensatz dazu finden das Newtonverfahren
 oder das Verfahren des steilsten Abstiegs stets nur lokale Minima,
-also Punkte mit verschwindenem Gradienten, dafür aber bei fast
+also Punkte mit verschwindendem Gradienten, dafür aber bei fast
 beliebiger Zielfunktion.
 
 In der Praxis, und besonders in physikalischen Anwendungen, sind die
