@@ -337,7 +337,7 @@ ist das Gauß-Seidel-Verfahren allerdings ungeeignet, da die Berechnung
 jeder Zeile die Ergebnisse der vorherigen erfordert. Das
 Jacobi-Verfahren kann hingegen auf so viele Prozessoren verteilt
 werden, wie die Matrix Zeilen hat, was eine effiziente Verarbeitung
-selbst auf modernen Graphikkarten ermöglicht.
+selbst auf modernen Grafikkarten ermöglicht.
 
 \subsection{\keyword{Relaxationsverfahren}}
 \index{Successive over-relaxation}
@@ -561,7 +561,7 @@ gesichert, dass $q'_k\neq 0$ für alle $k$. Außerdem gilt
 Die zu $q'_k$ parallelen $q_k$ sind damit paarweise orthogonal.
 
 Gleichung \eqref{eq:gs} zeigt auch, dass die orthonormale Basis nicht
-eindeutig ist, denn wir können genausogut
+eindeutig ist, denn wir können genauso gut
 $q_k=-\nicefrac{q'_k}{\norm{q'_k}}$ wählen oder, im Falle eines
 komplexen Hilbertraums, jeden beliebigen anderen anderen Faktor vom
 Betrag 1.
@@ -1133,7 +1133,7 @@ Vektoriteration schreiben:
 In diesem Fall ist es natürlich möglich, die Eigenwerte und -vektoren
 von $A$ analytisch zu bestimmen. Die Eigenwerte sind die Nullstellen
 \begin{equation}
-  det(A-\lambda I) = -\lambda(1-\lambda) - 1 = \left(\lambda
+  \det(A-\lambda I) = -\lambda(1-\lambda) - 1 = \left(\lambda
     -\frac{1}{2}\right)^2 - \frac{5}{4},
 \end{equation}
 also $\lambda_{\pm} = \frac{1}{2} \left(1 \pm \sqrt{5}\right)$. Davon
@@ -1179,12 +1179,12 @@ Kublanovskaya ein.
 
 Grundlage dieses iterativen Algorithmus ist, wie der Name schon sagt,
 die QR-Zerlegung. Wir starten mit $A^{(0)} = A\in\CC^{n,n}$. In jedem
-Iterationsschritt berechen wir eine QR-Zerlegung
+Iterationsschritt berechnen wir eine QR-Zerlegung
 $A^{(k)}=Q^{(k)}R^{(k)}$, und setzen
 \begin{equation}
   A^{(k+1)} = R^{(k)}Q^{(k)} = \left(Q^{(k)}\right)^HA^{(k)}Q^{(k)}.
 \end{equation}
-Die letzere Umformung zeigt, dass $A^{(k+1)}$ dieselben Eigenwerte wie
+Die letztere Umformung zeigt, dass $A^{(k+1)}$ dieselben Eigenwerte wie
 $A^{(k)}$ und damit auch $A$ hat. Konvergiert dieses Verfahren,
 bedeutet dies, dass $Q^{(k)}\approx I$ für große $k$, und damit ist
 $A^{(k+1)}$ nahezu rechte obere Dreiecksmatrix, deren Eigenwerte wir
