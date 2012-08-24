@@ -497,17 +497,22 @@ Intervalrandpunkten $a$ und $b$ als Stützstellen:
   \frac{f(b)a - f(a)b}{f(b) - f(a)}.
 \end{equation}
 Da $f(a)f(b)<0$, schneidet die Sekante die Nulllinie immer im
-Interval.  Dadurch verkleinert sich das Interval schneller, sofern die
-Nullstelle der Sekante dicht an der echten Nullstelle liegt, und die
-Funktion im Intervall nicht streng konkav oder konvex ist, also einen
-Wendepunkt hat. Diese Bedingung ist leider im Allgemeinen nicht
-gegeben, so dass oft die einfache Bisektion schneller ist. In diesem
-Fall wird die Regula falsi sehr langsam, was auch als Lethargie
-bezeichnet wird. Dies ist zum Beispiel in
-Abbildung~\ref{fig:bisektion} rechts gezeigt.
+Interval.  Dadurch verkleinert sich das Interval schneller als beim
+Bisektionsverfahren, sofern die Nullstelle der Sekante dicht an der
+echten Nullstelle liegt. Hat die Funktion im Intervall allerdings
+einen Wendepunkt, ist also nicht streng konkav oder konvex, dann wird
+die Regula falsi sehr langsam, was auch als Lethargie bezeichnet
+wird. Der Grund ist, dass eine der beiden Intervallgrenzen sehr dicht
+an die Nullstelle rückt, und im folgenden nur noch diese Grenze
+minimal verbessert wird, während die zweite Grenze unverändert
+bleibt. Dies ist zum Beispiel in Abbildung~\ref{fig:bisektion} rechts
+gezeigt. Leider sind nicht streng konkave oder konvexe Funktionen eher
+die Regel als die Ausnahme, daher ist die einfache Bisektion oft
+schneller als die Regula falsi.
 
-Die Regula falsi ist also die schnellste und stabilste
-Nullstellensuche, falls die Ableitung der Funktion nicht bekannt
+Die Regula falsi ist aber die schnellste und stabilste
+Nullstellensuche, falls die Ableitung der Funktion nicht bekannt ist,
+man aber weiß, dass die Funktion sicher streng konvex oder konkav
 ist. Insbesondere funktioniert diese Methode im Allgemeinen auch noch
 einigermaßen zufriedenstellend, falls die Funktionswerte gar nicht
 mehr genau bekannt sind. Dies wäre zum Beispiel bei der bereits
