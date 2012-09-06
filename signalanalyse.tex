@@ -262,8 +262,11 @@ ist. Wenn nun die Ursprungsfunktion reell war, würde für die
 Transformierte scheinbar $f(-\omega)=-\overline{f(\omega)}$ gelten,
 $f$ wäre also scheinbar rein imaginär! Bei rein reellen Signalen ist
 es daher günstiger, direkt die reellen Varianten der
-FFT-Implementationen zu nutzen, die nur die positiven Koeffizienten
-bis $N/2$ benötigen und damit das Problem umgehen.
+FFT-Implementationen zu nutzen, die von vorneherein nur mit den
+positiven Koeffizienten bis $N/2$ arbeiten. Der Faktor $(-1)^n$ ist
+übrigens nur eine Folge davon, dass wir $-T/2$ als Startpunkt des
+Gitters gewählt haben. Wählen wir stattdessen das Gitter $t_k=Tk/N$,
+etwa weil die Funktion nur für $T>0$ nicht verschwindet, entfällt er.
 
 Analog lässt sich auch die Rücktransformation nähern:
 \begin{equation}
@@ -271,6 +274,8 @@ Analog lässt sich auch die Rücktransformation nähern:
   \FT^{-1}(f)(t_k)\approx
   \text{iDFT}\left(\sqrt{2\pi}\frac{N}{T}(-1)^n f_n\right)_k
 \end{equation}
+Auch hier entfällt das $(-1)^n$, wenn der Aufpunkt bei 0 statt $-T/2$
+liegt.
 
 Die bekannten schnellen FFT-Routinen lassen sich also auch für die
 numerische Bearbeitung der kontinuierlichen Fouriertransformation
@@ -394,9 +399,9 @@ ist
   =
   \frac{T}{N} \text{iDFT}\left[(-1)^n DFT(f_k)_n DFT(g_k)_n\right]_k.
 \end{multline}
-Wie im Abschnitt~\ref{sec:contdft} gezeigt, ist der Faktor $(-1)^n$
-durch den Aufpunkt $T/2$ bestimmt, und $n$ muss eine Frequenz im
-Bereich $-N/2$ bis $N/2$ sein. Dieser Faktor bleibt einmalig von der
+Wie im Abschnitt~\ref{sec:contdft} besprochen, muss $n$ als Frequenz
+im Bereich $-N/2$ bis $N/2$ interpretiert werden. Der Faktor $(-1)^n$
+ist durch den Aufpunkt $T/2$ bestimmt, und bleibt einmalig von der
 Fouriertransformation übrig. Daher kann die eine der beiden
 Funktionen, etwa $g$, im Prinzip beliebig verschoben sein, da sich
 etwaige Vorfaktoren durch die Vor- und Rücktransformation
