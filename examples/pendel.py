@@ -28,19 +28,19 @@ parser.add_option("--l", dest = "l",
 parser.add_option("--dt", dest = "dt",
                   help = "Integrationszeitschritt", metavar = "Zeitschritt",
                   type = float,
-                  default = 0.01)
+                  default = 0.1)
 parser.add_option("--start_a", dest = "start_a",
                   help = "Anfangsauslenkung", metavar = "Winkel",
                   type = float,
-                  default = 1.)
+                  default = 0.1)
 parser.add_option("--start_da", dest = "start_da",
                   help = "Anfangsgeschwindigkeit", metavar = "Geschwindigkeit",
                   type = float,
                   default = 0)
-parser.add_option("--simple", dest = "method",
+parser.add_option("--verlet", dest = "method",
                   help = "Einfachen Integrator statt Velocity-Verlet benutzen",
-                  action = "store_const", const = "simple",
-                  default = "verlet")
+                  action = "store_const", const = "verlet",
+                  default = "simple")
 
 options, args = parser.parse_args()
 

@@ -35,12 +35,12 @@ start_da = 0
 # Daten erzeugen
 #################################
 
+def F(a):
+    return -g/l*numpy.sin(a)
+def E(a, da):
+    return 0.5*(l*da)**2 + g*(l - l*numpy.cos(a))
+
 def generate(start_a, start_da, dt, integrator):
-    global g, l, T
-    def F(a):
-        return -g/l*numpy.sin(a)
-    def E(a, da):
-        return 0.5*(l*da)**2 + g*(l - l*numpy.cos(a))
 
     # Position
     a = start_a
@@ -77,26 +77,31 @@ def generate(start_a, start_da, dt, integrator):
 #################################
 omega = numpy.sqrt(g/l)
 
+t=numpy.arange(0,2,0.01)
+
 loesung = pyplot.figure(figsize=(8,4))
 energie = pyplot.figure(figsize=(8,4))
 
 loesung_1 = loesung.add_subplot(121)
 loesung_1.set_xlabel("T")
 loesung_1.set_ylabel(u"α")
-
-t=numpy.arange(0,2,0.01)
 loesung_1.plot(t, start_a1*numpy.cos(omega*t), "g", lw=1)
 
 loesung_2 = loesung.add_subplot(122)
 loesung_2.set_xlabel("T")
-
 loesung_2.plot(t, start_a2*numpy.cos(omega*t), "g", lw=1)
 
 energie_1 = energie.add_subplot(121)
 energie_1.set_xlabel("T")
 energie_1.set_ylabel("E")
+Eval=E(start_a1, start_da)
+
+energie_1.plot(t, Eval*numpy.ones_like(t), "g", lw=1)
+
 energie_2 = energie.add_subplot(122)
 energie_2.set_xlabel("T")
+Eval=E(start_a2, start_da)
+energie_2.plot(t, Eval*numpy.ones_like(t), "g", lw=1)
 
 for start_a, lo, en in (start_a1,loesung_1,energie_1), \
         (start_a2,loesung_2,energie_2):
@@ -108,7 +113,7 @@ for start_a, lo, en in (start_a1,loesung_1,energie_1), \
 
 for start_a, lo, en in (start_a1,loesung_1,energie_1), \
         (start_a2,loesung_2,energie_2):
-    dt, method, sym = dt2, "verlet", "g--"
+    dt, method, sym = dt2, "verlet", "k--"
     tn, an, En = generate(start_a, start_da, dt, method)
     en.plot(tn, En, sym, ms=5, lw=2)
 
