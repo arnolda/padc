@@ -1,4 +1,4 @@
-% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
+% Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012, 2013
 % Axel Arnold, Universitaet Stuttgart.
 % 
 % Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
@@ -100,24 +100,36 @@ Für Diagonalmatrizen ist die Situation natürlich einfacher, es gilt
 Die Gaußelimination ist ein Verfahren, um eine beliebiges
 Gleichungssystem $Ax=b$, mit $A\in\RR^{m\times n}$, auf die
 äquivalente Form
+{\samepage\vspace{\medskipamount}% für die TikZ-Deko
 \begin{equation}
   \label{eq:rform}
   \begin{pmatrix}
-    R & K \\
+    \tikzlabel{rl}\;R\;\tikzlabel{rr} & \tikzlabel{kl}\quad K\quad\tikzlabel{kr} \\
     0 & 0
   \end{pmatrix} x' = b'
 \end{equation}
-zu bringen, wobei $R$ eine reguläre rechte obere Dreiecksmatrix und
-$K\in\RR^{k\times l}$ beliebig ist, und $x'$ eine Permutation
-(Umordnung) von $x$. Dieses Gleichungssystem hat offenbar nur dann
-eine Lösung, wenn $b_i'=0$ für $i=m-k+1(1)m$.
+\begin{tikzpicture}[overlay, remember picture]
+  \draw[decorate,decoration=brace] ($(rl) + (0,1em)$) --
+  node[above] {$k$} ($(rr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(kl) + (0,1em)$) --
+  node[above] {$n-k$} ($(kr) + (0,1em)$);
+  \draw[decorate,decoration=brace] ($(rl) + (-1em,-0.1em)$) --
+  node[left] {$k$} ($(rl) + (-1em,1em)$);
+  \draw[decorate,decoration=brace] ($(rl) + (-1em,-1.4em)$) --
+  node[left] {$m-k$} ($(rl) + (-1em,-0.4em)$);
+\end{tikzpicture}}
+
+zu bringen, wobei $R\in\RR^{k,k}$ eine reguläre rechte obere Dreiecksmatrix,
+$K\in\RR^{k\times n-k}$ beliebig und $x'$ eine Permutation
+(Umordnung) von $x$ ist. Dieses Gleichungssystem hat offenbar nur dann
+eine Lösung, wenn $b_i'=0$ für $i=k+1(1)m$.
 
 Diese ist im Allgemeinen auch nicht eindeutig, vielmehr können die
-freien Variablen $x_\text{K} = (x'_i)_{i=n-k+1}^{n}$ frei gewählt
-werden. Ist $x_\text{R} = (x'_i)_{i=1}^{n-k}$ der Satz der
+freien Variablen $x_\text{K} = (x'_i)_{i=k+1}^{n}$ frei gewählt
+werden. Ist $x_\text{R} = (x'_i)_{i=1}^{k}$ der Satz der
 verbleibenden Lösungsvariablen, so gilt also
 \begin{equation*}
-  x_\text{L} = R^{-1}b' - R^{-1}K x_\text{K}.
+  x_\text{R} = R^{-1}b' - R^{-1}K x_\text{K}.
 \end{equation*}
 Die Lösungen ergeben sich daraus als
 \begin{equation}
@@ -141,7 +153,7 @@ werden.
 Um das System $Ax=b$, das wir im Folgenden als $A|b$ zusammenfassen,
 auf diese Form zu bringen, stehen folgende Elementaroperationen zur
 Verfügung, die offensichtlich die Lösung nicht verändern:
-\begin{enumerate}
+\begin{enumerate}[beginpenalty=10000]
 \item Vertauschen zweier Gleichungen (Zeilentausch in $A|b$)
 \item Vertauschen zweier Spalten in $x$ und $A$ (Variablenaustausch)
 \item Addieren eines Vielfachen einer Zeile zu einer anderen
@@ -193,7 +205,7 @@ Ist während eines Schrittes $a_{rr}^{(r-1)} = 0$ und
   Zeile $r$ gegen eine Zeile $i$ mit $a_{ir}^{(r-1)}\neq 0$, und fährt
   fort.
 \item alle $a_{ir}^{(r-1)}=0$, $i=r(1)m$, aber es gibt ein
-  $a_{ik}^{(r-1)}\neq 0$ mit $i,k\ge r$. Dann vertauscht man zunächst
+  $a_{ik}^{(r-1)}\neq 0$ mit $i\ge r$, $k> r$. Dann vertauscht man zunächst
   Zeile $r$ mit Zeile $i$, tauscht anschließend Spalte $k$ mit
   Spalte $r$, und fährt fort.
 \item alle $a_{ik}^{(r-1)}=0$ für $i,k \ge r$. Dann hat
@@ -219,7 +231,7 @@ bringen. Folgende Verfahren werden unterschieden
 \item \emph{Spaltenpivotwahl}: es wird wie oben im 1. Fall nur in der
   Spalte maximiert, d.h.\ wir wählen als  Pivotelement
   \begin{equation}
-    i_0 = \text{argmax}_{i>r} \lvert a_{ir}^{(r-1)}\rvert
+    i_0 = \text{argmax}_{i\ge r} \lvert a_{ir}^{(r-1)}\rvert
   \end{equation}
   und tauschen Zeilen $i_0$ und $r$; die Variablenreihenfolge bleibt
   unverändert. Ist die Matrix $A$ quadratisch, bricht das Verfahren
@@ -228,7 +240,7 @@ bringen. Folgende Verfahren werden unterschieden
   betragsmäßig maximale
   Matrixelement im gesamten Resttableau gesucht, also
   \begin{equation}
-    i_0,k_0 = \text{argmax}_{i,k>r} \lvert a_{ik}^{(r-1)}\rvert.
+    i_0,k_0 = \text{argmax}_{i,k\ge r} \lvert a_{ik}^{(r-1)}\rvert.
   \end{equation}
   Dann vertauscht man zunächst Zeile $r$ mit Zeile $i_0$, und tauscht
   anschließend Spalte $k_0$ mit Spalte $r$, wobei man sich noch die
