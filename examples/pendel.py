@@ -22,7 +22,7 @@ from optparse import OptionParser
 parser = OptionParser()
 
 parser.add_option("--l", dest = "l",
-                  help = "Länge des Pendels", metavar = "Länge",
+                  help = u"Länge des Pendels", metavar = u"Länge",
                   type = float,
                   default = 1)
 parser.add_option("--dt", dest = "dt",
