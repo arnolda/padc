@@ -1,6 +1,7 @@
 # check some included code
-check:  check_random
-	./check_random
+check:
+	python check_horner.py
+	python check_random.py
 	python check_ortho.py 
 	python check_qr.py
 	python check_sor.py
@@ -21,8 +22,3 @@ vac:
 	for dens in 0.5 1; do \
 		~/progs/Espresso/obj-janeway/Espresso lj_liquid.tcl 100 $$dens 100000; \
 	done
-
-CXXFLAGS=-O3 -Wall
-
-check_random: check_random.cpp
-	$(CXX) $(CXXFLAGS) $< -o $@ `gsl-config --libs`

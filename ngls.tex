@@ -332,19 +332,9 @@ mit Hilfe des Newtonverfahrens bestimmen:
   x_{n+1} = x_n - \frac{p(x_n)}{p'(x_n)},
 \end{equation}
 wobei $p(x_n)$ und $p'(x_n)$ durch ein modifiziertes Hornerschema
-bestimmt werden können:
-\begin{lstlisting}[language=C]
-double newton_step(double *series, int n, double xn)
-{
-  double p = series[n];
-  double dp = n*series[n];
-  for(int i = n-1; i >= 0; --i) {
-    p  =  p*xn +   series[i];
-    dp = dp*xn + i*series[i];
-  }
-  return xn - p/dp;
-}
-\end{lstlisting}
+bestimmt werden können. Die folgende Routine berechnet effizient
+$x_{n+1}$ aus $x_n$:%
+\lstinputlisting[firstline=10]{horner_newton.py}%
 Das Newtonverfahren liefert natürlich nur eine Nullstelle des
 Polynoms. Durch die Polynomdivision, wieder mit Hilfe des
 Hornerschemas wie in Abschnitt~\ref{sec:horner}, lässt sich diese
@@ -442,12 +432,12 @@ Nullstelle $\overline{x}$. Es gilt also
 das Verfahren konvergiert also nur linear, dafür aber global.
 
 In der Praxis kombiniert man die Bisektion mit dem Newtonverfahren, indem
-zunächst einige Schritte des Bisektionsverfahrens gestartet
+zunächst einige Schritte des Bisektionsverfahrens durchgeführt
 werden, und dann vom Intervallmittelpunkt aus das
 Newtonverfahren. Konvergiert dieses, so ist man fertig. Läuft das
-Newtonverfahren hingegen aus dem Bisektionsinterval heraus,
-verkleinert man dieses weiter durch Bisektion, und versucht dann
-erneut, die Nullstelle mit dem Newtonverfahren zu bestimmen.
+Newtonverfahren aus dem Bisektionsinterval heraus,
+verkleinert man dieses durch weitere Bisektionsschritte, und versucht dann
+erneut, das Newtonverfahren anzuwenden.
 
 In Abbildung~\ref{fig:bisektion} dient uns ein letztes Mal die
 Funktion $f(x) = e^{-r}/r - 2$ als Beispiel für die Bisektion. Mit
@@ -456,6 +446,16 @@ Nullstelle bis auf $[0,3391,\,0,3461]$, als etwa $10^{-2}$ genau
 ein. Zum Vergleich: das Newtonverfahren mit Startwert $0,05$ erreicht
 in sieben Schritten eine Genauigkeit von etwa $10^{-5}$, und selbst
 die Sekantenmethode $10^{-3}$.
+Der Vorteil der Bisektion ist aber, dass diese Methode im Allgemeinen
+auch noch einigermaßen zufriedenstellend funktioniert, falls nicht nur
+die Ableitungen unbekannt sind, sondern sogar die Funktionswerte gar
+nicht genau bekannt sind. Dies wäre zum Beispiel bei der bereits
+angesprochenen Messung des Drucks in einer Simulation der Fall, da
+dieser starken Schwankungen unterliegt. Dadurch kann man meist den
+Druck in akzeptabler Rechenzeit nicht so gut mitteln, dass dessen
+Messfehler vernachlässigt werden kann. Die Bisektion muss in diesem
+Fall schon abgebrochen werden, sobald der Funktionswert an einer der
+Grenzen innerhalb des Fehlerbalkens Null ist.
 
 In SciPy implementiert \scipy{scipy.optimize.bisect(f, a, b)} mit der
 Funktion \argd{f} und Intervalgrenzen \argd{a} und \argd{b} die
@@ -485,7 +485,6 @@ konvergiert, aber meist wesentlich schneller.
 
 Sowohl die Bisektion wie auch die Sekantenmethode benötigen zwei
 Startwerte. Daher liegt es nahe, die Verfahren zu kombinieren.
-
 Bei der \emph{Regula falsi} wird wie bei der Bisektion ein Interval
 $[a,b]$ schrittweise verkleinert so dass dieses stets wenigstens eine
 Nullstelle enthält. Anders als bei der Bisektion wird der neue
@@ -508,22 +507,10 @@ minimal verbessert wird, während die zweite Grenze unverändert
 bleibt. Dies ist zum Beispiel in Abbildung~\ref{fig:bisektion} rechts
 gezeigt. Leider sind nicht streng konkave oder konvexe Funktionen eher
 die Regel als die Ausnahme, daher ist die einfache Bisektion oft
-schneller als die Regula falsi.
-
-Die Regula falsi ist aber die schnellste und stabilste
-Nullstellensuche, falls die Ableitung der Funktion nicht bekannt ist,
-man aber weiß, dass die Funktion sicher streng konvex oder konkav
-ist. Insbesondere funktioniert diese Methode im Allgemeinen auch noch
-einigermaßen zufriedenstellend, falls die Funktionswerte gar nicht
-mehr genau bekannt sind. Dies wäre zum Beispiel bei der bereits
-angesprochenen Messung des Drucks in einer Simulation der Fall, da
-dieser starken Schwankungen unterliegt. Dadurch kann man meist den
-Druck in akzeptabler Rechenzeit nicht so gut mitteln, dass dessen
-Messfehler vernachlässigt werden kann.  Trotzdem konvergiert die
-Regula falsi im Allgemeinen zufriedenstellend, solange keine zu hohen
-Ansprüche an die Genauigkeit gestellt werden. Die Methode muss in
-diesem Fall abgebrochen werden, sobald die Grenzen innerhalb des
-Fehlerbalkens Null sind.
+schneller als die Regula falsi.  Die Regula falsi ist nur dann die
+schnellste und stabilste Nullstellensuche, falls die Ableitung der
+Funktion nicht bekannt ist, man aber weiß, dass die Funktion streng
+konvex oder konkav ist.
 
 \section{Newtonverfahren in mehreren Dimensionen}
 \index{Newtonverfahren>in mehreren Dimensionen}

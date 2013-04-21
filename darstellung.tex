@@ -43,21 +43,16 @@ Wird dieser Ausdruck von rechts nach links ausgewertet, so muss das
 Ergebnis in jedem Schritt nur mit $x$ multipliziert und der nächste
 Koeffizient addiert werden, was nur $n$ Multiplikationen und
 Additionen benötigt. Auch muss kein Zwischenwert gespeichert werden,
-was Prozessorregister spart. Als C-Code sieht die Auswertung des
-Hornerschemas so aus:
-\begin{lstlisting}[language=C]
-double horner(double *series, int n, double x)
-{
-    double r = series[n];
-    for(int i = n-1; i >= 0; --i)
-        r = r*x + series[i];
-    return r;
-}
-\end{lstlisting}
+was Prozessorregister spart. In Python sieht die Auswertung des
+Hornerschemas so aus:%
+\lstinputlisting[firstline=10]{horner.py}%
 \sloppypar Die Polynomauswertung stellt NumPy als
-\scipy{numpy.polyval(x, c)} zur Verfügung. \argd{c} bezeichnet die
+\scipy{numpy.polyval(c, x)} zur Verfügung. \argd{c} bezeichnet die
 Koeffizienten des Polynoms und \argd{x} das Argument, für das das
-Polynom ausgewertet werden soll.
+Polynom ausgewertet werden soll. Achtung! Anders als das obige
+Beispiel folgt \lstinline!polyval! \emph{nicht} der mathematischen
+Schreibweise und verarbeitet die Koeffizienten in der umgekehrten
+Reihenfolge, berechnet also $\sum_{i=0}^{n} c_ix^{n-i}$.
 
 Eine weitere Anwendung des Hornerschemas ist die Polynomdivision durch
 lineare Polynome der Form $x-x_0$, die zum Beispiel wichtig für die
