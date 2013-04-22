@@ -357,7 +357,7 @@ oberer Dreiecksmatrix. Jetzt müssen $l_{ii}=1$ und $r_{ii}=1$
 sein. Die LDU-Zerlegung ergibt sich aus der LU-Zerlegung durch $d_{ii}
 = u_{ii}$ und $u'_{ik}=u_{ik}/u_{ii}$.
 
-In SciPy ist die LU-Zerlegung in den Funktionen
+In SciPy ist die LU-Zerlegung als
 \scipy{scipy.linalg.lu_factor(A)} oder \scipy{scipy.linalg.lu(A)} (zur
 Zerlegung der Matrix A) und \scipy{scipy.linalg.lu_solve((lu,piv), b)}
 (zum Lösen des LGS) implementiert.
@@ -377,30 +377,30 @@ Da die LDU-Zerlegung aber eindeutig ist und $U^T$ eine normierte,
 linke untere Dreiecksmatrix und $L^T$ eine normierte, rechte obere
 Dreiecksmatrix, so gilt $U=U^T$, und damit
 \begin{equation}
-  A = U^TDU = \widehat{U}^T\widehat{U} \quad\text{mit}\; \widehat{U}=\text{diag}(\sqrt{d_{ii}})U.
+  A = U^TDU = R^TR \quad\text{mit}\; R=\text{diag}(\sqrt{d_{ii}})U.
 \end{equation}
 Dies ist die Cholesky-Zerlegung. Anstatt die Gaußelimination
 durchzuführen, lässt sich die Zerlegung aber auch direkt mit Hilfe des
 \emph{Cholesky-Verfahrens}\index{Cholesky>-Verfahren} bestimmen: Sei
-$A=\widehat{R}^T\widehat{R}$ eine Cholesky-Zerlegung.
-Da $\widehat{R}$ unterhalb der Diagonalen nur 0 enthält, gilt
+$A=R^TR$ eine Cholesky-Zerlegung.
+Da $R$ unterhalb der Diagonalen nur 0 enthält, gilt
 \begin{equation}
-  a_{ik} = \sum_{l=1}^{i} \hat{r}_{li}\hat{r}_{lk} \quad\text{für}\;
+  a_{ik} = \sum_{l=1}^{i} r_{li}r_{lk} \quad\text{für}\;
   i=1(1)n,\,k=1(1)n.
 \end{equation}
-Daraus lässt sich die erste Zeile von $\widehat{R}$ direkt ablesen:
+Daraus lässt sich die erste Zeile von $R$ direkt ablesen:
 \begin{equation}
-\hat{r}_{11} = \sqrt{a_{11}}\quad\text{und}\;
-\hat{r}_{1k} = \frac{a_{1k}}{\hat{r}_{11}} \quad\text{für}\;k=2(1)n.
+r_{11} = \sqrt{a_{11}}\quad\text{und}\;
+r_{1k} = \frac{a_{1k}}{r_{11}} \quad\text{für}\;k=2(1)n.
 \end{equation}
 Die nächsten Zeilen lassen sich analog bestimmen, da für jedes $i$
 \begin{equation}
-  a_{ii} = \sum_{l=1}^{i} \hat{r}_{li}^2\quad\implies\;
-  \hat{r}_{ii} = \sqrt{a_{ii} - \sum_{l=1}^{i-1} \hat{r}_{li}^2}.
+  a_{ii} = \sum_{l=1}^{i} r_{li}^2\quad\implies\;
+  r_{ii} = \sqrt{a_{ii} - \sum_{l=1}^{i-1} r_{li}^2}.
 \end{equation}
 Für die restlichen Elemente der Zeile gilt
 \begin{equation}
-  \hat{r}_{ik} = \frac{1}{\hat{r}_{ii}}\left(a_{ik} - \sum_{l=1}^{i-1}\hat{r}_{li}\hat{r}_{lk}\right) \quad\text{für}\;k=i+1(1)n
+  r_{ik} = \frac{1}{r_{ii}}\left(a_{ik} - \sum_{l=1}^{i-1}r_{li}r_{lk}\right) \quad\text{für}\;k=i+1(1)n
 \end{equation}
 Das Cholesky-Verfahren ist wie die Gaußelimination von der Ordnung
 $\O(n^3)$, braucht aber nur halb so viele Operationen. In SciPy ist die

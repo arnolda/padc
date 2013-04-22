@@ -68,19 +68,20 @@ sind. $d_0$ ist dabei der Divisionsrest; ist $P(x)$ durch $x-x_0$
 teilbar, so ist $d_0=0$. 
 
 Dies zeigt man durch Induktion: für $P(x) = c_1 x + c_0$ ist offenbar
-$P(x) = c_1(x-x_0) + c_0 + x c_1 = d_1(x-x_0) + d_0$. Für Grad $n$ ist
+$P(x) = c_1(x-x_0) + c_0 + x_0 c_1 = d_1(x-x_0) + d_0$. Für Grad $n$ ist
 also
 \begin{equation}
     P(x) = x \left(\sum_{i=0}^{n-1} c_{i+1}x^{i}\right) + c_0
     = x\left(\sum_{i=0}^{n-2} d'_{i+1}x^{i}(x-x_0) + d'_0\right) +
-    d_0
+    c_0
 \end{equation}
 wobei sich die $d'_i = c_{i+1} + x_0(c_{i+2} + x_0(\ldots (c_{n-1} +
 x_o c_n))) = d_{i+1}$ bei der Polynomdivision von $\sum_{i=0}^{n-1}
-c_{i+1}x^{i}$ durch $x-x_0$ ergeben. Daher ist
+c_{i+1}x^{i}$ durch $x-x_0$ nach Voraussetzung ergeben. Daher ist
 \begin{equation}
-    P(x) = \left(\sum_{i=0}^{n-2} d_{i+2}x^{i+1} + d_1\right)(x-x_0) +
-    d_0 + x_0 d_1,
+  P(x) = \sum_{i=0}^{n-2} d_{i+2}x^{i+1}(x-x_0) + d_1 x + c_0
+  = \left(\sum_{i=0}^{n-1} d_{i+1}x^{i}\right)(x-x_0) +
+  \underbrace{d_1 x_0 + c_0}_{d_0},
 \end{equation}
 was zu zeigen war.
 
@@ -119,10 +120,11 @@ genügen, um zufriedenstellende Genauigkeit zu erreichen. Lokal um den
 Entwicklungspunkt $x_0$ is eine abgeschnittene Taylorreihe also eine
 gute polynomielle Näherung. Leider gibt es für die meisten Funktionen
 einen Konvergenzradius, außerhalb dessen die Reihe nicht einmal
-konvergiert. Daher eignen sich Taylorreihen vor allem gut für kleine
-Umgebungen. Auch ist eine abgeschnittene Taylorreihe nur im
-Entwicklungspunkt $x_0$ exakt; dort stimmen allerdings gleich die
-ersten $i$ Ableitungen.
+konvergiert. Daher eignen sich Taylorreihen nur, wenn kleine 
+Umgebungen genähert werden sollen. Um weitere Intervalle so nähern zu
+können, ist es aber natürlich möglich, mehrere Entwicklungspunkte zu
+benutzen, so dass deren Umgebungen, in denen die Konvergenz ausreicht,
+den gesamten geforderten Bereich abdecken.
 
 Um  zum  Beispiel die  oben  angeführte  Sinusfunktion  mit 7  Stellen
 Genauigkeit im Intervall $[0:\pi/2]$  auszuwerten, genügen die ersten 7
