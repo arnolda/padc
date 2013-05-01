@@ -149,21 +149,6 @@ können.
 \index{Interpolation>Polynom-}
 \index{Interpolation>Lagrange-}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/runge_lagrange}
-  \caption{Lagrange-Interpolation der Rungefunktion $1/(1+x^2)$
-    (schwarze Linie). Im linken Graph sind die Stützstellen
-    äquidistant gewählt (markierte Punkte), die farbigen Linien sind
-    die interpolierenden Polynome durch 3 (rot), 5 (lila), 7 (blau)
-    und 11 (grün) Stützstellen. Mit steigender Ordnung wird die
-    Interpolation am Rand immer schlechter, das Polynom 10. Ordnung
-    erreicht Werte bis nahe an zwei. Im rechten Graph sind
-    für die gleichen Ordnungen Chebyshev-Stützstellen gewählt worden,
-    die den Interpolationsfehler minimieren.}
-  \label{fig:runge}
-\end{figure}
-
 Wie besprochen ist eine abgeschnittene Taylorreihe nur im
 Entwicklungspunkt exakt (dann allerdings auch die Ableitungen),
 innerhalb des Konvergenzradius nur eine Annäherung, und außerhalb des
@@ -187,14 +172,18 @@ dass $P(x_i) = y_i$, da die Gleichung
   \end{split}
   \label{eq:interpol}
 \end{equation}
-genau eine Lösung hat.
+genau eine Lösung hat.  In SciPy liefert die Funktion
+\scipy{scipy.interpolate.lagrange(x, y)} das interpolierende Polynom
+durch die Stützstellen (\argd{x[i]}, \argd{y[i]}).
 
 Leider ist aber nicht gewährleistet, dass mit steigender Anzahl von
 Punkten die Funktion auch zwischen den Stützstellen immer besser
 angenähert wird. Tatsächlich hat Runge ein einfaches Beispiel
 angegeben, nämlich die Rungefunktion $1/(1+x^2)$, für die die Näherung
-mit steigender Anzahl an äquidistanten Punkten immer schlechter wird,
-siehe Abbildung~\ref{fig:runge}.
+mit steigender Anzahl an äquidistanten Punkten immer schlechter
+wird. Abbildung~\ref{fig:runge} zeigt Polynome wachsenden Grades, die
+diese Funktion interpolieren. Bei äquidistanten Stützstellen wird der
+Interpolationsfehler zum Rand des Intervalls hin sehr groß.
 
 Bei der etwas allgemeineren Hermite-Interpolation können an den
 Stützstellen neben den Funktionswerten auch Ableitungen vorgegeben
@@ -206,25 +195,48 @@ Hermite-Polynom genau den ersten $n+1$ Termen der Taylorreihe.
 
 Das interpolierende Polynom kann nicht nur zur Interpolation verwendet
 werden, also der Bestimmung an Punkten zwischen den Stützstellen,
-sondern --- mit Vorsicht --- auch zur Extrapolation, also um Werte
-außerhalb des Bereichs zu bestimmen. Da bei der Hermite-Interpolation
-auch die Ableitungen insbesondere am Rand kontrolliert werden können,
-ist diese hier tendenziell vorteilhafter. Extrapolation spielt eine
-wichtige Rolle, wenn eine direkte Auswertung der Zielfunktion
-numerisch zu teuer oder unmöglich wird. Bei Computersimulationen tritt
-dies insbesondere in der Nähe von kritischen Punkten auf.
-
-In SciPy liefert die Funktion \scipy{scipy.interpolate.lagrange(x, y)}
-das interpolierende Polynom durch die Stützstellen (\argd{x[i]},
-\argd{y[i]}).
-
-\subsection{\keyword{Lagrangepolynome}}
+sondern --- mit Vorsicht --- auch zur
+Extrapolation\index{Extrapolation}, also um Werte außerhalb des
+Bereichs der Stützstellen zu bestimmen. Da bei der
+Hermite-Interpolation auch die Ableitungen insbesondere am Rand
+kontrolliert werden können, ist diese hier tendenziell
+vorteilhafter. Bei einem Taylorpolynom wird sogar fast immer
+extrapoliert, da es ja nur eine Stützstelle gibt. Extrapolation ist
+immer dann wichtig, wenn die Auswertung der Zielfunktion an der
+Zielstelle numerisch zu teuer oder unmöglich wird. So werden wir
+später das Romberg-Integrationsverfahren kennenlernen, bei dem zu
+Schrittweite 0 extrapoliert wird, also \enquote{unendlich vielen}
+Stützstellen. Bei Computersimulationen nutzt man dies insbesondere in
+der Nähe von kritischen Punkten.
 
 Die Koeffizienten $a_i$ können im Prinzip als Lösung von
 Gleichung~\eqref{eq:interpol} mit geeigneten Lösern für lineare
 Gleichungssysteme gefunden werden, was im Allgemeinen allerdings recht
-langsam ist. Daher benutzt man besser eine direkte Darstellung mit
-Hilfe der \emph{Lagrangepolynome}, die wie folgt definiert sind:
+langsam ist. Daher lernen wir nun effizientere Darstellungen des
+interpolierenden Polynoms, die unter geeigneten Umständen die
+Berechnung und Auswertung des interpolierenden Polynoms mit linearen
+Aufwand ermöglichen.
+
+
+\subsection{\keyword{Lagrangepolynome}}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/runge_lagrange}
+  \caption{Lagrange-Interpolation der Rungefunktion $1/(1+x^2)$
+    (schwarze Linie). Im linken Graph sind die Stützstellen
+    äquidistant gewählt (markierte Punkte), die farbigen Linien sind
+    die interpolierenden Polynome durch 3 (rot), 5 (lila), 7 (blau)
+    und 11 (grün) Stützstellen. Mit steigender Ordnung wird die
+    Interpolation am Rand immer schlechter, das Polynom 10. Ordnung
+    erreicht Werte bis nahe an zwei. Im rechten Graph sind
+    für die gleichen Ordnungen Chebyshev-Stützstellen gewählt worden,
+    die den Interpolationsfehler minimieren.}
+  \label{fig:runge}
+\end{figure}
+
+Die einfachste Darstellung benutzt die \emph{Lagrangepolynome}, die
+wie folgt definiert sind:
 \begin{equation}
   \label{eq:lagrange}
   L_i(x) = \prod_{k\neq i} \frac{x-x_k}{x_i-x_k}.
@@ -233,42 +245,49 @@ Die Polynominterpolation wird daher auch Lagrange-Interpolation
 genannt.  Wie man leicht sieht, gilt $L_i(x_k) = \delta_{ik}$, so dass
 das Polynom\index{interpolierendes Polynom>Lagrangedarstellung}
 \begin{equation}
-  P(x) = \sum_{i=1}^n y_i\,L_i(x)
+  P(x) = \sum_{i=0}^{n-1} y_i\,L_i(x)
 \end{equation}
-das eindeutige interpolierende Polynom durch $(x_i, y_i)$
-ist.
+das eindeutige interpolierende Polynom durch $(x_i, y_i)$ ist. Die
+Auswertung der Lagrangedarstellung erfordert $\O(n)$ Operationen für
+jedes der $L_i(x)$, also ingesamt $\O(n^2)$ Operationen. Das ist zwar
+besser also der Aufwand für die Lösung des Gleichungssystems
+\eqref{eq:interpol}, dafür muss er aber bei jeder Auswertung erbracht
+werden.  Die Lagrangedarstellung ist daher nur dann effizient, wenn
+die Stützstellen und der Punkt, an dem ausgewertet werden soll, fest
+sind, da dann lediglich die äußere Summe neu bestimmt werden muss.
 
-\index{interpolierendes Polynom>baryzentrische Darstellung}
-Diese Darstellung ist allerdings für praktische Zwecke nur sinnvoll,
-wenn sich die Stützstellen $x_i$ nicht ändern, da die Bestimmung der
-Lagrangepolynome $L_i(x)$ zeitaufwändig ist. Geeigneter ist die
-\emph{baryzentrische Darstellung}
+\subsection{Baryzentrische Darstellung}
+\index{interpolierendes Polynom>baryzentrische Darstellung}%
+Eine alternative Darstellung ist die \emph{baryzentrische Darstellung}
 \begin{equation}
-P(x) = \sum_{i=0}^{n-1} y_i\, \mu_i \; \Big/ \; \sum_{i=0}^{n-1}
-\mu_i\quad\text{mit}\quad
-\mu_i := \frac{1}{x-x_i}\prod_{k\neq i}\frac{1}{x_i-x_k},
+P(x) = \sum_{i=0}^{n-1} y_i\, \mu_i(x) \; \Big/ \; \sum_{i=0}^{n-1}
+\mu_i(x)\quad\text{mit}~
+\mu_i(x) := \frac{1}{x-x_i}\omega_i \quad\text{und}~
+\omega_i = \prod_{k\neq i}\frac{1}{x_i-x_k}
 \end{equation}
-bei der lediglich der Quotient zweier rationaler Funktionen gebildet
-werden muss. 
+Sind die Stützstellen $x_i$ fest, so können die Werte $\omega_i$
+vorausberechnet werden. Dann kann das Polynom an beliebigen Stellen
+mit Aufwand $\O(n)$ ausgewertet werden. Allerdings kann der Ausdruck
+an den Stützstellen selber nicht ausgewertet werden.
 
 \subsection{\keyword{Neville-Aitken-Schema}}
 
-Das rekursive Neville-Schema ist eine effiziente Möglichkeit, das
-interpolierende Polynom auszuwerten ohne es tatsächlich zu
-berechnen. Das ist nützlich, wenn nur wenige Auswertungen nötig sind,
-wie zum Beispiel beim Romberg-Integrationsverfahren, bei dem zur
-Schrittweite 0 extrapoliert wird.
+Die effizienteste Möglichkeit,das interpolierende Polynom auszuwerten,
+ohne es zu berechnen, ist das rekursive Neville-Schema. Das ist
+nützlich, wenn nur wenige Auswertungen nötig sind, wie zum Beispiel
+beim Romberg-Integrationsverfahren, bei dem zur Schrittweite 0
+extrapoliert wird.
 
 Wir definieren $P_{i,k}$ als das interpolierende Polynom der Ordnung
 $k-1$ durch die Stützstellen $x_j, j=i(1)i+k-1$.  Gesucht ist der Wert
 $P(x)=P_{0,n}(x)$ des interpolierenden Polynoms an der Stelle $x$.
 Dann ist
 \begin{align}
-  P_{i,1}(x)&=y_i \quad\text{für}\, i=0(1)n-1
+  P_{i,1}(x)&=y_i \quad\text{für}~ i=0(1)n-1
   \intertext{und}
   \label{eq:divdiff}
   P_{i,k}(x)&= \frac{P_{i,k-1}(x)(x_{i+k-1} - x) + P_{i+1,k-1}(x)(x -
-    x_i)}{x_{i+k-1} - x_i} \quad\text{für}\, k=2(1)n, i=0(1)n-k,
+    x_i)}{x_{i+k-1} - x_i} \quad\text{für}~ k=2(1)n, i=0(1)n-k,
 \end{align}
 da ja an den inneren Stützstellen $x_l$, $l=i+1(1)i+k-2$,
 $P_{i,k-1}(x_l)=P_{i+1,k-1}(x_l) = y_l$ gilt, und per Konstruktion
@@ -340,10 +359,10 @@ niedrigeren Grad hat. Daraus ergibt sich die folgende \emph{Newtonsche
 Die letztere Umformung zeigt, dass sich die Newtonsche Darstellung
 effizient mit einem leicht abgewandelten Hornerschema auswerten lässt:
 \begin{lstlisting}
-def horner(x0, x, gamma):
+def horner(x, xsupport, gamma):
     r = 0
-    for k in range(len(x)-1, -1, -1):
-        r = r*(x0-x[k]) + gamma[k];
+    for k in range(len(xsupport)-1, -1, -1):
+        r = r*(x-xsupport[k]) + gamma[k];
     return r
 \end{lstlisting}
 
@@ -353,10 +372,10 @@ von $P_{0,k}$ ist, der sich leicht aus \eqref{eq:divdiff} berechnen
 lässt. Wenn $\gamma_{i,k}$ den führenden Koeffizienten des Polynoms
 $P_{i,k}$ bezeichnet, so erhalten wir das Nevilleschema
 \begin{align}
-  \gamma_{i,1} &= y_i \quad\text{für}\, i=0(1)n-1\quad\text{und}\\
+  \gamma_{i,1} &= y_i \quad\text{für}~ i=0(1)n-1\quad\text{und}\\
   \gamma_{i,k}&= \frac{\gamma_{i+1,k-1} - \gamma_{i,k-1}}{x_{i+k-1} -
     x_i}
-  \quad\text{für}\, k=2(1)n, i=0(1)n-k.
+  \quad\text{für}~ k=2(1)n, i=0(1)n-k.
 \end{align}
 Da letztlich nur die $\gamma_{0,k}$ interessant sind, also die obere
 Diagonale des Nevilleschemas, benötigt man für die Berechnung nur
@@ -375,8 +394,8 @@ def neville(x, y):
             gamma[i+k] = (gamma[i+k] - gamma[i+k-1])/(x[i+k] - x[i])
     return gamma
 \end{lstlisting}
-Man beachte, dass die Schleife über $i$ herunterläuft, um benötigte
-Werte nicht zu überschreiben.
+Die Schleife über $i$ zählt abwärts, um benötigte Werte nicht zu
+überschreiben.
 
 \subsection{\keyword{Chebyshev-Stützstellen}}
 
@@ -394,7 +413,7 @@ skaliert werden müssen für die Interpolation in einem allgemeinen
 Intervall. Die Chebyshev-Polynome $T_n$, $n\ge 0$, bilden eine
 orthogonale Basis der Funktionen über $[-1,1]$ bezüglich des mit
 $1/\sqrt{1-x^2}$ gewichteten Skalarprodukts. Daher kann jede genügend
-glatte Funktion auf $[-1:1]$ als eine Reihe
+glatte Funktion auf $[-1,1]$ als eine Reihe
 \begin{equation}
   f(x) = \sum_{n=0}^\infty a_n T_n(x)
 \end{equation}
@@ -407,7 +426,12 @@ dargestellt werden, die sogenannte Chebyshev-Reihe (siehe auch z.B.
 \end{equation}
 Wird die Rungefunktion mit Chebyshevstützstellen interpoliert, so
 konvergiert das interpolierende Polynom, im Gegensatz zu äquidistanten
-Stützstellen.
+Stützstellen. Sollen die Stützstellen statt $[-1,1]$ das Intervall
+$[a,b]$ abdecken, skaliert man einfach entsprechend um:
+\begin{equation}
+  x_{k,n} = \frac{a+b}{2} + \frac{a-b}{2}\cos\left(\frac{2k+1}{2n}\pi\right),\quad k=0(1)n-1.
+\end{equation}
+
 
 \section{Splines}
 \index{Spline}
@@ -425,25 +449,13 @@ gesamten Funktion nur kleine Abschnitte durch Polynome zu nähern.
 Der einfachste Fall einer solchen Näherung ist die \emph{lineare
   Interpolation}\index{Interpolation>lineare}, bei der die
 Stützstellen durch Geraden, also Polynome vom Grad 1, verbunden
-werden. Sind die Stützstellen $(x_i, y_i)$, $i=1(1)n$ gegeben, so ist
+werden. Sind die Stützstellen $(x_i, y_i)$, $i=0(1)n-1$ gegeben, so ist
 der lineare interpolierende Spline
 \begin{equation}
   P_1(x) = \frac{(x_{i+1} - x)y_i + (x - x_i)y_{i+1}}
   {x_{i+1}-x_i}
-  \quad\text{für}\, x_i \le x < x_{i+1}.
+  \quad\text{für}~ x_i \le x < x_{i+1}.
 \end{equation}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/splines}
-  \caption{Spline-Interpolation der Rungefunktion (durchgezogene
-    schwarze Linie). Die gestrichelte blaue Linie ist die lineare
-    Spline-Interpolierende mit 7 Stützstellen, die anderen Kurven sind
-    kubische Splines mit 7 (grün gepunktet) und 11 Stützstellen (rot
-    gestrichelt). Mit 11 Stützstellen ist der Spline von der
-    Rungefunktion praktisch nicht mehr zu unterscheiden.}
-  \label{fig:spline}
-\end{figure}
 
 Diese Funktionen sind aber an den Stützstellen im Allgemeinen nicht
 differenzierbar. Soll die Interpolierende differenzierbar sein, müssen
@@ -451,78 +463,112 @@ Polynome höherer Ordnung genutzt werden. Solche stückweise definierten
 Polynome heißen \emph{Splines} --- das englische Wort Splines
 bezeichnete dünne Latten, die vor dem Computerzeitalter benutzt
 wurden, um glatte, gebogene Oberflächen vor allem für Schiffsrümpfe zu
-entwickeln. Der wichtigste Spline ist der \emph{kubische} oder
-\emph{natürliche}
-Spline\index{Spline>kubisch}\index{Spline>natürlich}, der aus
-Polynomen dritten Grades zusammengesetzt und zweifach stetig
-differenzierbar ist. Seine allgemeine Form ist
+entwickeln.
+
+Der wichtigste Spline ist der \emph{kubische}
+Spline\index{Spline>kubisch}, der aus Polynomen dritten Grades
+zusammengesetzt und zweifach stetig differenzierbar ist. Seine
+allgemeine Form ist
 \begin{equation}
   P_3(x) = y_i + m_i(x-x_i) + \frac{1}{2}M_i(x-x_i)^2 + \frac{1}{6}\alpha_i(x-x_i)^3
-  \quad\text{für}\, x_i \le x < x_{i+1}.
+  \quad\text{für}~ x_i \le x < x_{i+1}.
 \end{equation}
-Da die zwei rechten und linken zweiten Ableitungen an den Stützstellen
+auf $n-1$ Intervallen $[x_i, x_{i+1}]$, $i=0(1)n-2$.  Da die zwei
+rechten und linken zweiten Ableitungen an den Stützstellen
 übereinstimmen müssen, gilt
 \begin{equation}
-  \alpha_i = \frac{M_{i+1} - M_i}{x_{i+1} - x_i}.
+  \label{eq:splinealphas}
+  \alpha_i = \frac{M_{i+1} - M_i}{x_{i+1} - x_i} \quad\text{für}~ i = 0(1)n-2,
 \end{equation}
-Aus der Gleichheit der Funktionswerte an den Stützstellen ergibt sich
+wobei $M_{n-1}$ die Ableitung des Splines an seinem rechten Ende
+bezeichnet.  Aus der Gleichheit der Funktionswerte an den Stützstellen
+ergibt sich
 \begin{equation}
+  \label{eq:splinems}
   m_i = \frac{y_{i+1} - y_i}{x_{i+1}-x_i} -
-  \frac{1}{6}(x_{i+1}-x_i)(2M_i + M_{i+1}).
+  \frac{1}{6}(x_{i+1}-x_i)(2M_i + M_{i+1}) \quad\text{für}~ i = 0(1)n-2.
 \end{equation}
 Aus der Gleichheit der ersten Ableitungen ergibt sich schließlich ein
-Gleichungssystem für die $M_i$. Hier kommen in den Gleichungen
-gleichzeitig $M_{i-1}$, $M_i$ und $M_{i+1}$ vor, daher müssen für die
-Randwerte weitere Vorgaben gemacht werden. Sollen die Splines am Rand
-festgelegte 2. Ableitungen $M_0$ und $M_n$ haben, so hat das
-Gleichungssystem die Form
+Gleichungssystem mit $n-3$ Gleichungen für die $M_i$, nämlich
+\begin{equation}
+  \begin{pmatrix}
+    \mu_1  & 2         & \lambda_1 \\
+           &           & \ddots    & \ddots    & \ddots \\
+           &           &           & \mu_{n-3}  & 2         & \lambda_{n-3}
+  \end{pmatrix}
+  \begin{pmatrix}
+    M_0\\
+    \vdots\\
+    M_{n-2}
+  \end{pmatrix} \,=\,
+  \begin{pmatrix}
+    6S_1\\
+    \vdots\\
+    6S_{n-3}
+  \end{pmatrix},
+\end{equation}
+mit
+\begin{equation}
+  \lambda_i = \frac{x_{i+1}-x_i}{x_{i+1} - x_{i-1}},\quad
+  \mu_i = \frac{x_i - x_{i-1}}{x_{i+1} - x_{i-1}}\quad\text{und}\quad
+  S_i = \frac{\frac{y_{i+1}-y_i}{x_{i+1} -
+      x_i} - \frac{y_i-y_{i-1}}{x_i - x_{i-1}}}{x_{i+1}-x_{i-1}}.
+\end{equation}
+Sind die $M_i$ bestimmt, so ergeben sich die $m_i$ und $\alpha_i$ aus
+\eqref{eq:splinealphas} bzw.  \eqref{eq:splinems}. Allerdings gibt es
+fehlen dazu noch zwei Gleichungen, nämlich die Randbedingungen.
+
+Soll der Spline am Rand festgelegte 2. Ableitungen $P_3''(x_0) = M_0$
+und $P_3''(x_{n-1}) = M_{n-1}$ haben, so hat das Gleichungssystem die
+Form
 \begin{equation}
   \label{eq:spline1}
   \begin{pmatrix}
-    2      & \lambda_1 &           &           &           &         0 \\
-    \mu_2  & 2         & \lambda_2 \\
+    1      & 0         &           &           &           &         0 \\
+    \mu_1  & 2         & \lambda_1 \\
            &           & \ddots    & \ddots    & \ddots \\
            &           &           & \mu_{n-2}  & 2         & \lambda_{n-2} \\
-    0      &           &           &           & \mu_{n-1}  & 2         \\
+    0      &           &           &           & 0         & 1         \\
   \end{pmatrix}
   \begin{pmatrix}
+    M_0\\
     M_1\\
-    M_2\\
     \vdots\\
     M_{n-2}\\
     M_{n-1}
   \end{pmatrix} \,=\,
   \begin{pmatrix}
-    6S_1 - \mu_1 M_0\\
-    6S_2\\
+    P_3''(x_0)\\
+    6S_1\\
     \vdots\\
     6S_{n-2} \\
-    6S_{n-1} -  \lambda_{n-1} M_n
-  \end{pmatrix},
+    P_3''(x_{n-1})
+  \end{pmatrix}.
 \end{equation}
-mit
-\begin{equation}
-  \lambda_i = \frac{x_i - x_{i-1}}{x_{i+1} - x_{i-1}},\quad
-  \mu_i = \frac{x_{i+1}-x_i}{x_{i+1} + x_{i-1}}\quad\text{und}\quad
-  S_i = \frac{\frac{y_{i+1}-y_i}{x_{i+1} -
-      x_i} - \frac{y_i-y_{i-1}}{x_i - x_{i-1}}}{x_{i+1}-x_{i-1}}.
-\end{equation}
+$M_{n-1}$ wird zur Interpolation nicht benötigt, da es nur die zweite
+Ableitung am rechten Rand darstellt. Diese Form des Splines wird auch
+als \emph{natürlicher} Spline bezeichnet.\index{Spline>natürlich}
+
 Auch periodische Funktionen können kubisch interpoliert werden, wobei
-dann die zusätzliche Bedingungen durch die Kontinuität über die periodische
-Grenze hinweg gegeben sind. Die Gleichungen für $\alpha_i$ und $m_i$
-sind dabei unverändert, nur das Gleichungssystem wird
+dann die zusätzlichen Bedingungen durch die stetige
+Differenzierbarkeit über die periodische Grenze hinweg gegeben
+sind. Dadurch besteht der Spline aus $n$ statt $n-1$ Abschnitten,
+wobei der letzte Abschnitt den periodischen Zirkelschluss formt. Die
+Gleichungen für $\alpha_i$ und $m_i$ gelten dann unverändert für
+$i=0(1)n-1$, wobei $x_n = x_0$, $y_n = y_0$ und $M_n = M_0$
+indentifiziert werden. Das Gleichungssystem nimmt dadurch die Form
 \begin{equation}
   \label{eq:spline2}
   \begin{pmatrix}
-    2      & \lambda_1 &           &           &           &      \mu_1 \\
-    \mu_2  & 2         & \lambda_2 &           & 0\\
+    2      & \lambda_0 &           &           &           &      \mu_0 \\
+    \mu_1  & 2         & \lambda_1 &           & 0\\
            &           & \ddots    & \ddots    & \ddots \\
            & 0          &           & \mu_{n-2}  & 2         & \lambda_{n-2} \\
     \lambda_{n-1} &           &           &           & \mu_{n-1}  & 2         \\
   \end{pmatrix}
   \begin{pmatrix}
+    M_0\\
     M_1\\
-    M_2\\
     \vdots\\
     M_{n-2}\\
     M_{n-1}
@@ -535,10 +581,33 @@ sind dabei unverändert, nur das Gleichungssystem wird
     6S_{n-1}
   \end{pmatrix},
 \end{equation}
-wobei die Funktion als $x_n-x_1$-periodisch mit $y_1=y_n$
-vorausgesetzt wird. Abbildung~\ref{fig:spline} zeigt die
-Spline-Interpolation der Rungefunktion, die für diesen
-Interpolationstyp keine Probleme zeigt.
+wobei in $\lambda_i$, $\mu_i$ und $S_i$ wieder $x_{n} = x_0$
+und $x_{-1} = x_{n-1}$ identifiziert werden.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/splines}
+  \caption{Links: Spline-Interpolation der Rungefunktion
+    (durchgezogene schwarze Linie). Die gestrichelte blaue Linie ist
+    die lineare Spline-Interpolierende mit 7 Stützstellen, die anderen
+    Kurven sind kubische Splines mit 7 (grün gepunktet) und 11
+    Stützstellen (rot gestrichelt). Mit 11 Stützstellen ist der Spline
+    von der Rungefunktion praktisch nicht mehr zu
+    unterscheiden. Rechts: erste (rot gepunktet) und zweite Ableitung
+    (blau) des interpolierenden Splines elfter Ordnung, sowie die
+    zweite Ableitung der eigentlichen Rungefunktion (dünn
+    schwarz). Hier zeigen sich deutliche Unterschiede, da der Spline
+    ja ein Polygonzug niedriger Ordnung ist.}
+  \label{fig:spline}
+\end{figure}
+
+Abbildung~\ref{fig:spline} zeigt die Spline-Interpolation der
+Rungefunktion. Anders als die Lagrangeinterpolation hat die
+Splineinterpolation keine Probleme mit der Rungefunktion. Die
+Spline-Interpolierende elften Grades lässt sich kaum von eigentlichen
+Funktion unterscheiden. Allerdings gilt das nur für die Funktion
+selber. Die Ableitung und vor allem zweite Ableitung unterscheiden
+sich deutlich, da die letztere ja ein Linienzug ist.
 
 Die Gleichungssysteme \eqref{eq:spline1} und \eqref{eq:spline2} sind
 sehr gut konditioniert und mit einem einfachen Gleichungslöser zu
@@ -546,108 +615,13 @@ behandeln.  Zum Beispiel ist die Gauß-Elimination ist für die hier
 auftretenden einfachen Bandstrukturen sehr effizient. In SciPy gibt es
 selbstverständlich bereits eine fertige Routine für die
 Spline-Interpolation, nämlich \scipy{scipy.interpolate.interp1d(x, y,
-  kind)}. (\argd{x},\argd{y}) sind dabei die Stützstellen, und
+  kind)}. (\argd{x}, \argd{y}) sind dabei die Stützstellen, und
 \argd{kind} eine Zeichenkette, die den Typ des Splines
 bestimmt. Mögliche Werte sind zum Beispiel "`linear"' und "`cubic"'
-für lineare bzw.\ kubische interpolierende Splines.
-
-\section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
-\index{Ausgleichsrechnung}
-\index{Fitting}
-\index{Methode der kleinsten Quadrate}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/leastsq}
-  \caption{Methode der kleinsten Quadrate zum Fitten der Sinusfunktion
-    $y=\sin(x)$. 200 Datenpunkte zwischen 0 und $2\pi$ wurden als
-    $\sin(x) + 0,1\,\sin(10 x) + \xi$ erzeugt, wobei $\xi$ eine
-    Gauß-verteilte Pseudozufallsvariable mit Varianz $0,01$ war. Die
-    resultierende Sinusfunktion (rot gestrichelt) hat die Form $a
-    \sin(bx+c)$, wobei die Koeffizienten auf gut 2\% Genauigkeit
-    $a=b=1$ und $c=0$ entsprechen. Die kleine höherfrequente
-    Schwingung kann durch einen Fit allerdings nicht zuverlässig
-    erkannt werden.}
-  \label{fig:leastsq}
-\end{figure}
-
-Interpolierende Polynome, Taylorreihen und Splines haben gemeinsam,
-das diese exakt durch die gegebenen Stützstellen verlaufen. Oftmals
-ist das aber gar nicht gewünscht, da die Daten selbst nicht exakt
-sind, zum Beispiel wenn diese aus einem Experiment oder einer
-Simulation stammen. In diesem Fall hat man üblicherweise eine
-Vorstellung, welche funktionelle Form die Daten annehmen, und möchte
-nun wissen, mit welchen Parametern diese Funktion am besten mit den
-Daten verträglich ist. Dazu muss man den Parametersatz bestimmen, so
-dass der Abstand der Daten von der Funktion minimiert wird.
-
-Seien also wieder Daten $(x_i, y_i)$, $i=1(1)n$ und eine Funktion
-$f_v(x)$ gegeben. Gesucht ist dann derjenige Parametervektor $v$, der
-die Abweichung
-\begin{equation}
-  \label{eq:leastsq}
-  \Delta(v) = \sum_i (f_v(x_i) - y_i)^2
-\end{equation}
-minimiert. Dieses Verfahren wird auch Methode der kleinste Quadrate
-genannt, da ja die quadrierten Abweichungen minimiert werden
-sollen. Ist $f_{a,b}(x) = ax + b$ eine Gerade, spricht man auch von
-\emph{linearer Regression}\index{lineare Regression}. In diesem Fall lässt
-sich das Optimum einfach bestimmen, da
-\begin{equation}
-  0 = \frac{d}{da} \Delta(a,b) = \sum_i 2 (a x_i + b - y_i)x_i
-  = 2N \left(a  \left<x_i^2\right> + b \left<x_i\right> -
-    \left<y_ix_i\right> \right)
-\end{equation}
-und
-\begin{equation}
-  0 = \frac{d}{db} \Delta(a,b) = \sum_i 2 (a x_i + b - y_i)
-  = 2N \left(a  \left<x_i\right> + b - \left<y_i\right> \right),
-\end{equation}
-wobei $\left<\cdot\right>$ den Mittelwert über alle Datenpunkte
-bedeutet. Daraus ergibt sich
-\begin{equation}
-  a = \frac{\left<y_ix_i\right> -
-    \left<y_i\right>\left<x_i\right>}{\left<x_i^2\right>-\left<x_i\right>^2}
-  \quad\text{und}\;
-  b = \left<y_i\right> - a \left<x_i\right>,
-\end{equation}
-was sich einfach auf dem Computer berechnen lässt.
-
-Auch für quadratische und andere einfache Funktionen lassen sich die
-Koeffizienten geschlossen darstellen, aber bei allgemeinen Funktionen
-ist dies nicht immer der Fall. Dann muss die nichtlineare
-Optimierungsaufgabe \eqref{eq:leastsq} numerisch gelöst werden, was
-wir später behandeln werden. Für den Moment genügt uns, dass SciPy die
-Funktion \scipy{scipy.optimize.leastsq(delta, v0, (x, y))} dafür
-bereitstellt. \argd{(x, y)} sind dabei die Ausgangsdaten, die hier zu
-einem Tupel zusammengefasst sind. \argd{v0} ist der Startwert für die
-Berechnung, der nicht zu weit vom (unbekannten) Optimum entfernt
-liegen darf. \argd{delta} ist eine Python-Funktion, die als Argumente
-$v$, $x_i$ und $y_i$ nimmt und $f_v(x_i) - y_i$ zurückliefert.  Da
-$f_v(x)$ eine beliebig komplizierte Form annehmen kann, ist diese
-Aufgaben im Allgemeinen nicht lösbar, allerdings funktioniert ein
-solcher \emph{Fit} für einfache Funktionen meistens recht
-gut. Abbildung~\ref{fig:leastsq} zeigt einen solchen Funktionsfit an
-eine verrauschte Sinusfunktion, die mit 200 Datenpunkten auf etwa 2\%
-genau gefittet werden kann. Man beachte, das der Ausgangswert für den
-Fit mit Hilfe der SciPy-Funktion \lstinline!leastsq! $a=0$, $b=1$,
-$c=0$ war; beim Startwert $a=0$, $b=0$, $c=0$ bricht das Verfahren
-ab. Das zeigt, dass man tatsächlich nicht zu weit vom Optimum starten
-kann, was ein gewisses Verständnis der Zielfunktion voraussetzt.
-
-Ist die Funktionsform, die den Daten zugrundeliegt, unbekannt, ist es
-normalerweise keine gute Idee, die Form zu raten. Generell sollte auch
-die Anzahl der Parameter sehr klein sein, da sich sonst fast alles
-"`gut"' fitten lässt ("`With four parameters I can fit an elephant and
-with five I can make him wiggle his trunk."' --- J. von Neumann).
-
-Soll aber zum Beispiel für Visualisierungszwecke eine ansprechende
-Kurve entlang der Daten gelegt werden, deren tatsächliche Abhängigkeit
-unbekannt ist, dann sind \emph{Pad\'e-Funktionen} oft eine gute
-Wahl. Diese haben die Gestalt $P(x)/Q(x)$, wobei $P$ und $Q$ zwei
-Polynome mit paarweise verschiedenen Nullstellen sind. Üblicherweise
-lassen sich schon für niedrige Polynomgrade ansprechende Fits finden,
-sofern die Grade der beiden Polynome in etwa gleich gewählt werden.
+für lineare bzw.\ kubische interpolierende Splines. Allerdings erlaubt
+diese Form nicht, die Randbedingung zu wählen. SciPy implementiert
+eine weitere Methode, bei der die Quadratnorm der zweiten Ableitung
+minimiert wird, es sucht also den \enquote{glattesten} Spline.
 
 \section{Fourierreihen}
 
@@ -682,7 +656,7 @@ sogar lineare) übergeht.
 \index{Fouriertransformation>komplexe}
 Wir betrachten eine periodische Funktion $f(t)$ mit $f(t+T) = f(t)$
 für alle $t\in\RR$, d.h. $f$ hat Periode $T$. Dann ist die
-Fourierdarstellung von $f$ gegeben durch
+eindeutige Fourierdarstellung von $f$ gegeben durch
 \begin{equation}
   \label{eq:fourier}
   f(t) = \sum_{n\in\ZZ} \hat{f}_n e^{i n\omega t}
@@ -696,7 +670,7 @@ berechnen als
 und sind im Allgemeinen komplex, auch wenn $f$ reellwertig ist. Die
 Beiträge $\hat{f}_{\pm n}$ haben dieselbe Frequenz $\pm n/T$,
 unterscheiden sich aber in ihrer Phase. Die \emph{Leistung} zu dieser
-Frequenz ist $\hat{f}_{n}\hat{f}_{-n}$.
+Frequenz ist $\lvert\hat{f}_{n}\hat{f}_{-n}\rvert$.
 
 \eqref{eq:fourier} lässt sich auch so lesen, dass
 \begin{equation}
@@ -712,7 +686,7 @@ durch die Fouriertransformation in ihre Schwingungskomponenten
 zerlegt.  Insbesondere sind die Fourierkoeffizienten linear in der
 Funktion, d.h.
 \begin{equation}
-  \widehat{f+\lambda g}_n = \hat{f}_n +\lambda \hat{g}_n.
+  \widehat{(f+\lambda g)}_n = \hat{f}_n +\lambda \hat{g}_n.
 \end{equation}
 
 Die Voraussetzungen für die Konvergenz der Fourierreihe sind sehr
@@ -725,7 +699,7 @@ Daneben ist die Transformation $f\to\hat{f}$ eine \emph{Isometrie},
 genauer gilt das \emph{\keyword{Parsevaltheorem}}
 \begin{equation}
   \sum_{n\in\ZZ} \lvert\hat{f}_n\rvert^2 =
-  \frac{1}{\omega}\int_0^t \lvert f(t)\rvert^2\,dt.
+  \frac{1}{\omega}\int_0^T \lvert f(t)\rvert^2\,dt.
 \end{equation}
 Das Parsevaltheorem besagt auch, dass die Restbeiträge von großen $n$
 immer kleiner werden, so dass also eine abgeschnittene Fourierreihe
@@ -765,9 +739,9 @@ Weiter gilt:
   Ist die komplexwertige Funktion $f(t)=g(t) + ih(t)$ mit $g$, $h$
   reellwertig, gilt also
   \begin{equation}
-    \hat{f}_{n}  + \hat{\overline{f}}_{n} = \widehat{2g}_{n}
+    \hat{f}_{n}  + \overline{\hat{f}}_{n} = 2\widehat{g}_{n}
     \quad\text{und}\;
-    \hat{f}_{n}  - \hat{\overline{f}}_{n} = \widehat{2ih}_{n}.
+    \hat{f}_{n}  - \overline{\hat{f}}_{n} = 2i\widehat{h}_{n}.
   \end{equation}
   Dies bedeutet, dass sich die Fourierreihen zweier reellwertiger
   Funktionen zusammen berechnen und anschließend wieder trennen
@@ -891,31 +865,17 @@ nicht differenzierbar ist bzw.\ einen Sprung aufweist.
   \centering
   \includegraphics[width=\textwidth]{plots/fftsin}
   \caption{Diskrete Fouriertransformation von 200 diskreten
-    Datenpunkten, die analog zu Abbildung~\ref{fig:leastsq} zwischen 0
-    und $2\pi$ als $\sin(x) + 0,1\,sin(10 x) + \xi$ erzeugt wurden.
-    Anders als der Funktionsfit erlaubt die DFT, auch die kleine
-    zusätzliche Schwingung gut vom Rauschen zu unterscheiden. Im
-    Graphen ist das Leistungsspektrum $\lvert DFT(k)\rvert^2$ gezeigt.
-    Man erkennt die Amplitudenquadrate $0,25$ bei 1 und $0,01$ bei 10,
-    auch wenn letztere Frequenz durch das Rauschen etwas an Intensität
-    verloren hat.
-  }
+    Datenpunkten, die zwischen 0 und $2\pi$ als $\sin(x) +
+    0,1\,\sin(10 x) + \xi$ erzeugt wurden, wobei $\xi$ eine
+    Gauß-verteilte Pseudozufallsvariable mit Varianz $0,01$ war.  Auch
+    wenn es den Ausgangsdaten im linken Graphen nicht mehr anzusehen
+    ist, erlaubt die DFT, auch die kleine zusätzliche Schwingung gut
+    vom Rauschen zu unterscheiden. Im Graphen rechts ist das
+    Leistungsspektrum $\lvert DFT(k)\rvert^2$ gezeigt.  Man erkennt
+    die Amplitudenquadrate $0,25$ bei 1 und $0,01$ bei 10, auch wenn
+    letztere Frequenz durch das Rauschen etwas an Intensität verloren
+    hat.}
   \label{fig:fouriersin}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/fftalias}
-  \caption{Diskrete Fouriertransformation von 14 äquidistanten
-    diskreten Datenpunkten (rote Punkte links) der Funktion
-    $\sin(13t)$ (rote Kurve links) im Interval $[0:2\pi]$.  Die
-    Frequenz der Funktion $13/2\pi$ ist höher als die Nyquist-Frequenz
-    $f_\text{Nyquist}=7/2\pi$, daher kommt es zu
-    Aliasing-Artefakten. Die rekonstruierte Kurve ist links schwarz
-    gepunktet eingezeichnet, ihr Spektrum rechts. Die abgetastete
-    Funktion ist also scheinbar $\sin(t)$, was einer Frequenz von
-    $2f_\text{Nyquist} - 13/2\pi$ entspricht.}
-  \label{fig:fourieralias}
 \end{figure}
 
 Bei praktischen Anwendungen sind die Integrale zur Bestimmung der
@@ -948,9 +908,10 @@ werden. Analog wird die \emph{inverse diskrete Fouriertransformation}
 definiert, die aus den Koeffizienten wieder die Funktion $f$ an den
 diskreten Eingangspunkten $t_k$
 berechnet. Abbildung~\ref{fig:fouriersin} zeigt die DFT der Summe
-zweier verrauschter Sinusfunktionen, aus der die beiden
-Basisfrequenzen und deren Amplituden klar gegenüber dem Rauschen zu
-erkennen sind.
+zweier verrauschter Sinusfunktionen. Die Frequenzen und Amplituden der
+beiden Sinusfunktionen können in der Fouriertransformierten klar vom
+Rauschen unterschieden werden, während die schwächere Frequenz in den
+eigentlichen Daten nicht mehr zu erkennen ist.
 
 Die Koeffizienten sind offenbar periodisch, da
 \begin{equation}
@@ -963,13 +924,25 @@ verschiedene Koeffizienten bzw. Frequenzen $n/T$. DFT-Bibliotheken
 speichern die Koeffizienten daher meist als Vektor
 $(g_{0},\ldots,g_{N-1})$
 bzw. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
-reell, so gilt noch dazu $g_{-k} = \overline{g_{k}}$, sodass lediglich
+reell, so gilt noch dazu $g_{-n} = \overline{g_{n}}$, sodass lediglich
 $\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Allerdings
 sind diese im Allgemeinen komplex, so dass die $N$ reellen
 Freiheitsgrade der Eingangsfunktion erhalten bleiben.
 
-% verhindert zwei ziemlich unterfüllte Seiten
-\enlargethispage{\baselineskip}
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/fftalias}
+  \caption{Diskrete Fouriertransformation von 14 äquidistanten
+    diskreten Datenpunkten (rote Punkte links) der Funktion
+    $\sin(13t)$ (rote Kurve links) im Interval $[0:2\pi]$.  Die
+    Frequenz der Funktion $13/2\pi$ ist höher als die Nyquist-Frequenz
+    $f_\text{Nyquist}=7/2\pi$, daher kommt es zu
+    Aliasing-Artefakten. Die rekonstruierte Kurve ist links schwarz
+    gepunktet eingezeichnet, ihr Spektrum rechts. Die abgetastete
+    Funktion ist also scheinbar $\sin(t)$, was einer Frequenz von
+    $2f_\text{Nyquist} - 13/2\pi$ entspricht.}
+  \label{fig:fourieralias}
+\end{figure}
 
 Die endliche Anzahl der diskreten Fourierkoeffizienten bedeutet, dass
 bei einem reellen Signal mit Schrittweite $\Delta$ die maximal
@@ -985,11 +958,15 @@ Frequenz $f$ werden zu scheinbaren Signalen niedrigerer Frequenz
     \ge f_\text{Nyquist},
   \end{cases}
 \end{equation}
-was auch als \emph{Aliasing} bezeichnet
-wird. Sollen analoge Signale digital weiter verarbeitet werden, kann
-es daher notwendig sein, höhere Frequenzen durch analoge
-Tiefpassfilter zu unterdrücken. Abbildung~\ref{fig:fourieralias}
-illustriert dieses Problem.
+was auch als \emph{Aliasing} bezeichnet wird.  Diese Phänomen ist
+nicht spezifisch für die Fouriertransformation, da das Aliasing auch
+im Datenraum sichtbar wird, ähnlich einer \emph{Schwebung}. Sollen
+analoge Signale digital weiter verarbeitet werden, kann es daher
+notwendig sein, höhere Frequenzen durch analoge Tiefpassfilter zu
+unterdrücken, bevor diese digitalisiert
+werden. Abbildung~\ref{fig:fourieralias} illustriert dieses Problem
+anhand einer sehr raschen Schwingung, die im scheinbar zu einer
+langsamen Schwingung wird.
 
 \subsection{Schnelle Fouriertransformation}
 \index{Fouriertransformation>schnelle}\index{FFT}
@@ -1005,7 +982,7 @@ Anwendung finden. Diese basiert auf der Beobachtung, dass für $N=2M$
 \begin{align}
   \text{DFT}(f_k)_n &= \sum_{k=0}^{M-1} f_{2k} e^{-i\frac{2\pi}{2M} n\, 2k} +
   \sum_{k=0}^{M-1} f_{2k+1} e^{-i\frac{2\pi}{2M} n\, (2k + 1)}\\
-  &= \text{DFT}(f_{2k})_n + e^{-i\frac{2\pi}{2M} n}
+  &= \text{DFT}(f_{2k})_n + e^{-i\frac{\pi}{M} n}
   \text{DFT}(f_{2k+1})_n,
 \end{align}
 wobei $\text{DFT}(f_{2k})_n$ den $n$-ten Koeffizienten einer DFT auf
@@ -1093,11 +1070,11 @@ Wichtige Anwendungsbeispiele der diskreten Fouriertransformation sind
 zum Beispiel die Datenformate JPEG, MPEG und MP3, die alle drei auf
 einer Abwandlung der DFT beruhen, der \emph{diskreten
   Cosinustransformation} (DCT) für reelle Daten. Bei dieser wird der
-Datensatz so in der Zeitdomäne verdoppelt, dass er in jedem Fall eine
-gerade Funktion repräsentiert, wodurch die Fourierreihe in eine reine
-Cosinusreihe übergeht mit nur reellen Koeffizienten. Die DCT ist also
-eine Umwandlung reeller in reelle Zahlen. Wegen Ihrer Wichtigkeit gibt
-es nicht nur extrem effiziente Implementierungen für die meisten
+Datensatz in der Zeitdomäne so verdoppelt, dass er eine gerade
+Funktion repräsentiert. Dadurch wird die Fourierreihe eine reine
+Cosinusreihe mit nur reellen Koeffizienten. Die DCT ist also eine
+Umwandlung reeller in reelle Zahlen. Wegen Ihrer Wichtigkeit gibt es
+nicht nur extrem effiziente Implementierungen für die meisten
 Prozessortypen, sondern auch spezielle Hardware.
 
 \section{\keyword{Wavelets}}

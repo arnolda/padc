@@ -675,8 +675,11 @@ In diesem letzten Abschnitt zur Datenanalyse geht es darum, wie der
 Messfehler bei der Messung des Erwartungswerts einer stochastischen
 Observable abgeschätzt werden kann. Wir betrachten also eine Messreihe
 $x_i$, $i=1(1)N$, die verschiedene Messungen einer stochastischen
-Observablen $x$ darstellen. Der Erwartungswert dieser Observablen
-lässt sich dann bekanntermaßen als
+Observablen $x$ darstellen, deren Verteilung zeitlich unveränderlich
+sein soll (wie zum Beispiel die Temperatur eines abgeschlossenen
+Systems im Gleichgewicht). Die gesuchte Größe ist dann meist der
+Mittelwert $\mean(x)$ der Observablen oder deren Streubreite, die
+\emph{Varianz}. Der Erwartungswert dieser Observablen lässt sich als
 \begin{equation}
   \label{eq:mean}
   \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^N x_i
@@ -1002,6 +1005,114 @@ und eine integrierte Autokorrelationszeit von 0,25, was gut zu unserer
 Autokorrelationszeit $0,17$ und der Fehlerschätzung von $7\cdot
 10^{-4}$ passt.
 
+\section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
+\index{Ausgleichsrechnung}
+\index{Fitting}
+\index{Methode der kleinsten Quadrate}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/leastsq}
+  \caption{Methode der kleinsten Quadrate zum Fitten der Sinusfunktion
+    $y=\sin(x)$. 200 Datenpunkte zwischen 0 und $2\pi$ wurden als
+    $\sin(x) + 0,1\,\sin(10 x) + \xi$ erzeugt, wobei $\xi$ eine
+    Gauß-verteilte Pseudozufallsvariable mit Varianz $0,01$ war. Die
+    resultierende Sinusfunktion (rot gestrichelt) hat die Form $a
+    \sin(bx+c)$, wobei die Koeffizienten auf gut 2\% Genauigkeit
+    $a=b=1$ und $c=0$ entsprechen. Die kleine höherfrequente
+    Schwingung kann durch einen Fit allerdings nicht zuverlässig
+    erkannt werden, anders als durch eine Fouriertransformation,
+    vergleiche Abbildung~\ref{fig:fourieralias}}
+  \label{fig:leastsq}
+\end{figure}
+
+Interpolierende Polynome, Taylorreihen und Splines haben gemeinsam,
+das diese möglichst nahe an alle gegebenen Stützstellen verlaufen. Die
+Anzahl der Terme in der Approximation ist nur durch die Anzahl der
+Stützstellen begrenzt, und meist wählt man so viele Stützstellen wie
+möglich, um eine möglichst genaue Näherung der unbekannten
+Funktionsform zu erhalten.
+
+Wenn die Daten an den Stützstellen aus Experimenten oder
+Computersimulationen gewonnen werden, ist das aber gar nicht
+gewünscht, da die Daten selbst nicht exakt sind. Wie wir gesehen
+haben, kann deren Qualität zwar durch Mitteln verbessert werden,
+trotzdem bleibt eine gewisse Unsicherheit.  Andererseits hat man in
+diesem Fall üblicherweise eine Vorstellung aus der Theorie, welche
+funktionelle Form die Daten annehmen, und möchte nun wissen, bei
+welcher Parameterwahl diese Funktion am besten mit den Daten
+verträglich ist. Man möchte also den Parametersatz bestimmen, der den
+Abstand der Daten von der Funktion minimiert. Dabei ist bei sinnvollen
+Experimenten die Anzahl der Datenpunkte sehr viel größer als die
+Anzahl der Parameter.
+
+Seien also wieder Daten $(x_i, y_i)$, $i=0(1)n-1$ und eine Funktion
+$f_v(x)$ gegeben. Gesucht ist dann derjenige Parametervektor $v$, der
+die Abweichung
+\begin{equation}
+  \label{eq:leastsq}
+  \Delta(v) = \sum_i (f_v(x_i) - y_i)^2
+\end{equation}
+minimiert. Dieses Verfahren wird auch Methode der kleinste Quadrate
+genannt, da ja die quadrierten Abweichungen minimiert werden
+sollen. Ist $f_{a,b}(x) = ax + b$ eine Gerade, spricht man auch von
+\emph{linearer Regression}\index{lineare Regression}. In diesem Fall lässt
+sich das Optimum einfach bestimmen, da
+\begin{equation}
+  0 = \frac{d}{da} \Delta(a,b) = \sum_i 2 (a x_i + b - y_i)x_i
+  = 2n \left(a  \overline{x_i^2} + b \overline{x_i} -
+    \overline{y_ix_i} \right)
+\end{equation}
+und
+\begin{equation}
+  0 = \frac{d}{db} \Delta(a,b) = \sum_i 2 (a x_i + b - y_i)
+  = 2n \left(a  \overline{x_i} + b - \overline{y_i} \right),
+\end{equation}
+wobei $\overline{x} = \frac{1}{n} \sum_{i=0}^{n-1} x_i$ den Mittelwert
+über alle Datenpunkte bedeutet. Daraus ergibt sich
+\begin{equation}
+  a = \frac{\overline{y_ix_i} -
+    \overline{y_i}\cdot\overline{x_i}}{\overline{x_i^2}-\overline{x_i}^2}
+  \quad\text{und}\;
+  b = \overline{y_i} - a \overline{x_i},
+\end{equation}
+was sich einfach auf dem Computer berechnen lässt.
+
+Auch für quadratische und andere einfache Funktionen lassen sich die
+Koeffizienten geschlossen darstellen, aber bei allgemeinen Funktionen
+ist dies nicht immer der Fall. Dann muss die nichtlineare
+Optimierungsaufgabe \eqref{eq:leastsq} numerisch gelöst werden, was
+wir später behandeln werden. Für den Moment genügt uns, dass SciPy die
+Funktion \scipy{scipy.optimize.leastsq(delta, v0, (x, y))} dafür
+bereitstellt. \argd{(x, y)} sind dabei die Ausgangsdaten, die hier zu
+einem Tupel zusammengefasst sind. \argd{v0} ist der Startwert für die
+Berechnung, der nicht zu weit vom (unbekannten) Optimum entfernt
+liegen darf. \argd{delta} ist eine Python-Funktion, die als Argumente
+$v$, $x_i$ und $y_i$ nimmt und $f_v(x_i) - y_i$ zurückliefert.  Da
+$f_v(x)$ eine beliebig komplizierte Form annehmen kann, ist diese
+Aufgaben im Allgemeinen nicht lösbar, allerdings funktioniert ein
+solcher \emph{Fit} für einfache Funktionen meistens recht
+gut. Abbildung~\ref{fig:leastsq} zeigt einen solchen Funktionsfit an
+eine verrauschte Sinusfunktion, die mit 200 Datenpunkten auf etwa 2\%
+genau gefittet werden kann. Man beachte, das der Ausgangswert für den
+Fit mit Hilfe der SciPy-Funktion \lstinline!leastsq! $a=0$, $b=1$,
+$c=0$ war; beim Startwert $a=0$, $b=0$, $c=0$ bricht das Verfahren
+ab. Das zeigt, dass man tatsächlich nicht zu weit vom Optimum starten
+kann, was ein gewisses Verständnis der Zielfunktion voraussetzt.
+
+Ist die Funktionsform, die den Daten zugrundeliegt, unbekannt, ist es
+normalerweise keine gute Idee, die Form zu raten. Generell sollte auch
+die Anzahl der Parameter sehr klein sein, da sich sonst fast alles
+"`gut"' fitten lässt ("`With four parameters I can fit an elephant and
+with five I can make him wiggle his trunk."' --- J. von Neumann).
+
+Soll aber zum Beispiel für Visualisierungszwecke eine ansprechende
+Kurve entlang der Daten gelegt werden, deren tatsächliche Abhängigkeit
+unbekannt ist, dann sind \emph{Pad\'e-Funktionen} oft eine gute
+Wahl. Diese haben die Gestalt $P(x)/Q(x)$, wobei $P$ und $Q$ zwei
+Polynome mit paarweise verschiedenen Nullstellen sind. Üblicherweise
+lassen sich schon für niedrige Polynomgrade ansprechende Fits finden,
+sofern die Grade der beiden Polynome in etwa gleich gewählt werden.
 
 %%% Local Variables: 
 %%% mode: latex
