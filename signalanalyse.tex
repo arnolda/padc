@@ -145,9 +145,9 @@ zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
     \begin{split}
       \FT\left(\frac{d}{dt}f(t)\right)(\omega) &=
       \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
-      \frac{df}{dt}(t)e^{-i
+      \left[\frac{df}{dt}(t)\right]e^{-i
         \omega t}\, dt\\
-      &= \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
+      &\substack{=\\\text{part. Int.}} -\frac{1}{\sqrt{2\pi}}\int_{-\infty}^{\infty}
       f(t)\frac{d}{dt}e^{-i \omega t}\, dt = i\omega
       \FT(f(t))(\omega).
     \end{split}
