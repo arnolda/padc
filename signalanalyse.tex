@@ -110,16 +110,17 @@ zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
     \FT(f)\left(\frac{\omega}{\alpha}\right).
   \end{equation}
   Wird also eine Funktion $\alpha$ immer stärker gestaucht, so wird
-  ihre Transformierte immer weiter gestreckt.
-
-  Entsprechend wird aus Zeitumkehr Frequenzumkehr: $\FT(f(-t))(\omega)
-  = \FT(f)(-\omega)$.
+  ihre Transformierte immer weiter gestreckt.  Entsprechend wird aus
+  Zeitumkehr Frequenzumkehr: $\FT(f(-t))(\omega) = \FT(f)(-\omega)$.
 \item $\FT$ ist invertierbar, die Umkehrfunktion $\FT^{-1}$ ist durch
   \eqref{eq:contfourierinverse} explizit gegeben. Offenbar ist auch
   die Umkehrung eine Isometrie, es gilt $\lVert \FT^{-1}(f)
   \rVert_2 =\lVert f \rVert_2$.
-\item Weiter gilt $\FT(\FT(f(t))) = \FT(f(-t))$, und damit $\FT^4(f) =
-  f$. Insbesondere ist auch $\FT^{-1} = \FT^3$.
+\item Weiter gilt $\FT(\FT(f(t))) = f(-t)$, und damit $\FT^4(f) =
+  f$. Insbesondere ist auch $\FT^{-1} = \FT^3$. Die
+  Fouriertransformation ist damit eine vierte Einheitswurzel auf dem
+  Raum der quadratintegrablen Funktionen, ähnlich wie $i$ bei den
+  komplexen Zahlen.
 \item Eine zeitliche Verschiebung wird zu einer Frequenzmodulation und
   umgekehrt:
   \begin{eqnarray}
@@ -201,10 +202,9 @@ Die Fouriertransformierte einer Gaußglocke ist
 Die Gaussglocke ist also eine Eigenfunktion der Fouriertransformation
 zum Eigenwert 1. Die Fouriertransformation hat tatsächlich sehr viel
 mehr echt verschiedene Eigenfunktionen, die Familie der
-Hermitefunktionen~\cite{pinsky02a}. Wegen der Isometrieeigenschaft kann die
-Fouriertransformation aber nur Eigenwerte vom Betrag eins haben;
-tatsächlich hat sie nur die vier Eigenwerte $\pm 1$ und $\pm i$, da
-$\FT^4=1$. Daher ist jeder Eigenwert stark degeneriert, und der
+Hermitefunktionen~\cite{pinsky02a}. Wegen $\FT^4=1$ kann die
+Fouriertransformation nur die vier Eigenwerte $\pm 1$ und $\pm i$
+haben. Jeder dieser Eigenwerte ist stark degeneriert, also der
 Eigenraum zu jedem Eigenwert unendlichdimensional.
 
 Die (formale) Fouriertransformierte der $\delta$-Funktion ist
@@ -227,55 +227,75 @@ Um die Eigenschaften der kontinuierlichen Fouriertransformation
 numerisch zu nutzen, machen wir den Grenzübergang $T\to\infty$
 rückgängig und ziehen uns auf ein für die betrachtetete Funktion
 hinreichend großes $T$ zurück, so dass $\int_{\lvert t\rvert>T}\lvert
-f(t)\rvert^2\, dt$ hinreichend klein ist. Ist das Signal wie in der
-Praxis endlich, so könnte $T$ zum Beispiel so groß sein, dass das
-Signal vollständig abgedeckt ist. In jedem Fall ist das Signal eine
-Funktion $f$, die wir nur an auf einem äquidistanten Gitter $t_k =
-T\left(-\frac{1}{2} + \frac{k}{N}\right)$, $k=0(1)N-1$ kennen. Dann
-ist mit $\omega_0=\frac{2\pi}{T}$ für $n=-N/2(1)N/2$
+f(t)\rvert^2\, dt$ hinreichend klein ist. Das geht insbesondere, wenn
+das Signal endlichen Träger hat, wie das bei echten gemessenen
+Signalen stets der Fall ist.
+
+Wir betrachten nun als Signal eine Funktion $f$, die wir nur an auf
+einem äquidistanten Gitter $t_k = t_0 + k\frac{T}{N}$, $k=0(1)N-1$
+kennen, also im Intervall $[t_0, t_o + T]$. Dann setzen wir
+$\omega_0:=\frac{2\pi}{T}$ und $\Delta := \frac{T}{N}$, und erhalten
+für ganzzahliges $n$
 \begin{multline}
   \label{eq:dftcont}
   \FT(f)(\omega_0 n)\approx
-  \frac{1}{\sqrt{2\pi}}\int_{-T/2}^{T/2} f(t)e^{-i n \omega_0 t}\, dt
+  \frac{1}{\sqrt{2\pi}}\int_{t_0}^{t_0 + T} f(t)e^{-i n \omega_0 t}\, dt
   \approx
   \frac{1}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
-  f(t_k)
-  e^{-i n\omega_0 T\left(-\frac{1}{2} + \frac{k}{N}\right)}\,
-  \frac{T}{N}\\
-  =   \frac{T}{N} \frac{e^{-2\pi i n /2}}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
+  \Delta f(t_k)
+  e^{-i n\omega_0 \left(t_0 + k\Delta\right)}\,
+  \\
+  =   \Delta \frac{e^{-i n\omega_0 t_0}}{\sqrt{2\pi}}\sum_{k=0}^{N-1}
   f(t_k) e^{-2\pi i n k / N}\,
-  =\frac{T}{N}\frac{(-1)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n
+  =\frac{T}{N}\frac{\left(e^{-i\omega_0 t_0}\right)^n}{\sqrt{2\pi}} \text{DFT}(f(t_k))_n\,,
 \end{multline}
 wobei DFT die diskrete Fouriertransformation aus \eqref{eq:dft}
-bezeichnet.  Die Koeffizienten der DFT sind periodisch, daher auch
-diese Näherung für $\FT(f)$. Tatsächlich sollten die Koeffizienten
-aber nur als Frequenzen im Interval $[-\omega_0 N/2,\omega_0 N/2]$
-interpretiert werden, alle Frequenzen außerhalb dieses Intervals
-sollten als Null angesehen werden. Der Grund dafür ist das
-Abtasttheorem, dass im folgenden Abschnitt besprochen wird. Dieses
-besagt, dass bei einem Zeitschritt $\Delta=T/N$ nur Kreisfrequenzen
-bis $\omega_0 N/2 = \pi/\Delta$ eindeutig gemessen werden
-können. Daher ist die Beschränkung auf das innerste Interval die
-natürliche Interpretation. Insbesondere ist diese Einschränkung
-wichtig, wenn $N$ ungerade ist, da dann $(-1)^{N-n}\neq (-1)^{-n}$
-ist. Wenn nun die Ursprungsfunktion reell war, würde für die
-Transformierte scheinbar $f(-\omega)=-\overline{f(\omega)}$ gelten,
-$f$ wäre also scheinbar rein imaginär! Bei rein reellen Signalen ist
-es daher günstiger, direkt die reellen Varianten der
-FFT-Implementationen zu nutzen, die von vorneherein nur mit den
-positiven Koeffizienten bis $N/2$ arbeiten. Der Faktor $(-1)^n$ ist
-übrigens nur eine Folge davon, dass wir $-T/2$ als Startpunkt des
-Gitters gewählt haben. Wählen wir stattdessen das Gitter $t_k=Tk/N$,
-etwa weil die Funktion nur für $T>0$ nicht verschwindet, entfällt er.
+bezeichnet. Meist werden Messungen bei $t=0$ begonnen, die Funktion
+ist dann nur im positiven Halbinterval von Null verschieden.  In
+diesem Fall wählt man natürlicherweise $t_0 = 0$, so dass der Faktor
+$e^{-i\omega_0 t_0} = 1$ entfällt. Wir werden allerdings später noch
+Faltungen kennenlernen, bei denen es häufig natürlicher ist, eine
+symmetrische Lage der Filterfunktion um die Null anzunehmen. In diesem
+Fall wählt man $t_0 = -T/2$, so dass $e^{-i\omega_0 t_0} = -1$.
 
-Analog lässt sich auch die Rücktransformation nähern:
+Die Koeffizienten der DFT sind periodisch, daher auch diese Näherung
+für $\FT(f)$. Tatsächlich sollten die Koeffizienten aber nur als
+Frequenzen im Interval $[-\omega_0 N/2,\omega_0 N/2]$ interpretiert
+werden, alle Frequenzen außerhalb dieses Intervals sollten als Null
+angesehen werden. Der Grund dafür ist das Abtasttheorem, dass im
+folgenden Abschnitt besprochen wird. Dieses besagt, dass bei einem
+Zeitschritt $\Delta=T/N$ nur Kreisfrequenzen bis $\omega_0 N/2 =
+\pi/\Delta$ eindeutig gemessen werden können. Daher ist die
+Beschränkung auf das innerste Interval die natürliche
+Interpretation. Bei rein reellen Signalen ist es daher günstiger,
+direkt die reellen Varianten der FFT-Implementationen zu nutzen, die
+von vorneherein nur die relevanten positiven Koeffizienten bis $N/2$
+zurückgeben.
+
+Die Einschränkung der Frequenzen ist besonders wichtig, wenn $N$
+ungerade ist und die um Null symmetrische Lage von $-T/2$ bis $T/2$
+gewählt wird. Dann ist $\left(e^{-i\omega_0 t_0}\right)^{N-n} =
+(-1)^{N-n} = - (-1)^{-n} = -\left(e^{-i\omega_0 t_0}\right)^{-n}$. Mit
+anderen Worten, wird einfach die gesamte diskrete
+Fouriertransformierte mit $(-1)^n$ multipliziert, so bekommen die
+negativen Frequenzen das falsche Vorzeichen. Das hat drastische
+Konsequenzen: wenn die Ursprungsfunktion reell ist, gilt
+$DFT(f_k)_{-n}=\overline{DFT(f_k)}_{n}$, für die genäherte
+kontinuierliche Fouriertransformierte also
+$\FT(f)(-\omega)=-\overline{\FT(f)(\omega)}$. Das entspricht der
+Tranformierten einer rein imaginären Funktion!
+
+Analog wie die Fouriertransformation selber lässt sich auch ihre
+Rücktransformation nähern:
 \begin{equation}
   \label{eq:idftcont}
   \FT^{-1}(f)(t_k)\approx
-  \text{iDFT}\left(\sqrt{2\pi}\frac{N}{T}(-1)^n f_n\right)_k
+  \text{iDFT}\left(\sqrt{2\pi}\frac{N}{T}\left(e^{i\omega_0 t_0}\right)^n f_n\right)_k
 \end{equation}
-Auch hier entfällt das $(-1)^n$, wenn der Aufpunkt bei 0 statt $-T/2$
-liegt.
+Der Faktor $\left(e^{i\omega_0 t_0}\right)^n$ invertiert genau den
+Faktor $\left(e^{-i\omega_0 t_0}\right)^n$ der
+Vorwärtstransformation. Für $t_0=0$ ist er wieder 1 und muss nicht
+berücksichtigt werden, bei $t_0=-T/2$ ist er $(-1)^n$.
 
 Die bekannten schnellen FFT-Routinen lassen sich also auch für die
 numerische Bearbeitung der kontinuierlichen Fouriertransformation
@@ -311,7 +331,7 @@ Funktion exakt aus ihrer Fouriertransformierten rekonstruiert werden:
   \label{eq:ftreconst}
   f(t)
   = \frac{\Delta}{2\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
-  \int_{-\omega_0}^{\omega_\text{max}} e^{-i \omega (t - n\Delta)} \,d\omega
+  \int_{-\omega_\text{max}}^{\omega_\text{max}} e^{-i \omega (t - n\Delta)} \,d\omega
   = \frac{\Delta}{\pi}\sum_{n\in\ZZ} f\left(n \Delta\right)
   \frac{\sin(\omega_\text{max}(t-n\Delta))}{t-n\Delta}.
 \end{equation}
@@ -353,9 +373,9 @@ bzw.\ geglättet, siehe Abbildung~\ref{fig:fourierfaltung}.
   \includegraphics[width=\textwidth]{plots/fouriertrafo}
   \caption{Oben links: Summe zweier Schwingungen $\cos(x) +
     0,25\sin(7,5 x)$ (schwarze Linie), die mit einer Gaußglocke (blau
-    gepunktet) gefaltet wird. Das Ergebnis (rote dicke Linie) ist die
-    quasi ungestörte langsame Schwingung ohne die höherfrequente
-    Schwingung, die weggeglättet wurde. Oben rechts:
+    gestrichelt) gefaltet wird. Das Ergebnis (rote gepunktete Linie)
+    ist die quasi ungestörte langsame Schwingung ohne die
+    höherfrequente Schwingung, die weggeglättet wurde. Oben rechts:
     Fouriertransformierte der Funktionen. Klar sichtbar ist die
     hochfrequente Störung mit einer Frequenz von $7,5$, die im
     gefilterten Signal fehlt. In der unteren Reihe wurde eine
@@ -384,31 +404,39 @@ Die Fouriertransformierte der Faltung zweier Funktionen ist
 \end{equation}
 Die Faltung geht also in eine punktweise Multiplikation über. Im
 Fourierraum lässt sich also sehr viel schneller falten, als im
-Realraum, wo ja für jeden Punkt ein Integral zu lösen ist. Dies nutzt
-man auch numerisch, um Faltungen zu berechnen, in Verbindung mit
-\eqref{eq:dftcont}. Seien also $N$ Datenpunkte $f_k = f(t_k)$ und $g_k
-= $ mit $t_k = T\left(-\frac{1}{2} + \frac{k}{N}\right)$ gegeben. Dann
-ist
+Realraum, wo ja für jeden Punkt ein Integral zu lösen ist.
+
+Dies nutzt man auch numerisch, um Faltungen zu berechnen, in
+Verbindung mit \eqref{eq:dftcont}. Seien zwei Sätze mit $N$ Datenpunkten $f_k =
+f(t_k)$  mit $t_k = t_0 + k\frac{T}{N}$  und $g_k = g(t'_k) $ mit
+$t'_k = t'_0 + k\frac{T}{N}$ gegeben. Mit anderen Worten, die beiden
+Funktionen müssen mit der selben Frequenz abgetastet worden sein, der
+Anfangszeitpunkt kann aber verschieden sein. Das ist etwa beim
+Glätten wichtig, bei dem die Filterfunktion meist symmetrisch um die
+Null definiert ist, die zu glättende Funktion aber beliebig liegen
+kann. Es gilt
 \begin{multline}
   \label{eq:discretefold}
   (f\star g)(t_k) =
   \sqrt{2\pi}\FT^{-1}\left(\FT(f)(\omega)\FT(g)(\omega)\right)(t_k)\\
   \approx
-  iDFT\left(2\pi \frac{N}{T} (-1)^n
-  \left[\frac{T^2}{2\pi N^2}\text{DFT}(f_k)_n\text{DFT}(g_k)_n\right]\right)_k\\
+  iDFT\left(2\pi \frac{N}{T} \left(e^{i\omega_0 t_0}\right)^n
+  \left[\frac{T^2}{2\pi N^2}\left(e^{-i\omega_0 t_0}\right)^n\text{DFT}(f_k)_n\left(e^{-i\omega_0 t'_0}\right)^n\text{DFT}(g_k)_n\right]\right)_k\\
   =
-  \frac{T}{N} \text{iDFT}\left[(-1)^n DFT(f_k)_n DFT(g_k)_n\right]_k.
+  \frac{T}{N} \text{iDFT}\left[\left(e^{-i\omega_0 t'_0}\right)^n DFT(f_k)_n DFT(g_k)_n\right]_k.
 \end{multline}
 Wie im Abschnitt~\ref{sec:contdft} besprochen, muss $n$ als Frequenz
-im Bereich $-N/2$ bis $N/2$ interpretiert werden. Der Faktor $(-1)^n$
-ist durch den Aufpunkt $T/2$ bestimmt, und bleibt einmalig von der
-Fouriertransformation übrig. Daher kann die eine der beiden
-Funktionen, etwa $g$, im Prinzip beliebig verschoben sein, da sich
-etwaige Vorfaktoren durch die Vor- und Rücktransformation
-ausgleichen. Nur die Funktion $f$ sollte dann um die Null zentriert
-gegeben sein. Die Faltung wird in diesem Fall natürlich nur im
-Definitionsbereich der Funktion $g$ berechnet. Mit anderen Worten, die
-Funktion $g$ wird mit der Funktion $f$ gefiltert.
+im Bereich $-N/2$ bis $N/2$ interpretiert werden. Man beachte, dass
+der Faktor $\left(e^{-i\omega_0 t'_0}\right)^n$ nur durch den Aufpunkt
+$t'_0$ der Abtastung der Funktion $g$ bestimmt ist, da wir an den
+Stellen $t_k$ auswerten. Dadurch ist die Funktion $g$ die
+Filterfunktion, die auf $f$ angewendet wird. Ist $g$ wie üblich
+symmetrisch um Null abgetastet, so ist $\left(e^{-i\omega_0
+    t'_0}\right)^n=(-1)^n$. Vergisst man diesen Term, entspricht das
+einem impliziten Verschieben der Filterfunktion zur Null hin.
+Die Lage $t_0$ der Abtastung der Funktion $f$ kann hingegen beliebig
+verschoben sein. Die Faltung wird in jedem Fall natürlich nur im
+Abtastbereich der Funktion $f$ berechnet.
 
 \subsection{Filter}
 \index{Filter}
@@ -524,7 +552,9 @@ Annahme wird meist gemacht, obwohl die Ergodizität für die meisten
 Systeme nicht bewiesen werden kann. Hinzu kommt, dass ja in der Praxis
 niemals über beliebig lange Zeiträume gemittelt werden kann. Daher
 können auch endliche, aber hohe Energiebarrieren zu einem
-systematischen Fehler führen.
+systematischen Fehler führen, weil das System im Zeitraum der Messung
+nur den Teil des Phasenraums besucht, der von der Energiebarriere
+eingeschlossen ist, selbst wenn auch andere Bereiche zulässig wären.
 
 $\mean{A}$ bzw. $\mean{B}$ sind oft gar nicht genau bekannt, und
 müssen numerisch durch \mbox{(Zeit--)}Mittelung der Daten bestimmt
@@ -542,7 +572,7 @@ Messinterval zu kurz gewählt wurde. Daher führt diese Methode zu einer
 Unterschätzung der Langzeitkorrelationen!
 
 Analog zu \eqref{eq:crosscorrtime} kann man die Kreuzkorrelation auch
-für \emph{endliche} Signale definieren. Für zwei quadratintegrable
+für \emph{endliche} Signale definieren. Für zwei quadratintegrable, reelle
 Signale $f$ und $g$ ist in Analogie die Kreuzkorrelationsfunktion
 definiert als
 \begin{equation}
@@ -562,15 +592,16 @@ Faltung sehr. Tatsächlich ist
 und kann damit effizient im Frequenzraum bestimmt werden:
 \begin{equation}
   \label{eq:crosscorrfft}
-  C(f,g) = \sqrt{2\pi}\FT^{-1}
-  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr).
+  C(f,g)(t) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\overline{\FT(f)}\FT(g)\bigr).
 \end{equation}
 
 Kommen wir nun zu unserem Ausgangsproblem mit zwei stochastischen,
 zeitinvarianten Variablen $A$ und $B$ und dem Zeitmittel zurück. Wie
 üblich nehmen wir an, dass $A$ und $B$ an endlich vielen, diskreten
-Zeitpunkten $k\Delta$, $k=0(1)n-1$, gemessen wurden. Die Messung
-erstreckt sich also über den Zeitraum $[0,T]$ mit $T=n\Delta$. Dann
+Zeitpunkten $k\Delta$, $k=0(1)N-1$, gemessen wurden. Die Messung
+erstreckt sich also über den Zeitraum $[0,T]$ mit $T=N\Delta$. Dann
 ist eine Näherung für die Kreuzkorrelation von $A$ und $B$ gegeben
 durch
 \begin{equation}
@@ -578,32 +609,36 @@ durch
   C(A,B)(k\Delta) = \mean{A(0)\cdot B(k\Delta)}
   \approx
   \frac{1}{N-k}\sum_{l=0}^{N-k}A(l\Delta)B\left((l+k)\Delta\right)
-  \quad\text{für}\; k=0(1)K-1.
+  \quad\text{für}\; k=0(1)N-1.
 \end{equation}
 Die unterschiedliche Gewichtung $1/(N-k)$ ergibt sich durch die
 unterschiedliche Anzahl an Messungen für den Versatz $k$. Für große
 Versätze ist die Anzahl der Messungen sehr klein (für $k=N-1$ nur noch
 eine), daher muss $k \ll N$ sein. Form \eqref{eq:crosscorrnum} ist
 numerisch allerdings nicht sehr effizient auszuwerten, da im
-allgemeinen $2NK$ viele Operationen benötigt werden, und $K$ meist
-einige hundert Datenpunkte beträgt.  Daher liegt es nahe, auch hier
-die FFT gemäß \eqref{eq:discretefold} zur Beschleunigung einzusetzen.
-Es ergeben für gleich lange Messreihen $A$ und $B$:
+allgemeinen $2N^2$ viele Operationen benötigt werden.  Daher liegt es
+nahe, auch hier die FFT gemäß \eqref{eq:discretefold} zur
+Beschleunigung einzusetzen.  Für gleich lange Messreihen $A$ und $B$
+ergibt sich
 \begin{equation}
   \label{eq:crosscorrnumfft}
   C(A,B)(k\Delta)
   \approx
   \frac{1}{N}\,\text{iDFT}
-  \bigl(\overline{\text{DFT}(A)(n)}\,\text{DFT}(B)(n)\bigr)(k).
+  \bigl(\overline{\text{DFT}(A)}\,\text{DFT}(B)\bigr)(k)\,,
 \end{equation}
-Der Faktor $(-1)^n$ fehlt hier, weil in diesem Fall sowohl $A$ als
-auch $B$ als bei $t=0$ startend betrachtet werden. Man sollte
-beachten, dass durch die Benutzung der DFT das Signal implizit mit
-Periode $N\Delta$ periodisiert wird. Daher sollte $C(A,B)(k\Delta)$
-nur für $k\ll N/2$ interpretiert werden. Die Berechnung der 2 DFTs
-sowie der inversen DFT braucht etwa $6 N\log N$ Operationen, was
-normalerweise wesentlich weniger als die $2NK$ der direkten Berechnung
-ist.
+wobei angenommen wurden, dass beide Messungen bei $t_0=0$ begonnen
+haben, so dass der Faktor $\left(e^{-i\omega_0 t_0}\right)^n$
+entfällt.
+
+Die Berechnung der 2 DFTs sowie der inversen DFT braucht etwa $6 N\log
+N$ Operationen, was normalerweise wesentlich weniger als die $2N^2$
+der direkten Berechnung ist.  Allerdings werden das Signal und damit
+auch $C(A,B)$ durch die Benutzung der DFT implizit mit Periode
+$N\Delta$ periodisiert. Daher sollte $C(A,B)(k\Delta)$ nur für $k\ll
+N/2$ interpretiert werden. Wie besprochen gilt dies allerdings genauso
+auch für die direkte Auswertung nach \eqref{eq:crosscorrnum}, da für
+größere $k$ die Anzahl der Messwerte nicht ausreichend ist.
 
 In Python sieht die Berechnung der Kreuzkorrelation so aus:
 \begin{lstlisting}
@@ -671,6 +706,8 @@ führen zum Durchschwingen der Autokorrelationsfunktion.
 \section{Messfehlerabschätzung}
 \index{Messfehler}
 
+\enlargethispage{-\baselineskip}
+
 In diesem letzten Abschnitt zur Datenanalyse geht es darum, wie der
 Messfehler bei der Messung des Erwartungswerts einer stochastischen
 Observable abgeschätzt werden kann. Wir betrachten also eine Messreihe
@@ -678,21 +715,32 @@ $x_i$, $i=1(1)N$, die verschiedene Messungen einer stochastischen
 Observablen $x$ darstellen, deren Verteilung zeitlich unveränderlich
 sein soll (wie zum Beispiel die Temperatur eines abgeschlossenen
 Systems im Gleichgewicht). Die gesuchte Größe ist dann meist der
-Mittelwert $\mean(x)$ der Observablen oder deren Streubreite, die
-\emph{Varianz}. Der Erwartungswert dieser Observablen lässt sich als
+Erwartungswert $\mean{x}$ der Observablen oder ihre \emph{Varianz}
+\begin{equation}
+  \sigma^2(x) = \mean{\bigl(x-\mean{x}\bigr)^2}
+  = \mean{x^2} - 2\mean{\mean{x}x}  + \mean{x}^2
+  = \mean{x^2} - \mean{x}^2,
+\end{equation}
+die die erwartete quadratische Abweichung einer Messung vom
+Erwartungswert beschreibt. Sie ist wie der Erwartungswert eine
+Eigenschaft der zu messenden Observablen $x$ und im Gegensatz zum
+Messfehler nicht von der Anzahl der Messungen abhängig.
+
+Aus der Messreihe lässt sich der Erwartungswert dieser Observablen als
 \begin{equation}
   \label{eq:mean}
   \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^N x_i
 \end{equation}
 abschätzen, da $\mean{\bar{x}} = \mean{x}$. Doch was ist nun der
 Fehler, den wir mit dieser Schätzung machen? Dieser ist die zu
-erwartende quadratische Abweichung
+erwartende quadratische Abweichung des numerischen vom tatsächlichen
+Mittelwert:
 \begin{equation}
   \mean{\left(\overline{x} - \mean{x}\right)^2} =
   \frac{1}{N^2}\sum_{i,j=1}^N \mean{x_ix_j} -
   \frac{2}{N}\sum_{i=1}^N \mean{x_i}\mean{x} + \mean{x}^2
   = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
-  + \frac{1}{N}\mean{x^2} - \mean{x}^2
+  + \frac{1}{N}\mean{x^2} - \mean{x}^2.
 \end{equation}
 An dieser Stelle nimmt man nun an, dass die Messungen paarweise
 unabhängig sind, also, dass $\mean{x_ix_j} = \mean{x_i}\mean{x_j}$ für
@@ -700,27 +748,15 @@ $i\neq j$. In der Praxis lässt sich das zum Beispiel durch Betrachten
 der Autokorrelationsfunktion sicherstellen, indem nur Messwerte mit
 einem zeitlichen Abstand berücksichtigt werden, der sehr viel größer
 als die Korrelationszeit ist. Diese Einschränkung werden wir im
-folgenden noch genauer untersuchen.
-
-Unter der Annahme, dass die Messungen $x_i$ alle paarweise unabhängig
-sind, gilt
+folgenden noch genauer untersuchen, für den Moment nehmen wir die
+Unabhängigkeit an und erhalten
 \begin{equation}
   \label{eq:errestvar}
   \mean{(\overline{x} - \mean{x})^2}
   = \frac{N(N-1)}{N^2}\mean{x}^2 + \frac{1}{N}\mean{x^2} - \mean{x}^2
   = \frac{1}{N}\left(\mean{x^2} - \mean{x}^2\right)
-  = \frac{1}{N}\sigma^2(x)
+  = \frac{1}{N}\sigma^2(x).
 \end{equation}
-mit
-\begin{equation}
-  \sigma^2(x) = \mean{\bigl(x-\mean{x}\bigr)^2}
-  = \mean{x^2} - 2\mean{\mean{x}x}  + \mean{x}^2
-  = \mean{x^2} - \mean{x}^2.
-\end{equation}
-Die \emph{Varianz} $\sigma^2(x)$ beschreibt die erwartete quadratische
-Abweichung einer Messung von $x$ vom Mittelwert. Sie ist eine
-Eigenschaft der zu messenden Observablen $x$ und im Gegensatz zum
-Messfehler nicht von der Anzahl der Messungen abhängig.
 
 Als Fehlerbalken wird üblicherweise die \emph{Standardabweichung} der
 Messung $\overline{x}$, angegeben. Diese ist durch
@@ -751,10 +787,14 @@ diesen Ausdruck gilt:
   = \frac{N-1}{N}\left(\mean{x^2} - \mean{x}^2\right),
 \end{equation}
 wobei wir wieder annehmen, dass die Messungen unabhängig voneinander
-sind. Dass der Ausdruck auf der linken Seite selber kein guter
-Schätzer ist, liegt also daran, dass für $\bar{x}$ zweimal derselbe
-Datensatz benutzt wurde. Ein guter Schätzer für $\sigma^2(x)$ ergibt
-sich aus der Umkehrung von \eqref{eq:varestalmost}:
+sind. Der Ausdruck auf der linken Seite ist selber also \emph{kein} guter
+Schätzer für die Varianz, obwohl er genau wie der Schätzer für den
+Mittelwert konstruiert ist. Das liegt daran, dass für die Schätzung
+von $\mean{x}$ zweimal $\bar{x}$ und damit zweimal derselbe
+Datensatz benutzt wurde.
+
+Ein guter Schätzer für $\sigma^2(x)$ ergibt sich aus der Umkehrung von
+\eqref{eq:varestalmost}:
 \begin{equation}
   \label{eq:varest}
   \sigma^2(x) \approx \frac{N}{N-1}\left(\overline{x^2} -
@@ -789,12 +829,12 @@ alle Daten, da der Mittelwert zunächst bestimmt werden muss, was unter
 Umständen zu einer Verdoppelung der Laufzeit führen kann.
 
 Selbstverständlich sind diese elementaren Schätzer aber auch direkt in
-NumPy implementiert. \scipy{numpy.mean(array)} berechnet den Schätzer
-für den Mittelwert, \scipy{numpy.var(array, ddof=1)} den Schätzer
-für die Varianz. \argd{ddof} bezeichnet dabei die Anzahl der abhängigen
-Freiheitsgrade, die von $N$ im Nenner von \eqref{eq:varest} abgezogen
-werden. Wie wir eben gesehen haben, ist dies bei unabhängigen Daten
-$\text{\argd{ddof}} = 1$.
+NumPy implementiert. \scipy{numpy.mean(x)} berechnet den Schätzer für
+den Mittelwert eines Arrays \argd{x}, \scipy{numpy.var(x, ddof=1)} den
+Schätzer für seine Varianz. \argd{ddof} bezeichnet dabei die Anzahl der
+abhängigen Freiheitsgrade, die von $N$ im Nenner von \eqref{eq:varest}
+abgezogen werden. Wie wir eben gesehen haben, ist dies bei
+unabhängigen Daten $\text{\argd{ddof}} = 1$.
 
 \subsection{Fehler bei der Messung korrelierter Daten}
 
