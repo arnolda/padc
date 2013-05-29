@@ -20,29 +20,26 @@ pdfauthor={A. Arnold und O. Lenz},
 pdfkeywords={CC-Lizenz: http://creativecommons.org/licenses/by-nc-sa/3.0/deed.de},
 pdftitle={Physik auf dem Computer Sommersemester 2013}]{hyperref}
 \usepackage{scrhack} % fix listings behavior with recent KOMA
-\usepackage{listings}
-\usepackage{graphicx}
-\usepackage{tikz}
 \usepackage{ifthen}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{icomma} % correct decimal commas in formulas
-\usepackage{nicefrac} % \nicefrac -> e.g. ½
-\usepackage{fancybox}
-\usepackage{makeidx}
 \usepackage{todonotes} % comments and todos
-\usepackage{cclicenses} % license symbols
-\usepackage{xmpincl} % include license information for automatic parsing
 \usepackage{afterpage} % \afterpage command
 \usepackage{multirow}
 \usepackage{enumitem} % better control about enums/itemizes
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% graphics tools
+
+\usepackage{graphicx}
+\usepackage{tikz}
 \usetikzlibrary{positioning,arrows,decorations.pathreplacing,patterns,calc}
 
 \newcommand{\tikzlabel}[1]{\tikz[overlay, remember picture] \coordinate (#1);}
 
 \graphicspath{{figures/}}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% index
+\usepackage{makeidx}
 \makeindex
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,8 +64,14 @@ pdftitle={Physik auf dem Computer Sommersemester 2013}]{hyperref}
 
 \setcapindent{0em}
 
+% we have lots of formulas, so stretching is not that bad, and we have
+% lots of formulas causing stretches...
+\vbadness=5000
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % listings
+
+\usepackage{listings}
 
 \lstset{%
   frame=tb,
@@ -99,7 +102,11 @@ pdftitle={Physik auf dem Computer Sommersemester 2013}]{hyperref}
 \newcommand{\argd}[1]{\lstinline[style=inline]!#1!}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% short cuts
+% math tools
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{icomma} % correct decimal commas in formulas
+\usepackage{nicefrac} % \nicefrac -> e.g. ½
 
 \renewcommand{\Re}{\mathrm{Re}}
 \renewcommand{\Im}{\mathrm{Im}}
@@ -121,9 +128,22 @@ pdftitle={Physik auf dem Computer Sommersemester 2013}]{hyperref}
   #1\index{#1}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% start of content
+% shortcuts
+\usepackage{xspace}
+\renewcommand{\dh}{d.\,h.\xspace}
+\newcommand{\zb}{z.\,B.\xspace}
+\newcommand{\usw}{usw.\xspace}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CC-license stuff
+
+\usepackage{cclicenses} % license symbols
+\usepackage{xmpincl} % include license information for automatic parsing
+% embedded electronic license
 \includexmp{license}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% start of content
 
 \begin{document}
 

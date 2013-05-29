@@ -41,7 +41,7 @@ Frequenzen, die von einer digitalen Auswertung erfasst werden können.
 
 Die meisten Signale sind außerdem, durch Messungenauigkeiten und
 prinzipielle stochastische Prozesse, selbst \emph{stochastisch},
-d.h.\ die Verteilung der Ergebnisse vieler Messungen ist
+\dh die Verteilung der Ergebnisse vieler Messungen ist
 vorherbestimmbar, die einzelne Messung hingegen nicht. Trotzdem sind
 Messungen oft korreliert, zum Beispiel weil eine Observable sich nur
 kontinuierlich ändert.  Durch Korrelationsanalysen lässt sich
@@ -100,9 +100,9 @@ zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
   \begin{equation}
     \lVert \FT(f) \rVert_2 = \lVert f \rVert_2
   \end{equation}
-\item $\FT$ ist linear, d.h. $\FT(f + \lambda g) = \FT{f} + \lambda
+\item $\FT$ ist linear, \dh $\FT(f + \lambda g) = \FT{f} + \lambda
   \FT{g}$.
-\item $\FT$ ist reziprok gegen Streckungen, d.h.
+\item $\FT$ ist reziprok gegen Streckungen, \dh
   \begin{equation}
     \label{eq:fourierreziprok}
     \FT[f(\alpha
@@ -299,7 +299,7 @@ berücksichtigt werden, bei $t_0=-T/2$ ist er $(-1)^n$.
 
 Die bekannten schnellen FFT-Routinen lassen sich also auch für die
 numerische Bearbeitung der kontinuierlichen Fouriertransformation
-nutzen. Auf diese Weise ist z.B. Abbildung~\ref{fig:fourierfaltung}
+nutzen. Auf diese Weise ist \zb Abbildung~\ref{fig:fourierfaltung}
 entstanden.
 
 \subsection{\keyword{Abtasttheorem}}
@@ -311,7 +311,7 @@ Eine wichtige Frage ist, wie gut man das reale Signal und sein
 Frequenzspektrum aus den diskreten Datenpunkten rekonstruieren kann.
 
 Hierzu betrachten wir zunächst ein \emph{bandbreitenbeschränktes
-  Signal} $f$, d.h.\ ein Signal, dessen Fouriertransformierte einen
+  Signal} $f$, \dh ein Signal, dessen Fouriertransformierte einen
 kompakten Träger $[-\omega_\text{max},\omega_\text{max}]$ hat. Dann besagt die
 Poissonsche Summenformel~\eqref{eq:poissonsumme}, dass für
 $\omega\in[-\omega_\text{max},\omega_\text{max}]$
@@ -359,7 +359,7 @@ Faltung sind Linearität in den Komponenten und sogar
 Assoziativität. Die Faltung verhält sich also so ähnlich wie die
 klassische Multiplikation und wird daher mit dem Zeichen $\star$
 bezeichnet.  Vereinfacht gesagt, deponiert die Faltung an jedem Punkt
-$t$ die Funktion $f$, skaliert mit $g(\cdot - t) $. Daher ist z.B.
+$t$ die Funktion $f$, skaliert mit $g(\cdot - t) $. Daher ist \zb
 \begin{equation}
   (\delta(\cdot - t_0) \star g)(t) = g(t - t_0).
 \end{equation}
@@ -546,7 +546,7 @@ die Zeit:
 \end{equation}
 Das Ausrufezeichen soll andeuteten, dass dies eine Annahme ist, denn
 die Gleichheit gilt nur genau dann, wenn das System \emph{ergodisch}
-ist, d.~h., dass der Prozess bei einer unendlich langen zeitlichen
+ist, \dh\,, dass der Prozess bei einer unendlich langen zeitlichen
 Messung alle möglichen Realisationen einmal besuchen wird. Diese
 Annahme wird meist gemacht, obwohl die Ergodizität für die meisten
 Systeme nicht bewiesen werden kann. Hinzu kommt, dass ja in der Praxis
@@ -706,8 +706,6 @@ führen zum Durchschwingen der Autokorrelationsfunktion.
 \section{Messfehlerabschätzung}
 \index{Messfehler}
 
-\enlargethispage{-\baselineskip}
-
 In diesem letzten Abschnitt zur Datenanalyse geht es darum, wie der
 Messfehler bei der Messung des Erwartungswerts einer stochastischen
 Observable abgeschätzt werden kann. Wir betrachten also eine Messreihe
@@ -759,7 +757,7 @@ Unabhängigkeit an und erhalten
 \end{equation}
 
 Als Fehlerbalken wird üblicherweise die \emph{Standardabweichung} der
-Messung $\overline{x}$, angegeben. Diese ist durch
+Messung $\overline{x}$ angegeben. Diese ist durch
 \begin{equation}
   \sqrt{\mean{(\overline{x} - \mean{x})^2}}
   = \frac{1}{\sqrt{N}}\sigma(x)
@@ -842,76 +840,66 @@ In der Praxis wird oft einfach angenommen, dass die Messungen
 unabhängig sind. Was passiert nun, wenn dies nicht der Fall ist?
 Betrachten wir also eine Observable die o.B.d.A. Erwartungswert
 $\mean{x} = 0$ habe. Dann ist wie oben gezeigt
-\begin{align}
-  \mean{(\overline{x} - \mean{x})^2}
-  = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
-  + \frac{1}{N}\sigma^2(x).
-\end{align}
-Der tatsächliche Fehler ist also um $\frac{2}{N^2}\sum_{i > j}
-\mean{x_ix_j}$ größer, als man aufgrund der Varianz und Anzahl
-Messungen erwarten würde. In
-die Abschätzung für die Varianz ging ebenfalls die Unabhängigkeit ein,
-für diese gilt nun
-\begin{align}
-  \frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}
-  &= \frac{1}{N-1}\left(N\mean{x^2} - \mean{x^2}
-    - \frac{1}{N}\sum_{i\neq j} \mean{x_ix_j}\right)\\
-  &= \sigma^2(x) - \frac{2}{N(N-1)}\sum_{i> j} \mean{x_ix_j},
-\end{align}
-d.h., die Varianz wird zusätzlich noch um
-$\frac{2}{N(N-1)}\sum_{i\neq j} \mean{x_ix_j}$
-\emph{unterschätzt}. Insgesamt wird der quadratische Fehler also um
-ebenfalls
-\begin{align}
-  F&=\mean{(\overline{x} - \mean{x})^2} -
-  \frac{1}{N}\sigma^2(x)\nonumber\\
-  &= \mean{(\overline{x} - \mean{x})^2} -
-  \frac{1}{N}\frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}\nonumber\\
-  &=
-  \left(\frac{2}{N^2} + \frac{2}{(N-1)N^2}\right)\sum_{i > j} \mean{x_ix_j}
-  =
-  \frac{2}{N(N-1)}\sum_{j=1}^{N}\sum_{n = 1}^{N-j} \mean{x_jx_{j+n}}
-\end{align}
-unterschätzt.
-
-Für eine Observable $x$, die in gleichmäßigen Zeitabständen $\Delta$
-gemessen wird, lässt sich dieser Ausdruck mit Hilfe der
-Autokorrelationsfunktion $C(\tau) = C(x,x)(\tau)$ abschätzen:
 \begin{equation}
-  \label{eq:correrrest}
-  F
-  \approx
-  \frac{2}{N(N-1)}\sum_{j=1}^{N}\int_{n = 0}^{N-j} C(n\Delta)
-  \approx
-  \frac{2}{N}\int_{n = 0}^{\infty} C(n\Delta)
-  =
-  \frac{2}{N}\frac{\tau_c}{\Delta} C(0)
-  =
-  2\frac{\tau_c}{\Delta}\frac{\sigma^2(x)}{N},
+  \label{eq:correrr}
+  \mean{(\overline{x} - \mean{x})^2} = \frac{2}{N^2}\sum_{i > j}
+  \mean{x_ix_j}
+  + \frac{1}{N}\sigma^2(x)
+  = \frac{2}{N^2}\sum_{j=1}^{N}\sum_{n = 1}^{N-j} \mean{x_jx_{j+n}}
+  + \frac{1}{N}\sigma^2(x).
+\end{equation}
+Für eine Observable $x$, die in gleichmäßigen Zeitabständen $\Delta$
+gemessen wird, lässt sich die innere Summe des linken Terms mit Hilfe
+der Autokorrelationsfunktion $C(\tau) = C(x,x)(\tau)$
+abschätzen:\nobreak
+\begin{equation}
+  \sum_{n = 1}^{N-j} \mean{x_jx_{j+n}}
+  \approx \int_{n = 0}^{\infty} C(n\Delta)
+  = \frac{\tau_c}{\Delta} C(0)
+  = \frac{\tau_c}{\Delta}\sigma^2(x),
 \end{equation}
 wobei $\tau_c$ die Korrelationszeit gemäß \eqref{eq:tauc} ist und
 entsprechend ein einfacher exponentieller Abfall angenommen
 wurde. Außerdem muss $\tau_c\ll N\Delta$ sein, so dass die Erweiterung
-des Integrals bis unendlich keinen nennenswerten Beitrag mehr liefert.
-Verglichen mit der eigentlichen quadratischen Abweichung erhält man
-mit korrelierten Daten eine Abschätzung für den Fehler, die um einen
-Faktor $1-2\tau_C/\Delta$ zu klein ist. Schlimmer noch: ist man an der
-Varianz der Messgröße interessiert, dann wird dieser Wert systematisch
-um denselben Faktor $1-2\tau_C/\Delta$ unterschätzt, was sich durch
-noch so viele Messungen nicht ausgleichen lässt!
-
-Für den Mittelwert gilt entsprechend
-\begin{align}
+des Integrals bis unendlich keinen nennenswerten Beitrag mehr
+liefert. Eingesetzt in \eqref{eq:correrr} ergibt sich
+\begin{equation}
+  \label{eq:correrrest}
   \mean{(\overline{x} - \mean{x})^2}
-  = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
-  + \frac{\sigma^2(x)}{N} \approx
-  \left(1+2\frac{\tau_c}{\Delta}\frac{N-1}{N}\right)\frac{\sigma^2(x)}{N}
-  \approx \frac{\sigma^2(x)}{N_\text{eff}},
+  \approx
+  \frac{2}{N^2}\sum_{j=1}^{N} \frac{\tau_c}{\Delta}\sigma^2(x)
+  + \frac{1}{N}\sigma^2(x)
+  =
+  \left(1 + 2\frac{\tau_c}{\Delta}\right)\frac{\sigma^2(x)}{N}.
+\end{equation}
+Der Fehler ist also um einen Faktor $1 + 2 \tau_c /\Delta$
+\emph{größer}, als man aufgrund der Varianz und Anzahl Messungen
+erwarten würde, wenn man einfach annimmt, dass die Messungen
+unabhängig sind. Setzt man $N_\text{eff} = N \Delta / (2\tau_c)$, dann
+ergibt sich
+\begin{equation}
+  \mean{(\overline{x} - \mean{x})^2}
+  \approx
+  \left(1 + 2\frac{\tau_c}{\Delta}\right)\frac{\sigma^2(x)}{N}.
+  \approx \frac{\sigma^2(x)}{N_\text{eff}}.
+\end{equation}
+Mit anderen Worten, $N_\text{eff}$ kann als die Anzahl der tatsächlich
+unabhängigen Messungen interpretiert werden. Nur Messungen, die etwa
+zwei Autokorrelationszeiten auseinanderliegen, sind hinreichend
+unabhängig.
+
+Auch der Schätzer \eqref{eq:varest} für die Varianz setzt die
+Unabhängigkeit der Messungen voraus. Für abhängige Daten ergibt sich
+\begin{align}
+  \frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}
+  &= \frac{1}{N-1}\left(N\mean{x^2} - \mean{x^2}
+    - \frac{1}{N}\sum_{i\neq j} \mean{x_ix_j}\right)\nonumber\\
+  &= \sigma^2(x) - \frac{2}{N(N-1)}\sum_{i> j} \mean{x_ix_j}
+  \approx \left(1 - 2\frac{\tau_c}{\Delta N}\right)\sigma^2(x).
 \end{align}
-wobei die effektive Anzahl unabhängiger Messungen
-$N_\text{eff} = N \Delta / (2\tau_c)$ ist. Mit anderen Worten,
-nur Messungen, die etwa zwei Autokorrelationszeiten auseinanderliegen,
-sind hinreichend unabhängig.
+Die Varianz wird also zusätzlich um einen Faktor $1 -
+2\frac{\tau_c}{\Delta N}$ \emph{unterschätzt}. Immerhin lässt sich
+dieser Fehler durch ausreichend viele Messungen minimieren.
 
 \begin{figure}
   \centering
@@ -923,7 +911,7 @@ sind hinreichend unabhängig.
     eine Varianz von 1. Die blauen Balken geben das
     $1\sigma$-Intervall der beobachteten Varianzen an. Die schwarze
     Linie zeigt die Abschätzung der scheinbaren Varianz gemäß
-    \eqref{eq:correrrest} als $(1-2\tau_C/(\Delta N))\sigma^2(x)$, was
+    \eqref{eq:correrrest} als $(1-2\tau_c/(\Delta N))\sigma^2(x)$, was
     gut zu den gemessenen Daten passt.}
   \label{fig:error}
 \end{figure}
@@ -945,12 +933,13 @@ Geschwindigkeitskomponenten ist also $1\cdot 34/50.000 \approx 7\cdot
 10^{-4}$ anstatt $2\cdot 10^{-5}$, wie man ohne Berücksichtigung der
 Korrelationen erhalten würde.
 
-Im Falle der Temperatur gibt es eine einfache Abhilfe, nämlich die
-kinetische Energie zu betrachten, allerdings ist das nicht immer der
-Fall. So wird die Wärmekapazität eines Systems aus der Varianz der
-Energiedichte bestimmt, und die dielektrische Konstante aus der
-Varianz des Dipolmoments. In diesem Fall ist es also enorm wichtig,
-mit unkorrelierten Daten zu arbeiten.
+Im Falle der Temperatur gibt es eine einfache Abhilfe, da die
+Temperatur auch aus der kinetische Energie abgeschätzt werden kann,
+allerdings ist das nicht immer der Fall. So wird die Wärmekapazität
+eines Systems aus der Varianz der Energiedichte bestimmt, und die
+dielektrische Konstante aus der Varianz des Dipolmoments. In diesem
+Fall ist es also enorm wichtig, mit ausreichend vielen unkorrelierten
+Daten zu arbeiten.
 
 \subsection{Binning-Analyse}
 \index{Binning}
@@ -959,20 +948,24 @@ Im obigen Beispiel ist die Autokorrelationsfunktion tatsächlich
 einfach exponentiell und daher die Autokorrelationszeit einfach zu
 bestimmen. Bei den meisten komplexen Systemen ist das nicht der Fall.
 Trotzdem lässt sich \eqref{eq:correrrest} anwenden, allerdings geht
-dann die etwas kompliziertere \emph{integrierte} Autokorrelationszeit
-$\tau_\text{int}$ ein. Eine Möglichkeit, diese abzuschätzen, ist die
+dann die \emph{integrierte} Autokorrelationszeit
+\begin{equation}
+  \tau_\text{int} := \frac{1}{C(A,A)(0)}\int_0^\infty C(A,A)(\tau)\,d\tau
+\end{equation}
+ein. Eine Möglichkeit, diese abzuschätzen, ist die
 Binning-Analyse~\cite{janke02a}. Diese Methode liefert direkt den
 Messfehler, kann aber auch benutzt werden, um die $\tau_\text{int}$ zu
 bestimmen.
 
 Dazu seien die Daten $x$ in $B$ Blöcke (\enquote{Bins}) der Länge $k$
 eingeteilt. Ist $N$ nicht durch $k$ teilbar, muss dazu der Datensatz
-etwas gekürzt werden, so dass alle Blöcke voll sind. Die Blöcke werden
-nun durch ihren Mittelwert
+etwas gekürzt werden, so dass alle Blöcke voll sind. Anstatt der
+einzelnen Daten in den Blöcken, betrachten wir nun nur ihre jeweiligen
+Mittelwerte
 \begin{equation}
-  X_{k,l} = \frac{1}{k}\sum_{j=1}^{k}x_{(l-1)k + j}\quad l=1(1)B
+  X_{k,l} = \frac{1}{k}\sum_{j=1}^{k}x_{(l-1)k + j}\quad l=1(1)B.
 \end{equation}
-ersetzt. Dann gilt $\mean{X_{k,l}} = \mean{x}$ für alle $l$, und es
+Dann gilt $\mean{X_{k,l}} = \mean{x}$ für alle $l$, und es
 gilt $\bar{X} = \bar{x}$. Allerdings ändert sich unter Umständen die
 Varianz. Sofern $k$ größer als die typischen Korrelationslängen ist,
 gilt $\sigma^2(X_{k,l}) \approx \sigma^2(x)/k$ nach

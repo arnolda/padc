@@ -72,7 +72,7 @@ Lipschitzkonstante ergibt sich aus dem Mittelwertsatz zu $L=\max_{x\in
   M}\norm{g'(x)}$.  Es gibt allerdings noch mehr L-stetige Funktionen,
 zum Beispiel die in 0 nicht differenzierbare Betragsfunktion, die auf
 ganz $\RR$ L-stetig mit $L = 1$ ist. Auf der anderen Seite ist
-offenbar jede L-stetige Funktion auch stetig, d.h., die L-stetigen
+offenbar jede L-stetige Funktion auch stetig, \dh\,, die L-stetigen
 Funktionen sind eine eigene Klasse zwischen den stetigen und
 differenzierbaren Funktionen. Dabei ist es nicht wesentlich, welche
 Norm $\norm{\cdot}$ genutzt wird. Sie kann für das Problem geeignet
@@ -101,7 +101,7 @@ Dann gilt für alle $n,m\in\NN$ der \emph{Banachsche Fixpunktsatz}
   \frac{L^n}{1-L}\norm{g(x_0) - x_0}.
 \end{align}
 Die sukzessive Substitution definiert also eine Cauchyfolge, die in
-$M$ konvergiert, sofern $M$ abgeschlossen ist (z.B. $M=\RR^n$ oder $M$
+$M$ konvergiert, sofern $M$ abgeschlossen ist (\zb $M=\RR^n$ oder $M$
 Einheitskugel). Für den Grenzwert $\overline{x}$ dieser Folge gilt
 \begin{equation}
   \overline{x} = \lim_{n\to\infty}x_{n+1} = \lim_{n\to\infty}g(x_{n})
@@ -145,7 +145,7 @@ Substitution gegen diesen Fixpunkt konvergiert.
     mit $\phi_0=2$ (links) und $\phi_0=1/4$ (rechts). Blau
     durchgezogen ist die Funktion $g$, die Winkelhalbierende ist
     schwarz dargestellt. Die Punkte auf der Winkelhalbierenden
-    markieren die Punkte $(x_1,x_1)$, $(x_2,x_2)$ usw., durch die das
+    markieren die Punkte $(x_1,x_1)$, $(x_2,x_2)$ \usw\,, durch die das
     Lot auf $g$ gefällt wird, um den nächsten Punkt der sukzessiven
     Substitution zu erhalten. Im linken Graph sind die ersten sieben
     Glieder dargestellt, die exponentielle Konvergenz ist gut zu
@@ -197,7 +197,7 @@ $x_{n+1}$ auf:
 \end{equation}
 wobei wir annehmen, dass $f'(x)\neq 0$ auf $[a,b]$.  Für eine
 Nullstelle $\overline{x}$ von $f$ gilt offenbar $g(\overline{x}) =
-\overline{x}$, d.h.\ wir suchen einen Fixpunkt von $g$, den wir wieder
+\overline{x}$, \dh wir suchen einen Fixpunkt von $g$, den wir wieder
 durch sukzessive Substitution annähern können. Man bricht das
 Verfahren wie auch die sukzessive Substitution ab, wenn
 $\abs{x_{n}-x_{n-1}}$ bzw. $\abs{f(x_n)}$ hinreichend klein sind.
@@ -249,7 +249,7 @@ konvex bzw.\ konkav, also $f'$ monoton wachsend bzw.\ fallend und
 beschränkt, und hat $f$ eine Nullstelle in $[a,b]$, so kann man
 zeigen, dass das Newtonverfahren global gegen eine Nullstelle
 $\overline{x}$ von $f$ in $[a,b]$ konvergiert. Dabei ist das Verfahren
-nach dem ersten Schritt monoton, d.h.\ entweder $x_1\le
+nach dem ersten Schritt monoton, \dh entweder $x_1\le
 x_2\le\ldots\le\overline{x}$ oder $x_1\ge
 x_2\ge\ldots\ge\overline{x}$.
 
@@ -522,7 +522,7 @@ aber sehr ähnlich, wobei die Ableitung zur Jacobimatrix wird.
 
 Sei also $f\in C^1(M, \RR^n)$ eine stetig differenzierbare Abbildung
 von $M\in\RR^n$ in den $\RR^n$. Wir suchen nun eine Nullstelle
-$\overline{x}\in D$, d.h.\ eine Lösung des nichtlinearen
+$\overline{x}\in D$, \dh eine Lösung des nichtlinearen
 Gleichungssystems $f(x) = 0$.
 
 Wie schon im Eindimensionalen starten wir mit einer Näherung
@@ -584,7 +584,7 @@ Leider ist im Mehrdimensionalen die Umgebung um die Nullstelle, in der
 das Verfahren konvergiert, oftmals deutlich kleiner. Das Verfahren
 springt dann leicht über die Nullstelle hinweg, wie es im
 eindimensionalen nur am Anfang des Verfahrens vorkommt
-(z.B. Abbildung~\ref{fig:newton} rechts, im ersten Schritt). Um dies
+(\zb Abbildung~\ref{fig:newton} rechts, im ersten Schritt). Um dies
 zu verhindern, kann man die Schrittweite reduzieren, als den Schritt
 $d^{(m)}$ verkürzen. Die Iteration lautet dann
 \begin{equation}

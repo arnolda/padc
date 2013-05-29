@@ -212,7 +212,7 @@ Dieses Butcher-Tableau besagt nichts anders, als dass
   y_{n+1} = y_n + h F(t_n,\, y_n) \approx f(t_n) + h f'(t_n).
 \end{equation}
 Es handelt sich als um die direkte Integration per Rechteckregel, und
-damit um ein Verfahren der Ordnung 1, d.h.\ mit globalem Fehler
+damit um ein Verfahren der Ordnung 1, \dh mit globalem Fehler
 $\O(h)$. Dieses Verfahren entspricht der einfachen
 Integration~\eqref{eq:simple} im einleitenden Beispiel. Das explizite
 Eulerverfahren ist nicht sehr genau und nur für global
@@ -288,7 +288,7 @@ NumPy-Arrays sein. Die Integration findet stets von $t=0$ bis
 \argd{tmax} statt, in Schritten der Weite \argd{h}.  Die Routine
 liefert das Ergebnis als Matrix aus den Zeit- und Lösungspunkten
 zurück. Die erste Spalte enthält den Zeitpunkt $t_n$, die zweite die
-erste Komponente von $y_n$, die dritte die zweite Komponente usw.
+erste Komponente von $y_n$, die dritte die zweite Komponente \usw
 
 Die Funktion \lstinline!rk_explicit! kann beliebige, explizite
 Runge-Kutta-Verfahren durchführen.  Dazu erwartet sie als ersten
@@ -357,7 +357,7 @@ Beutetiere exponentiell, sind keine Beutetiere vorhanden, sterben die
 Jäger exponentiell aus.
 
 Im Folgenden betrachten wir ein solches System aus Hasen und
-Wölfen. Es sei $A=2$ Hasen pro Jahr, d.h.\ ein Hasenpaar hat vier
+Wölfen. Es sei $A=2$ Hasen pro Jahr, \dh ein Hasenpaar hat vier
 Nachkommen im Jahr, und $B=0,1$, ein Wolf fängt also im Schnitt alle
 10 Jahre einen bestimmten Hasen. Die tatsächliche Fangrate hängt
 natürlich von der Menge der Wölfe und Hasen ab. Gibt es viele Hasen
@@ -580,7 +580,7 @@ Mondbahnen vollkommen falsch sind, der Mond verlässt sogar seine
 Erdumlaufbahn! Für astrophysische Simulationen ist so etwas natürlich
 nicht akzeptabel, aber in der Molekulardynamik spielen die exakten
 Trajektorien der Moleküle keine Rolle, da sie sowieso nicht gemessen
-werden können. Zudem sind molekulare Systeme hochchaotisch, d.h.\
+werden können. Zudem sind molekulare Systeme hochchaotisch, \dh
 selbst bei winzigen Störungen weichen Trajektorien nach kurzer Zeit
 stark ab. In diesem Fall ist die Energieerhaltung des
 Velocity-Verlet-Algorithmus sehr wichtig, denn sie garantiert, dass
@@ -1032,7 +1032,7 @@ mit $\kappa = \sqrt{8\pi l_B c_\infty}$, wie man sich leicht
 überzeugt. Das Coulomb-Potential ist also exponentiell gedämpft, wobei
 die charakteristische Länge der Dämpfung $\kappa^{-1}$ ist. Für eine
 0,1-molare Salzlösung (was in etwa dem Zellplasma entspricht) beträgt
-sie nur etwa $1$nm, d.h.\ es gibt praktisch keine elektrostatischen
+sie nur etwa $1$nm, \dh es gibt praktisch keine elektrostatischen
 Wechselwirkungen über Distanzen größer als ein Nanometer.
 
 \lstinputlisting[style=floating,firstline=10, caption={Python-Code zur

@@ -41,7 +41,7 @@ Gleichungssystems
   \end{matrix}
 \end{equation}
 oder kurz $Ax=b$. In dieser allgemeinen Form ist weder garantiert,
-dass es eine Lösung gibt (z.B. $A=0$, $b\neq 0$), noch, dass diese
+dass es eine Lösung gibt (\zb $A=0$, $b\neq 0$), noch, dass diese
 eindeutig ist ($A=0$, $b=0$).
 
 \section{\keyword{Dreiecksmatrizen}}
@@ -50,7 +50,7 @@ Eine Matrix $A\in\RR^{n\times n}$ heißt eine \emph{rechte obere
   Dreiecksmatrix}, wenn sie quadratisch ist und $a_{ij}=0$ für $i>j$.
 Analog kann man auch die linken unteren Dreiecksmatrizen definieren,
 mit $a_{ij}=0$ für $i<j$. In jedem Fall bilden rechte obere und linke
-untere Dreiecksmatrizen jeweils Unteralgebren der Matrixalgebra, d.h.,
+untere Dreiecksmatrizen jeweils Unteralgebren der Matrixalgebra, \dh\,,
 sie sind abgeschlossen unter Addition und Multiplikation. Die
 Schnittmenge dieser Algebren ist wiederum die Algebra der
 \emph{\keyword{Diagonalmatrizen}}.
@@ -224,12 +224,12 @@ bringen. Folgende Verfahren werden unterschieden
 \item \emph{kanonische \keyword{Pivotwahl}}: es wird stets
   $a_{rr}^{(r-1)}$ gewählt und abgebrochen, falls dieses betragsmäßig
   zu klein wird. Diese Verfahren scheitert schon bei einfachen
-  Matrizen (z.B. {\tiny $\begin{pmatrix} 0 & 1\\ 1 &
+  Matrizen (\zb {\tiny $\begin{pmatrix} 0 & 1\\ 1 &
       0\end{pmatrix}$}), und kann daher nur eingesetzt werden, wenn
   die Struktur der Matrix sicherstellt, das $a_{rr}^{(r-1)}$ stets
   hinreichend groß ist.
 \item \emph{Spaltenpivotwahl}: es wird wie oben im 1. Fall nur in der
-  Spalte maximiert, d.h.\ wir wählen als  Pivotelement
+  Spalte maximiert, \dh wir wählen als  Pivotelement
   \begin{equation}
     i_0 = \text{argmax}_{i\ge r} \lvert a_{ir}^{(r-1)}\rvert
   \end{equation}

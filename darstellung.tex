@@ -12,7 +12,7 @@
 
 Auch moderne Prozessoren beherrschen nur die Grundrechenarten. Wie
 kann man also auf einem Computer kompliziertere Funktionen berechnen,
-wie z.B. die Sinusfunktion?
+wie \zb die Sinusfunktion?
 
 Beispielsweise könnte man die Funktionen als Vektor von
 Funktionswerten speichern. Für die graphische Darstellung reicht das
@@ -293,7 +293,7 @@ da ja an den inneren Stützstellen $x_l$, $l=i+1(1)i+k-2$,
 $P_{i,k-1}(x_l)=P_{i+1,k-1}(x_l) = y_l$ gilt, und per Konstruktion
 $P_{i,k}(x_i)=y_i$ und $P_{i,k}(x_{i+k-1})=y_{i+k-1}$. Durch
 sukzessives Berechnen zunächst der $P_{i,2}(x)$, dann der
-$P_{i,3}(x)$, usw.\ lässt sich das interpolierende Polynom bequem an
+$P_{i,3}(x)$, \usw lässt sich das interpolierende Polynom bequem an
 einer fixen Stelle auswerten. Als (Neville-)Schema sieht das so aus:
 \begin{center}
   \begin{tikzpicture}[on grid=true, node distance=1.5em and 10em]
@@ -417,7 +417,7 @@ glatte Funktion auf $[-1,1]$ als eine Reihe
 \begin{equation}
   f(x) = \sum_{n=0}^\infty a_n T_n(x)
 \end{equation}
-dargestellt werden, die sogenannte Chebyshev-Reihe (siehe auch z.B.
+dargestellt werden, die sogenannte Chebyshev-Reihe (siehe auch \zb
 \textcite{abramowitz70a}).
 
  Explizit sind diese Nullstellen gegeben durch
@@ -655,7 +655,7 @@ sogar lineare) übergeht.
 \index{Fourierreihen>komplexe}
 \index{Fouriertransformation>komplexe}
 Wir betrachten eine periodische Funktion $f(t)$ mit $f(t+T) = f(t)$
-für alle $t\in\RR$, d.h. $f$ hat Periode $T$. Dann ist die
+für alle $t\in\RR$, \dh $f$ hat Periode $T$. Dann ist die
 eindeutige Fourierdarstellung von $f$ gegeben durch
 \begin{equation}
   \label{eq:fourier}
@@ -684,14 +684,14 @@ eine orthonormale Basis bezüglich des Skalarprodukts
 bilden. Ähnlich wie ein Vektor im $\RR^n$ wird die Funktion $f$ also
 durch die Fouriertransformation in ihre Schwingungskomponenten
 zerlegt.  Insbesondere sind die Fourierkoeffizienten linear in der
-Funktion, d.h.
+Funktion, \dh
 \begin{equation}
   \widehat{(f+\lambda g)}_n = \hat{f}_n +\lambda \hat{g}_n.
 \end{equation}
 
 Die Voraussetzungen für die Konvergenz der Fourierreihe sind sehr
 schwach - solange die Funktion wenigstens quadratintegrabel ist,
-konvergiert die Fourierreihe fast überall, d.h.
+konvergiert die Fourierreihe fast überall, \dh
 \begin{equation}
   \left\lVert f(t) - \sum_{n=-N}^N \hat{f}_n e^{i n\omega t} \right\rVert \xrightarrow{N\to\infty} 0.
 \end{equation}
@@ -1136,7 +1136,7 @@ aus denen wir die Basisfunktionen $\phi_k(x) := \phi(x - k)$ der nullten
 Stufe und $\psi_{jk}(x) := 2^{j/2}\psi(2^jx-k)$ der $j$-ten Stufe
 konstruieren. Durch die Skalierung mit $2^j$ werden die $\psi_{j,k}$
 also immer schmaler, sind aber wegen des Vorfaktors alle normiert,
-d.h. $\lVert \psi_{jk} \rVert = 1$. Ebenso sind auch die $\phi_k$
+\dh $\lVert \psi_{jk} \rVert = 1$. Ebenso sind auch die $\phi_k$
 normiert. Zusätzlich sind sämtliche Basisfunktionen zu einander
 orthogonal, wie man sich leicht überlegt. Daher lässt sich jede
 quadratintegrable Funktion $f$ wie folgt zerlegen:
