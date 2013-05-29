@@ -546,7 +546,7 @@ die Zeit:
 \end{equation}
 Das Ausrufezeichen soll andeuteten, dass dies eine Annahme ist, denn
 die Gleichheit gilt nur genau dann, wenn das System \emph{ergodisch}
-ist, d.h., dass der Prozess bei einer unendlich langen zeitlichen
+ist, d.~h., dass der Prozess bei einer unendlich langen zeitlichen
 Messung alle möglichen Realisationen einmal besuchen wird. Diese
 Annahme wird meist gemacht, obwohl die Ergodizität für die meisten
 Systeme nicht bewiesen werden kann. Hinzu kommt, dass ja in der Praxis
@@ -733,8 +733,8 @@ Aus der Messreihe lässt sich der Erwartungswert dieser Observablen als
 \end{equation}
 abschätzen, da $\mean{\bar{x}} = \mean{x}$. Doch was ist nun der
 Fehler, den wir mit dieser Schätzung machen? Dieser ist die zu
-erwartende quadratische Abweichung des numerischen vom tatsächlichen
-Mittelwert:
+erwartende quadratische Abweichung des numerischen Mittelwerts vom
+tatsächlichen Erwartungswert:
 \begin{equation}
   \mean{\left(\overline{x} - \mean{x}\right)^2} =
   \frac{1}{N^2}\sum_{i,j=1}^N \mean{x_ix_j} -
@@ -774,8 +774,8 @@ Messung mit einer Größenordnung mehr Genauigkeit fast zwei Jahre in
 Anspruch nehmen!
 
 Zur Berechnung des Fehlers benötigen wir noch eine Schätzung der
-Varianz, die im Allgemeinen ebensowenig wie der Mittelwert bekannt ist
-und geschätzt werden muss. Dazu ersetzt man die Mittelwerte in
+Varianz, die im Allgemeinen ebensowenig wie der Erwartungswert bekannt
+ist und geschätzt werden muss. Dazu ersetzt man die Erwartungswerte in
 $\mean{x^2} - \mean{x}^2$ durch den Schätzer \eqref{eq:mean}. Für
 diesen Ausdruck gilt:
 \begin{equation}
@@ -789,7 +789,7 @@ diesen Ausdruck gilt:
 wobei wir wieder annehmen, dass die Messungen unabhängig voneinander
 sind. Der Ausdruck auf der linken Seite ist selber also \emph{kein} guter
 Schätzer für die Varianz, obwohl er genau wie der Schätzer für den
-Mittelwert konstruiert ist. Das liegt daran, dass für die Schätzung
+Erwartungswert konstruiert ist. Das liegt daran, dass für die Schätzung
 von $\mean{x}$ zweimal $\bar{x}$ und damit zweimal derselbe
 Datensatz benutzt wurde.
 
@@ -830,18 +830,18 @@ Umständen zu einer Verdoppelung der Laufzeit führen kann.
 
 Selbstverständlich sind diese elementaren Schätzer aber auch direkt in
 NumPy implementiert. \scipy{numpy.mean(x)} berechnet den Schätzer für
-den Mittelwert eines Arrays \argd{x}, \scipy{numpy.var(x, ddof=1)} den
-Schätzer für seine Varianz. \argd{ddof} bezeichnet dabei die Anzahl der
-abhängigen Freiheitsgrade, die von $N$ im Nenner von \eqref{eq:varest}
-abgezogen werden. Wie wir eben gesehen haben, ist dies bei
-unabhängigen Daten $\text{\argd{ddof}} = 1$.
+den Erwartungswert eines Arrays \argd{x}, \scipy{numpy.var(x, ddof=1)}
+den Schätzer für seine Varianz. \argd{ddof} bezeichnet dabei die
+Anzahl der abhängigen Freiheitsgrade, die von $N$ im Nenner von
+\eqref{eq:varest} abgezogen werden. Wie wir eben gesehen haben, ist
+dies bei unabhängigen Daten $\text{\argd{ddof}} = 1$.
 
 \subsection{Fehler bei der Messung korrelierter Daten}
 
 In der Praxis wird oft einfach angenommen, dass die Messungen
 unabhängig sind. Was passiert nun, wenn dies nicht der Fall ist?
-Betrachten wir also eine Observable die o.B.d.A. Mittelwert $\mean{x}
-= 0$ habe. Dann ist wie oben gezeigt
+Betrachten wir also eine Observable die o.B.d.A. Erwartungswert
+$\mean{x} = 0$ habe. Dann ist wie oben gezeigt
 \begin{align}
   \mean{(\overline{x} - \mean{x})^2}
   = \frac{2}{N^2}\sum_{i > j} \mean{x_ix_j}
@@ -864,6 +864,8 @@ $\frac{2}{N(N-1)}\sum_{i\neq j} \mean{x_ix_j}$
 ebenfalls
 \begin{align}
   F&=\mean{(\overline{x} - \mean{x})^2} -
+  \frac{1}{N}\sigma^2(x)\nonumber\\
+  &= \mean{(\overline{x} - \mean{x})^2} -
   \frac{1}{N}\frac{N}{N-1}\mean{\overline{x^2} - \bar{x}^2}\nonumber\\
   &=
   \left(\frac{2}{N^2} + \frac{2}{(N-1)N^2}\right)\sum_{i > j} \mean{x_ix_j}
