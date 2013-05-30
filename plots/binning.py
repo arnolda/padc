@@ -18,9 +18,9 @@ import math
 import numpy.random as rand
 import matplotlib.pyplot as pyplot
 
-# 300 unabhängige Beispieldaten aus den Geschwindigkeitskomponenten
-# der Teilchen
-vac = loadtxt("v_0.5.data.gz")[:,1]
+# Beispieldaten aus der Geschwindigkeitskomponente
+# eines Teilchens
+vac = loadtxt("v_0.5.data.gz")[:,42]
 N=len(vac)
 kmax = 1000
 Delta = 0.01
@@ -52,21 +52,21 @@ figure.subplots_adjust(left=0.15,bottom=0.15,wspace=0.3,right=0.95)
 graph = figure.add_subplot(121)
 graph.set_xscale("log")
 graph.set_yscale("log")
-deltas = Delta*ks
-graph.set_xlabel("$\Delta$")
+graph.set_xlabel("$k$")
 graph.set_ylabel(u"$\epsilon^2(k)$")
-graph.plot(deltas, errs , "b.", markeredgecolor="b")
-head = array([ d for d in deltas if d < 0.2 ])
-graph.plot(head, 2.5e-3*head , "k--")
+graph.plot(ks, errs , "b.", markeredgecolor="b")
+head = array([ k for k in ks if k < 20 ])
+graph.plot(head, 0.25e-4*head , "k--")
 
 # left, error estimate
 ###################################
 graph = figure.add_subplot(122)
 graph.set_xscale("log")
 graph.set_yscale("log")
-graph.set_xlabel("$\\Delta$")
+graph.set_xlabel("$k$")
 graph.set_ylabel(u"$\\tau_{int}$")
 
-graph.plot(deltas, Delta*array(vars)*ks/2.0/sigma , "r.", markeredgecolor="r")
+print "expected variance", sigma, "measured", var(vac, ddof=1)
+graph.plot(ks, Delta*array(vars)*ks/2.0/sigma , "r.", markeredgecolor="r")
 
 figure.savefig("binning.pdf")

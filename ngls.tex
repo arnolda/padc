@@ -17,11 +17,11 @@ Gleichungssysteme beschäftigt, die ja eine wesentliche Grundlage der
 numerischen Mathematik darstellen. Allerdings tauchen in der Praxis,
 besonders in der Physik, leicht auch nichtlineare Gleichungssysteme
 auf. In diesem Fall kann man meist keine allgemeine Aussage über
-Existenz und Anzahl der Lösungen machen, und kann auch keine exakten
+Existenz und Anzahl der Lösungen machen und auch keine exakten
 Verfahren zur Lösung angeben.
 
 Nichtlineare Gleichungssysteme werden typischerweise in zwei Formen
-betrachtet. Sei eine Funktion $f:M\in\RR^n\to\RR^n$ gegeben. Dann suchen
+betrachtet. Sei eine Funktion $f:M\subseteq\RR^n\to\RR^n$ gegeben. Dann suchen
 wir die \emph{Nullstellen}
 \begin{equation}
   \label{eq:nullstellen}
@@ -39,7 +39,7 @@ Mannigfaltigkeit innerhalb $M$ darstellen, die dann gar nicht
 geschlossen parametrisiert werden kann. Das macht die numerische
 Bestimmung dieser Lösungsmannigfaltigkeit sehr schwierig.
 
-Alternativ können wir für eine Funktion $g:M\in\RR^n\to\RR^n$ die
+Alternativ können wir für eine Funktion $g:M\subseteq\RR^n\to\RR^n$ die
 \emph{Fixpunkte} suchen. Diese sind
 \begin{equation}
   \label{eq:fixpunkt}
@@ -47,7 +47,7 @@ Alternativ können wir für eine Funktion $g:M\in\RR^n\to\RR^n$ die
 \end{equation}
 also die Lösungen der Gleichung $g(x) = x$. Eine Fixpunktgleichung
 lässt sich natürlich stets auch als Nullstellenproblem mit $f(x) =
-g(x) - x$ formulieren; anders herum geht dies im Allgemeinen nicht.
+g(x) - x$ formulieren und umgekehrt.
 
 Die beiden Formulierungen unterscheiden sich allerdings im natürlichen
 Lösungsansatz. Die Nullstellengleichung \eqref{eq:nullstellen} ähnelt
@@ -107,9 +107,7 @@ Einheitskugel). Für den Grenzwert $\overline{x}$ dieser Folge gilt
   \overline{x} = \lim_{n\to\infty}x_{n+1} = \lim_{n\to\infty}g(x_{n})
   = g(\overline{x}),
 \end{equation}
-er ist also ein Fixpunkt. Das Verfahren wird abgebrochen, wenn
-$\abs{x_n - x_{n-1}} = \abs{g(x_{n-1}) - x_{n-1}}$ hinreichend klein
-ist.
+er ist also ein Fixpunkt.
 
 Wir betrachten nun zwei Fixpunkte $\overline{x}$ und $\overline{y}$. Dann gilt
 \begin{equation}
@@ -130,9 +128,16 @@ sowie eine Abschätzung der Konvergenzrate:
   = \frac{\norm{g(x_n) - g(\overline{x})}}{\norm{x_n - \overline{x}}}
   \le L < 1.
 \end{equation}
-Die sukzessive Substitution konvergiert also linear.
+Die sukzessive Substitution konvergiert also linear. Das Verfahren
+wird abgebrochen, wenn $\norm{x_{n+1} - x_n}$ hinreichend klein ist,
+da dann nach \eqref{eq:banach} auch
+\begin{equation}
+  \norm{\overline{x} - x_n} \le \frac{1}{1-L}\norm{x_{n+1} - x_n}.
+\end{equation}
+Offenbar konvergiert die sukzessive Substitution um so schneller, je
+kleiner die Lipschitzkonstante $L$ ist.
 
-Neben dieser globalen Konvergenzeigenschaft konvergiert die sukzessive
+Neben der globalen Konvergenzeigenschaft konvergiert die sukzessive
 Substituion auch lokal: ist $g:\RR^n\to\RR^n$ eine differenzierbare
 Funktion und hat einen Fixpunkt $\overline{x}$ mit $\norm{g'(x)} < 1$,
 so gibt es eine Umgebung des Fixpunktes, in dem die sukzessive

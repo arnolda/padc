@@ -878,6 +878,7 @@ erwarten würde, wenn man einfach annimmt, dass die Messungen
 unabhängig sind. Setzt man $N_\text{eff} = N \Delta / (2\tau_c)$, dann
 ergibt sich
 \begin{equation}
+  \label{eq:errestvarcorr}
   \mean{(\overline{x} - \mean{x})^2}
   \approx
   \left(1 + 2\frac{\tau_c}{\Delta}\right)\frac{\sigma^2(x)}{N}.
@@ -899,7 +900,10 @@ Unabhängigkeit der Messungen voraus. Für abhängige Daten ergibt sich
 \end{align}
 Die Varianz wird also zusätzlich um einen Faktor $1 -
 2\frac{\tau_c}{\Delta N}$ \emph{unterschätzt}. Immerhin lässt sich
-dieser Fehler durch ausreichend viele Messungen minimieren.
+dieser Fehler durch ausreichend viele Messungen minimieren. Allerdings
+bringt es nichts, einfach häufiger zu messen, sondern man muss
+tatsächlich länger messen, da ja die Gesamtmesszeit $\Delta N$
+eingeht.
 
 \begin{figure}
   \centering
@@ -927,7 +931,7 @@ ist. Wie man in Abbildung~\ref{fig:error} allerdings deutlich sieht,
 wird mit korrelierten Messungen die Varianz, und damit die Temperatur,
 um bis zu 25\% unterschätzt, sofern zwischen den Messungen deutlich
 weniger Zeit als die Korrelationszeit des Systems, $\approx 0,17$,
-liegt. Im Beispiel wurden alle $0,01$ Schritten insgesamt 50.000 Daten
+liegt. Im Beispiel wurden alle $0,01$ Schritte insgesamt 50.000 Daten
 erhoben. Der quadratische Fehler der beobachteten mittleren
 Geschwindigkeitskomponenten ist also $1\cdot 34/50.000 \approx 7\cdot
 10^{-4}$ anstatt $2\cdot 10^{-5}$, wie man ohne Berücksichtigung der
@@ -965,50 +969,55 @@ Mittelwerte
 \begin{equation}
   X_{k,l} = \frac{1}{k}\sum_{j=1}^{k}x_{(l-1)k + j}\quad l=1(1)B.
 \end{equation}
-Dann gilt $\mean{X_{k,l}} = \mean{x}$ für alle $l$, und es
-gilt $\bar{X} = \bar{x}$. Allerdings ändert sich unter Umständen die
-Varianz. Sofern $k$ größer als die typischen Korrelationslängen ist,
-gilt $\sigma^2(X_{k,l}) \approx \sigma^2(x)/k$ nach
-\eqref{eq:errestvar}. Für sehr kleine $k$ hingegen spielt die
-Mittelung keine Rolle, daher ist $\sigma^2(X_{k,l}) \approx
-\sigma^2(x)$.
+Offenbar hängen der Erwartungswert und die Varianz der einzelnen
+$X_{k,l}$ nicht vom Aufpunkt $l$ ab. Wir schreiben daher kurz $X_k$
+für die Observable der Blockmittelwerte der Länge $k$.  Der
+Erwartungswert von $X_k$ ist unverändert der von $x$, also $\mean{X_k}
+= \mean{x}$, und auch für den Mittelwert aller $X_k$ gilt $\bar{X} =
+\bar{x}$. Allerdings ist die Varianz $\sigma^2(X_{k})$ im allgemeinen
+von $\sigma^2(x)$ verschieden, und zwar abhängig von $k$. Sofern $k$
+sehr viel größer als die typischen Korrelationslängen ist, gilt nach
+\eqref{eq:errestvarcorr} $\sigma^2(X_{k}) \approx
+\sigma^2(x)/k_\text{eff}$, wobei $k_\text{eff} = k \Delta /
+(2\tau_\text{int})$ die effektive Anzahl der unabhängigen Messungen
+ist. Für sehr kleine $k$ hingegen spielt die Mittelung keine Rolle,
+daher ist $\sigma^2(X_{k}) \approx \sigma^2(x)$.
 
 Diese Verhalten nutzen wir nun, um den Fehler korrelierter Daten
 abzuschätzen. Dazu berechnen wir den quadratischen Fehlerschätzer
 \eqref{eq:esterr} für die Blockmittelwerte bei verschiedenen
 Blockgrößen $k$:
 \begin{equation}
-  \epsilon^2(k) := \frac{1}{B - 1} \left(\overline{X_k^2} - \overline{X_k}^2\right).
+  \epsilon^2(k) := \frac{1}{B - 1} \left(\overline{X_k^2} -
+    \overline{X_k}^2\right) \approx \frac{k}{N} \sigma^2(X_k).
 \end{equation}
-Ist $k$ klein, so sind die beiden Mittelwerte praktisch unabhängig von
-$k$, und $\epsilon^2(k)$ wächst linear in $k$, da $1/(B-1) = 1/(N/k -
-1)\approx k/N$. Für große $k$ hingegen ist ja $\sigma^2(X_{k,l})
-\approx \sigma^2(x)/k$, so dass der Term in der Klammer wie $B$
-skaliert und $\epsilon^2(k)$ konstant wird. Der Wert bei großen $k$ ist
-dann ein Schätzer für den Fehler einer Messung mit unabhängigen
-Messwerten, also der gesuchte tatsächliche Fehler.  Allerdings stehen
-bei großen $k$ für die Mittelung immer weniger Blöcke zur Verfügung,
-so dass $\epsilon^2(k)$ stark verrauscht. Trotzdem genügt dies meist, um
-eine obere Schranke für den Fehler abzulesen.
+Ist $k$ klein, so ist $\sigma^2(X_k)\approx \sigma^2(x)$, und
+$\epsilon^2(k)$ wächst linear in $k$. Für große $k$ hingegen ist
+$\sigma^2(X_k) \approx \sigma^2(x)/k_\text{eff}$, so dass
+$\epsilon^2(k)$ konstant wird, und zwar
+\begin{equation}
+  \epsilon^2(k)= \frac{k}{N}\frac{\sigma^2(x)}{k_\text{eff}} =
+  \frac{\sigma^2(x)}{N_\text{eff}}.
+\end{equation}
+Der konstante Wert bei großen $k$ ist also der gesuchte tatsächliche
+Fehler!  Allerdings stehen bei großen $k$ für die Mittelung immer
+weniger Blöcke zur Verfügung, so dass $\epsilon^2(k)$ stark
+verrauscht. Daher funktioniert diese Analyse nur, sofern man genügend
+Daten gesammelt hat. Auch die Umkehrung gilt: trägt man
+$\epsilon^2(k)$ gegen $k$ auf und sieht kein Plateau bei großen $k$,
+hat man noch nicht genügend Daten gesammelt, um eine Aussage über die
+Güte der Messung zu machen, man benötigt also mehr Daten.
 
-Wie man zeigen kann, gilt außerdem~\cite{janke02a}
+Neben des Fehlers lässt sich für große $k$ auch die integrierte
+Autokorrelationszeit gemäß
 \begin{equation}
   \label{eq:tauint}
-  2\tau_\text{int} = k \epsilon^2(k)/\sigma^2(x).
+  k \Delta\frac{\sigma^2(X_k)}{\sigma^2(x)} \approx
+  \frac{k\Delta}{k_\text{eff}} = 2\tau_\text{int}
 \end{equation}
-Man kann also aus $\epsilon^2(k)$ bei großen $k$ auch die integrierte
-Autokorrelationszeit ablesen, sofern $\sigma^2(x)$ bekannt ist. Leider
-benötigen wir zur Bestimmung der Varianz wie gesagt ausreichend
-dekorrelierte Daten, wozu wir eben die integrierte
-Autokorrelationszeit kennen müssten. In der Praxis kann man das
-Problem iterativ umgehen, denn eine Unterschätzung der Varianz führt
-ja zu einer Überschätzung von $\tau_\text{int}$. Daher kann man
-zunächst mit dem korrelierten Schätzer \eqref{eq:varest} starten,
-erhält dadurch ein zu großes $\tau_\text{int}$. Daraus berechnet man
-eine neue Schätzung für $\sigma^2(x)$, in die nur Werte, die
-wenigstens $\tau_\text{int}$ auseinander liegen, eingehen. Mit dieser
-Schätzung kann man wiederum ein besseres  $\tau_\text{int}$ bestimmen,
-und so weiter.
+bestimmen, wobei die Messung von $\sigma^2(x)$ ausreichend unabhängige
+Daten voraussetzt. Dies überprüft man zunächst anhand von
+$\epsilon^2(k)$.
 
 \begin{figure}
   \centering
@@ -1016,14 +1025,13 @@ und so weiter.
   \caption{Links: geschätzter quadratischer Fehler $\epsilon^2(k)$ in
     der Messung der Komponenten der Geschwindigkeitsverteilung in
     einem dünnen temperierten Lennard-Jones-Systems als Funktion der
-    Binningbreite $\Delta$. Der Fehler erreicht sein Plateau bei etwa
+    Blockgröße $k$. Der Fehler erreicht sein Plateau bei etwa
     0,001, was gut mit der Abschätzung über die Autokorrelationszeit
     übereinstimmt.  Die gestrichelte schwarze Linie demonstriert das
     lineare Wachstum für kleine $k$. Rechts: Geschätzte integrierte
     Autokorrelationszeit $\tau_\text{int}$ für dasselbe System.  Diese
-    erreicht ihr Plateau bei $\tau_\text{int} \approx 0,25$, was etwa
-    $\tau_c$ entspricht. Für $\sigma^2$ in \eqref{eq:tauint} wurde der
-    analytische Wert eins benutzt. }
+    erreicht ihr Plateau bei $\tau_\text{int} \approx 0,25$, was etwas
+    größer als $\tau_c$ ist.}
   \label{fig:binning}
 \end{figure}
 
@@ -1031,14 +1039,13 @@ Abbildung~\ref{fig:binning} demonstriert die Abschätzung des
 quadratischen Fehlers und der integrierten Autokorrelationszeit für
 die Messung der Geschwindigkeitskomponenten in der
 Lennard-Jones-Flüssigkeit. Wie erwartet werden beide Größen für große
-$k$ konstant, aber sind stark verrauscht, während sie für kleine $k$
-linear anwachsen.  Für die Bestimmung der integrierten
-Autokorrelationszeit wurde das analytische Ergebnis $\sigma^2(x)=1$
-benutzt, so dass eine Iteration nicht nötig ist. Aus der
-Binning-Analyse ergibt sich ein quadratischer Fehler von etwa 0,001
-und eine integrierte Autokorrelationszeit von 0,25, was gut zu unserer
-Autokorrelationszeit $0,17$ und der Fehlerschätzung von $7\cdot
-10^{-4}$ passt.
+$k$ konstant, aber sind verrauscht, während sie für kleine $k$ linear
+anwachsen.  Für die Bestimmung der integrierten Autokorrelationszeit
+wurde das analytische Ergebnis $\sigma^2(x)=1$ benutzt, die gemessene
+ist mit $1,03$ etwas größer. Aus der Binning-Analyse ergibt sich ein
+quadratischer Fehler von etwa 0,001 und eine integrierte
+Autokorrelationszeit von 0,25, was gut zu unserer Autokorrelationszeit
+$0,17$ und der Fehlerschätzung von $7\cdot 10^{-4}$ passt.
 
 \section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
 \index{Ausgleichsrechnung}
