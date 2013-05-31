@@ -713,23 +713,29 @@ $x_i$, $i=1(1)N$, die verschiedene Messungen einer stochastischen
 Observablen $x$ darstellen, deren Verteilung zeitlich unveränderlich
 sein soll (wie zum Beispiel die Temperatur eines abgeschlossenen
 Systems im Gleichgewicht). Die gesuchte Größe ist dann meist der
-Erwartungswert $\mean{x}$ der Observablen oder ihre \emph{Varianz}
+Erwartungswert $\mean{x}$ der Observablen, also der mittlere zu
+erwartende Wert der Observablen. Eine einzelne Messung wird im
+allgemeinen einen davon abweichenden Wert liefern. Die Größe dieser
+Abweichung wird durch die zu erwartende quadratische Abweichung, die
+\emph{Varianz}
 \begin{equation}
   \sigma^2(x) = \mean{\bigl(x-\mean{x}\bigr)^2}
   = \mean{x^2} - 2\mean{\mean{x}x}  + \mean{x}^2
   = \mean{x^2} - \mean{x}^2,
 \end{equation}
-die die erwartete quadratische Abweichung einer Messung vom
-Erwartungswert beschreibt. Sie ist wie der Erwartungswert eine
-Eigenschaft der zu messenden Observablen $x$ und im Gegensatz zum
-Messfehler nicht von der Anzahl der Messungen abhängig.
+beschrieben. Sie ist wie der Erwartungswert eine Eigenschaft der zu
+messenden Observablen $x$ und im Gegensatz zum Messfehler nicht von
+der Anzahl oder Art der Messungen abhängig. Allerdings lassen sich
+weder $\mean{x}$ noch $\sigma^2(x)$ direkt messen, sondern können nur
+anhand der Messreihe geschätzt werden.
 
-Aus der Messreihe lässt sich der Erwartungswert dieser Observablen als
+Der der Erwartungswert lässt sich aus der Messreihe
+als
 \begin{equation}
   \label{eq:mean}
   \mean{x} \approx \bar{x} := \frac{1}{N}\sum_{i=1}^N x_i
 \end{equation}
-abschätzen, da $\mean{\bar{x}} = \mean{x}$. Doch was ist nun der
+abschätzen, da offenbar $\mean{\bar{x}} = \mean{x}$. Doch was ist nun der
 Fehler, den wir mit dieser Schätzung machen? Dieser ist die zu
 erwartende quadratische Abweichung des numerischen Mittelwerts vom
 tatsächlichen Erwartungswert:
@@ -762,9 +768,12 @@ Messung $\overline{x}$ angegeben. Diese ist durch
   \sqrt{\mean{(\overline{x} - \mean{x})^2}}
   = \frac{1}{\sqrt{N}}\sigma(x)
 \end{equation}
-gegeben. Dies bedeutet, dass für eine Halbierung des Fehlerbalken
-bereits viermal soviele Messungen durchgeführt werden müssen, und für
-eine Größenordnung an Genauigkeit hundert Mal soviele. Besonders für
+gegeben. Mit anderen Worten: die Streubreite der Observablen $x$ wird
+durch die Mittelung um einen Faktor $1/\sqrt{N}$ gedämpft. Je stärker
+$x$ streut, desto mehr Messwerte benötige ich, um den Erwartungswert
+zuverlässig abzuschätzen. Für eine Halbierung des Fehlerbalken müssen
+bereits viermal soviele Messungen durchgeführt werden, und für eine
+Größenordnung an Genauigkeit hundert Mal soviele. Besonders für
 Computersimulationen ist das ein Problem, da die Rechenzeit im
 allgemeinen proportional zur Anzahl der Messungen ist. Dauert also
 eine Simulation eine Woche, was nicht ungewöhnlich ist, so würde eine
@@ -855,38 +864,44 @@ abschätzen:\nobreak
 \begin{equation}
   \sum_{n = 1}^{N-j} \mean{x_jx_{j+n}}
   \approx \int_{n = 0}^{\infty} C(n\Delta)
-  = \frac{\tau_c}{\Delta} C(0)
-  = \frac{\tau_c}{\Delta}\sigma^2(x),
+  = \frac{\tau_\text{int}}{\Delta} C(0)
+  = \frac{\tau_\text{int}}{\Delta}\sigma^2(x),
 \end{equation}
-wobei $\tau_c$ die Korrelationszeit gemäß \eqref{eq:tauc} ist und
-entsprechend ein einfacher exponentieller Abfall angenommen
-wurde. Außerdem muss $\tau_c\ll N\Delta$ sein, so dass die Erweiterung
-des Integrals bis unendlich keinen nennenswerten Beitrag mehr
-liefert. Eingesetzt in \eqref{eq:correrr} ergibt sich
+wobei
+\begin{equation}
+  \tau_\text{int} := \frac{1}{C(A,A)(0)}\int_0^\infty C(A,A)(\tau)\,d\tau
+\end{equation}
+die sogenannte \emph{integrierte
+  Korrelationszeit}\index{Korrelationszeit>integrierte}
+ist. Bei einfachen exponentiellen Prozessen entspricht diese gemäß
+\eqref{eq:tauc} genau der klassischen Korrelationszeit
+$\tau_c$. Außerdem muss $\tau_\text{int}\ll N\Delta$ sein, so dass die
+Erweiterung des Integrals bis unendlich keinen nennenswerten Beitrag
+mehr liefert. Eingesetzt in \eqref{eq:correrr} ergibt sich
 \begin{equation}
   \label{eq:correrrest}
   \mean{(\overline{x} - \mean{x})^2}
   \approx
-  \frac{2}{N^2}\sum_{j=1}^{N} \frac{\tau_c}{\Delta}\sigma^2(x)
+  \frac{2}{N^2}\sum_{j=1}^{N} \frac{\tau_\text{int}}{\Delta}\sigma^2(x)
   + \frac{1}{N}\sigma^2(x)
   =
-  \left(1 + 2\frac{\tau_c}{\Delta}\right)\frac{\sigma^2(x)}{N}.
+  \left(1 + 2\frac{\tau_\text{int}}{\Delta}\right)\frac{\sigma^2(x)}{N}.
 \end{equation}
-Der Fehler ist also um einen Faktor $1 + 2 \tau_c /\Delta$
+Der Fehler ist also um einen Faktor $1 + 2 \tau_\text{int} /\Delta$
 \emph{größer}, als man aufgrund der Varianz und Anzahl Messungen
 erwarten würde, wenn man einfach annimmt, dass die Messungen
-unabhängig sind. Setzt man $N_\text{eff} = N \Delta / (2\tau_c)$, dann
+unabhängig sind. Setzt man $N_\text{eff} = N \Delta / (2\tau_\text{int})$, dann
 ergibt sich
 \begin{equation}
   \label{eq:errestvarcorr}
   \mean{(\overline{x} - \mean{x})^2}
   \approx
-  \left(1 + 2\frac{\tau_c}{\Delta}\right)\frac{\sigma^2(x)}{N}.
+  \left(1 + 2\frac{\tau_\text{int}}{\Delta}\right)\frac{\sigma^2(x)}{N}.
   \approx \frac{\sigma^2(x)}{N_\text{eff}}.
 \end{equation}
 Mit anderen Worten, $N_\text{eff}$ kann als die Anzahl der tatsächlich
 unabhängigen Messungen interpretiert werden. Nur Messungen, die etwa
-zwei Autokorrelationszeiten auseinanderliegen, sind hinreichend
+zwei Korrelationszeiten auseinanderliegen, sind hinreichend
 unabhängig.
 
 Auch der Schätzer \eqref{eq:varest} für die Varianz setzt die
@@ -896,10 +911,10 @@ Unabhängigkeit der Messungen voraus. Für abhängige Daten ergibt sich
   &= \frac{1}{N-1}\left(N\mean{x^2} - \mean{x^2}
     - \frac{1}{N}\sum_{i\neq j} \mean{x_ix_j}\right)\nonumber\\
   &= \sigma^2(x) - \frac{2}{N(N-1)}\sum_{i> j} \mean{x_ix_j}
-  \approx \left(1 - 2\frac{\tau_c}{\Delta N}\right)\sigma^2(x).
+  \approx \left(1 - 2\frac{\tau_\text{int}}{\Delta N}\right)\sigma^2(x).
 \end{align}
 Die Varianz wird also zusätzlich um einen Faktor $1 -
-2\frac{\tau_c}{\Delta N}$ \emph{unterschätzt}. Immerhin lässt sich
+2\frac{\tau_\text{int}}{\Delta N}$ \emph{unterschätzt}. Immerhin lässt sich
 dieser Fehler durch ausreichend viele Messungen minimieren. Allerdings
 bringt es nichts, einfach häufiger zu messen, sondern man muss
 tatsächlich länger messen, da ja die Gesamtmesszeit $\Delta N$
@@ -915,7 +930,7 @@ eingeht.
     eine Varianz von 1. Die blauen Balken geben das
     $1\sigma$-Intervall der beobachteten Varianzen an. Die schwarze
     Linie zeigt die Abschätzung der scheinbaren Varianz gemäß
-    \eqref{eq:correrrest} als $(1-2\tau_c/(\Delta N))\sigma^2(x)$, was
+    \eqref{eq:correrrest} als $(1-2\tau_\text{int}/(\Delta N))\sigma^2(x)$, was
     gut zu den gemessenen Daten passt.}
   \label{fig:error}
 \end{figure}
@@ -937,35 +952,25 @@ Geschwindigkeitskomponenten ist also $1\cdot 34/50.000 \approx 7\cdot
 10^{-4}$ anstatt $2\cdot 10^{-5}$, wie man ohne Berücksichtigung der
 Korrelationen erhalten würde.
 
-Im Falle der Temperatur gibt es eine einfache Abhilfe, da die
-Temperatur auch aus der kinetische Energie abgeschätzt werden kann,
-allerdings ist das nicht immer der Fall. So wird die Wärmekapazität
-eines Systems aus der Varianz der Energiedichte bestimmt, und die
-dielektrische Konstante aus der Varianz des Dipolmoments. In diesem
-Fall ist es also enorm wichtig, mit ausreichend vielen unkorrelierten
-Daten zu arbeiten.
-
 \subsection{Binning-Analyse}
 \index{Binning}
 
-Im obigen Beispiel ist die Autokorrelationsfunktion tatsächlich
-einfach exponentiell und daher die Autokorrelationszeit einfach zu
-bestimmen. Bei den meisten komplexen Systemen ist das nicht der Fall.
-Trotzdem lässt sich \eqref{eq:correrrest} anwenden, allerdings geht
-dann die \emph{integrierte} Autokorrelationszeit
-\begin{equation}
-  \tau_\text{int} := \frac{1}{C(A,A)(0)}\int_0^\infty C(A,A)(\tau)\,d\tau
-\end{equation}
-ein. Eine Möglichkeit, diese abzuschätzen, ist die
-Binning-Analyse~\cite{janke02a}. Diese Methode liefert direkt den
-Messfehler, kann aber auch benutzt werden, um die $\tau_\text{int}$ zu
-bestimmen.
+Die Messung der integrierten Korrelationszeit $\tau_\text{int}$
+ist relativ aufwändig, weil diese die numerische Integration der oft
+stark verrauschten Autokorrelationsfunktion erfordert. Eine
+Möglichkeit, diese zu umgehen und den Fehler direkt abzuschätzen, ist
+die Binning-Analyse~\cite{janke02a}. Diese Methode liefert direkt den
+Messfehler, kann aber auch benutzt werden, um $\tau_\text{int}$
+abzuschätzen.
 
-Dazu seien die Daten $x$ in $B$ Blöcke (\enquote{Bins}) der Länge $k$
-eingeteilt. Ist $N$ nicht durch $k$ teilbar, muss dazu der Datensatz
-etwas gekürzt werden, so dass alle Blöcke voll sind. Anstatt der
-einzelnen Daten in den Blöcken, betrachten wir nun nur ihre jeweiligen
-Mittelwerte
+Der Ansatz ist naheliegend. Da korrelierte Daten sich auf kurzen
+(Zeit-)Abständen nur wenig ändern, ist das Ziel, die Anzahl der Daten
+soweit zu reduzieren, dass die verbleibenden Werte gut als unabhängig
+angesehen werden können.  Dazu seien die Daten $x$ in $B$ Blöcke
+(\enquote{Bins}) der Länge $k$ eingeteilt. Ist $N$ nicht durch $k$
+teilbar, muss dazu der Datensatz etwas gekürzt werden, so dass alle
+Blöcke voll sind. Anstatt der einzelnen Daten in den Blöcken,
+betrachten wir nun nur ihre jeweiligen Mittelwerte
 \begin{equation}
   X_{k,l} = \frac{1}{k}\sum_{j=1}^{k}x_{(l-1)k + j}\quad l=1(1)B.
 \end{equation}
@@ -1009,7 +1014,7 @@ hat man noch nicht genügend Daten gesammelt, um eine Aussage über die
 Güte der Messung zu machen, man benötigt also mehr Daten.
 
 Neben des Fehlers lässt sich für große $k$ auch die integrierte
-Autokorrelationszeit gemäß
+Korrelationszeit gemäß
 \begin{equation}
   \label{eq:tauint}
   k \Delta\frac{\sigma^2(X_k)}{\sigma^2(x)} \approx
@@ -1026,25 +1031,25 @@ $\epsilon^2(k)$.
     der Messung der Komponenten der Geschwindigkeitsverteilung in
     einem dünnen temperierten Lennard-Jones-Systems als Funktion der
     Blockgröße $k$. Der Fehler erreicht sein Plateau bei etwa
-    0,001, was gut mit der Abschätzung über die Autokorrelationszeit
+    0,001, was gut mit der Abschätzung über die Korrelationszeit
     übereinstimmt.  Die gestrichelte schwarze Linie demonstriert das
     lineare Wachstum für kleine $k$. Rechts: Geschätzte integrierte
-    Autokorrelationszeit $\tau_\text{int}$ für dasselbe System.  Diese
+    Korrelationszeit $\tau_\text{int}$ für dasselbe System.  Diese
     erreicht ihr Plateau bei $\tau_\text{int} \approx 0,25$, was etwas
-    größer als $\tau_c$ ist.}
+    größer als das einfach exponentielle $\tau_c\approx 0,17$ ist.}
   \label{fig:binning}
 \end{figure}
 
 Abbildung~\ref{fig:binning} demonstriert die Abschätzung des
-quadratischen Fehlers und der integrierten Autokorrelationszeit für
+quadratischen Fehlers und der integrierten Korrelationszeit für
 die Messung der Geschwindigkeitskomponenten in der
 Lennard-Jones-Flüssigkeit. Wie erwartet werden beide Größen für große
 $k$ konstant, aber sind verrauscht, während sie für kleine $k$ linear
-anwachsen.  Für die Bestimmung der integrierten Autokorrelationszeit
+anwachsen.  Für die Bestimmung der integrierten Korrelationszeit
 wurde das analytische Ergebnis $\sigma^2(x)=1$ benutzt, die gemessene
 ist mit $1,03$ etwas größer. Aus der Binning-Analyse ergibt sich ein
 quadratischer Fehler von etwa 0,001 und eine integrierte
-Autokorrelationszeit von 0,25, was gut zu unserer Autokorrelationszeit
+Korrelationszeit von 0,25, was gut zu unserer Korrelationszeit
 $0,17$ und der Fehlerschätzung von $7\cdot 10^{-4}$ passt.
 
 \section{Ausgleichsrechnung, Methode der kleinsten Quadrate}
