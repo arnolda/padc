@@ -179,7 +179,7 @@ linken Graph ist $\phi_0=2$ und damit $L=1/2$, so dass die sukzessive
 Substitution exponentiell konvergiert. Für das letzte abgebildete
 Glied, $x_7$, gilt $\abs{x_7-\overline{x}} \le 1/2^8 = 1/256$. Im
 rechten Graph ist $\phi_0=1/4$ und damit $L=4$. Insbesondere ist auch
-im Fixpunkt $g'(\overline(x))>1$. Abgebildet sind die ersten zehn
+im Fixpunkt $g'(\overline x)>1$. Abgebildet sind die ersten zehn
 Glieder der sukzessiven Substitution, die hier nicht mehr
 konvergiert. Wird hingegen $\phi_0$ so gewählt, dass 
 $g'(\overline(x))<1$, aber $L>1$, so konvergiert das Verfahren zwar
@@ -280,14 +280,14 @@ Nullstelle.
 
 \subsection{Wurzelziehen}
 
-Wir betrachten die Gleichung $f(x) = x^k - a = 0$ auf der positiven
+Wir betrachten die Gleichung $f(x) = x^k - a$ auf der positiven
 Halbachse. Dann konvergiert für jeden Startwert $x_0>0$ das
 Newtonverfahren
 \begin{equation}
   x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)} = \left(1 -
     \frac{1}{k}\right) x_n + \frac{1}{k} \frac{a}{x_n^{k-1}}
 \end{equation}
-gegen die einzige Nullstelle, nämlich die $k$-te Wurzel aus
+gegen die einzige Nullstelle von $f$, nämlich die $k$-te Wurzel aus
 $a$. Sinnvollerweise wählt man daher $x_0=a$ als Startwert. Für $k=2$
 ergibt sich das \emph{Heron-Verfahren} $x_{n+1} = \frac{1}{2}\left(x_n
   + \frac{a}{x_n}\right)$, das bereits im 2.\ Jhdt.\ vor Christus zum
@@ -597,15 +597,22 @@ $d^{(m)}$ verkürzen. Die Iteration lautet dann
   F'(x^{(m)})\,d^{(m)} = -F(x^{(m)}),
 \end{equation}
 wobei die Dämpfung $\lambda\in (0,1]$ so gewählt wird, dass
-$\norm{F(x^{m+1})}\le\norm{F(x^{m})}$. Dazu wird zum Bespiel mit
+$\norm{F(x^{(m+1)})}\le\norm{F(x^{(m)})}$. Dazu wird zum Bespiel mit
 $\lambda=1$ begonnen, und $\lambda$ solange verringert, bis die
-Bedingung erreicht ist.
+Bedingung erreicht ist. Der Rechenaufwand für die Iteration ist klein,
+da nur die Norm der Funktionswerte berechnet werden muss, was mit
+linearem Zeitaufwand möglich ist. Eine Neuberechnung des Schritts
+$d^{(m)}$ hingegen erfordert die Lösungs eines Gleichungssystems, was
+mit der Gaußelimination $\O(N^3)$ Rechenschritte erfordert. Für
+vieldimensionale Probleme dominiert dieser Aufwand klar. Eine
+Beispielimplementation des gedämpten Newtonverfahrens zeigt
+Listing~\ref{lst:newton}.
 
-\begin{lstlisting}[style=floating,deletekeywords={lambda},
+\begin{lstlisting}[style=floating,float=t,deletekeywords={lambda},
 caption={Gedämpftes Newtonverfahren in mehreren
 Dimensionen. \lstinline!f(x)! muß
 eine vektorwertige Funktion sein, \lstinline!fprime(x)! ihre
-Ableitung, d.h. eine matrixwertige Funktion.}]
+Ableitung, d.h. eine matrixwertige Funktion.},label={lst:newton}]
 # Gedaempftes Newtonverfahren
 #############################
 

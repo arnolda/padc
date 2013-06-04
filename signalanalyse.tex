@@ -571,65 +571,65 @@ auf $\mean{A}\mean{B}$ abfällt, selbst wenn einfach nur das
 Messinterval zu kurz gewählt wurde. Daher führt diese Methode zu einer
 Unterschätzung der Langzeitkorrelationen!
 
-Analog zu \eqref{eq:crosscorrtime} kann man die Kreuzkorrelation auch
-für \emph{endliche} Signale definieren. Für zwei quadratintegrable, reelle
-Signale $f$ und $g$ ist in Analogie die Kreuzkorrelationsfunktion
-definiert als
+In der Praxis sind $A$ und $B$ natürlich nicht als Funktionen bekannt,
+sondern nur als diskrete Messungen. Wir nehmen wie üblich an, dass
+diese an endlich vielen, äquidistanten Zeitpunkten $k\Delta$,
+$k=0(1)N-1$ stattgefunden haben. Die Gesamtmesszeit beträgt also
+$T=N\Delta$. Dann ist in Analogie zu \eqref{eq:crosscorrtime}
 \begin{equation}
-  C(f,g)(\tau) = \int_{-\infty}^{\infty} f(t)g(t+\tau)\,dt,
+  \label{eq:crosscorrint}
+  C(A,B)(\tau) = \mean{A(0)\cdot B(\tau)}
+  = \frac{1}{T}\int_{0}^{T} A(t)B(t+\tau)\,dt.
 \end{equation}
-wobei wegen der Quadratintegrabilität auf die Normierung verzichtet
-werden kann. Diese Kreuzkorrelation misst keine Korrelationen im
-stochastischen Sinne mehr, weil das Integral nun keine Zeitmittelung
-mehr darstellt. Stattdessen ist $C(f,g)(\tau)$ in diesem Fall ein Maß
-dafür, wie sehr sich die Signale $f$ und $g$ mit einem Zeitversatz
-$\tau$ im Verlauf ähneln. Diese Form der Kreuzkorrelation ähnelt einer
-Faltung sehr. Tatsächlich ist
-\begin{equation}
-  C(f,g)(\tau) = \bigl(f \star g(-\cdot)\bigr)(-\tau) =
-  \bigl(f(-\cdot) \star g\bigr)(\tau)
-\end{equation}
-und kann damit effizient im Frequenzraum bestimmt werden:
-\begin{equation}
-  \label{eq:crosscorrfft}
-  C(f,g)(t) = \sqrt{2\pi}\FT^{-1}
-  \bigl(\FT(f)(-\omega)\FT(g)(\omega)\bigr) = \sqrt{2\pi}\FT^{-1}
-  \bigl(\overline{\FT(f)}\FT(g)\bigr).
-\end{equation}
-
-Kommen wir nun zu unserem Ausgangsproblem mit zwei stochastischen,
-zeitinvarianten Variablen $A$ und $B$ und dem Zeitmittel zurück. Wie
-üblich nehmen wir an, dass $A$ und $B$ an endlich vielen, diskreten
-Zeitpunkten $k\Delta$, $k=0(1)N-1$, gemessen wurden. Die Messung
-erstreckt sich also über den Zeitraum $[0,T]$ mit $T=N\Delta$. Dann
-ist eine Näherung für die Kreuzkorrelation von $A$ und $B$ gegeben
-durch
+Da wir die Messwerte nur an diskreten Stellen kennen, erhalte wir die
+Näherung
 \begin{equation}
   \label{eq:crosscorrnum}
-  C(A,B)(k\Delta) = \mean{A(0)\cdot B(k\Delta)}
-  \approx
+  C(A,B)(k\Delta)\approx
   \frac{1}{N-k}\sum_{l=0}^{N-k}A(l\Delta)B\left((l+k)\Delta\right)
   \quad\text{für}\; k=0(1)N-1.
 \end{equation}
 Die unterschiedliche Gewichtung $1/(N-k)$ ergibt sich durch die
 unterschiedliche Anzahl an Messungen für den Versatz $k$. Für große
 Versätze ist die Anzahl der Messungen sehr klein (für $k=N-1$ nur noch
-eine), daher muss $k \ll N$ sein. Form \eqref{eq:crosscorrnum} ist
-numerisch allerdings nicht sehr effizient auszuwerten, da im
-allgemeinen $2N^2$ viele Operationen benötigt werden.  Daher liegt es
-nahe, auch hier die FFT gemäß \eqref{eq:discretefold} zur
-Beschleunigung einzusetzen.  Für gleich lange Messreihen $A$ und $B$
-ergibt sich
+eine), daher muss $k \ll N$ sein. Bei der Diskretisierung des
+Integrals kürzt sich der Vorfaktor $1/T$ gegen die Schrittweite, so
+dass nur die Anzahl der Messungen eingeht, nicht aber die Länge des
+Messintervalls $T$.
+
+Gleichung \eqref{eq:crosscorrnum} ist numerisch allerdings nicht sehr
+effizient auszuwerten, da im allgemeinen $2N^2$ viele Operationen
+benötigt werden. Auf der anderen Seite ist die
+Kreuzkorrelation~\eqref{eq:crosscorrtime} strukturell einer Faltung
+sehr ähnlich.  Daher liegt es nahe, auch hier die FFT gemäß
+\eqref{eq:discretefold} zur Beschleunigung einzusetzen. Dazu denken
+wir uns die Signale $A$ und $B$ außerhalb $[0,T]$ durch Null
+fortgesetzt, so dass wir das Integral in \eqref{eq:crosscorrint}
+bedenkenlos nach Unendlich erweitern können. Dann ist
+\begin{equation}
+  C(A,B)(\tau) = \frac{1}{T}\bigl(A \star B(-\cdot)\bigr)(-\tau) =
+  \frac{1}{T} \bigl(A(-\cdot) \star B\bigr)(\tau)\,,
+\end{equation}
+was effizient im Frequenzraum bestimmt werden kann:
+\begin{equation}
+  \label{eq:crosscorrfft}
+  C(A,B)(t) = \frac{\sqrt{2\pi}}{T}\FT^{-1}
+  \bigl(\FT(A)(-\omega)\FT(B)(\omega)\bigr) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\overline{\FT(A)}\FT(B)\bigr)\,.
+\end{equation}
+Diskretisiert ergibt sich schließlich
 \begin{equation}
   \label{eq:crosscorrnumfft}
   C(A,B)(k\Delta)
   \approx
   \frac{1}{N}\,\text{iDFT}
-  \bigl(\overline{\text{DFT}(A)}\,\text{DFT}(B)\bigr)(k)\,,
+  \bigl(\overline{\text{DFT}(A)}\,\text{DFT}(B)\bigr)(k)\,.
 \end{equation}
-wobei angenommen wurden, dass beide Messungen bei $t_0=0$ begonnen
-haben, so dass der Faktor $\left(e^{-i\omega_0 t_0}\right)^n$
-entfällt.
+Wie oben kürzt sich der Vorfaktor $\frac{1}{T}$ gegen die Schrittweite
+des Integrals, so dass nur die Anzahl der Messungen $N$, aber nicht
+die Länge des Messintervalls eingehen. Auch der Vorfaktor
+$\left(e^{-i\omega_0 t_0}\right)^n$ in \eqref{eq:discretefold}
+entfällt, da beide Messungen nach Voraussetzung bei $t_0=0$ beginnen.
 
 Die Berechnung der 2 DFTs sowie der inversen DFT braucht etwa $6 N\log
 N$ Operationen, was normalerweise wesentlich weniger als die $2N^2$
@@ -650,6 +650,39 @@ def kreuzkorrelation(A, B):
     ftB = fft.fft(B)
     return numpy.real(fft.ifft(ftA*ftB))/A.shape[0]
 \end{lstlisting}
+
+\subsection{Kreuzkorrelation von Signalen}
+
+Analog zu \eqref{eq:crosscorrtime} kann man die Kreuzkorrelation auch
+für \emph{endliche} Signale definieren. Für zwei quadratintegrable, reelle
+Signale $f$ und $g$ ist in Analogie die Kreuzkorrelationsfunktion
+definiert als
+\begin{equation}
+  C(f,g)(\tau) = \int_{-\infty}^{\infty} f(t)g(t+\tau)\,dt,
+\end{equation}
+wobei wegen der Quadratintegrabilität auf die Normierung $1/T$ und
+damit den Grenzübergang verzichtet wird. Diese Kreuzkorrelation misst
+keine Korrelationen im stochastischen Sinne mehr, weil das Integral
+nun keine Zeitmittelung mehr darstellt. Stattdessen ist $C(f,g)(\tau)$
+in diesem Fall ein Maß dafür, wie sehr sich die Signale $f$ und $g$
+mit einem Zeitversatz $\tau$ im Verlauf ähneln. Diese Form der
+Kreuzkorrelation zweier Signale ist einer Faltung noch ähnlicher als
+das Zeitmittel: Diese Form der
+\begin{equation}
+  C(f,g)(\tau) = \bigl(f \star g(-\cdot)\bigr)(-\tau) =
+  \bigl(f(-\cdot) \star g\bigr)(\tau).
+\end{equation}
+Sind die Funktionen $f$ und $g$ wieder äquidistant diskretisiert an
+Punkten $t_0 + k\Delta$, $k=0(1)N-1$ gegeben, ist die numerische
+Näherung analog zu \eqref{eq:discretefold} gegeben durch
+\begin{equation}
+  C(f,g)(k\Delta)
+  \approx
+  \frac{T}{N}\,\text{iDFT}
+  \bigl(\left(e^{-i\omega_0 t_0}\right)^n\overline{\text{DFT}(A)}\,\text{DFT}(B)\bigr)(k)\,.
+\end{equation}
+Anders als beim Zeitmittel, aber analog zur Faltung, entfällt hier der
+Vorfaktor $T$ nicht.
 
 \begin{figure}
   \centering
@@ -1057,22 +1090,6 @@ $0,17$ und der Fehlerschätzung von $7\cdot 10^{-4}$ passt.
 \index{Fitting}
 \index{Methode der kleinsten Quadrate}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=0.5\textwidth]{plots/leastsq}
-  \caption{Methode der kleinsten Quadrate zum Fitten der Sinusfunktion
-    $y=\sin(x)$. 200 Datenpunkte zwischen 0 und $2\pi$ wurden als
-    $\sin(x) + 0,1\,\sin(10 x) + \xi$ erzeugt, wobei $\xi$ eine
-    Gauß-verteilte Pseudozufallsvariable mit Varianz $0,01$ war. Die
-    resultierende Sinusfunktion (rot gestrichelt) hat die Form $a
-    \sin(bx+c)$, wobei die Koeffizienten auf gut 2\% Genauigkeit
-    $a=b=1$ und $c=0$ entsprechen. Die kleine höherfrequente
-    Schwingung kann durch einen Fit allerdings nicht zuverlässig
-    erkannt werden, anders als durch eine Fouriertransformation,
-    vergleiche Abbildung~\ref{fig:fourieralias}}
-  \label{fig:leastsq}
-\end{figure}
-
 Interpolierende Polynome, Taylorreihen und Splines haben gemeinsam,
 das diese möglichst nahe an alle gegebenen Stützstellen verlaufen. Die
 Anzahl der Terme in der Approximation ist nur durch die Anzahl der
@@ -1124,6 +1141,22 @@ wobei $\overline{x} = \frac{1}{n} \sum_{i=0}^{n-1} x_i$ den Mittelwert
   b = \overline{y_i} - a \overline{x_i},
 \end{equation}
 was sich einfach auf dem Computer berechnen lässt.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.5\textwidth]{plots/leastsq}
+  \caption{Methode der kleinsten Quadrate zum Fitten der Sinusfunktion
+    $y=\sin(x)$. 200 Datenpunkte zwischen 0 und $2\pi$ wurden als
+    $\sin(x) + 0,1\,\sin(10 x) + \xi$ erzeugt, wobei $\xi$ eine
+    Gauß-verteilte Pseudozufallsvariable mit Varianz $0,01$ war. Die
+    resultierende Sinusfunktion (rot gestrichelt) hat die Form $a
+    \sin(bx+c)$, wobei die Koeffizienten auf gut 2\% Genauigkeit
+    $a=b=1$ und $c=0$ entsprechen. Die kleine höherfrequente
+    Schwingung kann durch einen Fit allerdings nicht zuverlässig
+    erkannt werden, anders als durch eine Fouriertransformation,
+    vergleiche Abbildung~\ref{fig:fourieralias}}
+  \label{fig:leastsq}
+\end{figure}
 
 Auch für quadratische und andere einfache Funktionen lassen sich die
 Koeffizienten geschlossen darstellen, aber bei allgemeinen Funktionen
