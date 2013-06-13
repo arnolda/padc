@@ -135,7 +135,7 @@ später kennenlernen werden. Zunächst suchen wir aber iterative
 Verfahren der Form
 \begin{equation}
   \label{eq:itgl}
-  x^{(i+1)} = G(x^{(i)}) = T x_i + r
+  x^{(i+1)} = G(x^{(i)}) = T x^{(i)} + r
 \end{equation}
 mit $r\in\RR^n$ und $T\in\RR^{n,n}$, $\norm{T}<1$. Der Banachsche
 Fixpunktsatz gewährleistet, dass diese sukzessive Substitution für
@@ -405,7 +405,7 @@ Gauß-Seidel-Iterierten. Insofern ist es erstaunlich, dass auch Werte
 $\omega>1$ sinnvoll sein können, die die vorherige Näherung quasi
 bestrafen.
 
-In Python sieht das SOR-Verfahren in etwa so aus:
+In Python sieht das SOR-Verfahren so aus:
 \lstinputlisting[firstline=10]{sor.py}
 Die Routine erwartet als Eingabe eine quadratische $n\times n$-Matrix
 \lstinline!A! und einen $n$-Vektor \lstinline!b!, den

@@ -457,6 +457,7 @@ nicht. Naturgemäß sind die beiden folgenden Einpunktformeln offen.
   für ein $\xi\in[a,b]$, wobei der letzte Term wieder der Fehlerterm ist.
 \end{minipage}
 
+\pagebreak
 \subsubsection{\keyword{Mittelpunktsregel}}
 \index{Integration>Mittelpunktsregel}
 \topillu{plots/mittelpunktsregel}
@@ -514,7 +515,7 @@ Literatur.
   \label{eq:trapezzusammen}
   \int_a^b f(x)\, dx &\approx \sum_{i=0}^{N-1} \frac{x_{i+1} -
     x_i}{2}\Bigl(f(x_i) + f(x_{i+1})\Bigr)\nonumber\\
-  &= \frac{x_1-x_0}{2}f(x_0) + \sum_{i=1}^{N-2} \frac{x_{i+1} - x_{i}}{2}
+  &= \frac{x_1-x_0}{2}f(x_0) + \sum_{i=1}^{N-2} \frac{x_{i+1} - x_{i-1}}{2}
   f(x_i) + \frac{x_N-x_{N-1}}{2}f(x_N)
 \end{align}
 Auf einem äquidistanten Gitter $a + kh$,
@@ -636,10 +637,9 @@ Simpsonregel berechnen wollen. Wie Abbildung~\ref{fig:bessel_int}
 links zeigt, gelingt dies mit nur 20 Stützpunkten recht
 zufriedenstellend, sechs Stützpunkte allerdings ist für beide Regeln
 nicht ausreichend. Zum Vergleich: die numerische Lösung der
-Differentialgleichung mit dem Verfahren dritter Ordnung benötigt
-dreihundert Stützpunkte, liefert aber auch eine Abschätzung der
-Funktion an jedem Stützpunkt, während das Integral für jeden Punkt neu
-gelöst werden muss.
+Differentialgleichung mit dem Verfahren dritter Ordnung benötigt 30
+Stützpunkte, liefert aber gleich die Funktion an jedem Stützpunkt,
+während das Integral für jeden Punkt neu gelöst werden muss.
 
 Der Grund, dass sechs Stützstellen nicht ausreichen, ist im Prinzip
 derselbe, wie wir ihn schon bei Abbildung~\ref{fig:num_diff} gesehen
@@ -662,7 +662,7 @@ als im Graphen gezeigt wird also auch $N=20$ nicht ausreichend sein.
 Ist $f\in C^{2k+2}([a,b])$ und
 \begin{equation}
   T_f(h) = h\left(\frac{f(a)}{2} + \sum_{i=1}^{(b-a)/h - 1} f(a + i h) +
-    \frac{f(b)}{2}\right) + \O(h^2)
+    \frac{f(b)}{2}\right)
 \end{equation}
 die (zusammengesetzte) Trapezformel zur Schrittweite $h$, so gilt die
 \emph{\keyword{Euler-McLaurin-Summenformel}}
@@ -689,16 +689,17 @@ schneller als jede Potenz von $h$ gegen das gesuchte Integral.
 
 Für nichtperiodische Funktionen kann man im Allgemeinen die $\alpha_i$
 nicht analytisch bestimmen, weil das die Kenntnis hoher Ableitungen
-erfordert. Um das gesuchte Polynom $T_f(h)$, und damit die $\alpha_i$,
-trotzdem zu bestimmen, berechnet man zunächst $T_{i,0}=T_f(h_i)$ für
-paarweise verschiedene Schrittweiten $h_0>h_1>\ldots>h_k>0$, und
-bestimmt dann $T_f(h)$ als das interpolierende Polynom durch diese
-Punkte. Dann kann man mit Hilfe des Neville-Aitken-Schemas das
-interpolierende (Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten:
+erfordert. Um das gesuchte Polynom $\tilde T_f(h^2)$, und damit die
+$\alpha_i$, trotzdem zu bestimmen, berechnet man zunächst
+$T_{i,0}=T_f(h_i)$ für paarweise verschiedene Schrittweiten
+$h_0>h_1>\ldots>h_k>0$, und bestimmt dann $\tilde T_f(h^2)$ als das
+interpolierende Polynom durch diese Punkte. Dann kann man mit Hilfe
+des Neville-Aitken-Schemas \eqref{eq:divdiff} das interpolierende
+(Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten:
 \begin{equation}
   \label{eq:richardson}
-  T_{i,j} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
-    T_{i,j-1}}{\frac{h_i^2}{h_{i+j}^2} -1}
+  T_{i,j} = 
+  \frac{T_{i,j-1}h_{i+j-1}^2 - T_{i+1,j-1}h_i^2}{h_{i+j-1}^2 - h_i^2}
   \quad\text{für}\; i=0(1)k-j, j=1(1)k.
 \end{equation}
 Dann gilt $T_{0,k} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
@@ -709,9 +710,7 @@ die Schrittweite Null heißt auch
 Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
 \eqref{eq:richardson} zu
 \begin{equation}
-  T_{ij} = T_{i+1,j-1} + \frac{T_{i+1,j-1} -
-    T_{i,j-1}}{4^j - 1} = \frac{4^j T_{i+1,j-1} -
-    T_{i,j-1}}{4^j - 1},
+  T_{ij} = \frac{4^{j-1} T_{i+1,j-1} - T_{i,j-1}}{4^{j-1} - 1},
 \end{equation}
 was als \emph{Romberg-Integration} bezeichnet wird. Diese Wahl
 der Schrittweiten hat auch den Vorteil, dass die Summe für $h_i$ bei
@@ -861,8 +860,8 @@ berechnet werden können:
 \begin{align}
   P_0(x) &= 1\nonumber\\
   P_1(x) &= x\nonumber\\
-  P_n(x) &= \frac{1}{n}\Bigl((2n-1)xP_{n-1}(x) -
-    (n-1)P_{n-2}(x)\Bigr).
+  P_n(x) &= \frac{1}{n}\Bigl[(2n-1)xP_{n-1}(x) -
+    (n-1)P_{n-2}(x)\Bigr].
 \end{align}
 {\samepage Die Nullstellen der ersten dieser Polynome und die
 zugehörigen Gewichte sind

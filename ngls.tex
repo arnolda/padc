@@ -436,22 +436,7 @@ Nullstelle $\overline{x}$. Es gilt also
 \end{equation}
 das Verfahren konvergiert also nur linear, dafür aber global.
 
-In der Praxis kombiniert man die Bisektion mit dem Newtonverfahren, indem
-zunächst einige Schritte des Bisektionsverfahrens durchgeführt
-werden, und dann vom Intervallmittelpunkt aus das
-Newtonverfahren. Konvergiert dieses, so ist man fertig. Läuft das
-Newtonverfahren aus dem Bisektionsinterval heraus,
-verkleinert man dieses durch weitere Bisektionsschritte, und versucht dann
-erneut, das Newtonverfahren anzuwenden.
-
-In Abbildung~\ref{fig:bisektion} dient uns ein letztes Mal die
-Funktion $f(x) = e^{-r}/r - 2$ als Beispiel für die Bisektion. Mit
-sieben Schritten schließt diese bei Startinterval $[0,1,\,1]$ die
-Nullstelle bis auf $[0,3391,\,0,3461]$, als etwa $10^{-2}$ genau
-ein. Zum Vergleich: das Newtonverfahren mit Startwert $0,05$ erreicht
-in sieben Schritten eine Genauigkeit von etwa $10^{-5}$, und selbst
-die Sekantenmethode $10^{-3}$.
-Der Vorteil der Bisektion ist aber, dass diese Methode im Allgemeinen
+Der Vorteil der Bisektion ist, dass diese Methode im Allgemeinen
 auch noch einigermaßen zufriedenstellend funktioniert, falls nicht nur
 die Ableitungen unbekannt sind, sondern sogar die Funktionswerte gar
 nicht genau bekannt sind. Dies wäre zum Beispiel bei der bereits
@@ -462,11 +447,28 @@ Messfehler vernachlässigt werden kann. Die Bisektion muss in diesem
 Fall schon abgebrochen werden, sobald der Funktionswert an einer der
 Grenzen innerhalb des Fehlerbalkens Null ist.
 
+In der Praxis kombiniert man die Bisektion mit dem Newtonverfahren, indem
+zunächst einige Schritte des Bisektionsverfahrens durchgeführt
+werden, und dann vom Intervallmittelpunkt aus das
+Newtonverfahren. Konvergiert dieses, so ist man fertig. Läuft das
+Newtonverfahren aus dem Bisektionsinterval heraus,
+verkleinert man dieses durch weitere Bisektionsschritte, und versucht dann
+erneut, das Newtonverfahren anzuwenden.
+
 In SciPy implementiert \scipy{scipy.optimize.bisect(f, a, b)} mit der
 Funktion \argd{f} und Intervalgrenzen \argd{a} und \argd{b} die
 Bisektion. \scipy{scipy.optimize.brentq(f, a, b)} implementiert die
 Brentsche Methode, die unter den selben Bedingung wie die Bisektion
 konvergiert, aber meist wesentlich schneller.
+
+\subsection{Beispiel}
+In Abbildung~\ref{fig:bisektion} dient uns ein letztes Mal die
+Funktion $f(x) = e^{-r}/r - 2$ als Beispiel für die Bisektion. Mit
+sieben Schritten schließt diese bei Startinterval $[0,1,\,1]$ die
+Nullstelle bis auf $[0,3391,\,0,3461]$, als etwa $10^{-2}$ genau
+ein. Zum Vergleich: das Newtonverfahren mit Startwert $0,05$ erreicht
+in sieben Schritten eine Genauigkeit von etwa $10^{-5}$, und selbst
+die Sekantenmethode $10^{-3}$.
 
 \begin{figure}
   \centering
@@ -556,16 +558,16 @@ linearisierte Gleichung gelöst haben, linearisieren wir erneut im
 neuen Punkt $x^{(1)}$, und so weiter. Ein Schritt des Newtonverfahrens
 ist dann also
 \begin{equation}
-  x^{(m+1)} = x^{(m)} + d^{(m)}\quad\text{mit}\;
-  F'(x^{(m)})\,d^{(m)} = -F(x^{(m)}).
+  x^{(i+1)} = x^{(i)} + d^{(i)}\quad\text{mit}\;
+  F'(x^{(i)})\,d^{(i)} = -F(x^{(i)}).
 \end{equation}
-Die \emph{Newtonkorrektur} $d^{(m)}$ wird als aus der Lösung eines
+Die \emph{Newtonkorrektur} $d^{(i)}$ wird als aus der Lösung eines
 linearen Gleichungssystems gewonnen, zum Beispiel mit Hilfe der
 Gaußelimination. Allerdings ist $f'$ im Allgemeinen vollbesetzt, daher
 verwendetet man normalerweise schnellere, approximative Verfahren, die
-wir später kennenlernen werden. Ist $F'(x^{(m)})$ in einem Schritt
+wir später kennenlernen werden. Ist $F'(x^{(i)})$ in einem Schritt
 singulär, so bricht das Verfahren ab. Ansonsten wird weiter iteriert,
-bis $\norm{d^{(m)}}$ hinreichend klein ist.
+bis $\norm{d^{(i)}}$ hinreichend klein ist.
 
 Auch im mehrdimensionalen konvergiert dieses Verfahren lokal
 mindestens quadratisch, sofern in einer abgeschlossenen Umgebung der
@@ -575,7 +577,7 @@ der Bisektion, dass man dem Vefahren vorausschicken könnte, um die
 Nullstelle einzugrenzen. Die globale Suche nach Nullstellen in
 mehreren Dimensionen ist also eine schwierige Aufgabe. Eine
 Möglichkeit ist, zunächst mit Hilfe von Optimierungsverfahren ein
-$x_0$ zu finden mit möglichst kleiner Norm $\norm{f(x_0)}$, und von
+$x^{(0)}$ zu finden mit möglichst kleiner Norm $\norm{f(x^{(0)})}$, und von
 dort das (gedämpfte) Newtonverfahren zu starten. Die globale
 Optimierung in vielen Dimensionen ist selber eine sehr schwierige
 Aufgabe, allerdings existieren hierfür Ansätze wie genetische
@@ -591,18 +593,18 @@ springt dann leicht über die Nullstelle hinweg, wie es im
 eindimensionalen nur am Anfang des Verfahrens vorkommt
 (\zb Abbildung~\ref{fig:newton} rechts, im ersten Schritt). Um dies
 zu verhindern, kann man die Schrittweite reduzieren, als den Schritt
-$d^{(m)}$ verkürzen. Die Iteration lautet dann
+$d^{(i)}$ verkürzen. Die Iteration lautet dann
 \begin{equation}
-  x^{(m+1)} = x^{(m)} + \lambda d^{(m)}\quad\text{mit}\;
-  F'(x^{(m)})\,d^{(m)} = -F(x^{(m)}),
+  x^{(i+1)} = x^{(i)} + \lambda d^{(i)}\quad\text{mit}\;
+  F'(x^{(i)})\,d^{(i)} = -F(x^{(i)}),
 \end{equation}
 wobei die Dämpfung $\lambda\in (0,1]$ so gewählt wird, dass
-$\norm{F(x^{(m+1)})}\le\norm{F(x^{(m)})}$. Dazu wird zum Bespiel mit
+$\norm{F(x^{(i+1)})}\le\norm{F(x^{(i)})}$. Dazu wird zum Bespiel mit
 $\lambda=1$ begonnen, und $\lambda$ solange verringert, bis die
 Bedingung erreicht ist. Der Rechenaufwand für die Iteration ist klein,
 da nur die Norm der Funktionswerte berechnet werden muss, was mit
 linearem Zeitaufwand möglich ist. Eine Neuberechnung des Schritts
-$d^{(m)}$ hingegen erfordert die Lösungs eines Gleichungssystems, was
+$d^{(i)}$ hingegen erfordert die Lösungs eines Gleichungssystems, was
 mit der Gaußelimination $\O(N^3)$ Rechenschritte erfordert. Für
 vieldimensionale Probleme dominiert dieser Aufwand klar. Eine
 Beispielimplementation des gedämpten Newtonverfahrens zeigt
@@ -617,12 +619,12 @@ Ableitung, d.h. eine matrixwertige Funktion.},label={lst:newton}]
 #############################
 
 def gedaempfter_newton(f, fprime, x0, epsilon):
-   xn = x0
+   xi = x0
    konvergiert = False
    while not konvergiert:
       # Newton-Korrektur
-      dn = solve(fprime(xn), f(xn))
-      if norm(dn) < epsilon:
+      di = solve(fprime(xi), f(xi))
+      if norm(di) < epsilon:
          konvergiert = True
       else:
          # Schrittweitendaempfung
@@ -630,13 +632,13 @@ def gedaempfter_newton(f, fprime, x0, epsilon):
          abstieg = False
          while not abstieg:
             # neue Naeherung
-            xneu = xn + lambda*dn
-            if norm(f(xneu)) < norm(f(xn)):
+            xneu = xi + lambda*di
+            if norm(f(xneu)) < norm(f(xi)):
                abstieg = True
             else:
                lambda = lambda / 2.0
-         xn = xneu
-   return xn
+         xi = xneu
+   return xi
 \end{lstlisting}
 
 %%% Local Variables: 
