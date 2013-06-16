@@ -242,7 +242,8 @@ Wir erhalten das folgende lineare Gleichungssystem:
     \nicefrac{1}{2} & -\lambda & \nicefrac{3}{2} & 0 & \ldots & 0\\
     0 & 3         & -4\lambda & 5 & 0\quad \ldots & 0\\
     & & \ddots & \ddots & \ddots\qquad\qquad \\
-    0 & \ldots & 0 & \mu_n - \nu_n & -\mu_n\lambda & \mu_n + \nu_n\\
+    0 & \ldots & 0 & k^2 -\frac{k}{2} & -k^2\lambda & k^2 +
+    \frac{k}{2}\\
     0 &          &  \ldots  &   & 0      & 1
   \end{pmatrix}
   \begin{pmatrix}
@@ -259,8 +260,7 @@ Wir erhalten das folgende lineare Gleichungssystem:
     F_{N-1}
   \end{pmatrix},
 \end{equation}
-wobei $\lambda=(2-h^2)$, $\mu_n=(N-2)^2$ und $\nu_n=
-\frac{1}{2}(N-2)$. Die beiden äußeren Zeilen implementieren die
+wobei $\lambda=(2-h^2)$. Die beiden äußeren Zeilen implementieren die
 Dirichletbedingungen, die restlichen Zeilen Gleichung
 \eqref{eq:besseldiscrete} für $k=1(1)N-1$.  Da die Matrix Bandstruktur
 hat, können wir dieses lineare Gleichungssystem effizient mit dem
@@ -283,7 +283,7 @@ festlegen. Das ergibt:
     \nicefrac{1}{2} & -\lambda & \nicefrac{3}{2} & 0 & \ldots & 0\\
     0 & 3         & -4\lambda & 5 & 0\quad \ldots & 0\\
     & & \ddots & \ddots & \ddots\qquad\qquad \\
-    0 & \ldots & 0 & \mu_n - \nu_n & -\mu_n\lambda & \mu_n + \nu_n\\
+    0 & \ldots & 0 & k^2 - \frac{k}{2} & -k^2\lambda & k^2 + \frac{k}{2}\\
   \end{pmatrix}
   \begin{pmatrix}
     f_0\\
