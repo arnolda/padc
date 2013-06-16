@@ -687,25 +687,28 @@ Für $b-a$-periodische $C^\infty$-Funktionen sind offenbar alle
 $\alpha_i=0$, daher strebt die Trapezformel $T_f(h)$ für diese
 schneller als jede Potenz von $h$ gegen das gesuchte Integral.
 
-Für nichtperiodische Funktionen kann man im Allgemeinen die $\alpha_i$
-nicht analytisch bestimmen, weil das die Kenntnis hoher Ableitungen
-erfordert. Um das gesuchte Polynom $\tilde T_f(h^2)$, und damit die
-$\alpha_i$, trotzdem zu bestimmen, berechnet man zunächst
-$T_{i,0}=T_f(h_i)$ für paarweise verschiedene Schrittweiten
-$h_0>h_1>\ldots>h_k>0$, und bestimmt dann $\tilde T_f(h^2)$ als das
-interpolierende Polynom durch diese Punkte. Dann kann man mit Hilfe
-des Neville-Aitken-Schemas \eqref{eq:divdiff} das interpolierende
-(Fehler-)Polynom in $h^2$ an der Stelle $0$ auswerten:
+Für nichtperiodische Funktionen kann man die $\alpha_i$ im Allgemeinen
+nicht leicht analytisch bestimmen, weil das die Kenntnis hoher
+Ableitungen erfordert. Wir können aber die Tatsache nutzen, dass sich
+der Fehler in guter Näherung wie ein Polynom verhält. Dazu werten wir
+zunächst die Trapezregel $T_f(h_i)$ an Stützpunkten $h_i$, $i=0(1)k$
+und bestimmen das interpolierende Polynom $\tilde T_f(h^2)$ als
+Polynom in $h^2$. Da wir tatsächlich nur daran interessiert sind, das
+Polynom bei $h=0$ auszuwerten, benutzen wir das Neville-Aitken-Schema
+\eqref{eq:divdiff}. Sei also $T_{i,j}$ das interpolierende Polynom
+durch die $j$ Stützstellen $h_i,\ldots,h_{i + j - 1}$, ausgewertet in
+$h=0$. Offenbar gilt für die konstanten Polynome $T_{i,1}=T_f(h_i)$,
+die $T_{i,j}$ mit $j>1$ bestimmt man gemäß \eqref{eq:divdiff}:
 \begin{equation}
   \label{eq:richardson}
   T_{i,j} = 
   \frac{T_{i,j-1}h_{i+j-1}^2 - T_{i+1,j-1}h_i^2}{h_{i+j-1}^2 - h_i^2}
-  \quad\text{für}\; i=0(1)k-j, j=1(1)k.
+  \quad\text{für}\; j=2(1)k+1,\, i=0(1)k+1-j.
 \end{equation}
-Dann gilt $T_{0,k} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
+Dann gilt $T_{0,k+1} = T_f(0) + \O(h^{2k+2}) = \int_a^b f(x)\,dx +
 \O(h^{2k+2})$. Eine solche Extrapolation von Schrittweiten $h>0$ auf
-die Schrittweite Null heißt auch
-\emph{\keyword{Richardson-Extrapolation}}.
+die Schrittweite Null wird in der Numerik allgemein
+\emph{\keyword{Richardson-Extrapolation}} genannt.
 
 Wählt man nun $h_i = \frac{b-a}{2^i}$, so vereinfacht sich
 \eqref{eq:richardson} zu
@@ -1016,7 +1019,7 @@ Um solche hochdimensionalen Integrale trotzdem annähern zu können,
 kann man die Monte-Carlo-Integration einsetzen. Diese benutzt, dass
 \begin{equation}
   \mean{\frac{1}{N} \sum_{i=1}^N f(\xi_i)} = \mean{f}_{V} =
-  \int_{x\in V} f(x)\,dx / |V|,
+  \frac{1}{|V|} \int_{x\in V} f(x)\,dx\,,
 \end{equation}
 wobei $\xi_i$ verschiedene Ziehungen einer Zufallsvariablen sind, die
 gleichverteilt in $V$ ist. $V$ ist dabei ein endliches Untervolumen
@@ -1033,7 +1036,7 @@ Standardabweichung $\sigma(f)$ abschätzen, und beträgt
 $|V|\sigma(f)/\sqrt{N}$. Die Standardabweichung kennen wir im
 allgemeinen nicht, können sie aber gemäß~\eqref{eq:varest} als
 \begin{equation}
-  \sigma^2(x) \approx \frac{1}{N-1} \left[\sum_{i=1}^N f(\xi_i)^2 -
+  \sigma^2(f) \approx \frac{1}{N-1} \left[\sum_{i=1}^N f(\xi_i)^2 -
     N\left(\sum_{i=1}^Nf(\xi_i)\right)^2\right]
 \end{equation}
 zusammen mit der Integration abschätzen.
@@ -1090,18 +1093,17 @@ im Bereich $[-1,1]^2$. Das ergibt dann gerade den Kreisinhalt, also
   \includegraphics[width=\textwidth]{plots/pi}
   \caption{Links: Illustration der Monte-Carlo-Integration. Die
     Funktion $\chi_{D^2}$ wird über 200 zufällige Punkte (rote Kreise
-    und grüne Kreuze) innerhalb $[-1,1]^2$ gemittelt. An den grünen
-    Kreuzen ist $\chi_{D^2}=1$, für die roten Punkte ist es
-    Null. Rechts: Genauigkeit der Integralnäherungen als Funktion der
-    Anzahl der Stützstellen $N$.  Blaue Punkte markieren die mittlere
-    Genauigkeit der zweidimensionalen Monte-Carlo-Integration wie
-    links skizziert, die roten Kreuze die entsprechende
-    Mittelpunktsregel. Gelbe Rauten und grüne Kreuze zeigen die
-    Genauigkeiten von Monte-Carlo-Integration und Mittelpunktsregel
-    für die 5-Kugel, bei der die Monte-Carlo-Integration schon klar
-    überlegen ist. Die durchgezogene Linie entspricht einer Skalierung
-    von $N^{-1/2}$, wie man sie für die Monte-Carlo-Integration
-    erwartet.}
+    und grüne Kreuze) aus $[-1,1]^2$ gemittelt. An den grünen Kreuzen
+    ist $\chi_{D^2}=1$, an den roten Punkten Null. Rechts: Genauigkeit
+    der Integralnäherungen als Funktion der Anzahl der Stützstellen
+    $N$.  Blaue Punkte markieren die mittlere Genauigkeit der
+    zweidimensionalen Monte-Carlo-Integration, die roten Kreuze die
+    entsprechende Mittelpunktsregel. Gelbe Rauten und grüne Kreuze
+    zeigen die Genauigkeiten von Monte-Carlo-Integration und
+    Mittelpunktsregel für die 5-Kugel, bei der die
+    Monte-Carlo-Integration schon klar überlegen ist. Die
+    durchgezogene Linie entspricht einer Skalierung von $N^{-1/2}$,
+    wie man sie für die Monte-Carlo-Integration erwartet.}
   \label{fig:pi}
 \end{figure}
 
@@ -1116,8 +1118,8 @@ Schwankungen klein sind.
 
 Für das ursprüngliche, zweidimensionale Problem (blaue Punkte und rote
 Kreuze) ist die Trapezregel überlegen, auch wenn sie in zwei
-Dimensionen nicht die erwartete Skalierung mit $1/N$ erreicht. Das ist
-zu erwarten, da die zu integrierende Funktion ja nicht stetig
+Dimensionen nicht die optimale Skalierung mit $1/N$ erreicht. Das ist
+zu erwarten, da die zu integrierende Funktion $\Xi_D^n$ ja nicht stetig
 ist. Auch der nichtmonotone Abstieg der Fehler ist durch die
 Unstetigkeit und die Auflösung des Kreisrands bedingt. Beim
 fünfdimensionalen Problem aber sieht es wie angekündigt anders aus,
@@ -1165,68 +1167,27 @@ Um die Halton-Folge zu definieren, wählen wir für jede Dimension eine
 andere Primzahl $p$ als Basis und schreiben die natürlichen Zahlen in
 Basis $p$. Um daraus die gewünschte Zerlegung des Intervalls $[0,1]$
 zu erhalten, benutzen wir einfach die Stellen der $p$-Darstellung als
-Nachkommastellen, in umgekehrter Reihenfolge:
+Nachkommastellen, in umgekehrter Reihenfolge. Für $p=2$ und $p=3$
+sind die so definierten ersten 8 Folgenglieder:
+
 \begin{center}
-  \begin{minipage}[t]{0.49\textwidth}
-    \centering
-    \begin{tabular}[t]{l|r|l|l}
-      $n$ & binär & Stellenumkehr & Ergebnis\\\hline
-      1 &   1 & ,1 & \nicefrac{1}{2}\\\hline
-      2 &  10 & ,01 & \nicefrac{1}{4}\\
-      3 &  11 & ,11 & \nicefrac{3}{4}
-    \end{tabular}
-  \end{minipage}
-  \begin{minipage}[t]{0.49\textwidth}
-    \centering
-    \begin{tabular}[t]{l|r|l|l}
-      $n$ & binär & Stellenumkehr & Ergebnis\\\hline
-      4 & 100 & ,001 & \nicefrac{1}{8}\\
-      5 & 101 & ,101 & \nicefrac{5}{8}\\
-      6 & 110 & ,011 & \nicefrac{3}{8}\\
-      7 & 111 & ,111 & \nicefrac{7}{8}
-    \end{tabular}
-  \end{minipage}
-\end{center}
-Für $p=3$ ergibt sich analog aus der ternären Darstellung
-\begin{center}
-  \begin{minipage}[t]{0.49\textwidth}
-    \centering
-    \begin{tabular}[t]{l|r|l|l}
-      $n$ & ternär & Stellenumkehr & Ergebnis\\\hline
-      1 &   1 & ,1 & \nicefrac{1}{3}\\
-      2 &   2 & ,2 & \nicefrac{2}{3}\\\hline
-      3 &  10 & ,01 & \nicefrac{1}{9}\\
-      4 &  11 & ,11 & \nicefrac{4}{9}\\
-    \end{tabular}
-  \end{minipage}
-  \begin{minipage}[t]{0.49\textwidth}
-    \centering
-    \begin{tabular}[t]{l|r|l|l}
-      $n$ & ternär & Stellenumkehr & Ergebnis\\\hline
-      5 &  12 & ,21 & \nicefrac{7}{9}\\
-      6 &  20 & ,02 & \nicefrac{2}{9}\\
-      7 &  21 & ,12 & \nicefrac{5}{9}\\
-      8 &  22 & ,22 & \nicefrac{8}{9}
-    \end{tabular}
-  \end{minipage}
+  \begin{tabular}[t]{l|r|l|l||r|l|l}
+    $n$ & binär & Stellenumkehr & Ergebnis & ternär & Stellenumkehr
+    & Ergebnis\\\hline
+    1 &    1 & ,1    & \nicefrac{1}{2} &  1 & ,1  & \nicefrac{1}{3}\\
+    2 &   10 & ,01   & \nicefrac{1}{4} &  2 & ,2  & \nicefrac{2}{3}\\
+    3 &   11 & ,11   & \nicefrac{3}{4} & 10 & ,01 & \nicefrac{1}{9}\\
+    4 &  100 & ,001  & \nicefrac{1}{8} & 11 & ,11 & \nicefrac{4}{9}\\
+    5 &  101 & ,101  & \nicefrac{5}{8} & 12 & ,21 & \nicefrac{7}{9}\\
+    6 &  110 & ,011  & \nicefrac{3}{8} & 20 & ,02 & \nicefrac{2}{9}\\
+    7 &  111 & ,111  & \nicefrac{7}{8} & 21 & ,12 & \nicefrac{5}{9}\\
+    8 & 1000 & ,0001 & \nicefrac{1}{16}& 22 & ,22 & \nicefrac{8}{9}
+  \end{tabular}
 \end{center}
 Die Umkehrung der Stellen hat den Vorteil, dass die $p^n$-tel
 nacheinander möglichst gleichmäßig das Intervall füllen, was ja gerade
-einer niedrigen Diskrepanz entspricht. Die sich ergebende Folge heißt
-eine \emph{van der Corput-Folge}.
-
-Die mehrdimensionale Halton-Folge ist dann die Folge, die aus der
-Verschränkung einer van Corput-Folge für jede Dimension entsteht. Bei
-zwei Dimensionen mit Basen 2 und 3 ergibt sich also
-\begin{equation}
-  \left(\nicefrac{1}{2}, \nicefrac{1}{3}\right),
-  \left(\nicefrac{1}{4}, \nicefrac{2}{3}\right),
-  \left(\nicefrac{3}{4}, \nicefrac{1}{9}\right),
-  \left(\nicefrac{1}{8}, \nicefrac{4}{9}\right),
-  \left(\nicefrac{5}{8}, \nicefrac{7}{9}\right),
-  \left(\nicefrac{3}{8}, \nicefrac{2}{9}\right),
-  \left(\nicefrac{7}{8}, \nicefrac{5}{9}\right),\ldots
-\end{equation}
+einer niedrigen Diskrepanz entspricht. Diese Folge für ein festes $p$
+heißt eine \emph{van der Corput-Folge} zu $p$.
 
 Die folgende Routine berechnet die ersten $N$ Glieder der van der
 Corput-Folge zur Basis $p$. Dazu wird solange von den natürlichen
@@ -1254,12 +1215,27 @@ def vanderCorput(N, p):
 
     return array(result)
 \end{lstlisting}
+
+Die mehrdimensionale \emph{Halton-Folge} ist die Folge, die aus der
+Verschränkung einer van Corput-Folge für jede Dimension entsteht,
+üblicherweise mit verschiedenen Primzahlen. Bei zwei Dimensionen mit
+Basen 2 und 3 ergibt sich etwa
+\begin{equation}
+  \left(\nicefrac{1}{2}, \nicefrac{1}{3}\right),
+  \left(\nicefrac{1}{4}, \nicefrac{2}{3}\right),
+  \left(\nicefrac{3}{4}, \nicefrac{1}{9}\right),
+  \left(\nicefrac{1}{8}, \nicefrac{4}{9}\right),
+  \left(\nicefrac{5}{8}, \nicefrac{7}{9}\right),
+  \left(\nicefrac{3}{8}, \nicefrac{2}{9}\right),
+  \left(\nicefrac{7}{8}, \nicefrac{5}{9}\right),\ldots
+\end{equation}
+
 Um eine Monte-Carlo-Integration mit Quasizufallszahlen durchzuführen,
 müssen im Beispielcode zum Abschnitt~\ref{sec:mc} lediglich die
 Aufrufe von \lstinline!uniform(a,b,N)! durch
-\lstinline!a + (b-a)*vanderCorput(N, p)! ersetzt werden. Üblicherweise
-wählt man dabei $p=2$ für die erste Dimension, $p=3$ für die zweite,
-und so weiter.
+\lstinline!a + (b-a)*vanderCorput(N, p)! mit verschiedenen $p$ ersetzt
+werden. Zum Beispiel wählt man $p=2$ für die erste Dimension, $p=3$
+für die zweite, und so weiter.
 
 \subsection{\texorpdfstring{Beispiel: Quasi-Monte-Carlo-Integration von $\pi$}{Beispiel: Quasi-Monte-Carlo-Integration von pi}}
 

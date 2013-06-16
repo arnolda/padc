@@ -24,7 +24,7 @@ figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
 
 rng1 = Rand()
 data1 = array([ rng1.next() for x in range(1000000) ])
-rng2 = Minstd()
+rng2 = Randu()
 data2 = array([ rng2.next() for x in range(1000000) ])
 
 ##########################################

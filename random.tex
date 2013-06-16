@@ -160,7 +160,7 @@ Damit ersetzt man bei maschinennahen Sprachen eine Modulo-Operation
 durch eine wesentlich schnellere bitweise Maskierung. Als
 Python-Klasse sieht der klassische \texttt{rand} etwa wie folgt aus:
 \lstinputlisting[firstline=10]{rand.py}%
-Der Konstruktor \lstinline!__seed__! setzt nur den anfänglichen
+Der Konstruktor \lstinline!__init__! setzt nur den anfänglichen
 internen Zustand, also $x_0$, \lstinline!__call__! liefert dann bei
 jedem Aufruf eine neue Zufallszahl.
 
@@ -190,8 +190,7 @@ Die Implementation ist allerdings etwas schwieriger, weil jetzt die
 oberen Bits nicht einfach abgeschnitten werden können. Nach Park und
 Miller ist ein Beispiel eines solchen Generators $m=2^{31}-1$ und
 $a=16807$, der auch als \texttt{MINSTD} bezeichnet wird und analog dem
-\texttt{rand} implementiert werden kann:
-\lstinputlisting[firstline=10]{minstd.py}
+\texttt{rand} implementiert werden kann.
 
 \subsection{Verzögerter Fibonaccigenerator}
 \index{Fibonaccigenerator}
@@ -464,7 +463,7 @@ Wir benötigen also einen gleichverteilten Zufallswinkel $\phi\in
 [0,2\pi]$, sowie einen Abstand $r\in [0,\infty)$ mit Dichte $\rho_r(r)
 = e^{-\frac{1}{2}r^2} r$. Die zugehörige Verteilungsfunktion ist
 \begin{equation}
-  F_{\rho_r}(r) = \int_0^r e^{-\frac{1}{2}s^2} s\, ds = 1 - e^{-\nicefrac{r^2}{2}},
+  F_{\rho_r}(r) = \int_0^r e^{-\frac{1}{2}s^2} s\, ds = 1 - e^{-\frac{1}{2}r^2},
 \end{equation}
 dessen Umkehrung, also das $p$-Quantil,
 \begin{equation}
@@ -571,7 +570,7 @@ gleichverteilt im Intervall $[0,1]$.  Solche Zufallszahlen werden wie
 beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall
 auf andere Verteilungen transformiert.
 
-\subsubsection{Statistiktests}
+\subsection{Statistiktests}
 \index{$\chi^2$-Test}
 
 \begin{figure}
@@ -579,7 +578,7 @@ auf andere Verteilungen transformiert.
   \includegraphics[width=\textwidth]{plots/statistics_test}
   \caption{Verteilung von $\overline{x} = \sum_{i=1}^{100} x_i$,
     ermittelt aus 20,000$\times$100 Werten der Zufallsgeneratoren
-    \texttt{rand} (links) und \texttt{minstd} (rechts). Rot
+    \texttt{rand} (links) und \texttt{randu} (rechts). Rot
     gestrichelt ist jeweils die erwartete Normalverteilung mit Varianz
     $\nicefrac{1}{\sqrt{1200}}$ eingezeichnet.}
   \label{fig:statistics_test}
@@ -612,14 +611,14 @@ zeigt die Verteilung von $\overline{x}$ am Beispiel von
 Normalverteilung.  Diese Art von Test wird auch als $\chi^2$-Test
 bezeichnet.
 
-\subsubsection{Poincar\'e-Schnitte}
+\subsection{Poincar\'e-Schnitte}
 \index{Würfeltest}\index{Quadrattest}
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{plots/optical_test}
   \caption{Quadrat- und Würfeltest mit 2,000 Auswertung am Beispiel
-    des berüchtigten \texttt{RANDU}-Zufallszahlengenerators. Der
+    des berüchtigten \texttt{randu}-Zufallszahlengenerators. Der
     zweidimensionale Poincar\'e-Schnitt ist homogen und unauffällig,
     aber in drei Dimensionen fallen die nur sehr wenigen Hyperebenen
     des Generators deutlich auf.}
@@ -641,7 +640,7 @@ drei Dimensionen muss man die Punktewolke rotieren, um nach
 Hyperebenen zu suchen.
 
 Abbildung~\ref{fig:optical_test} demonstriert dies für den
-berüchtigten \texttt{RANDU}-LCG ($m=2^{31}$, $a=65,539$,
+berüchtigten \texttt{randu}-LCG ($m=2^{31}$, $a=65,539$,
 $b=0$). Dieser ist wegen des $2^{31}$-Moduls sehr schnell auf
 32-Bit-Rechnern zu implementieren und war daher früher sogar auf
 einigen Großrechnern zu finden. In der zweidimensionalen Darstellung
@@ -650,7 +649,7 @@ physikalisch wichtigen drei Dimensionen zeigt sich, dass es lediglich
 eine Handvoll verschiedener Hyperebenen gibt, so dass mit diesem
 Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
 
-\subsubsection{\keyword{Fouriertest}}
+\subsection{\keyword{Fouriertest}}
 \index{Spektraltest}
 
 \begin{figure}
@@ -658,10 +657,12 @@ Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
   \includegraphics[width=\textwidth]{plots/fft_tests}
   \caption{Spektraltest (links) und Autokorrelationsfunktion (rechts)
     für die Zufallszahlengeneratoren \texttt{rand} und
-    \texttt{MINSTD}. \texttt{rand} ist als blaue Fläche bzw.\ gepunktet
-    eingezeichnet, \texttt{MINSTD} rot gestrichelt.  Im linken Graph
+    \texttt{randu}. \texttt{rand} ist als blaue Fläche bzw.\ gepunktet
+    eingezeichnet, \texttt{randu} rot gestrichelt.  Im linken Graph
     sind die DFT-Amplituden normiert dargestellt, also dividiert durch
-    die Anzahl der Zufallszahlen, so dass die 0-te Mode $1/2$ beträgt.}
+    die Anzahl der Zufallszahlen, so dass die 0-te Mode $1/2$
+    beträgt. Leider reichen diese Tests nicht aus, um die
+    3-Periodizität von \texttt{randu} zu detektieren.}
   \label{fig:fft_tests}
 \end{figure}
 
@@ -673,9 +674,10 @@ Amplituden haben, entsprechend einem weißen Rauschen. Die Amplituden
 aller Frequenzen ungleich $0$ sollte außerdem mit der Länge der
 transformierten Zufallszahlenreihe sinken. Dieser Test wird auch als
 Spektraltest bezeichnet. Abbildung~\ref{fig:fft_tests} zeigt die
-DFT am Beispiel von \texttt{rand} und \texttt{MINSTD}.
+DFT am Beispiel von \texttt{rand} und \texttt{randu}. Leider reichen
+diese Tests nicht aus, um die Probleme von \texttt{randu} zu erkennen.
 
-\subsubsection{\keyword{Autokorrelationstest}}
+\subsection{\keyword{Autokorrelationstest}}
 
 Neben der diskreten Fouriertransformierten kann man auch die
 Autokorrelationsfunktion der Zufallsreihe $u$ bestimmen, also
@@ -779,13 +781,12 @@ mittlere Verschiebungsquadrat gilt
 \end{equation}
 Für hinreichend große $t$ kennen wir damit auch die
 Wahrscheinlichkeitsdichte der Positionen, die gemäß dem Gesetz der
-großen Zahlen praktisch Gaußsch ist:
+großen Zahlen praktisch Gaußsch ist, mit Varianz $\sigma^2(x_t) =
+\mean{x_t^2} = t$. Es ergibt sich
 \begin{equation}
-  \rho(x, t) = \rho(x_t) \approx \frac{1}{\sqrt{2\pi\sigma^2}}
-  \exp\left(-\frac{x_t^2}{2\sigma^2}\right).
+  \rho(x, t) = \rho(x_t) \approx \frac{1}{\sqrt{2\pi t}}
+  \exp\left(-\frac{x_t^2}{2t}\right).
 \end{equation}
-Die Varianz ist dabei $\sigma^2 = \sigma^2(x_t) = \mean{x_t^2}$, also
-das mittlere Verschiebungsquadrat.
 
 Abbildung~\ref{fig:rw} zeigt rechts oben das mittlere
 Verschiebungsquadrat $\sigma^2(x_t)$, gemittelt über 1,000 Random
