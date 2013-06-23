@@ -188,8 +188,8 @@ graph.set_xticks((-0.002, 0, 0.002))
 #############################################
 graph = figure.add_subplot(212)
 
-h = 0.05
-tmax = 2000*h
+h = 20.0/365
+tmax = 100
 
 tns_vv2, xns_vv, ens_vv2 = velocity_verlet_w_energy(acc, x0, v0, tmax, h)
 tns_rk2, xns_rk, ens_rk2 = rk_explicit_w_energy(acc, x0, v0, tmax, h)

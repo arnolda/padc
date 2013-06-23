@@ -10,7 +10,7 @@
 class Rand:
     a = 1103515245
     b = 12345
-    m = 1 << 31
+    m = 2**31
 
     def __init__(self, seed):
         self.state = seed

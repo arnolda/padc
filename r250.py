@@ -8,7 +8,7 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 class R250:
-    m = (1 << 31) - 1
+    m = 2**31 - 1
 
     def __init__(self, init_rng):
         # Zustand mit anderem Generator initialisieren

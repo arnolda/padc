@@ -129,7 +129,7 @@ $s$-stufigen Runge-Kutta-Verfahrens
 mit den Näherungen für $F[t_n + hc_j, f(t_n + h c_j)]$
 \begin{equation}
   \label{eq:rkkj}
-  k_j = F(t + h c_j, y_n + h \sum_{k=1}^s a_{jk} k_k).
+  k_j = F\left(t_n + h c_j, y_n + h \sum_{k=1}^s a_{jk} k_k\right).
 \end{equation}
 $b,\,c\in\RR^s$ und $A=(a_{jk})\in\RR^{s,s}$ sind dabei Konstanten,
 die das Verfahren beschreiben. $c$ gibt die Zeitpunkte an, an denen
@@ -343,7 +343,7 @@ $N_B$ der Beutetiere:
   = F(N_B, N_R) = 
   \begin{pmatrix}
     A N_B  - B N_BN_R\\
-    -C N_R  D N_BN_R
+    -C N_R + D N_BN_R
   \end{pmatrix}.
 \end{equation}
 Dabei gibt $A$ die Vermehrungsrate der Beutetiere an, die nur von der
@@ -423,7 +423,7 @@ zur Lösung von Differentialgleichungen der Form
   \ddot x(t) = F[t,\, x(t)],
 \end{equation}
 also gewöhnlichen Differentialgleichungen zweiter Ordnung, die nicht
-von der Geschwindigkeit $x'(t) = v(t)$ abhängen. Diese Form ist
+von der Geschwindigkeit $\dot x(t) = v(t)$ abhängen. Diese Form ist
 typisch für Bewegungsgleichungen mit konservativen Kräften, daher ist
 das Velocity-Verlet-Verfahren zum Beispiel das Standard-Verfahren für
 die Propagation von klassischen Vielteilchensystemen und spielt eine
@@ -496,7 +496,7 @@ Kraftfunktion in zwei aufeinanderfolgenden Zeitschritten zweimal an
 der selben Stelle ausgewertet wird, statt die Werte
 zwischenzuspeichern.
 
-\subsubsection{Beispiel: 3-Körperproblem}
+\subsection{Beispiel: 3-Körperproblem}
 \index{Mehrkörperproblem}
 
 \begin{figure}
@@ -569,7 +569,8 @@ Runge-Kutta-Verfahren der gleichen Ordnung vergleichbar.
 
 Im unteren Teil ist gezeigt, wie sich die beiden Verfahren verhalten,
 wenn nicht nur deutlich länger, sondern auch mit größeren Zeitschritt
-simuliert wird. In diesem Fall ist der Velocity-Verlet-Integrator
+simuliert wird. Für einen Zeitschritt von 20 Tagen und einer Länge
+von 100 Jahren ist der Velocity-Verlet-Integrator
 überlegen, denn er zeigt zwar größere Energieschwankungen, erhält aber
 langfristig die mittlere Energie. Das Runge-Kutta-Verfahren hingegen
 zeigt eine deutliche Energiedrift, die das System langfristig
