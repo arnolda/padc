@@ -7,6 +7,7 @@
 % http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
+% !TeX root = padc.tex
 
 \chapter{\keyword{Zufallszahlen}}
 \index{Zufallszahlen>echte}
@@ -247,24 +248,24 @@ Zahlen in einem gewissen Intervall, \texttt{rand48} zum Beispiel
 im Intervall $[0,2^{31}-1]$, \texttt{MINSTD} im Intervall
 $[1,2^{31}-1]$. Um daraus gleichverteilte Ganzzahlverteilungen in
 beliebigen Intervallen zu erzeugen, kann man die Zufallszahl einfach
-skalieren. Ist also $\xi$ eine Zufallszahl, die gleichverteilt aus
+skalieren. Ist also $u$ eine Zufallszahl, die gleichverteilt aus
 $[a,b]$ gezogen wird, so ist
 \begin{equation}
-  \xi' = \frac{\xi - a}{b-a}
+  u' = \frac{u - a}{b-a}
 \end{equation}
 gleichverteilt in $[0,1]$ und umgekehrt
 \begin{equation}
-  \xi'' = a' + \frac{(b'-a')(\xi - a)}{b-a}
+  u'' = a' + \frac{(b'-a')(u - a)}{b-a}
 \end{equation}
 gleichverteilt in $[a',b']$. Dabei muß bei Ganzzahlarithmetik zuerst
-multipliziert und dann dividiert werden, da $\xi' \le 1$. Zusätzlich
-ist $b$ meist knapp an der Bitlänge der Architektur, daher muss das
+multipliziert und dann dividiert werden, da $u' \le 1$. Zusätzlich ist
+$b$ meist knapp an der Bitlänge der Architektur, daher muss das
 Produkt mit doppelter Bitzahl berechnet werden. Da die Prozessoren,
 die zum wissenschaftlichen Rechen benutzt werden, meist auch sehr
-schnell Fließkommazahlen verarbeiten, kann alternativ auch $\xi'$ in
-in Fließkommadarstellung berechnet werden und daraus $\xi''$. Soll
-$\xi''$ ganzzahlig sein, kann es dabei einfach gerundet werden. Diesen
-Weg benutzt zum Beispiel Python. Auf diese Weise können natürlich auch
+schnell Fließkommazahlen verarbeiten, kann alternativ auch $u'$ in in
+Fließkommadarstellung berechnet werden und daraus $u''$. Soll $u''$
+ganzzahlig sein, kann einfach gerundet werden. Diesen Weg benutzt zum
+Beispiel Python. Auf diese Weise können natürlich auch
 (pseudo-)zufällige gleichverteilte Fließkommazahlen erzeugt werden,
 insbesondere \emph{Standardzufallszahlen}\index{Standardzufallszahl},
 also Fließkommazahlen im Bereich $[0,1]$.
@@ -330,33 +331,35 @@ Im Falle der Kreisscheibe war die Dichte $\rho(x, y)$ der gesuchten
 Verteilung sehr einfach, nämlich entweder $0$ oder $1/\pi$. Die
 Verwerfungsmethode lässt sich aber auch bei komplizierteren $\rho$
 anwenden. Wir betrachten nun eine Dichte $\rho:\RR^n\to [0,1]$, so
-dass $\rho$ außerhalb $[0,1]^n$ Null ist. Dann müssen die Punkte $p$
-mit relativen Wahrscheinlichkeiten $\rho(p)$ gezogen werden. Das lässt
-sich einfach bewerkstelligen, indem wir zunächst einen Punkt $p$ durch
-Ziehen von $n$ Standardzufallsvariablen gleichverteilt in $[0,1]^n$
-bestimmen. Wir ziehen nun eine weitere Standardzufallszahl $u$ und
-akzeptieren $p$ nur dann, wenn $u\le\rho(p)$. Die Wahrscheinlichkeit,
-$p$ tatsächlich zu ziehen, ist dann
+dass $\rho$ außerhalb $[0,1]^n$ Null ist. Dann müssen die Punkte
+$\mathbf p$ mit relativen Wahrscheinlichkeiten $\rho(\mathbf p)$
+gezogen werden. Das lässt sich einfach bewerkstelligen, indem wir
+zunächst einen Punkt $\mathbf p$ durch Ziehen von $n$
+Standardzufallsvariablen gleichverteilt in $[0,1]^n$ bestimmen. Wir
+ziehen nun eine weitere Standardzufallszahl $u$ und akzeptieren
+$\mathbf p$ nur dann, wenn $u\le\rho(\mathbf p)$. Die
+Wahrscheinlichkeit, $\mathbf p$ tatsächlich zu ziehen, ist dann
 \begin{equation}
-  P(u \le\rho(p)) = \rho(p).
+  P(u \le\rho(\mathbf p)) = \rho(\mathbf p).
 \end{equation}
 
-Die korrekte Wahrscheinlichkeit für einen Punkt $p$ im Würfel ist die
-infinitesimale Dichte $\rho(p)\,dx^n$. Da der Normierungsfaktor $dx^n$
-für alle $p$ gleich ist, können wir diesen vernachlässigen, da die
-relativen Wahrscheinlichkeiten auf $[0,1]^n$ trotzdem korrekt
-sind. Das bedeutet auch, dass die Eingabe-"`Dichte"' $\rho(p)$ gar nicht
-normiert sein muss --- die Verwerfungsmethode liefert stets
-Ergebnisse, die gemäß der normierten Dichte
+Die korrekte Wahrscheinlichkeit für einen Punkt $\mathbf p$ im Würfel
+ist die infinitesimale Dichte $\rho(\mathbf p)\,d\mathbf p$. Da der
+Normierungsfaktor $d\mathbf p$ für alle $\mathbf p$ gleich ist, sind
+die relativen Wahrscheinlichkeiten auf $[0,1]^n$ trotzdem korrekt, und
+wir können den Normierungsfaktor vernachlässigen. Das bedeutet auch,
+dass die Eingabe-"`Dichte"' $\rho(\mathbf p)$ gar nicht normiert sein
+muss --- die Verwerfungsmethode liefert stets Ergebnisse, die gemäß
+der normierten Dichte
 \begin{equation}
-  \tilde\rho(p) := \rho(p) / \int_{[0,1]^n} \rho(q)\,dq^n
+  \tilde\rho(\mathbf p) := \rho(\mathbf p) / \int_{[0,1]^n} \rho(\mathbf q)\,d\mathbf q
 \end{equation}
 verteilt sind. Damit können auch Dichten behandelt werden, die nicht
 in $[0,1]$ liegen, so lange sie beschränkt sind, denn man kann in
 diesem Fall
 \begin{equation}
-  \rho'(p) = \frac{\rho(p) + \min_{p\in [0,1]^n} \rho(p)}{
-    \max_{p\in [0,1]^n} \rho(p) - \min_{p\in [0,1]^n} \rho(p)} \in [0,1]
+  \rho'(\mathbf p) = \frac{\rho(\mathbf p) + \min_{\mathbf p\in [0,1]^n} \rho(\mathbf p)}{
+    \max_{\mathbf p\in [0,1]^n} \rho(\mathbf p) - \min_{\mathbf p\in [0,1]^n} \rho(\mathbf p)} \in [0,1]
 \end{equation}
 betrachten. Die Normierungseigenschaft ist auch sehr günstig, wenn die
 Normierungskonstante nicht einfach bestimmt werden kann, etwa bei sehr
@@ -366,10 +369,10 @@ statistischen Physik spielt. Abbildung~\ref{fig:rejection} illustriert
 die Verwerfungsmethode und ihre Normierungseigenschaft.
 
 Im Falle der Kreisscheibe hatten wir übrigens auch von der
-Normierungseigenschaft Gebrauch gemacht, denn eigentlich ist $\rho(p)$
+Normierungseigenschaft Gebrauch gemacht, denn eigentlich ist $\rho(\mathbf p)$
 Null außerhalb der Kreisscheibe und $\nicefrac{1}{\pi}$ innerhalb. Da
 wir aber die Punkte innerhalb automatisch akzeptiert haben, haben wir
-formal ein $\rho'$ betrachtet mit $\rho'(p) = 1$ auf der
+formal ein $\rho'$ betrachtet mit $\rho'(\mathbf p) = 1$ auf der
 Kreisscheibe. Dank der Normierungseigenschaft haben wir damit trotzdem
 die korrekte Verteilung erzeugt.
 
@@ -407,9 +410,9 @@ Sei $\rho:\RR\to \RR$ eine normierte Wahrscheinlichkeitsdichte, zu der
 wir passend Zufallszahlen ziehen wollen. Dann definieren wir die
 Verteilungsfunktion zu $\rho$ als
 \begin{equation}
-  F_\rho(x) := P(u_\rho \le x) = \int_{-\infty}^{x} \rho(x')\, dx',
+  F_\rho(x) := P(\xi_\rho \le x) = \int_{-\infty}^{x} \rho(x')\, dx',
 \end{equation}
-wobei $u_\rho$ eine $\rho$-verteilte Zufallszahl ist.  $F_\rho(x)$
+wobei $\xi_\rho$ eine $\rho$-verteilte Zufallszahl ist.  $F_\rho(x)$
 gibt also die Wahrscheinlichkeit an, einen Wert kleiner als $x$ zu
 beobachten, und bildet daher die reelle Achse monoton wachsend in das
 Intervall $[0,1]$ ab. Das $p$-Quantil ist nun die Umkehrung
@@ -419,8 +422,9 @@ Wert mit Wahrscheinlichkeit $p$ kleiner als $x$ ist. Es gilt also
   F_\rho\left(F_\rho^{-1}(p)\right) = p.
 \end{equation}
 
-$F_\rho^{-1}(u)$ ist eine $\rho$-verteilte Zufallsvariable, wenn $u$
-eine Standardzufallszahl ist, also gleichverteilt auf $[0,1]$. Denn
+Wir betrachten nun $F_\rho^{-1}(u)$, wobei $u$ eine
+Standardzufallszahl ist, also gleichverteilt auf $[0,1]$.  Dann ist
+$F_\rho^{-1}(u)$ eine $\rho$-verteilte Zufallsvariable, da
 \begin{equation}
   P(F_\rho^{-1}(u) \le x) = P(u \le F_\rho(x)) = F_\rho(x).
 \end{equation}
@@ -453,9 +457,9 @@ analytisch zu invertieren ist. Box und Muller gehen daher ähnlich wie
 bei der Bestimmung des uneigentlichen Integrals von $e^{-x^2}$ vor
 und weichen auf zwei Dimensionen aus.
 
-Wir betrachten also einen Zufallsvektor $(x, y)$ mit Dichte $\rho(x,
-y) = \frac{1}{2\pi}e^{-\frac{1}{2}(x^2 + y^2)}$. In Polarkoordinaten
-$(\phi,r)$ transformiert diese Dichte zu
+Wir betrachten einen normalverteilten Zufallsvektor $(x, y)$ mit
+Dichte $\rho(x, y) = \frac{1}{2\pi}e^{-\frac{1}{2}(x^2 + y^2)}$. In
+Polarkoordinaten $(\phi,r)$ transformiert diese Dichte zu
 \begin{equation}
   \rho(\phi, r) = \frac{1}{2\pi}e^{-\frac{1}{2}r^2} r.
 \end{equation}
@@ -465,14 +469,14 @@ Wir benötigen also einen gleichverteilten Zufallswinkel $\phi\in
 \begin{equation}
   F_{\rho_r}(r) = \int_0^r e^{-\frac{1}{2}s^2} s\, ds = 1 - e^{-\frac{1}{2}r^2},
 \end{equation}
-dessen Umkehrung, also das $p$-Quantil,
+deren Umkehrung, also das $p$-Quantil,
 \begin{equation}
   \label{eq:expquantil}
   F_{\rho_r}^{-1}(p) = \sqrt{-2\log(1 - p)}.
 \end{equation}
-Da, falls mit $p$ auch $p-1$ gleichverteilt auf $[0,1]$ ist, ergibt
-sich durch Rücktransformation in kartesische Koordinaten das
-Box-Muller-Verfahren als
+Da mit $p$ auch $p-1$ gleichverteilt auf $[0,1]$ ist, genügt im
+Logarithmus $p$. Durch Rücktransformation in kartesische Koordinaten
+folgt das Box-Muller-Verfahren als
 \begin{align}
   z  &= \sqrt{-2\log(u)}\cos(2\pi u')\\
   z' &= \sqrt{-2\log(u)}\sin(2\pi u')
@@ -496,13 +500,13 @@ belegt. Bis etwa $n=4$ ist die Verwerfungsmethode allerdings sehr
 effizient, was für die meisten physikalischen Anwendungen reicht.
 
 Sollen Punkte auf der Kugeloberfläche gezogen werden, so können diese
-im Prinzip aus über der Kugel gleichverteilten Punkten $p$ gewonnen
-werden, indem diese auf die Oberfläche projiziert werden, also
-$p/\norm{p}$ betrachtet. Allerdings benötigt man auf diese Weise $n$
-Zufallszahlen, um einen Zufallsvektor auf der nur $n-1$-dimensionalen
-Oberfläche zu generieren, zusätzlich zu den Verlusten durch die
-Verwerfungsmethode. Daher ist es im Einzelfall besser, eine geschickte
-Parametrisierung der Oberfläche zu nutzen.
+im Prinzip aus über der Kugel gleichverteilten Punkten $\mathbf p$
+gewonnen werden, indem diese auf die Oberfläche projiziert werden,
+also $\mathbf p/\norm{\mathbf p}$ betrachtet. Allerdings benötigt man
+auf diese Weise $n$ Zufallszahlen, um einen Zufallsvektor auf der nur
+$n-1$-dimensionalen Oberfläche zu generieren, zusätzlich zu den
+Verlusten durch die Verwerfungsmethode. Daher ist es im Einzelfall
+besser, eine geschickte Parametrisierung der Oberfläche zu nutzen.
 
 Für die Oberfläche der zweidimensionalen Kugel, also den Kreis, ist
 dies sehr einfach, da dieser über einen Winkel $\phi\in [0,2\pi]$
@@ -526,7 +530,7 @@ proportional zum Flächeninhalt des jeweiligen Rings ist, dividiert
 durch den gesamten Flächeninhalt, also
 \begin{equation}
   \rho(z) = \frac{1}{4\pi r^2} 2\pi \sqrt{r^2 - z^2} \sqrt{1 +
-    \left(\frac{d}{dx}\sqrt{r^2 - z^2}\right)^2} = \frac{1}{2r}
+    \left(\frac{d}{dz}\sqrt{r^2 - z^2}\right)^2} = \frac{1}{2r}
 \end{equation}
 für $-r\le z\le r$.
 
@@ -571,45 +575,64 @@ beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall
 auf andere Verteilungen transformiert.
 
 \subsection{Statistiktests}
+
+Am naheliegendsten ist, zu überprüfen, dass die Verteilung der Zufallszahlen tatsächlich gleichförmig ist. Dazu legen wir Grenzen $0 = b_0 < b_1 < \ldots < b_M = 1$ fest und zählen, wie oft Mittelwerte in den Intervallen $[b_i,b_{i+1})$ auftreten. Wir bilden also das Histogramm der gezogenen Zufallszahlen. Die Wahrscheinlichkeit, eine Zufallszahl im Intervall $[b_i,b_{i+1})$ zu ziehen, ist
+\begin{equation}
+	P_i = P(b_i \le x < b_{i+1}) = b_{i+1} - b_i\,.
+\end{equation}
+Für die Anzahl der Treffer in diesem Intervall gilt
+\begin{equation}
+	\mean{N_i} = N\,P_i = N (b_{i+1} - b_i)\,,
+\end{equation}
+wobei $N$ die Gesamtanzahl der gezogenen Zufallszahlen ist. Wählt man die $b_i$ äquidistant mit Intervallbreite $h$, sollte also das gewonnene Histogramm der $N_i$ möglichst konstant $N/h$ sein. Dies kann man leicht in einer Visualisierung des Histogramms überprüfen.
+
 \index{$\chi^2$-Test}
+Quantifiziert wird die Abweichung durch die Größe
+\begin{equation}
+	\chi^2 = \sum_{i=1}^M\frac{(N_i - N P_i)^2}{N P_i}\,,
+\end{equation}
+die die quadratische Abweichung über die Intervalle mittelt. Der Name $\chi^2$ rührt daher, dass diese Größe für große $N_i$ der sogenannten $\chi^2$-Verteilung mit $M$ Freiheitsgraden folgt.
+
+Wann ist nun $\chi^2$ klein genug, so dass man davon ausgehen kann, dass die Reihe tatsächlich gleichverteilt ist? Dazu betrachten wir das $1-p$-Quantil der Verteilung. Dieses gibt an, welchen maximalen Wert $\chi^2$ in $1-p$ aller Fälle annimmt. Ist der beobachtete Wert größer, tritt dies in weniger als $p$ aller Fälle auf. Das $1-p$-Quantil der $\chi^2$-Verteilung ist leider nicht sehr einfach zu berechnen, allerdings gibt es im Internet zahlreiche Tabellen, siehe zum Beispiel \url{http://de.wikipedia.org/wiki/Chi-Quadrat-Test}. Bei $M=10$ Intervallen ist das $99\%$-Quantil etwa $22$. Falls wir also $\chi^2>22$ beobachten, bedeutet das, dass unsere Zufallsreihe mit $99\%$-iger Wahrscheinlichkeit nicht gleichverteilt ist.
+
+$\chi^2$ folgt übrigens stets dieser Verteilung, auch wenn die Ausgangsdaten nicht gleichverteilt sind. In der Statistik wird der oben beschriebene Test unter dem Namen $\chi^2$-Test häufig benutzt, um zu überprüfen, ob eine Stichprobe von Daten einer angenommenen Verteilung entspricht.
+
+\subsubsection{Blocking}
 
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{plots/statistics_test}
-  \caption{Verteilung von $\overline{x} = \sum_{i=1}^{100} x_i$,
-    ermittelt aus 20,000$\times$100 Werten der Zufallsgeneratoren
+  \caption{Verteilung von $\overline{x} = \frac{1}{100}\sum_{i=1}^{100} x_i$,
+    ermittelt aus 10.000$\times$100 Werten der Zufallsgeneratoren
     \texttt{rand} (links) und \texttt{randu} (rechts). Rot
     gestrichelt ist jeweils die erwartete Normalverteilung mit Varianz
     $\nicefrac{1}{\sqrt{1200}}$ eingezeichnet.}
   \label{fig:statistics_test}
 \end{figure}
 
-Sind die erzeugten Zufallszahlen $x_i$ tatsächlich gleichverteilt auf
-$[0,1]$, so gilt für den Mittelwertschätzer
+Um mögliche Korrelationen auszuschließen, teilen wir die gezogenen Zufallszahlen wie bei der Binning-Methode in Blöcke der Größe $k$ ein. 
+Sind die erzeugten Zufallszahlen $x_i$ tatsächlich gleichverteilt und
+auf $[0,1]$ und unabhängig, so sind die Blockmittelwerte
 \begin{equation}
-  \mean{\overline{x}} =
-  \mean{\frac{1}{N} \sum_{i=1}^N x_i}
-  = \mean{x} = \frac{1}{2}
+  X_i = \frac{1}{k}\sum_{j=1}^k x_{j + (i-1)k}\,,
 \end{equation}
-und für dessen Varianz nach \eqref{eq:esterr}
+nach dem Gesetz der großen Zahlen für hinreichend großes $k$ nahezu normalverteilt. In der Praxis genügt dazu etwa $k=100$. Der Mittelwert
+ist $\mean{X_i} = \nicefrac{1}{2}$ und die Varianz
 \begin{equation}
-  \sigma(\overline{x}) = \frac{1}{\sqrt{N}} \sigma(x) =
-  \frac{1}{\sqrt{12 N}}.
+  \sigma(X_i) = \frac{1}{\sqrt{k}} \sigma(x) =
+  \frac{1}{\sqrt{12 k}}\,.
 \end{equation}
-Für immer größere $N$ sollte daher $\overline{x}$ gegen
-$\nicefrac{1}{2}$ konvergieren.
+Abbildung~\ref{fig:statistics_test} zeigt die Verteilung der $X_i$ mit Blockgröße $k=100$ am Beispiel von \texttt{MINSTD} und \texttt{rand} im Vergleich zur erwarteten Normalverteilung, die tatsächlich mit guter Genauigkeit reproduziert wird.
 
-Wird $\overline{x}$ sehr oft für disjunkte Zufallszahlenmengen $\{x_i,
-i=1(1)N\}$ gemessen, so sollte $\overline{x}$ außerdem für große $N$
-gemäß dem Gesetz der großen Zahlen praktisch normalverteilt sein, mit
-der oben angegebenen Varianz. Dies kann mit Hilfe von
-\eqref{eq:varest} überprüft werden, man kann aber auch direkt das
-Histogramm der Verteilung von $\overline{x}$ darauf überprüfen, dass es
-wie erwartet normalverteilt ist.  Abbildung~\ref{fig:statistics_test}
-zeigt die Verteilung von $\overline{x}$ am Beispiel von
-\texttt{MINSTD} und \texttt{rand}, sowie die erwartete
-Normalverteilung.  Diese Art von Test wird auch als $\chi^2$-Test
-bezeichnet.
+Die Blockvarianz können wir leicht mit Hilfe des Varianzschätzers
+\begin{equation}
+  \frac{B}{B-1}\left(\overline{(x - \bar{x})^2}\right) \stackrel{!}{\approx} \frac{1}{\sqrt{12 k}}
+\end{equation}
+überprüfen, wobei $B=N/k$ die Anzahl der Blöcke ist. Besser ist es aber, die gesamte Verteilung der Zufallszahlen zu testen. Hierzu können wir wieder den $\chi^2$-Test benutzen. Die erwartete Anzahl der Treffer im Interval $[b_i,b_{i+1})$ ist diesmal
+\begin{equation}
+	\mean{N_i} = B\,P(b_i \le x < b_{i+1}) = B\int_{b_i}^{b_{i+1}} \frac{1}{\sqrt{24\pi k}} \exp\left[\frac{1}{24 k} \left(x - \frac{1}{2}\right)^2\right]\,dx\,.
+\end{equation}
+Für die in Abbildung~\ref{fig:statistics_test} gegebenen Daten ergibt sich ein $\chi^2$-Wert von 30 (\texttt{rand}) bzw. 39 (\texttt{MINSTD}). Bei $M=50$ Freiheitsgraden ist das $99\%$-Quantil der $\chi^2$-Verteilung etwa 76, beide Generatoren erzeugen also hinreichen unkorrelierte Blöcke der Länge 100.
 
 \subsection{Poincar\'e-Schnitte}
 \index{Würfeltest}\index{Quadrattest}

@@ -26,6 +26,9 @@ s = 1.0/sqrt(12*N)
 # Darstellungsbereich
 rang=(0.35, 0.6501)
 
+def normal(x):
+    return 1/sqrt(2*pi)/s*exp(-0.5*(x-0.5)**2/s**2)
+
 ##########################################
 
 figure = pyplot.figure(figsize=(8,4))
@@ -42,10 +45,23 @@ graph = figure.add_subplot(121)
 
 x = linspace(rang[0], rang[1],100)
 
-graph.plot(x, 1/sqrt(2*pi)/s*exp(-0.5*(x-0.5)**2/s**2), "r--",linewidth=2)
+graph.plot(x, normal(x), "r--",linewidth=2)
 graph.bar(edges[:-1], histo, width=(edges[1] - edges[0]),
           color="white", edgecolor="blue", linewidth=2)
 graph.axis(rang + (0, 14))
+
+##########
+# chi^2
+
+histo, edges = histogram(array(data), bins=50, range=rang, normed=False)
+
+chi = 0
+for i in range(len(histo)):
+    # Mittelpunktregel
+    E = len(data)*(edges[i+1] - edges[i])*normal(0.5*(edges[i] + edges[i+1]))
+    chi += (histo[i] - E)**2 / E
+
+print "chi^2 for rand:", chi
 
 ##########################################
 
@@ -58,9 +74,25 @@ graph = figure.add_subplot(122)
 
 x = linspace(rang[0], rang[1],100)
 
-graph.plot(x, 1/sqrt(2*pi)/s*exp(-0.5*(x-0.5)**2/s**2), "r--",linewidth=2)
+graph.plot(x, normal(x), "r--",linewidth=2)
 graph.bar(edges[:-1], histo, width=(edges[1] - edges[0]),
           color="white", edgecolor="blue", linewidth=2)
 graph.axis(rang + (0, 14))
 
+##########
+# chi^2
+
+histo, edges = histogram(array(data), bins=50, range=rang, normed=False)
+
+chi = 0
+for i in range(len(histo)):
+    # Mittelpunktregel
+    E = len(data)*(edges[i+1] - edges[i])*normal(0.5*(edges[i] + edges[i+1]))
+    chi += (histo[i] - E)**2 / E
+
+print "chi^2 for minstd:", chi
+
+##########################################
+
 figure.savefig("statistics_test.pdf")
+

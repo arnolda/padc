@@ -9,12 +9,12 @@
 # View, California, 94041, USA.
 from numpy import *
 
-def rk_explicit(verfahren, f, y0, tmax, h):
-    def step(hc, hA, hb, f, yn, tn):
+def rk_explicit(verfahren, F, y0, tmax, h):
+    def step(hc, hA, hb, F, yn, tn):
         "ein einzelner Schritt"
         k = []
         for i in range(len(hc)):
-            k.append(f(tn + hc[i], yn + dot(hA[i,:i], k[:i])))
+            k.append(F(tn + hc[i], yn + dot(hA[i,:i], k[:i])))
         return yn + dot(hb, k)
 
     # Zur Beschleunigung skalierte Parameter vorberechnen
@@ -28,7 +28,7 @@ def rk_explicit(verfahren, f, y0, tmax, h):
     # Ergebnisvektor mit Zeit und Punkten
     result = [ concatenate(((tn,), yn.copy())) ]
     while tn < tmax:
-        yn = step(hc, hA, hb, f, yn, tn)
+        yn = step(hc, hA, hb, F, yn, tn)
         tn += h
         result.append(concatenate(((tn,), yn.copy())))
     return array(result)

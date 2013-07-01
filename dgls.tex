@@ -7,6 +7,7 @@
 % http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
+% !TeX root = padc.tex
 
 \chapter{Differentialgleichungen}
 \index{Differentialgleichung}
@@ -47,41 +48,42 @@ gelöst werden können.
 Wir betrachten Differentialgleichungen der Form
 \begin{equation}
   \label{eq:explicitode}
-  f^{(m)}(t) = F(t,\, f(t),\, \dot f(t), \ldots,\, f^{(m-1)}(t))
+  y^{(m)}(t) = F(t,\, y(t),\, \dot y(t), \ldots,\, y^{(m-1)}(t))
 \end{equation}
-mit $f:\RR\to\RR^n$. Diese heißen gewöhnlich, da sie nur von einer
-skalaren Variablen, $t$, abhängen. Wie der Name $t$ schon vermuten
-lässt, wird diese Variable meist mit der Zeit assoziiert. Die spezielle
-Form \eqref{eq:explicitode} wird auch \emph{explizite} gewöhnliche
-Differentialgleichung $m$-ter Ordnung genannt, da wir voraussetzen,
-dass sich die Gleichung global nach $f^{(m)}(t)$ auflösen lässt, und
-$m$ Ableitungen involviert sind. \emph{Implizite} Gleichungen der Form
-$F(t, f(t),\,\dot f(t), \ldots,\,f^{(m)}(t)) = 0$ sind
-numerisch sehr viel schwieriger zu lösen, tauchen aber in der Physik
-auch seltener auf, und werden daher hier nicht weiter besprochen.
+mit der gesuchten Lösung $y:\RR\to\RR^n$. Diese heißen gewöhnlich, da
+sie nur von einer skalaren Variablen, $t$, abhängen. Wie der Name $t$
+schon vermuten lässt, wird diese Variable meist mit der Zeit
+assoziiert. Die spezielle Form \eqref{eq:explicitode} wird auch
+\emph{explizite} gewöhnliche Differentialgleichung $m$-ter Ordnung
+genannt, da wir voraussetzen, dass sich die Gleichung global nach
+$y^{(m)}(t)$ auflösen lässt, und $m$ Ableitungen involviert
+sind. \emph{Implizite} Gleichungen der Form $F(t, y(t),\,\dot y(t),
+\ldots,\,y^{(m)}(t)) = 0$ sind numerisch sehr viel schwieriger zu
+lösen, tauchen aber in der Physik auch seltener auf und werden daher
+hier nicht weiter besprochen.
 
 Für die numerische Lösung beschränken wir uns weiter auf gewöhnliche
 Differentialgleichungen erster Ordnung, also von der Form
 \begin{equation}
   \label{eq:1storderode}
-  \dot f(t) = F(t, f(t)),\quad f(0)\;\text{gegeben}.
+  \dot y(t) = F(t,\,y(t)),\quad y(0)\;\text{gegeben}.
 \end{equation}
 Dies ist keine wirkliche Einschränkung, da sich jede explizite
 Differentialgleichung $m$-ter Ordnung in eine höherdimensionale
 Gleichung erster Ordnung transformieren lässt:
 \begin{equation}
   \frac{d}{dt}\begin{pmatrix}
-    f(t)\\
-    \dot f(t)\\
+    y(t)\\
+    \dot y(t)\\
     \vdots\\
-    f^{(m-1)}(t)
+    y^{(m-1)}(t)
   \end{pmatrix}
   =
   \begin{pmatrix}
-    \dot f(t)\\
-    \ddot f(t)\\
+    \dot y(t)\\
+    \ddot y(t)\\
     \vdots\\
-    f^{(m)}(t) = F(t, f(t), \dot f(t), \ldots, f^{(m-1)}(t))
+    y^{(m)}(t) = F(t,\, y(t),\, \dot y(t),\, \ldots,\, y^{(m-1)}(t))
   \end{pmatrix}
 \end{equation}
 
@@ -107,35 +109,35 @@ Der Startwert ist genau wie im Eingangskapitel $(\alpha(0),\, \dot
 
 \subsection{\keyword{Runge-Kutta-Verfahren}}
 
-Wir suchen suchen eine diskretisierte Näherung $y_n \approx f(t_n)$
+Wir suchen suchen eine diskretisierte Näherung $y_n \approx y(t_n)$
 für das Problem~\eqref{eq:1storderode} mit
-äquidistanten Zeitpunkten $t_n=n h$, $n=0,1,\ldots$, also Schrittweite
+äquidistanten Zeitpunkten $t_n=n h$, $n=0,\,1,\,\ldots$, also Schrittweite
 $h$. Es gilt
 \begin{equation}
-  f(t_{n+1}) = f(t_n+h) = f(t_n) + \int_{t_n}^{t_n+h} \dot f(t)\,dt
-  =  f(t_n) + \int_{t_n}^{t_n+h} F[t, f(t)]\,dt.
+  y(t_{n+1}) = y(t_n+h) = y(t_n) + \int_{t_n}^{t_n+h} \dot y(t)\,dt
+  =  y(t_n) + \int_{t_n}^{t_n+h} F[t,\, y(t)]\,dt.
 \end{equation}
-Da $y_0 = f(0)$ gegeben ist, liegt es nahe, $y_1 \approx f(h)$ durch
-numerische Integration zu bestimmen, dann $y_2 \approx f(2h)$ durch
+Da $y_0 = y(0)$ gegeben ist, liegt es nahe, $y_1 \approx y(h)$ durch
+numerische Integration zu bestimmen, dann $y_2 \approx y(2h)$ durch
 numerische Integration aus $y_1$ und so weiter. Das Problem dabei ist,
-dass der Integrand $F[t, f(t)]$ die zu findende Funktion $f$
-enthält. Um also $f(t)$ an Stellen $t\in [t_n, t_n + h]$ annähern zu
-können, müssen wir einige Werte von $f$ in diesem Intervall wiederum
+dass der Integrand $F[t,\, y(t)]$ die zu findende Funktion $y$
+enthält. Um also $y(t)$ an Stellen $t\in [t_n,\, t_n + h]$ annähern zu
+können, müssen wir einige Werte von $y$ in diesem Intervall wiederum
 durch Integration gewinnen. Dies führt zur allgemeinen Form eines
 $s$-stufigen Runge-Kutta-Verfahrens
 \begin{equation}
   y_{n+1} = y_n + h\sum_{j=1}^s b_j k_j
 \end{equation}
-mit den Näherungen für $F[t_n + hc_j, f(t_n + h c_j)]$
+mit den Näherungen für $F[t_n + hc_j,\, y(t_n + h c_j)]$
 \begin{equation}
   \label{eq:rkkj}
-  k_j = F\left(t_n + h c_j, y_n + h \sum_{k=1}^s a_{jk} k_k\right).
+  k_j = F\left(t_n + h c_j,\, y_n + h \sum_{k=1}^s a_{jk} k_k\right).
 \end{equation}
 $b,\,c\in\RR^s$ und $A=(a_{jk})\in\RR^{s,s}$ sind dabei Konstanten,
 die das Verfahren beschreiben. $c$ gibt die Zeitpunkte an, an denen
-$F[t,\,f(t)]$ im Intervall $[t,\,t+h]$ angenähert wird, in Vielfachen
+$F[t,\,y(t)]$ im Intervall $[t,\,t+h]$ angenähert wird, in Vielfachen
 der Schrittweite $h$. $c_i=0$ besagt also, dass $k_i\approx
-F[t_n,\,f(t_n)]$, $c_i=1$, dass $k_i\approx F[t_n + h,\,f(t_n + h)]$.
+F[t_n,\,y(t_n)]$, $c_i=1$, dass $k_i\approx F[t_n + h,\,y(t_n + h)]$.
 $A$ gibt die Quadraturgewichte für die Zwischennäherungen an, $b$ die
 Quadraturgewichte der Endnäherung. Diese Konstanten sind dabei nicht
 nur von $F$ unabhängig, sondern auch von der Schrittweite $h$, so dass
@@ -166,10 +168,10 @@ lediglich eine eindimensionale Gleichung gelöst werden muss.
 Der Fehler von Runge-Kutta-Verfahren wird üblicherweise durch die
 Konvergenz- und Konsistenzordnung beschrieben. Die Konvergenzordnung
 $p$ besagt, dass die Näherung gleichmäßig gegen $f(t_n)$ konvergiert, also
-$\max \norm{y_n - f(t_n)} = \O(h^p)$. Die Konvergenz ist
+$\max \norm{y_n - y(t_n)} = \O(h^p)$. Die Konvergenz ist
 meist schwer zu beweisen, einfacher ist die Konsistenzordnung $p$, die
-nur fordert, dass $\norm{y_{n+1} - f(t_{n+1})} = \O(h^p)$, falls
-$y_n=f(t_n)$. Konsistenz besagt also lediglich, dass ein Schritt
+nur fordert, dass $\norm{y_{n+1} - y(t_{n+1})} = \O(h^p)$, falls
+$y_n=y(t_n)$. Konsistenz besagt also lediglich, dass ein Schritt
 prinzipiell konvergiert. Ist die Funktion $F$ Lipschitz-stetig, also
 etwa genügend glatt, dann gilt allerdings Konsistenzordnung =
 Konvergenzordnung.
@@ -209,7 +211,7 @@ gebräuchlichen Formeln bleiben.
 \end{center}
 Dieses Butcher-Tableau besagt nichts anders, als dass
 \begin{equation}
-  y_{n+1} = y_n + h F(t_n,\, y_n) \approx f(t_n) + h f'(t_n).
+  y_{n+1} = y_n + h F(t_n,\, y_n) \approx y(t_n) + h \dot y(t_n).
 \end{equation}
 Es handelt sich als um die direkte Integration per Rechteckregel, und
 damit um ein Verfahren der Ordnung 1, \dh mit globalem Fehler
@@ -270,20 +272,20 @@ Konvergenzordnung 4, ist also deutlich besser als die Eulerverfahren.
 
 Wie können wir das Tableau verstehen?  Wir setzen
 $\tau=\nicefrac{h}{2}$. Die zweite und dritte Zeile bestimmen zwei
-Näherungen für $F[t_n+\tau, f(t_n+\tau)]$, zunächst mit Hilfe der
+Näherungen für $F[t_n+\tau, y(t_n+\tau)]$, zunächst mit Hilfe der
 linken ($k_2$), und dann der rechten Ableitung ($k_3$). $k_4$ ist dann
-eine Näherung für $F[t_n+h, f(t_n+h)]$. Diese Näherungen werden in die
+eine Näherung für $F[t_n+h, y(t_n+h)]$. Diese Näherungen werden in die
 Simpsonregel eingebracht, wobei $k_2$ und $k_3$ mit gleichen Gewichten
 eingehen.
 
 \subsubsection{Beispielimplementation}
 
 Eine Python-Implementation des allgemeinen Runge-Kutta-Schemas für
-$\dot y(t) = $\argd{f}$[t, y(t)]$, $y(0) =$ \argd{y0} könnte wie folgt
+$\dot y(t) = $\argd{F}$[t, y(t)]$, $y(0) =$ \argd{y0} könnte wie folgt
 aussehen:%
 \lstinputlisting[firstline=10,lastline=34]{rk.py}%
 Die Lösung $y(t)$ kann dabei auch vektorwertig sein, dann müssen
-\argd{y0} und der Rückgabewert der Funktion \argd{f} gleich große
+\argd{y0} und der Rückgabewert der Funktion \argd{F} gleich große
 NumPy-Arrays sein. Die Integration findet stets von $t=0$ bis
 \argd{tmax} statt, in Schritten der Weite \argd{h}.  Die Routine
 liefert das Ergebnis als Matrix aus den Zeit- und Lösungspunkten
@@ -595,27 +597,29 @@ sehr kurzen Zeitabschnitten sinnvoll sind.
 Die numerische Lösung von partiellen Differentialgleichungen, also
 Differentialgleichungen in mehreren Variablen, ist erheblich
 komplexer. Meist werden diese Art von Differentialgleichungen über
-Finite-Element-Methoden (FEM) gelöst, andere Methoden sind
+Finite-Elemente-Methoden (FEM) gelöst, andere Methoden sind
 Finite-Volumen-Methoden (FVM) oder die Finite-Differenzen-Methode
 (FDM). In einigen Fällen können Differentialgleichungen auch durch
 schnelle Fouriertransformation numerisch gelöst werden.
 
 Die Finite-Differenzen-Methode hatten wir bereits bei der Lösung der
 Besselschen Differentialgleichung oder der Poissongleichung gesehen.
-Im Folgenden wird angerissen, wie die Finite-Element-Methode
+Im Folgenden wird angerissen, wie die Finite-Elemente-Methode
 funktioniert, sowie auf die Lösung einiger spezieller partieller
 Differentialgleichungen eingegangen mit Hilfe finiter Differenzen oder
 Fouriertransformationen.
 
-\subsection{Finite-Element-Methode}
-\index{Finite-Element-Methode}
+\subsection{Finite-Elemente-Methode}
+\index{Finite-Elemente-Methode}
 \index{FEM}
+\index{Lösung partieller DGLs>FEM}
 
 Die Finite-Element-Methode (FEM) ist ein Verfahren zur Lösung
 partieller Differentialgleichungen der Form $L\cdot u = f$, wobei $L$
 ein linearer Differentialoperator ist, $f:\Omega\to\RR^n$ eine
-konstante Funktion und $u:\Omega\to\RR^n$ die gesuchte Lösung.
+feste Funktion und $u:\Omega\to\RR^n$ die gesuchte Lösung.
 
+\index{schwache Formulierung}
 Die FEM beruht auf einer schwachen Formulierung der zu lösenden
 Differentialgleichung. Diese beschreibt $u$ als diejenige, eindeutig
 bestimmte Funktion, die
@@ -687,10 +691,13 @@ wird, gibt es aber sehr leistungsfähige, kommerzielle Softwarepakete
 für die FEM-Modellierung. Eine freie Alternative ist das Softwarepaket
 DUNE~\cite{dune,duneweb}.
 
-\subsection{Wärmeleitungsgleichung}
+\subsection{Finite-Differenzen-Methode --- Wärmeleitungsgleichung}
 \index{Diffusionsgleichung}
 \index{Wärmeleitungsgleichung}
 \index{Schrödingergleichung}
+\index{Finite-Differenzen-Methode}
+\index{FDM}
+\index{Lösung partieller DGLs>FDM}
 
 \begin{figure}
   \centering
@@ -723,30 +730,31 @@ sie auch die Wärmeleitung beschreibt. Auch die zeitabhängige
 Schrödingergleichung hat diese Form, ist allerdings komplexwertig.
 
 Um die Differentialgleichung zu lösen, diskretisieren wir wie gewohnt
-die Raumkoordinate äquidistant mit Abstand $h$. Für die zweite
+die Raumkoordinaten äquidistant mit Abstand $h$. Für die zweite
 Ableitung kennen wir bereits eine einfache Strategie: wir ersetzen sie
 durch eine finite Differenz auf dem Gitter, etwa
-\eqref{eq:1order2diff}. Das ergibt die ortsdiskretisierte
-Differentialgleichung
+\eqref{eq:1order2diff}. Das ergibt in einer Dimension die
+ortsdiskretisierte Differentialgleichung
 \begin{equation}
-  \frac{\delta}{\delta t} p(x_n, t) =
-  \frac{D}{h^2} \left(p(x_{n-1}, t) - 2 p(x_n, t) + p(x_{n+1}, t)\right).
+  \frac{\delta}{\delta t} p(x_k, t) =
+  \frac{D}{h^2} \left[p(x_{k-1}, t) - 2 p(x_k, t) + p(x_{k+1}, t)\right].
 \end{equation}
 Aus der partiellen Differentialgleichung ist eine gewöhnliche
-Differentialgleichung in $t$ geworden, mit Variablen
+Differentialgleichung in $t$ geworden, mit $N$ Variablen
 $p(x_1,t),\ldots,p(x_N, t)$, wobei $N$ die Anzahl der Ortspunkte
 ist. Diese DGL lösen wir nun mit dem Runge-Kutta-Verfahren. Das hat
-den großen Vorteil, dass wir die Verteilungen $p(x_n, t)$, die bei
+den großen Vorteil, dass wir die Verteilungen $p(x_k, t)$, die bei
 großem $N$ oder mehreren Dimensionen sehr groß werden können, nur für
 wenige Zeitschritte speichern müssen.
 
 Quellcode~\ref{lst:waermeleitung} zeigt den resultierenden Code, der
-die Runge-Kutta-Implementierung aus diesem Kapitel als Black Box
-nutzt. Wir betrachten dabei nur das Intervall $[-L/2,L/2)$, dass wir
-mit $N$ Punkten im Abstand $h=L/N$ diskretisieren. Am Rand benutzen
+die Runge-Kutta-Implementierung aus diesem Kapitel nutzt. Wir
+betrachten dabei nur das Intervall $[-10,10)$, dass wir mit $N=200$
+Punkten im Abstand $h=0,1$ diskretisieren. Der Zeitschritt ist als
+$\delta t=0,01$ gewählt. Am Rand des Ortsintervalls benutzen
 wir diesmal keine periodischen Randbedingungen, sondern setzen die
-Funktion außerhalb des Intervalls auf 0. Der Zeitschritt ist als
-$\delta t=0,01$ gewählt, $h=0,1$.
+Funktion außerhalb des Intervalls auf 0. Für hinreichend großes $L$
+nähert die Lösung damit das klassische, freie Problem.
 
 Abbildung~\ref{fig:waermeleitung} zeigt links die Diffusionsgleichung
 für $D=1/2$ und eine $\delta$-Verteilung zum Zeitpunkt $t=0$, was dem
@@ -758,7 +766,7 @@ Verteilungen in Abbildung~\ref{fig:rw}.
 
 In der unteren Reihe ist die zugehörige Gesamtmasse
 \begin{equation}
-  \int_{-L}^L p(x, t)\, dt \approx \sum h p(x_n, t)
+  \int_{-L}^L p(x, t)\, dx \approx \sum h p(x_n, t)
 \end{equation}
 aufgetragen. Bei unendlichem Intervall ist die Masse offenbar
 erhalten. In unserem Fall ist die Masse ebenfalls zunächst erhalten
@@ -806,8 +814,9 @@ den Randbedingungen bei $\pm L/2$ lassen sich die Steigungen
 bestimmen, und damit auch die Masse $137,5$ des
 Gleichgewichtszustandes, die in der Simulation gut reproduziert wird.
 
-\subsection{Lösung der Poisson-Gleichung}
-\index{Poisson-Boltzmann-Gleichung}
+\subsection{Lösung mittels Fouriertransformation --- Poisson-Gleichung}
+\index{Poisson-Gleichung}
+\index{Lösung partieller DGLs>mittels Fouriertransformation}
 
 \begin{figure}
   \centering
@@ -832,7 +841,7 @@ Die eben schon genannte Poisson-Gleichung
 spielt auch in der Elektrostatik eine zentrale Rolle, wobei $\Phi$ in
 diesem Fall das Potential, $\rho$ die Ladungsverteilung und $\epsilon$
 die dielektrische Konstante ist. Im Kapitel~\ref{chap:la} wurde
-bereits erläutert, dass sich auch diese Gleichung gut mit Hilfe von
+bereits erläutert, dass sich diese Gleichung gut mit Hilfe von
 finiten Differenzen lösen lässt, und die Wiedergabe der stationären
 Lösung aus dem vorigen Abschnitt unterstreicht dies.
 
@@ -843,7 +852,7 @@ werden, da ja $\widehat{\nabla \Phi} = i n \omega \hat \Phi$. Zweimalige
 Anwendung ergibt
 \begin{equation}
   \label{eq:poissonft}
-  -n^2\omega^2\hat\Phi_n  = \hat\rho_n
+  -n^2\omega^2\hat\Phi_n  = \frac{\hat\rho_n}{\epsilon}
 \end{equation}
 wobei $\hat\Phi_n$ und $\hat\rho_n$ die Fouriertransformierten von
 $\Phi$ und $\rho$ gemäß \eqref{eq:fouriercoeff} sind. Ist $x$
@@ -863,15 +872,16 @@ und transformieren $\hat\Phi$ zurück.
 
 Dieses Vorgehen spielt eine wichtige Rolle bei den sogenannten
 Particle-Mesh-Ewald-Methoden zur Berechnung der Schwerkraft oder
-elektrostatischer Wechselwirkungen. Diese werden in den meisten
-Molekulardynamiksimulationen geladener System eingesetzt. Kern dieser
-Methoden ist, die $\delta$-Spitzen diskreter Punktladungen durch
-verschmierte, normalverteilte Ladungen zu ersetzen, deren
-Wechselwirkung mit Hilfe von schnellen Fouriertransformationen wie
-beschrieben im Fourierraum berechnet wird. Mit einer weiteren, kleinen
-Korrektur für die Ladungsverschmierung lassen sich so die
-elektrostatischen Wechselwirkungen von Millionen von Teilchen in
-Bruchteilen von Sekunden auf einem Großrechner berechnen.
+elektrostatischer Wechselwirkungen. Diese werden in
+Molekulardynamiksimulationen geladener Systeme am häufigsten
+eingesetzt. Kern dieser Methoden ist, die $\delta$-Spitzen diskreter
+Punktladungen durch verschmierte, normalverteilte Ladungen zu
+ersetzen, deren Wechselwirkung mit Hilfe von schnellen
+Fouriertransformationen wie beschrieben im Fourierraum berechnet
+wird. Mit einer weiteren, kleinen Korrektur für die
+Ladungsverschmierung lassen sich so die elektrostatischen
+Wechselwirkungen von Millionen von Teilchen in Bruchteilen von
+Sekunden auf einem Großrechner berechnen.
 
 Codebeispiel~\ref{lst:poisson} zeigt die Lösung im Fourierraum für
 eine beliebige, zweidimensionale Ladungsverteilung. In der Praxis ist
@@ -930,9 +940,10 @@ Verteilung dieser Ionen im Gleichgewicht ist durch die
 Boltzmannverteilung gegeben, also proportional zu
 $e^{-q\beta\Phi(x)}$, wobei $\beta=k_BT$ mit der Boltzmann-Konstanten
 $k_B$ und Temperatur $T$. $q$ ist dabei die Ladung der Ionen, hier
-eine negative oder positive Elementarladung (für mehrwertige Salze
-kann man zeigen, dass die Poisson-Boltzmann-Gleichung keine gute
-Näherung ist).
+eine negative oder positive Elementarladung. Die Einschränkung auf
+monovalente Ionen hat einen guten Grund: für mehrwertige Salze kann
+man zeigen, dass die Poisson-Boltzmann-Gleichung keine gute Näherung
+ist.
 
 Das Potential erscheint also auch in der Verteilung der Ionen, so dass
 wir eine nichtlineare Differentialgleichung erhalten:

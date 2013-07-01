@@ -18,7 +18,7 @@ import sys
 
 seed(123)
 
-ex = "rand"
+ex = sys.argv[1]
 
 if ex == "fibo":
     # Fibonacci-Matrix
@@ -83,6 +83,8 @@ print "Inverse Iteration"
 
 for l,v in (Ak[0,0], v2), (Ak[1,1], v1):
     x = ones(A.shape[0])
+    sys.stdout.write("% 10.8f & % 10.8f & %d\\\\\n" % \
+                         (x[0],x[1], min(digits(x[0], v[0]),digits(x[1], v[1]))))
     Ashift = A - l*I
     for i in range(ni):
         x = solve(Ashift, x)
@@ -92,8 +94,7 @@ for l,v in (Ak[0,0], v2), (Ak[1,1], v1):
                 xp = -x
             else:
                 xp = x
-                sys.stdout.write("% 10.8f & % 10.8f & %d & %d\\\\\n" % \
-                                     (xp[0],xp[1], digits(xp[0], v[0]),
-                                      digits(xp[0], v[0])))
+                sys.stdout.write("% 10.8f & % 10.8f & %d\\\\\n" % \
+                                     (xp[0],xp[1], min(digits(xp[0], v[0]),digits(xp[1], v[1]))))
         else:
             print norm(l*x - dot(A, x))/norm(x)
