@@ -7,6 +7,7 @@
 % http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
+% !TeX root = padc.tex
 
 \chapter{Optimierung}
 \index{Optimierung}
@@ -34,12 +35,12 @@ wird
 \end{equation}
 
 Im Spezialfall, dass $f_v$ linear ist, also von der Form
-$f_{\tilde{v},v_0}(x) = \tilde{v}^Tx + v_0$, ist dies in
+$f_{v_x,v_c}(x) = \tilde{v_x}^Tx + v_c$, ist dies in
 Vektorschreibweise äquivalent zur Aufgabe
 \begin{equation}
   \label{eq:min2}
-  \min_{(\tilde{v},v_0)\in\RR^{m+1}} \sum_{i=1}^n (\tilde{v}^Tx_i -
-  v_0 - y_i)^2 = \min_{v\in\RR^{m+1}} \norm{A v - b}_2.
+  \min_{(v_x,v_c)\in\RR^{m+1}} \sum_{i=1}^n (v_x^T x_i -
+  v_c - y_i)^2 = \min_{v\in\RR^{m+1}} \norm{A v - b}_2.
 \end{equation}
 mit
 \begin{equation*}
@@ -797,9 +798,10 @@ das sich bei der linearen Regression mit Maximumsnorm ergibt
 (vgl.~\eqref{eq:chebyshevappr}), ist nicht in Normalform. Zum einen
 müssen wir die Nebenbedingungsungleichungen in Gleichungen
 transformieren. Dazu führen wir einfach eine Schattenvariable
-$z_i=a_i^Tv - b_i$ pro Ungleichung $a_i^Tv\ge b_i$ ein. Dann ist
-$z_i\ge 0$ offenbar äquivalent zur ursprünglichen Ungleichung. Zum
-anderen sind aber die Variablen $v$ frei, während wir voraussetzen,
+$z_i=(a_i, 1)^T v - b_i$ pro Ungleichung $(a_i, 1)^T v\ge b_i$ ein. Dann ist
+$z_i\ge 0$ offenbar äquivalent zur ursprünglichen Ungleichung.
+Analog verfahren wir mit den unteren Ungleichungen $(-a_i, 1)^T v\ge -b_i$.
+Zum anderen sind aber die Variablen $v$ frei, während wir voraussetzen,
 dass $v\ge 0$. Um dies zu beheben, teilen wir jede Variable in $v=v_+
 - v_-$ mit $v_\pm\ge 0$ auf und ergänzen $A$ und $c$ entsprechend. Das
 ergibt die äquivalente Aufgabe%
@@ -808,7 +810,7 @@ ergibt die äquivalente Aufgabe%
     \label{eq:chebyshevapprnf}
     \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
     \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
-    \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T v
+    \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T x
   \end{equation}
   \begin{tikzpicture}[overlay, remember picture]
     \draw[decorate,decoration=brace] ($(vpl) + (0,1em)$) --
@@ -943,11 +945,11 @@ Wie können wir nun eine zulässige erste Lösung mit zugehörigem
 Basissatz und $A_B^{-1}$ finden? Die Idee ist, zunächst die Matrix
 noch einmal stark zu erweitern, sodass eine gültige Ecke einfach zu
 finden ist, aber nur die Ecken des ursprünglichen zulässigen Bereichs
-optimal. Phase kann dann genutzt werden, um eine solche Ecke zu finden.
+optimal. Phase II kann dann genutzt werden, um eine solche Ecke zu finden.
 
 Dazu betrachten wir das neue Problem
 {\samepage\vspace{0.2em}\begin{equation}
-  \min_z (\tikzlabel{xl}0,\ldots,\,0,\tikzlabel{xr},
+  \min_z (\tikzlabel{xl}0,\ldots,\,0\tikzlabel{xr},
   \tikzlabel{yl}1,\ldots,\,1\tikzlabel{yr})^Tz
 \end{equation}
 \begin{tikzpicture}[overlay, remember picture]
@@ -1219,11 +1221,11 @@ $x_{i+1}=x_i$ sonst.
   \includegraphics[width=\textwidth]{plots/simulated_annealing}
   \caption{Simulated Annealing eines zweidimensionalen
     Salzschmelzemodells. Links sind die gefundenen Grundzustände für
-    verschiedene Abkühlraten $\epsilon$ gezeigt, rechts die
+    verschiedene Abkühlraten $\delta$ gezeigt, rechts die
     dazugehörigen potentiellen Energien als Funktion der Zeit (schwarz
-    gepunktet $\epsilon=0,1$, grün durchgezogen $\epsilon=0,05$, blau
-    gestrichelt $\epsilon=0,01$ und magentafarbene Strichpunkte
-    $\epsilon=0,005$). Der eigentlich Grundzustand wäre ein
+    gepunktet $\delta=0,1$, grün durchgezogen $\delta=0,05$, blau
+    gestrichelt $\delta=0,01$ und magentafarbene Strichpunkte
+    $\delta=0,005$). Der eigentlich Grundzustand wäre ein
     NaCl-artiges Gitter, das aber nicht gefunden wird, auch wenn die
     Simulationen immer größere Gitterflächen zeigen. Die Unterschiede
     in den finalen Energien sind sehr klein, was nochmals zeigt,
@@ -1268,9 +1270,9 @@ Teilchen mit einem Potential
 \begin{equation}
   \phi_{ij} = q_iq_j\frac{4\sigma\epsilon}{r}  +
   \begin{cases}
-    4\epsilon\left(\frac{\sigma}{\norm{x_i-x_j}}^{12} -
-      \frac{\sigma}{\norm{x_i-x_j}}^{6}\right) + \epsilon
-    & \text{für}\; \norm{x_i-x_j} < \sqrt[6]{2}\sigma\\
+    4\epsilon\left(\frac{\sigma}{r}^{12} -
+      \frac{\sigma}{r}^{6}\right) + \epsilon
+    & \text{für}\; r:= \norm{x_i-x_j} < \sqrt[6]{2}\sigma\\
     0 & \text{sonst}.
   \end{cases}
 \end{equation}

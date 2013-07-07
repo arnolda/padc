@@ -62,7 +62,7 @@ for eps, place, style in zip(epsilons, (241,242,245,246),
                markersize=4)
     graph.set_xticks(())
     graph.set_yticks(())
-    graph.set_title("$\epsilon=%s$" % eps, position=(0.5,-0.2))
+    graph.set_title("$\delta=%s$" % eps, position=(0.5,-0.2))
     t, energy = E[eps]
     graph_E.plot(t, energy, style)
     graph_E.plot(t[-1], energy[-1], "ko", markersize=4)
