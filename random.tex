@@ -19,11 +19,11 @@ Qualität einer Zufallsreihe bestimmt werden kann. Außerdem lernen wir
 weitere Anwendungen von Zufallszahlen kennen.
 
 Zunächst aber klären wir, was Zufallszahlen im strengen Sinn sind. Wir
-betrachten ein Experiment, dass wiederholt voneinander unabhängige
+betrachten ein Experiment, das wiederholt voneinander unabhängige
 Ergebnisse $x \in M$ liefert.  Dann heißt ein Ergebnis einer solchen
 Messung eine \emph{Zufallszahl}. Aufgrund der Konstruktion ist für
 jede Zufallszahl $x$ der Erwartungswert gleich und unabhängig von
-allen anderen Messungen. Betrachtet wir eine unendliche
+allen anderen Messungen. Betrachten wir eine unendliche
 Menge von Zufallszahlen, so sind die Zufallszahlen in dieser Menge
 stets gleich verteilt, und zwar mit einer Verteilung $P(x)$, die durch
 die Art des Experiments bestimmt ist.
@@ -199,7 +199,7 @@ $a=16807$, der auch als \texttt{MINSTD} bezeichnet wird und analog dem
 
 Um eine längere Periode zu erzielen, könnte man im Prinzip zu immer
 größeren Moduln $m$ übergehen. Allerdings wird es immer schwieriger,
-entsprechende Konstanten zu bestimmen, und auch das Rechnung mit
+entsprechende Konstanten zu bestimmen, und auch das Rechnen mit
 Zahlen großer Bitlänge ist aufwändiger. Eine einfache Alternative
 sind \emph{verzögerte Fibonaccigeneratoren}, die ähnlich wie ein LCG
 funktionieren, aber mehrere vorherige Werte benutzen:
@@ -262,7 +262,7 @@ multipliziert und dann dividiert werden, da $u' \le 1$. Zusätzlich ist
 $b$ meist knapp an der Bitlänge der Architektur, daher muss das
 Produkt mit doppelter Bitzahl berechnet werden. Da die Prozessoren,
 die zum wissenschaftlichen Rechen benutzt werden, meist auch sehr
-schnell Fließkommazahlen verarbeiten, kann alternativ auch $u'$ in in
+schnell Fließkommazahlen verarbeiten, kann alternativ auch $u'$ in
 Fließkommadarstellung berechnet werden und daraus $u''$. Soll $u''$
 ganzzahlig sein, kann einfach gerundet werden. Diesen Weg benutzt zum
 Beispiel Python. Auf diese Weise können natürlich auch
@@ -772,7 +772,7 @@ $t=1, 2,\ldots$, so dass
 
 Ein \emph{Random walk} ist eine Folge $x_t$, die durch eine solche
 einfache stochastische Bewegungsgleichung beschrieben wird.
-Abbildung~\ref{fig:rw} zeigt links drei mögliche solche Random
+Abbildung~\ref{fig:rw} zeigt links drei mögliche Random
 walks. Sie wurden durch eine Routine ähnlich der folgenden generiert: 
 \begin{lstlisting}
 def rw(N):
@@ -933,11 +933,11 @@ Wert von $\nu$ für den Self avoiding walk kann, anders als beim Random
 walk, nicht analytisch berechnet werden, sondern nur aufwändig
 numerisch genähert.
 
-Der Self avoiding walk wie auch der der einfache Random walk spielen
+Der Self avoiding walk wie auch der einfache Random walk spielen
 nach wie vor eine wichtige Rolle in der Polymerphysik, insbesondere
-beim Aufsetzen von Polymersimulationen. Daher besitzt etwa
-Simulationssoftware \textsc{ESPResSo}~\cite{espresso} einen eigenen
-Befehl, um solche Zufallsketten zu erzeugen.
+beim Aufsetzen von Polymersimulationen. Daher besitzt die
+Simulationssoftware \textsc{ESPResSo}~\cite{espresso} zum Beispiel
+einen eigenen Befehl, um solche Zufallsketten zu erzeugen.
 
 \subsubsection{Diffusionslimitierte Aggregation}
 

@@ -204,7 +204,7 @@ für die $\norm{Ax-b}_2$ minimal ist.  Moore und Penrose haben
 abstrakte Bedingungen für die Pseudoinverse definiert, die von den
 obigen Ausdrücken erfüllt werden. Die Pseudoinverse für beliebige
 Matrizen kann durch eine sogenannte Singulärwertzerlegung bestimmt
-werden kann. Diese kann in dieser Vorlesung leider nicht behandelt
+werden. Diese kann in dieser Vorlesung leider nicht behandelt
 werden, aber wir werden zumindest sehen, wie bei Matrizen mit
 maximalem Zeilen- oder Spaltenrang die Pseudoinverse mit Hilfe
 der QR-Zerlegung bestimmt werden kann, ohne $A^TA$ oder $AA^T$
@@ -287,7 +287,7 @@ wobei
     \frac{\partial}{\partial x_1\partial x_n}f(x)\\
     \vdots               &        & \vdots \\
     \frac{\partial}{\partial x_1\partial x_n}f(x) & \ldots &
-    \frac{\partial^2}{\partial x_1^2}f(x)
+    \frac{\partial^2}{\partial x_n^2}f(x)
   \end{pmatrix}.
 \end{equation}
 Bei großen Dimensionen $n$ kann es rasch sehr aufwendig werden,
@@ -600,14 +600,14 @@ Funktionswerten bestraft.
   \caption{Straffunktionsverfahren für einen Halbkreis. Die
     durchgezogenen, gestrichelten, und gepunkteten Linien markieren
     die Isolinien $p_{\sigma}(x)=\nicefrac{1}{2}$ in den Schritten 1,2
-    und 5. Minimiert wird jeweils der Abstand zum den mit offenen
-    Symbolen markierten drei Punkten. Der rote Kreis liegt im inneren,
+    und 5. Minimiert wird jeweils der Abstand zu den mit offenen
+    Symbolen markierten drei Punkten. Der rote Kreis liegt im Inneren,
     das Verfahren braucht nur einen Aufruf des freien Optimierers. Für
     die grünen und blauen Dreiecke sind jeweils mehrere Aufrufe nötig,
     wobei das blaue, nach unten zeigende Dreieck so gewählt ist, dass
     das Minimum in der Ecke liegt. Im rechten Graphen sind die
     Straffunktionen entlang der $y$-Achse, also $p_{\sigma}(0,y)$, für
-    dieselben Schritte gezeigt. Dünner grün sind die korrespondieren
+    dieselben Schritte gezeigt. Dünner grün sind die korrespondierenden
     Zielfunktionen $q_{\sigma}(0,y)$ eingezeichnet.}
   \label{fig:penalty}
 \end{figure}
@@ -860,13 +860,13 @@ Die Methode zerfällt dabei in zwei Phasen. In der ersten Phase muss
 eine gültige Ecke bestimmt werden, in der zweiten Phase müssen wir
 dann von einer gültigen Ecke aus eine neue, benachbarte Ecke mit
 niedrigerer Zielfunktion finden. Wir beginnen mit der Beschreibung der
-zweiten Phase, da die die erste Phase die zweite Phase benutzt, um ein
-erweitertes Problem zu lösen, dass erlaubt, eine erste Ecke zu finden.
+zweiten Phase, da die erste Phase die zweite Phase benutzt, um ein
+erweitertes Problem zu lösen, das erlaubt, eine erste Ecke zu finden.
 
 \subsubsection*{Phase II}
 
 Wir nehmen an, dass die Matrix $A$ maximalen Zeilenrang hat, also alle
-doppelten Gleichung eliminiert wurden; dies wird später die erste
+doppelten Gleichungen eliminiert wurden; dies wird später die erste
 Phase übernehmen.  Außerdem sei $x$ eine Ecke des Polyeders.
 
 Wie stellen wir diese Ecke dar? Abbildung~\ref{fig:simplex}
@@ -945,7 +945,7 @@ Wie können wir nun eine zulässige erste Lösung mit zugehörigem
 Basissatz und $A_B^{-1}$ finden? Die Idee ist, zunächst die Matrix
 noch einmal stark zu erweitern, sodass eine gültige Ecke einfach zu
 finden ist, aber nur die Ecken des ursprünglichen zulässigen Bereichs
-optimal. Phase II kann dann genutzt werden, um eine solche Ecke zu finden.
+optimal sind. Phase II kann dann genutzt werden, um eine solche Ecke zu finden.
 
 Dazu betrachten wir das neue Problem
 {\samepage\vspace{0.2em}\begin{equation}
@@ -1060,7 +1060,7 @@ Approximation von $\exp(x)$ in diesen Normen. Beide Näherungen
 approximieren die Funktion hinreichend gut. Unterschiede zeigen sich
 allerdings in den Absolutdifferenzen $\abs{p(x) - \exp(x)}$. Das in der
 2-Norm approximierende Polynom minimiert den mittleren Fehler, indem
-es einen kleineren Fehler im Intervall $<0$ durch eine höheren Fehler
+es einen kleineren Fehler im Intervall $<0$ durch einen höheren Fehler
 bei 1 erkauft. Da dies nur ein Punkt ist, wiegt der verringerte Fehler
 bei negativen Zahlen schwerer. Die Minimierung der maximalen
 Abweichung hingegen führt dazu, dass sich der maximale Fehler sehr
@@ -1138,7 +1138,7 @@ und von allen hinreichend niedrigen Punkten aus eine lokale
 Minimierung gestartet. Da bereits dieser Schnitt über 20 lokale Minima
 aufweist, kann man sich vorstellen, wie viele lokale Minima die
 Energie als Funktion aller 200 Teilchenkoordinaten aufweist.  Wegen
-des ``Curse of dimension'' ist es in diesem Fall nicht mehr möglich,
+des ``Curse of dimensionality'' ist es in diesem Fall nicht mehr möglich,
 eine Rasterung vorzunehmen. Es ist also aussichtslos, sämtliche lokale
 Minima mit Hilfe eines lokalen Minimierungsverfahrens zu suchen.
 
@@ -1354,7 +1354,7 @@ Zelle dar, und 3 Vektoren $L_i$ legen die Relativpositionen der
 räumlichen Kopien der Elementarzelle fest. In den meisten zufällig so
 erzeugten Gittern überlappen Teilchen, so dass auch in diesem Fall ein
 weiches Lennard-Jones-Potential die Volumenausschlusswechselwirkung
-modelliert. Dadurch werden undefinierte Energiewerte vermeiden.
+modelliert. Dadurch werden undefinierte Energiewerte vermieden.
 
 Zur Vermehrung werden zufällig zwei Individuen gewählt, deren Vektoren
 $B_i$ zufällig um maximal $\pm 10\%$ gestreckt werden. Dann wird

@@ -153,8 +153,9 @@ Substitution gegen diesen Fixpunkt konvergiert.
     markieren die Punkte $(x_1,x_1)$, $(x_2,x_2)$ \usw\,, durch die das
     Lot auf $g$ gefällt wird, um den nächsten Punkt der sukzessiven
     Substitution zu erhalten. Im linken Graph sind die ersten sieben
-    Glieder dargestellt, die exponentielle Konvergenz ist gut zu
-    sehen. Im rechten Graph konvergiert das Verfahren nicht mehr.}
+    Glieder dargestellt, und die lineare Konvergenz ist gut zu
+    sehen. Im rechten Graph konvergiert das Verfahren nicht, da die
+    Lipschitzkonstante $L$ größer als 1 ist.}
   \label{fig:banach}
 \end{figure}
 
@@ -176,14 +177,12 @@ $g(r)$. Graphisch lässt sich das Verfahren visualisieren, indem in
 jeder Iteration der Funktionswert $x_{n+1} = y =g(x_{n})$ an der
 Winkelhalbierenden $y=x$ auf die $x$-Achse zurückgespiegelt wird. Im
 linken Graph ist $\phi_0=2$ und damit $L=1/2$, so dass die sukzessive
-Substitution exponentiell konvergiert. Für das letzte abgebildete
+Substitution linear konvergiert. Für das letzte abgebildete
 Glied, $x_7$, gilt $\abs{x_7-\overline{x}} \le 1/2^8 = 1/256$. Im
 rechten Graph ist $\phi_0=1/4$ und damit $L=4$. Insbesondere ist auch
 im Fixpunkt $g'(\overline x)>1$. Abgebildet sind die ersten zehn
 Glieder der sukzessiven Substitution, die hier nicht mehr
-konvergiert. Wird hingegen $\phi_0$ so gewählt, dass 
-$g'(\overline(x))<1$, aber $L>1$, so konvergiert das Verfahren zwar
-noch, aber nicht mehr exponentiell.
+konvergiert, obwohl wir nahe am Fixpunkt gestartet haben.
 
 \section{Newtonverfahren in einer Dimension}
 \index{Newtonverfahren}
@@ -377,7 +376,7 @@ Das Bestimmen der Ableitung von $f$ ist immer dann unmöglich, wenn $f$
 sehr komplex ist. Ein Extremfall wäre eine
 Molekulardynamik-Computersimulation, bei der zum Beispiel in
 Abhängigkeit vom aktuellen Volumen $V$ der mittlere Druck $P(V)$ in
-einem gegebenen System bestimmt wird. Den mittleren Druch nach $V$
+einem gegebenen System bestimmt wird. Den mittleren Druck nach $V$
 abzuleiten, ist vollkommen aussichtslos, wenn die Wechselwirkungen
 zwischen den Teilchen hinreichend komplex sind. Dabei ist es von
 großem Interesse, dasjenige Volumen zu bestimmen, für das $P(V)$
@@ -387,10 +386,10 @@ Nullstellengleichung $P(V)-P_0 = 0$.
 
 Als Beispiel für die Sekantenmethode soll ein weiteres Mal die
 Funktion $f(r) = e^{-r}/r - \phi_0$ dienen. Für diese zeigt
-Abbildung~\ref{fig:sekanten} die erste paar Schritte der
+Abbildung~\ref{fig:sekanten} die ersten paar Schritte der
 Sekantenmethode. Unter geeigneten Umständen, nämlich, wenn die
-angenäherte Tangente hinreichend gut mit der tatsächlichen über
-einstimmt, konvergiert die Sekantenmethode praktisch genauso gut wie
+angenäherte Tangente hinreichend gut mit der tatsächlichen
+über einstimmt, konvergiert die Sekantenmethode praktisch genauso gut wie
 das normale Newtonverfahren. Sind die Startpunkte allerdings ungünstig
 gewählt, wie im rechten Beispiel, so kann es passieren, dass diese
 abwechselnd um die Nullstelle liegen, und damit nicht mehr monoton
@@ -420,13 +419,17 @@ Intervallmittelpunkt
 \begin{equation}
   m_{n} = \frac{a_n + b_n}{2}.
 \end{equation}
-Ist $f(m_n)f(a_n) < 0$, hat die Funktion also bei $m_n$ und $a_n$ unterschiedliche Vorzeichen, so
-muss eine Nullstelle im halb so großen Interval $a_1=a_0$, $b_1=m_0$
-liegen, mit dem wir nun weiter verfahren. Anderfalls ist
-notwendigerweise $f(m_n)f(b_n)\le 0$, und die Nullstelle ist im neuen
+Ist $f(m_n) = 0$, so ist
+$m_n$ die gesuchte Nullstelle, und das Verfahren bricht ab. Ist
+$f(m_n)f(a_n) < 0$, hat die Funktion also bei $m_n$ und $a_n$
+unterschiedliche Vorzeichen, so muss eine Nullstelle im halb so
+großen Intervall $a_1=a_0$, $b_1=m_0$
+liegen, mit dem wir nun weiter verfahren. Andernfalls ist
+notwendigerweise $f(m_n)f(b_n) < 0$, und die Nullstelle ist im neuen
 Interval $a_1=m_0$, $b_1 = b_0$. Ist $b_n - a_n$ kleiner als die
-gewünschte Genauigkeit für die Nullstelle, bricht man einfach
-ab. $m_n$ ist dann die endgültige Näherung für die Nullstelle.
+gewünschte Genauigkeit für die Nullstelle, bricht man ebenfalls
+ab. $m_n$ ist dann eine Näherung für die Nullstelle mit der gewünschten
+Genauigkeit.
 
 Das Verfahren halbiert in jedem Schritt die Intervallgröße und damit
 auch den maximalen Abstand der Näherung zur tatsächlichen
@@ -524,7 +527,7 @@ konvex oder konkav ist.
 \index{Gleichungssysteme>nichtlineare}
 
 Bis jetzt haben wir das Newtonverfahren nur für eindimensionale
-Funktionen betrachtet. Im mehrdimensionalen funktioniert das Verfahren
+Funktionen betrachtet. Im Mehrdimensionalen funktioniert das Verfahren
 aber sehr ähnlich, wobei die Ableitung zur Jacobimatrix wird.
 
 Sei also $f\in C^1(M, \RR^n)$ eine stetig differenzierbare Abbildung
@@ -561,15 +564,15 @@ ist dann also
   x^{(i+1)} = x^{(i)} + d^{(i)}\quad\text{mit}\;
   F'(x^{(i)})\,d^{(i)} = -F(x^{(i)}).
 \end{equation}
-Die \emph{Newtonkorrektur} $d^{(i)}$ wird als aus der Lösung eines
+Die \emph{Newtonkorrektur} $d^{(i)}$ wird aus der Lösung eines
 linearen Gleichungssystems gewonnen, zum Beispiel mit Hilfe der
 Gaußelimination. Allerdings ist $f'$ im Allgemeinen vollbesetzt, daher
-verwendetet man normalerweise schnellere, approximative Verfahren, die
+verwendet man normalerweise schnellere, approximative Verfahren, die
 wir später kennenlernen werden. Ist $F'(x^{(i)})$ in einem Schritt
 singulär, so bricht das Verfahren ab. Ansonsten wird weiter iteriert,
 bis $\norm{d^{(i)}}$ hinreichend klein ist.
 
-Auch im mehrdimensionalen konvergiert dieses Verfahren lokal
+Auch im Mehrdimensionalen konvergiert dieses Verfahren lokal
 mindestens quadratisch, sofern in einer abgeschlossenen Umgebung der
 Nullstelle $\norm{F'(x)^{-1}}$ beschränkt ist und $f$ zweifach stetig
 differenzierbar. Allerdings gibt es kein langsames Verfahren ähnlich
@@ -590,9 +593,9 @@ werden.
 Leider ist im Mehrdimensionalen die Umgebung um die Nullstelle, in der
 das Verfahren konvergiert, oftmals deutlich kleiner. Das Verfahren
 springt dann leicht über die Nullstelle hinweg, wie es im
-eindimensionalen nur am Anfang des Verfahrens vorkommt
+Eindimensionalen nur am Anfang des Verfahrens vorkommt
 (\zb Abbildung~\ref{fig:newton} rechts, im ersten Schritt). Um dies
-zu verhindern, kann man die Schrittweite reduzieren, als den Schritt
+zu verhindern, kann man die Schrittweite reduzieren, also den Schritt
 $d^{(i)}$ verkürzen. Die Iteration lautet dann
 \begin{equation}
   x^{(i+1)} = x^{(i)} + \lambda d^{(i)}\quad\text{mit}\;
@@ -604,7 +607,7 @@ $\lambda=1$ begonnen, und $\lambda$ solange verringert, bis die
 Bedingung erreicht ist. Der Rechenaufwand für die Iteration ist klein,
 da nur die Norm der Funktionswerte berechnet werden muss, was mit
 linearem Zeitaufwand möglich ist. Eine Neuberechnung des Schritts
-$d^{(i)}$ hingegen erfordert die Lösungs eines Gleichungssystems, was
+$d^{(i)}$ hingegen erfordert die Lösung eines Gleichungssystems, was
 mit der Gaußelimination $\O(N^3)$ Rechenschritte erfordert. Für
 vieldimensionale Probleme dominiert dieser Aufwand klar. Eine
 Beispielimplementation des gedämpten Newtonverfahrens zeigt

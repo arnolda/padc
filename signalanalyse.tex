@@ -8,6 +8,8 @@
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
 
+% !TEX root = padc.tex
+
 \chapter{Datenanalyse und Signalverarbeitung}
 
 In diesem Kapitel geht es darum, was man mit einem gemessenen Signal
@@ -223,6 +225,20 @@ Fouriertransformierten der Gaußglocke mit sinkender Varianz herleiten.
 \subsection{Numerische kontinuierliche Fouriertransformation}
 \label{sec:contdft}
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/dft}
+  \caption{Numerische kontinuierliche Fouriertransformation einer
+  Gaußglocke $g(t) = e^{-t^2/2}$, die wie links gezeigt äquidistant
+  an den Stützstellen $t_k=-8 + k/2$, $k=0(1)31$ diskretisiert wird.
+  Werden die gewonnenen Daten $g(t_k)$ diskret fouriertransformiert,
+  ergibt sich als Transformierte eine Gaußglocke mit wechselnden
+  Vorzeichen, wie rechts mit blauen Kreisen gezeigt. Nur mit dem
+  notwendigen Phasenshiftfaktor $e^{-2\pi i 8/16}=-1$ erhält man die
+  erwartete Gaußglocke (rote Rauten).}
+  \label{fig:contdft}
+\end{figure}
+
 Um die Eigenschaften der kontinuierlichen Fouriertransformation
 numerisch zu nutzen, machen wir den Grenzübergang $T\to\infty$
 rückgängig und ziehen uns auf ein für die betrachtetete Funktion
@@ -233,7 +249,7 @@ Signalen stets der Fall ist.
 
 Wir betrachten nun als Signal eine Funktion $f$, die wir nur an auf
 einem äquidistanten Gitter $t_k = t_0 + k\frac{T}{N}$, $k=0(1)N-1$
-kennen, also im Intervall $[t_0, t_o + T]$. Dann setzen wir
+kennen, also im Intervall $[t_0, t_0 + T)$. Dann setzen wir
 $\omega_0:=\frac{2\pi}{T}$ und $\Delta := \frac{T}{N}$, und erhalten
 für ganzzahliges $n$
 \begin{multline}
@@ -252,11 +268,20 @@ für ganzzahliges $n$
 wobei DFT die diskrete Fouriertransformation aus \eqref{eq:dft}
 bezeichnet. Meist werden Messungen bei $t=0$ begonnen, die Funktion
 ist dann nur im positiven Halbinterval von Null verschieden.  In
-diesem Fall wählt man natürlicherweise $t_0 = 0$, so dass der Faktor
+diesem Fall wählt man natürlicherweise $t_0 = 0$, so dass der Phasenfaktor
 $e^{-i\omega_0 t_0} = 1$ entfällt. Wir werden allerdings später noch
 Faltungen kennenlernen, bei denen es häufig natürlicher ist, eine
 symmetrische Lage der Filterfunktion um die Null anzunehmen. In diesem
 Fall wählt man $t_0 = -T/2$, so dass $e^{-i\omega_0 t_0} = -1$.
+
+Um die Rolle des Phasenfaktors zu illustrieren, betrachten wir eine
+Gaußglocke, die wir an um die Null symmetrisch liegenden Stützstellen diskretisieren. Wie wir gesehen hatten, ist die Fouriertransformierte
+der Gaußglocke die Gaußglocke selber. Abbildung~\ref{fig:contdft} zeigt,
+das wir diese Transformierte nur mit dem Phasenfaktor erhalten. Da
+dieser gerade $(-1)^n$ beträgt, wechselt die Transformierte sonst andauernd
+das Vorzeichen. Insbesondere würde mit steigender Anzahl Stützstellen das
+Vorzeichen immer rascher wechseln, die Transformierte also nicht einmal
+konvergieren.
 
 Die Koeffizienten der DFT sind periodisch, daher auch diese Näherung
 für $\FT(f)$. Tatsächlich sollten die Koeffizienten aber nur als
@@ -266,10 +291,10 @@ angesehen werden. Der Grund dafür ist das Abtasttheorem, dass im
 folgenden Abschnitt besprochen wird. Dieses besagt, dass bei einem
 Zeitschritt $\Delta=T/N$ nur Kreisfrequenzen bis $\omega_0 N/2 =
 \pi/\Delta$ eindeutig gemessen werden können. Daher ist die
-Beschränkung auf das innerste Interval die natürliche
-Interpretation. Bei rein reellen Signalen ist es daher günstiger,
-direkt die reellen Varianten der FFT-Implementationen zu nutzen, die
-von vorneherein nur die relevanten positiven Koeffizienten bis $N/2$
+Beschränkung auf das innerste Intervall die natürliche
+Interpretation. Bei rein reellen Signalen sollte man daher
+die reellen Varianten der FFT-Implementationen benutzen, die
+nur die relevanten positiven Koeffizienten bis $N/2$
 zurückgeben.
 
 Die Einschränkung der Frequenzen ist besonders wichtig, wenn $N$

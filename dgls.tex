@@ -33,7 +33,7 @@ besprochene, sehr gebräuchliche Velocity-Verlet-Verfahren.
 
 Schwieriger ist die Lösung partieller Differentialgleichungen, die
 mehrdimensionale Variablen und deren Ableitungen enthalten.  Diese
-spielen in der Physik eine besonders wichtige Rolle, weil sie bei bei
+spielen in der Physik eine besonders wichtige Rolle, weil sie bei
 zeit- und ortsabhängigen Prozessen quasi automatisch auftreten. Sie
 werden meist mit Hilfe finiter Element-Methoden behandelt, die aber zu
 komplex sind, um sie in dieser Vorlesung einzuführen. Wir lernen
@@ -109,7 +109,7 @@ Der Startwert ist genau wie im Eingangskapitel $(\alpha(0),\, \dot
 
 \subsection{\keyword{Runge-Kutta-Verfahren}}
 
-Wir suchen suchen eine diskretisierte Näherung $y_n \approx y(t_n)$
+Wir suchen eine diskretisierte Näherung $y_n \approx y(t_n)$
 für das Problem~\eqref{eq:1storderode} mit
 äquidistanten Zeitpunkten $t_n=n h$, $n=0,\,1,\,\ldots$, also Schrittweite
 $h$. Es gilt
@@ -154,7 +154,7 @@ bei denen $A$ eine linke untere Dreiecksmatrix mit Nulldiagonale ist,
 also $a_{jk} = 0$ für $k\ge j$. Dann werden zur Berechnung von $k_j$
 nur $k_k$, $k=1(1)j-1$ benötigt, die bereits berechnet sind. Eine
 Implementierung eines Runge-Kutta-Verfahrens ähnelt dann sehr dem
-Gauß-Seidel-Verfahren, dass ebenfalls die Zeilen der zu lösenden
+Gauß-Seidel-Verfahren, das ebenfalls die Zeilen der zu lösenden
 Matrix sequentiell abarbeitet.
 
 Dass man trotzdem auch implizite Verfahren, also mit allgemeiner
@@ -209,11 +209,11 @@ gebräuchlichen Formeln bleiben.
     & 1
   \end{tabular}
 \end{center}
-Dieses Butcher-Tableau besagt nichts anders, als dass
+Dieses Butcher-Tableau besagt nichts anderes, als dass
 \begin{equation}
   y_{n+1} = y_n + h F(t_n,\, y_n) \approx y(t_n) + h \dot y(t_n).
 \end{equation}
-Es handelt sich als um die direkte Integration per Rechteckregel, und
+Es handelt sich also um die direkte Integration per Rechteckregel, und
 damit um ein Verfahren der Ordnung 1, \dh mit globalem Fehler
 $\O(h)$. Dieses Verfahren entspricht der einfachen
 Integration~\eqref{eq:simple} im einleitenden Beispiel. Das explizite
@@ -552,7 +552,7 @@ zwischen Sonne und Erde entspricht, und messen Zeiten in Jahren, was
 in etwa der Umdrehungszeit der Erde um die Sonne entspricht. Massen
 messen wir entsprechend in Erdenmassen $m_E$. In diesem System ist zum
 Beispiel $G=1,1858\cdot 10^{-4} AU^3 m_E^{-1} a^{-2}$. Die Sonne hat
-$333,000$ Erdenmassen, der Mond wiegt hingegen nur $0,0123m_E$ und
+$333.000$ Erdenmassen, der Mond wiegt hingegen nur $0,0123m_E$ und
 befindet sich etwa $0,00257AU$ von der Erde entfernt. Das verdeutlicht
 nochmals die unterschiedlichen Skalen, mit denen der Integrator
 zurechtkommen muss.
@@ -668,7 +668,7 @@ Testfunktionen. Das bedeutet, dass wir das Koeffizientenintegral
 Aufwand drastisch zu reduzieren, macht man sich zu Nutze, dass
 $a_{pq}$ offenbar nur dann nicht verschwindet, wenn sich die Träger
 von $v_p$ und $v_q$, also die Bereiche, in denen die Funktionen nicht
-Null sind, überschneiden. Daher wählt die Basisfunktionen so, dass sie
+Null sind, überschneiden. Daher wählt man die Basisfunktionen so, dass sie
 nur sehr kleine Träger haben.
 
 Eine typische für die Testfunktionen sind lineare Splines. Dabei wird
@@ -861,7 +861,7 @@ transformiert, und $n^2$ entspricht $n\cdot n = \norm{n}^2$. Danach muss
 notwendigerweise $\hat\rho_0 = 0$ gelten, das System also
 ladungsneutral sein. Für die übrigen Frequenzen lässt sich die
 Poissongleichung nun ganz einfach durch $\hat\Phi_n =
--\hat\rho_n/(n\omega)^2$ lösen. Um also $\Phi(x)$ zu berechnen,
+-\hat\rho_n/\epsilon(n\omega)^2$ lösen. Um also $\Phi(x)$ zu berechnen,
 transformieren wir eine diskrete Ladungsverteilung $\rho$ mit Hilfe
 der FFT in den Fourierraum, lösen dort trivial die Poissongleichung,
 und transformieren $\hat\Phi$ zurück.
@@ -957,7 +957,7 @@ wir eine nichtlineare Differentialgleichung erhalten:
 \end{align}
 $c_\infty$ ist dabei die Konzentration der Ionen weit von allen
 Ladungen entfernt, also dort, wo $\Phi=0$. $q_e$ bezeichnet hier die
-Elementarladung, um einer Verwechslung mir der Eulerschen Konstanten
+Elementarladung, um einer Verwechslung mit der Eulerschen Konstanten
 vorzubeugen. Durch die Multiplikation mit $\chi(x)$ befinden sich die
 Ionen nur im zulässigen Bereich, unabhängig vom Potential.
 
@@ -973,8 +973,8 @@ für die dann
   \frac{1}{4\pi l_B}\Delta \psi(x) =
   -q_\text{fix} - 2c_\infty\sinh[-\psi(x)]\chi(x)
 \end{equation}
-gilt. $q_\text{fix} = \rho_\text{fix}/q_e$ gibt also die feste
-Ladungsverteilung in Elementarladungen an. $l_B$ ist eine konstante,
+gilt, wobei $q_\text{fix} = \rho_\text{fix}/q_e$ die feste
+Ladungsverteilung in Elementarladungen angibt. $l_B$ ist eine Konstante,
 die das umgebende Medium beschreibt. Üblicherweise ist dieses Wasser,
 für dass die Bjerrumlänge $0,7$nm beträgt.
 

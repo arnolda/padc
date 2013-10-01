@@ -63,7 +63,7 @@ die in Matrixform für $N=5$ zum Beispiel wie folgt aussehen:
     \Phi_0 = \phi(0,0)\\
     \Phi_1 = \phi(h,0)\\
     \vdots\\
-    \Phi_{4} = \phi(h,0)\\
+    \Phi_{4} = \phi(4h,0)\\
     \Phi_{5} = \phi(0,h)\\
     \vdots\\
     \Phi_{24} = \phi(4h,4h)
@@ -86,7 +86,7 @@ Normierungseintrag mit Wert 1. Alle anderen Einträge sind Null.
 
 Durch die periodischen Randbedingungen in $x$ und $y$ sind zwei
 Nebendiagonalen weiter außen teilweise besetzt. Damit hat die
-entstehende Matrix zwar immer noch Bandstruktur hat und ist dünn
+entstehende Matrix zwar immer noch Bandstruktur und ist dünn
 besetzt, \dh fast alle Einträge Null, allerdings ist sie nicht mehr
 tridiagonal. Auch durch Umsortieren lässt sich dies nicht wesentlich
 ändern, daher muss die volle Gaußelimination durchgeführt werden. Für
@@ -328,9 +328,9 @@ zwischenzuspeichern.
 
 Genauso wie das Jacobiverfahren kann auch das Gauß-Seidel-Verfahren
 auf indizierten Matrixformaten benutzt werden, wobei die beiden Summen
-in \eqref{eq:gscomp} entweder gleichzeitig aufaddiert werden, oder die
+in \eqref{eq:gscomp} entweder gleichzeitig aufaddiert oder die
 Listen der Nichtdiagonalelemente in Elemente links und rechts der
-Diagonalen aufgeteilt.
+Diagonalen aufgeteilt werden.
 
 Insbesondere für die parallele Verarbeitung, die mit der heutigen
 weiten Verbreitung von Mehrkern-Prozessoren ein wichtiger Faktor ist,
@@ -990,7 +990,7 @@ bis auf das Diagonalelement auf Null drehen.
 Auch die Givens-Rotationen werden dabei nicht als
 Matrix-Multiplikation berechnet, da sich bei Multiplikation von links
 tatsächlich ja nur zwei Zeilen lesen und neu schreiben. Für die
-Berechnung von $Q$ müssen wir nach \eqref{eq:unitprod} die hermiteschen der
+Berechnung von $Q$ müssen wir nach \eqref{eq:unitprod} die Hermiteschen der
 Rotationen von rechts anmultiplizieren, was einer Modifikation zweier
 Spalten entspricht. Die Hermitesche bzw. Transponierte der Drehung
 ergibt sich einfach durch Drehung in der umgekehrten Richtung, also
@@ -1213,9 +1213,9 @@ Matrix mit reellen Eigenwerten kann wie folgt aussehen:
 Die Routine liefert einen Vektor aus Eigenwerten mit Hilfe des
 Householder-Verfahrens von SciPy. \argd{tolerance} gibt dabei den
 maximalen Betrag eines Subdiagonalelements an, der noch akzeptiert
-wird.  Hat \argd{A} komplexe Eigenwerte, können auch Element eins
-unter der Diagonalen nicht verschwinden. Dann muss zum einen
-das Kriterium muss dann entsprechend angepasst werden, zum zweiten
+wird.  Hat \argd{A} komplexe Eigenwerte, können auch nichtverschwindende
+Elemente auf der unteren Subdiagonale verbleiben. Dann muss zum einen
+das Kriterium entsprechend angepasst werden, zum zweiten
 kann dann natürlich nicht einfach die Diagonale zurückgeliefert
 werden. Echte, also reelle Eigenwerte sind dann solche, die weder
 links noch unterhalb auf der Subdiagonalen Nachbarn haben, die anderen
