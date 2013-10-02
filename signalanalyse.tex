@@ -228,7 +228,7 @@ Fouriertransformierten der Gaußglocke mit sinkender Varianz herleiten.
 \begin{figure}
   \centering
   \includegraphics[width=\textwidth]{plots/dft}
-  \caption{Numerische kontinuierliche Fouriertransformation einer
+  \caption{Numerische kontinuierliche Fouriertransformation am Beispiel einer
   Gaußglocke $g(t) = e^{-t^2/2}$, die wie links gezeigt äquidistant
   an den Stützstellen $t_k=-8 + k/2$, $k=0(1)31$ diskretisiert wird.
   Werden die gewonnenen Daten $g(t_k)$ diskret fouriertransformiert,
@@ -532,42 +532,61 @@ In den beiden letzteren Fällen werden diese im Allgemeinen korreliert,
 also abhängig, sein. Allerdings gibt dies keinen Aufschluss über den
 dahinterstehenden kausalen Mechanismus. Im Fall des Pendels rührt die
 Korrelation daher, dass es sich in kurzer Zeit nicht beliebig weit von
-seiner Ausgangsposition bewegen kann. Bei der Eis- und Sonnencreme
-wird es vermutlich auch eine Korrelation geben, aber weder erzeugt
-Eiscreme Sonnenbrand, noch macht Sonnencreme Lust auf Eis. Allerdings
-haben wir Menschen nunmal bei strahlendem Sonnenschein mehr Lust auf
-Eis, aber brauchen auch Sonnencreme.
+seiner Ausgangsposition bewegen kann, es ist also tatsächlich ein kausaler
+Mechanismus. Bei der Eis- und Sonnencreme wird es vermutlich auch eine
+Korrelation geben, aber weder erzeugt Eiscreme Sonnenbrand, noch macht
+Sonnencreme Lust auf Eis. Allerdings haben wir Menschen nunmal bei
+strahlendem Sonnenschein mehr Lust auf Eis, brauchen aber auch Sonnencreme.
 
-Formal betrachten wir zunächst zwei Observablen $A$ und $B$. Diese
+\subsection{Kreuzkorrelationsfunktion}
+
+Wir betrachten zwei Observablen $A$ und $B$. Diese
 beiden heißen genau dann unkorreliert, falls die Mittelwerte
 $\mean{A\cdot B} = \mean{A}\mean{B}$
 bzw. $\mean{(A-\mean{A})(B-\mean{B})}=0$ erfüllen.  Im Allgemeinen
-wird man aber vielleich nicht erwarten, dass sich die Änderung einer
+wird man aber nicht erwarten, dass sich die Änderung einer
 Observablen unmittelbar in einer anderen niederschlägt, sondern erst
 nach einer Zeit $\tau$.  Man betrachtet daher die Korrelation zwischen
 $A$ und $B$ mit einem zeitlichen Versatz von $\tau$, die
 \emph{\keyword{Kreuzkorrelationsfunktion}}:
 \begin{equation}
   \label{eq:crosscorr}
-  C(A,B)(\tau) := \mean{A(0)B(\tau)},
+  C(A,B)(\tau) := \mean{(A(0)-\mean{A})(B(\tau)-\mean{B})} =
+      \mean{(A(0)B(\tau)}-\mean{A}\mean{B},
 \end{equation}
 wobei die Signale $A$ und $B$ zeitinvariant sein sollen, so dass der
-Zeitpunkt $t=0$ beliebig gewählt sein kann. Für große $\tau$
-dekorrelieren die Signale, daher gilt $C(A,B)\to \mean{A}\mean{B}$ für
-$\tau\to\infty$. Wird stattdessen die normierte Kreuzkorrelation
-$C(A-\mean{A}, B-\mean{B})$ betrachtet, verschwindet dieses also im
-Limit $\tau\to\infty$.
+Zeitpunkt $t=0$ beliebig gewählt werden kann. Für große $\tau$
+dekorrelieren die Signale, daher gilt $C(A,B)\to 0$ für
+$\tau\to\infty$.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/kreuzkorrelation}
+  \caption{Verschiedene Funktionen (links) und einige Kreuzkorrelationen (rechts).
+  Die Kreuzkorrelation $C(f_1, f_1)$
+  besagt, dass $f_1$ sich selber mit Versatz 0 oder $2\pi$ vorhersagt, wie man
+  erwarten würde. Bei $\pi$ hat die Korrelation eine negatives Minimum, da
+  $\sin(x + \pi) = -\sin(x)$. Analog erklärt sich auch $C(f_1, f_3)$, da die
+  Verschiebung um 0,5 keinen Einfluss hat. $f_1$ kann die verstimmte Funktion
+  $f_2$ zu keiner Zeit vorhersagen, daher ist die Kreuzkorrelation $C(f_1, f_2)$
+  identisch Null. 
+  }
+  \label{fig:kreuzkorrelationen}
+\end{figure}
+
+Abbildung~\ref{fig:kreuzkorrelationen} illustriert die Kreuzkorrelation am Beispiel
+verschiedener Sinusschwingungen. Aufgrund ihrer Periodizität sind $\sin(t)$ und $\sin(t + 2\pi)$ stark korreliert. Daher hat $C(\sin,\sin)$ ein Maximum bei $2\pi$,  $4\pi$, $\ldots$. $\sin(t+\pi)$ hat hingegen immer das entgegengesetzte Vorzeichen, daher hat $C(\sin,\sin)$ bei $\pi$, $3\pi$, $\ldots$ ein negatives Minimum. Wird stattdessen $\sin(t)$ mit $\cos(t)$ korreliert, verschieben sich die Maxima und Minima um $\nicefrac{\pi}{2}$, dem Versatz zwischen Sinus und Kosinus entsprechend. Verschieben der Funktionen nach oben oder unten ändert daran nichts, da ja der Mittelwert abgezogen wird. Wird allerdings eine der beiden Funktionen nur leicht verstimmt, zum Beispiel zu $\sin(1,1 t)$, dann haben $\sin(1,1t)$  und $\sin(t)$ über ein großes Intervall in $t$ betrachtet unabhängige Vorzeichen, sind also unkorreliert, wie auch die Kreuzkorrelation zeigt. Für analytische Funktionen wie in diesem Beispiel ist die Kreuzkorrelation natürlich einfach vorherzusagen. Bei verrauschten Messdaten ist das aber unter Umständen schwieriger, wie wir später noch sehen werden.
 
 $\mean{\cdot}$ bezeichnet in der Physik üblicherweise den
 Ensemblemittelwert, also den Mittelwert über alle möglichen
 Realisationen des Experiments. Sind nun $A=A(t)$ und $B=B(t)$
 zeitliche Messreihen eines zeitinvarianten Systems, so ermittelt man
-die Mittelwerte üblicherweise als Zeitmittelwerte, also Integrale über
+die Mittelwert üblicherweise als Zeitmittelwert, also Integrale über
 die Zeit:
 \begin{equation}
   \label{eq:crosscorrtime}
-  C(A,B)(\tau) = \mean{A(0)\cdot B(\tau)} \stackrel{!}{=}
-  \lim_{T\to\infty}\frac{1}{T}\int_{-T/2}^{T/2} A(t)B(t+\tau)\,dt.
+  C(A,B)(\tau) \stackrel{!}{=}
+  \lim_{T\to\infty}\frac{1}{T}\int_{0}^{T} \left(A(t)-\mean{A}\right)\left(B(t+\tau)-\mean{B}\right)\,dt.
 \end{equation}
 Das Ausrufezeichen soll andeuteten, dass dies eine Annahme ist, denn
 die Gleichheit gilt nur genau dann, wenn das System \emph{ergodisch}
@@ -581,37 +600,23 @@ systematischen Fehler führen, weil das System im Zeitraum der Messung
 nur den Teil des Phasenraums besucht, der von der Energiebarriere
 eingeschlossen ist, selbst wenn auch andere Bereiche zulässig wären.
 
-$\mean{A}$ bzw. $\mean{B}$ sind oft gar nicht genau bekannt, und
-müssen numerisch durch \mbox{(Zeit--)}Mittelung der Daten bestimmt
-werden. Da hier aber normalerweise dieselben Daten zugrunde gelegt
-werden, die auch zu Berechnung der Kreuzkorrelation selber genutzt
-werden, sind diese notwendigerweise korreliert, was zu kleinen
-Abweichungen in der Kreuzkorrelationsfunktion führt. Im häufigen Fall,
-dass eine Observable aus Symmetriegründen einen Mittelwert von Null
-haben muss, sollte daher auf keinen Fall der numerische gemessene
-Mittelwert abgezogen werden, "`um das Ergebnis zu verbessern"'. Diese
-übliche Praxis ist falsch, da sie ja erzwingt, dass der letzte
-Datenpunkt der gemessenen Kreuzkorrelationsfunktion notwendigerweise
-auf $\mean{A}\mean{B}$ abfällt, selbst wenn einfach nur das
-Messinterval zu kurz gewählt wurde. Daher führt diese Methode zu einer
-Unterschätzung der Langzeitkorrelationen!
+$\mean{A}$ bzw. $\mean{B}$ sind oft auch nicht vorneherein bekannt, und
+müssen numerisch durch Mittelung der Daten bestimmt
+werden. In ergodischen Systemen genügt ebenfalls das Zeitmittel 
+\begin{equation}
+  \mean{A} \stackrel{!}{=}
+  \lim_{T\to\infty}\frac{1}{T}\int_{0}^{T} A(t)\,dt.
+\end{equation}
 
 In der Praxis sind $A$ und $B$ natürlich nicht als Funktionen bekannt,
 sondern nur als diskrete Messungen. Wir nehmen wie üblich an, dass
 diese an endlich vielen, äquidistanten Zeitpunkten $k\Delta$,
 $k=0(1)N-1$ stattgefunden haben. Die Gesamtmesszeit beträgt also
-$T=N\Delta$. Dann ist in Analogie zu \eqref{eq:crosscorrtime}
-\begin{equation}
-  \label{eq:crosscorrint}
-  C(A,B)(\tau) = \mean{A(0)\cdot B(\tau)}
-  = \frac{1}{T}\int_{0}^{T} A(t)B(t+\tau)\,dt.
-\end{equation}
-Da wir die Messwerte nur an diskreten Stellen kennen, erhalte wir die
-Näherung
+$T=N\Delta$. Dann erhalten wir als Näherung für das Integral \eqref{eq:crosscorrtime}
 \begin{equation}
   \label{eq:crosscorrnum}
   C(A,B)(k\Delta)\approx
-  \frac{1}{N-k}\sum_{l=0}^{N-k}A(l\Delta)B\left((l+k)\Delta\right)
+  \frac{1}{N-k}\sum_{l=0}^{N-k}(A(l\Delta)-\mean{A})(B\left((l+k-\Delta\right)-\mean{B})
   \quad\text{für}\; k=0(1)N-1.
 \end{equation}
 Die unterschiedliche Gewichtung $1/(N-k)$ ergibt sich durch die
@@ -622,27 +627,42 @@ Integrals kürzt sich der Vorfaktor $1/T$ gegen die Schrittweite, so
 dass nur die Anzahl der Messungen eingeht, nicht aber die Länge des
 Messintervalls $T$.
 
-Gleichung \eqref{eq:crosscorrnum} ist numerisch allerdings nicht sehr
+Sind die Mittelwerte nicht bekannt, können diese durch
+\begin{equation}
+  \mean{A}\approx
+  \frac{1}{N}\sum_{l=0}^{N-1}A(l\Delta)
+\end{equation}
+abgeschätzt werden. Da hier aber normalerweise dieselben Daten zugrunde gelegt
+werden, die zur Berechnung der Kreuzkorrelation selber genutzt
+werden, sind diese notwendigerweise korreliert. Auch wenn $A$ zum Beispiel eine
+Observable mit Mittelwert 0 ist, ist der numerische Mittelwert im Allgemeinen
+von Null verschieden und noch dazu in Richtung der Mehrheit der Daten
+verschoben. Dadurch ist die scheinbare Kreuzkorrelation stets zu klein. Ist also
+der Mittelwert aus physikalischen Gründen bekannt, zum Beispiel Null aus Symmetriegründen, sollte der numerische gemessene
+Mittelwert auf keinen Fall abgezogen werden, "`um das Ergebnis zu verbessern"'. Diese übliche Praxis ist wie gesehen falsch, da sie zu einer
+Unterschätzung der Langzeitkorrelationen führt!
+
+Gleichung \eqref{eq:crosscorrnum} ist numerisch nicht sehr
 effizient auszuwerten, da im allgemeinen $2N^2$ viele Operationen
 benötigt werden. Auf der anderen Seite ist die
 Kreuzkorrelation~\eqref{eq:crosscorrtime} strukturell einer Faltung
 sehr ähnlich.  Daher liegt es nahe, auch hier die FFT gemäß
-\eqref{eq:discretefold} zur Beschleunigung einzusetzen. Dazu denken
-wir uns die Signale $A$ und $B$ außerhalb $[0,T]$ durch Null
-fortgesetzt, so dass wir das Integral in \eqref{eq:crosscorrint}
-bedenkenlos nach Unendlich erweitern können. Dann ist
+\eqref{eq:discretefold} zur Beschleunigung einzusetzen. Dazu nehmen wir ohne Beschränkung der Allgemeinheit an, dass die Observablen $\mean{A}=\mean{B}=0$ erfüllen und  außerhalb $[0,T]$ Null seien. Dann ist
 \begin{equation}
-  C(A,B)(\tau) = \frac{1}{T}\bigl(A \star B(-\cdot)\bigr)(-\tau) =
+  C(A,B)(\tau) =
+  \frac{1}{T}\int_{-\infty}^{\infty} A(t)B(t+\tau)\,dt
+  =  
+  \frac{1}{T}\bigl(A \star B(-\cdot)\bigr)(-\tau) =
   \frac{1}{T} \bigl(A(-\cdot) \star B\bigr)(\tau)\,,
 \end{equation}
-was effizient im Frequenzraum bestimmt werden kann:
+was gemäß \eqref{eq:fourierfaltung} effizient im Frequenzraum bestimmt werden kann:
 \begin{equation}
   \label{eq:crosscorrfft}
   C(A,B)(t) = \frac{\sqrt{2\pi}}{T}\FT^{-1}
-  \bigl(\FT(A)(-\omega)\FT(B)(\omega)\bigr) = \sqrt{2\pi}\FT^{-1}
+  \bigl(\FT(A)(-\omega)\FT(B)(\omega)\bigr) = \frac{\sqrt{2\pi}}{T}\FT^{-1}\FT^{-1}
   \bigl(\overline{\FT(A)}\FT(B)\bigr)\,.
 \end{equation}
-Diskretisiert ergibt sich schließlich
+Diskretisiert ergibt sich schließlich analog \eqref{eq:discretefold}
 \begin{equation}
   \label{eq:crosscorrnumfft}
   C(A,B)(k\Delta)
@@ -676,38 +696,21 @@ def kreuzkorrelation(A, B):
     return numpy.real(fft.ifft(ftA*ftB))/A.shape[0]
 \end{lstlisting}
 
-\subsection{Kreuzkorrelation von Signalen}
+\subsection{Autokorrelationsfunktion}
 
-Analog zu \eqref{eq:crosscorrtime} kann man die Kreuzkorrelation auch
-für \emph{endliche} Signale definieren. Für zwei quadratintegrable, reelle
-Signale $f$ und $g$ ist in Analogie die Kreuzkorrelationsfunktion
-definiert als
-\begin{equation}
-  C(f,g)(\tau) = \int_{-\infty}^{\infty} f(t)g(t+\tau)\,dt,
-\end{equation}
-wobei wegen der Quadratintegrabilität auf die Normierung $1/T$ und
-damit den Grenzübergang verzichtet wird. Diese Kreuzkorrelation misst
-keine Korrelationen im stochastischen Sinne mehr, weil das Integral
-nun keine Zeitmittelung mehr darstellt. Stattdessen ist $C(f,g)(\tau)$
-in diesem Fall ein Maß dafür, wie sehr sich die Signale $f$ und $g$
-mit einem Zeitversatz $\tau$ im Verlauf ähneln. Diese Form der
-Kreuzkorrelation zweier Signale ist einer Faltung noch ähnlicher als
-das Zeitmittel: Diese Form der
-\begin{equation}
-  C(f,g)(\tau) = \bigl(f \star g(-\cdot)\bigr)(-\tau) =
-  \bigl(f(-\cdot) \star g\bigr)(\tau).
-\end{equation}
-Sind die Funktionen $f$ und $g$ wieder äquidistant diskretisiert an
-Punkten $t_0 + k\Delta$, $k=0(1)N-1$ gegeben, ist die numerische
-Näherung analog zu \eqref{eq:discretefold} gegeben durch
-\begin{equation}
-  C(f,g)(k\Delta)
-  \approx
-  \frac{T}{N}\,\text{iDFT}
-  \bigl(\left(e^{-i\omega_0 t_0}\right)^n\overline{\text{DFT}(A)}\,\text{DFT}(B)\bigr)(k)\,.
-\end{equation}
-Anders als beim Zeitmittel, aber analog zur Faltung, entfällt hier der
-Vorfaktor $T$ nicht.
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/autokorrelation}
+  \caption{Drei Messungen (links) und zugehörige Autokorrelationen (rechts).
+  Die mit grünen Punkten dargestellte Messung
+  dekorreliert bereits nach weniger als 10 Datenpunkten. Dabei spielt es
+  keine Rolle, dass der Mittelwert nicht Null ist. Die rote Kurve hingegen
+  schwankt deutlich langsamer, daher fällt die zugehörige Autokorrelation 
+  erst nach 80 Punkten auf Null ab. Die blau gepunktete Kurve hingegen
+  fällt sehr langsam ab, entsprechend fällt die Autokorrelation auch nach 100
+  Datenpunkten fast nicht ab.}
+  \label{fig:acfs}
+\end{figure}
 
 \begin{figure}
   \centering
@@ -720,8 +723,6 @@ Vorfaktor $T$ nicht.
     die durch die Kopplungszeit des Thermostaten bestimmt ist.}
   \label{fig:vac}
 \end{figure}
-
-\subsection{Autokorrelationsfunktion}
 
 Im Spezialfall $A=B$ spricht man von der
 \emph{\keyword{Autokorrelationsfunktion}}. Diese ist offenbar
@@ -740,20 +741,38 @@ Integration aus
   C(A,A)(0)e^{-\tau/\tau_c}\,d\tau = \tau_c\,C(A,A)(0).
 \end{equation}
 
+Es gilt $C(A,A)(0) = \mean{A(0)^2} - \mean{A}^2 = \sigma^2(A)$, wobei
+$\sigma^2(A)$ die Varianz der Observablen $A$ ist, auf die wir später noch
+genauer eingehen. Zur Normierung wird die Autokorrelationsfunktion häufig
+einfach durch $\sigma^2(A)$ geteilt, so dass sie bei Null den Wert Eins
+annimmt. Dies hat natürlich keinen Einfluss auf die Korrelationszeit.
+
+Abbildung~\ref{fig:acfs} zeigt die Autokorrelationsfunktion dreier
+typischer Verläufe, wie man sie aus Messungen erhalten könnte. Diese
+zeigen, dass ein von Null verschiedener Mittelwert für die Autokorrelation
+keine Rolle spielt, wohl aber eine systematische Drift wie bei der blau
+gepunkteten Kurve. An diesem Beispiel wird auch unmittelbar klar, dass eine
+numerische Mitteilung der Daten keine sinnvolle Aussage liefert --- der
+gemessen Mittelwert hängt ja stark von der Länge des Experiments ab. Später
+werden wir sehen, dass die Korrelationszeit eine wichtige Rolle bei der
+Messfehlerabschätzung spielt, weil sie angibt, wie sehr benachbarte Messwerte
+von einander abhängen, sich also praktisch wiederholen.
+
 Abbildung~\ref{fig:vac} zeigt die Geschwindigkeitsautokorrelation
 $C(v,v)$ einer temperierten Lennard-Jones-Flüs\-sig\-ke\-it bei zwei
-verschiedenen Dichten. Die Temperierung wird dabei mit Hilfe eines
+verschiedenen Dichten, eines typischen Modellsystems in der
+statistischen Physik. Die Temperierung wird dabei mit Hilfe eines
 Thermostaten erreicht, der die Teilchen stochastisch an ein Wärmebad
 koppelt. Dadurch dekorreliert die Geschwindigkeit eines Teilchens in
 einer Korrelationszeit von etwa $1/6$.
 
 $C(v,v)$ wird häufig dazu benutzt, um die Diffusionskonstante $D =
 \int_0^{\infty} C(v,v)(\tau)\, d\tau$ des Systems zu bestimmen, die
-also eng mit der Korrelationszeit des Thermostaten verwandt ist.  Bei
+eng mit der Korrelationszeit des Thermostaten verwandt ist.  Bei
 niedriger Dichte ist das System annähernd ein ideales Gas, und die
 Teilchen dekorrelieren im wesentlichen nur durch den Einfluss des
-Thermostaten, der durch Zufallskräfte wirkt, daher ist $C(v,v)$
-tatsächlich gut exponentiell abfallend.  Formel~\eqref{eq:tauc}
+Thermostaten. Daher ist $C(v,v)$
+tatsächlich einfach exponentiell abfallend.  Formel~\eqref{eq:tauc}
 bestimmt die Korrelationszeit mit guter Genauigkeit zu etwa
 $\tau_c=0.17$, wie durch den Thermostaten zu erwarten. Im Falle der
 dichteren Flüssigkeit hingegen kann diese Formel nicht angewendet
