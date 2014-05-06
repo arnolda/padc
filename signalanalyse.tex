@@ -191,15 +191,13 @@ zum großen Teil in ähnlicher Art schon von der Fourierreihe kennen:
   wird.
 \end{itemize}
 
-\subsection{Spezielle Fouriertransformierte}
-
-Die Fouriertransformierte einer Gaußglocke ist
+Als Beispiel betrachten wir die Fouriertransformierte einer Gaußglocke:
 \begin{equation}
   \FT\left(\frac{1}{\sqrt{2\pi}}e^{-t^2/2}\right)
   =
   \frac{1}{2\pi}e^{-\omega^2/2}\int_{-\infty}^{\infty} e^{-(t-i\omega)^2/2}\, dt
   =
-  \frac{1}{\sqrt{2\pi}}e^{-\omega^2/2}
+  \frac{1}{\sqrt{2\pi}}e^{-\omega^2/2}.
 \end{equation}
 Die Gaussglocke ist also eine Eigenfunktion der Fouriertransformation
 zum Eigenwert 1. Die Fouriertransformation hat tatsächlich sehr viel
@@ -342,7 +340,7 @@ Poissonsche Summenformel~\eqref{eq:poissonsumme}, dass für
 $\omega\in[-\omega_\text{max},\omega_\text{max}]$
 \begin{equation}
   \FT(f)(\omega) =
-  \sum_{k\in\ZZ}\FT(e^{-i\omega \cdot} f)\left(2k\omega_0\right)
+  \sum_{k\in\ZZ}\FT(e^{-i\omega \cdot} f)\left(2k\omega_\text{max}\right)
   =
   \frac{1}{\sqrt{2\pi}}
   \sum_{n\in\ZZ} e^{-i \omega n \Delta}f\left(n \Delta\right)
@@ -431,8 +429,30 @@ Die Faltung geht also in eine punktweise Multiplikation über. Im
 Fourierraum lässt sich also sehr viel schneller falten, als im
 Realraum, wo ja für jeden Punkt ein Integral zu lösen ist.
 
-Dies nutzt man auch numerisch, um Faltungen zu berechnen, in
-Verbindung mit \eqref{eq:dftcont}. Seien zwei Sätze mit $N$ Datenpunkten $f_k =
+\index{Filter}
+Außerdem zeigt \eqref{eq:fourierfaltung}, dass die Faltung der Funktion
+$f$ mit der Funktion $g$ auch als \emph{Filtern} von $f$ verstanden
+werden kann:
+sind $g$ und damit $\FT(g)$ reellwertig und symmetrisch, so werden die
+einzelnen Frequenzkomponenten der Funktion $f$ mit den
+Frequenzanteilen von $g$ gestreckt bzw.\ gestaucht. Man beachte, dass $f$
+für die Definition
+\eqref{eq:fourierfaltung} nicht quadratintegrabel sein muss, sofern
+der Filter $g$ schnell genug abfällt. Insbesondere kann $g$ eine nur
+beschränkte, aber nicht abklingende Funktion sein, wie etwa ein periodisches
+Messsignal.
+
+Durch Wahl einer symmetrischen und reellwertigen
+Fouriertransformierten und Rücktransformation lassen sich
+beliebige Frequenzfilter realisieren. Abbildung~\ref{fig:fourierfaltung}
+illustriert einen (gaußschen) Tiefpassfilter und einen Bandfilter, die
+nur bestimmte Frequenzen passieren lassen. Daher wird beim
+Tiefpassfilter die aufgeprägte hochfrequente Schwingung unterdrückt,
+beim Hochpassfilter hingegen die an sich dominante langsame
+Schwingung.
+
+In der Praxis wird natürlich direkt im Fourierraum gefiltert, mit Hilfe einer
+numerischen diskreten Fouriertransformation gemäß \eqref{eq:dftcont}. Seien dazu zwei Sätze mit $N$ Datenpunkten $f_k =
 f(t_k)$  mit $t_k = t_0 + k\frac{T}{N}$  und $g_k = g(t'_k) $ mit
 $t'_k = t'_0 + k\frac{T}{N}$ gegeben. Mit anderen Worten, die beiden
 Funktionen müssen mit der selben Frequenz abgetastet worden sein, der
@@ -462,32 +482,6 @@ einem impliziten Verschieben der Filterfunktion zur Null hin.
 Die Lage $t_0$ der Abtastung der Funktion $f$ kann hingegen beliebig
 verschoben sein. Die Faltung wird in jedem Fall natürlich nur im
 Abtastbereich der Funktion $f$ berechnet.
-
-\subsection{Filter}
-\index{Filter}
-
-Außerdem lässt \eqref{eq:fourierfaltung} noch eine weitere
-Interpretation der Faltung der Funktion $g$ mit der Funktion $f$ zu:
-Ist $f$ bzw. $\FT(f)$ reellwertig und symmetrisch, so werden die
-einzelnen Frequenzkomponenten der Funktion $g$ mit den
-Frequenzanteilen von $f$ gestreckt bzw.\ gestaucht, $g$ also
-frequenzgefiltert. Man beachte, dass $g$ für die Definition
-\eqref{eq:fourierfaltung} nicht quadratintegrabel sein muss, sofern
-der Filter $f$ schnell genug abfällt. Insbesondere kann $g$ eine nur
-beschränkte, aber nicht abklingende Funktion sein, wie etwa ein
-Messsignal.
-
-Durch Wahl einer symmetrischen und reellwertigen
-Fouriertransformierten und Rücktransformation lassen sich also
-beliebige Frequenzfilter realisieren; in der Praxis wird natürlich
-direkt im Fourierraum gefiltert. Später lernen wir die numerische
-diskrete Fouriertransformation kennen, die nicht zuletzt wegen dieser
-Filtereigenschaften so wichtig ist. Abbildung~\ref{fig:fourierfaltung}
-illustriert einen (gaußschen) Tiefpassfilter und einen Bandfilter, die
-nur bestimmte Frequenzen passieren lassen. Daher wird beim
-Tiefpassfilter die aufgeprägte hochfrequente Schwingung unterdrückt,
-beim Hochpassfilter hingegen die an sich dominante langsame
-Schwingung.
 
 \subsection{Antwort zeitinvarianter linearer Systeme}
 \index{zeitinvariante lineare Systeme}
