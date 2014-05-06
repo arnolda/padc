@@ -21,14 +21,14 @@ from optparse import OptionParser
 
 parser = OptionParser()
 
-parser.add_option("--l", dest = "l",
-                  help = u"Länge des Pendels", metavar = u"Länge",
-                  type = float,
-                  default = 1)
 parser.add_option("--dt", dest = "dt",
                   help = "Integrationszeitschritt", metavar = "Zeitschritt",
                   type = float,
-                  default = 0.1)
+                  default = 0.01)
+parser.add_option("--verlet", dest = "method",
+                  help = "Einfachen Integrator statt Velocity-Verlet benutzen",
+                  action = "store_const", const = "verlet",
+                  default = "simple")
 parser.add_option("--start_a", dest = "start_a",
                   help = "Anfangsauslenkung", metavar = "Winkel",
                   type = float,
@@ -37,10 +37,10 @@ parser.add_option("--start_da", dest = "start_da",
                   help = "Anfangsgeschwindigkeit", metavar = "Geschwindigkeit",
                   type = float,
                   default = 0)
-parser.add_option("--verlet", dest = "method",
-                  help = "Einfachen Integrator statt Velocity-Verlet benutzen",
-                  action = "store_const", const = "verlet",
-                  default = "simple")
+parser.add_option("--l", dest = "l",
+                  help = u"Länge des Pendels", metavar = u"Länge",
+                  type = float,
+                  default = 1)
 
 options, args = parser.parse_args()
 
@@ -68,7 +68,7 @@ abb = pyplot.figure()
 # Pendelskizze
 graph_pos = abb.add_subplot(221, title="Pendel")
 kurve_arm, kurve_gewicht = graph_pos.plot([],[], "b", [],[], "ro")
-graph_pos.axis((-l-0.1,l+0.1,-0.1,2*l+0.1))
+graph_pos.axis((-1.1*l,1.1*l,-0.1*l,2.1*l))
 
 graph_v   = abb.add_subplot(222, title="Winkelgeschwindigkeit")
 kurve_v, = graph_v.plot([],[])
@@ -172,9 +172,7 @@ def animate():
     graph_v.axis((t_min, t_max, numpy.min(ring_v), numpy.max(ring_v)))
     # die Energie ist praktisch konstant, daher
     # den Bereich etwas vergroessern
-    E_min, E_max = numpy.min(ring_E), numpy.max(ring_E)
-    E_min -= 0.01
-    E_max += 0.01
+    E_min, E_max = 0.0, 1.01*numpy.max(ring_E)
     kurve_E.set_data(ring_t, ring_E)
     graph_E.axis((t_min, t_max, E_min, E_max))
 
