@@ -8,6 +8,8 @@
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
 
+% !TEX root = padc.tex
+
 \chapter{Darstellung von Funktionen}
 
 Auch moderne Prozessoren beherrschen nur die Grundrechenarten. Wie
@@ -920,14 +922,21 @@ Die Koeffizienten sind offenbar periodisch, da
   \sum_{k=0}^{N-1} f_k e^{-i\frac{2\pi}{N} n k} \underbrace{e^{-2\pi i k}}_{=1} = g_n.
 \end{equation}
 Insbesondere ist $g_{-k} = g_{N-k}$, und es gibt nur $N$ echt
-verschiedene Koeffizienten bzw. Frequenzen $n/T$. DFT-Bibliotheken
+verschiedene Koeffizienten zu Frequenzen $n/T$. DFT-Bibliotheken
 speichern die Koeffizienten daher meist als Vektor
-$(g_{0},\ldots,g_{N-1})$
-bzw. $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$.  Ist $f$
-reell, so gilt noch dazu $g_{-n} = \overline{g_{n}}$, sodass lediglich
-$\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Allerdings
-sind diese im Allgemeinen komplex, so dass die $N$ reellen
-Freiheitsgrade der Eingangsfunktion erhalten bleiben.
+$(g_{0},\ldots,g_{N-1})$. Für gerades $N$ kann man dies wegen der Periodizität auch als $(g_{0},\ldots,g_{N/2-1},g_{-N/2},\ldots,g_{-1})$ lesen, für ungerades $N$ als
+$(g_{0},\ldots,g_{(N-1)/2},g_{-(N-1)/2},\ldots,g_{-1})$.
+
+Ist $f$ reell, so gilt noch dazu $g_{-n} = \overline{g_{n}}$, sodass lediglich
+$\lceil N/2\rceil$ Koeffizienten wirklich verschieden sind. Dabei ist offenbar $g_0$ stets reell und für gerades $N$ auch $g_{-N/2} = g_{N/2} = \overline{g_{-N/2}}$. Für ungerades $N$ gibt es also $(N-1)/2$ komplexe und einen reellen Koeffizienten, $g_0$, für gerades $N$ sind es $N/2-1$ komplexe und zwei reelle Koeffizienten, nämlich $g_0$ und $g_{-N/2}$. Das kann durch jeweils genau $N$ reelle Zahlen beschrieben werden, die Anzahl der Freiheitsgrade der Eingangsdaten bleibt also erhalten. Die Auswertung vereinfacht sich zu
+\begin{equation}
+  \text{iDFT}(g_n)_k = \begin{cases}
+  	\frac{g_0}{N} + \sum\limits_{n=1}^{(N-1)/2-1} \Re\left[\frac{g_n}{N} e^{i \frac{2\pi}{N} n k}\right] & \text{für }N\text{ ungerade} \\
+  	\frac{g_0}{N} + \sum\limits_{n=1}^{N/2-1} \Re\left[\frac{g_n}{N} e^{i \frac{2\pi}{N} n k}\right] +
+	\frac{g_{-N/2}}{N} (-1)^k
+	& \text{für }N\text{ gerade}.
+  \end{cases}
+\end{equation}
 
 \begin{figure}
   \centering
