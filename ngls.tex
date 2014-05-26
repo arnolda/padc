@@ -413,7 +413,7 @@ robusteres Verfahren gebraucht, zum Beispiel das
 
 Sei also wieder $f\in C([a,b])$ eine stetige Funktion, und
 $f(a)f(b)<0$. Dann hat $f$ gemäß Mittelwertsatz wenigstens eine
-Nullstelle im Interval $[a,b]$, die wir suchen. Dazu setzen wir
+Nullstelle im Intervall $[a,b]$, die wir suchen. Dazu setzen wir
 zunächst $a_0=a$ und $b_0=b$. Dann betrachten wir den
 Intervallmittelpunkt
 \begin{equation}
@@ -426,7 +426,7 @@ unterschiedliche Vorzeichen, so muss eine Nullstelle im halb so
 großen Intervall $a_1=a_0$, $b_1=m_0$
 liegen, mit dem wir nun weiter verfahren. Andernfalls ist
 notwendigerweise $f(m_n)f(b_n) < 0$, und die Nullstelle ist im neuen
-Interval $a_1=m_0$, $b_1 = b_0$. Ist $b_n - a_n$ kleiner als die
+Intervall $a_1=m_0$, $b_1 = b_0$. Ist $b_n - a_n$ kleiner als die
 gewünschte Genauigkeit für die Nullstelle, bricht man ebenfalls
 ab. $m_n$ ist dann eine Näherung für die Nullstelle mit der gewünschten
 Genauigkeit.
@@ -459,7 +459,7 @@ verkleinert man dieses durch weitere Bisektionsschritte, und versucht dann
 erneut, das Newtonverfahren anzuwenden.
 
 In SciPy implementiert \scipy{scipy.optimize.bisect(f, a, b)} mit der
-Funktion \argd{f} und Intervalgrenzen \argd{a} und \argd{b} die
+Funktion \argd{f} und Intervallgrenzen \argd{a} und \argd{b} die
 Bisektion. \scipy{scipy.optimize.brentq(f, a, b)} implementiert die
 Brentsche Methode, die unter den selben Bedingung wie die Bisektion
 konvergiert, aber meist wesentlich schneller.
@@ -481,8 +481,8 @@ die Sekantenmethode $10^{-3}$.
     für diese Methode unerheblich ist. Blau dargestellt ist wieder
     $f$, die grünen Balken markieren die nacheinander generierten,
     kleiner werdenden Intervalle $[a_n, b_n]$. Die gestrichelten,
-    schwarzen Linien markieren die Intervalmitten $m_n$, die im
-    nächsten Schritt eine der beiden Intervalgrenzen werden. Rechts:
+    schwarzen Linien markieren die Intervallmitten $m_n$, die im
+    nächsten Schritt eine der beiden Intervallgrenzen werden. Rechts:
     Regula falsi für dieselbe Funktion. Die Funktion ist streng
     konvex, daher reagiert die Regula falsi lethargisch und ist der
     Bisektion unterlegen; die Intervalle verkürzen sich praktisch
@@ -494,33 +494,36 @@ die Sekantenmethode $10^{-3}$.
 \section{\keyword{Regula falsi}}
 
 Sowohl die Bisektion wie auch die Sekantenmethode benötigen zwei
-Startwerte. Daher liegt es nahe, die Verfahren zu kombinieren.
-Bei der \emph{Regula falsi} wird wie bei der Bisektion ein Interval
+Startwerte. Daher liegt es nahe, die Verfahren zu kombinieren.  Bei
+der \emph{Regula falsi} wird wie bei der Bisektion ein Intervall
 $[a,b]$ schrittweise verkleinert so dass dieses stets wenigstens eine
-Nullstelle enthält. Anders als bei der Bisektion wird der neue
-Randpunkt $m$ allerdings nicht einfach als Intervalmitte bestimmt,
+Nullstelle enthält.  Anders als bei der Bisektion wird der neue
+Randpunkt $m$ allerdings nicht einfach als Intervallmitte bestimmt,
 sondern mit Hilfe der Sekantenmethode, mit den beiden
-Intervalrandpunkten $a$ und $b$ als Stützstellen:
+Intervallrandpunkten $a$ und $b$ als Stützstellen:
 \begin{equation}
   m = b - f(b)\frac{b - a}{f(b) - f(a)} =
   \frac{f(b)a - f(a)b}{f(b) - f(a)}.
 \end{equation}
 Da $f(a)f(b)<0$, schneidet die Sekante die Nulllinie immer im
-Interval.  Dadurch verkleinert sich das Interval schneller als beim
+Intervall.  Dadurch verkleinert sich das Intervall schneller als beim
 Bisektionsverfahren, sofern die Nullstelle der Sekante dicht an der
-echten Nullstelle liegt. Hat die Funktion im Intervall allerdings
-einen Wendepunkt, ist also nicht streng konkav oder konvex, dann wird
-die Regula falsi sehr langsam, was auch als Lethargie bezeichnet
-wird. Der Grund ist, dass eine der beiden Intervallgrenzen sehr dicht
-an die Nullstelle rückt, und im folgenden nur noch diese Grenze
-minimal verbessert wird, während die zweite Grenze unverändert
-bleibt. Dies ist zum Beispiel in Abbildung~\ref{fig:bisektion} rechts
-gezeigt. Leider sind nicht streng konkave oder konvexe Funktionen eher
-die Regel als die Ausnahme, daher ist die einfache Bisektion oft
-schneller als die Regula falsi.  Die Regula falsi ist nur dann die
-schnellste und stabilste Nullstellensuche, falls die Ableitung der
-Funktion nicht bekannt ist, man aber weiß, dass die Funktion streng
-konvex oder konkav ist.
+echten Nullstelle liegt. 
+
+Leider gilt dies aber nur, wenn die Funktion im Intervall eine
+Wendepunkt hat. Ist dies nicht der Fall, wenn die Funktion im
+Intervall also streng konkav oder konvex ist, dann wird die Regula
+falsi sehr langsam, was auch als \emph{Lethargie} bezeichnet wird.
+Der Grund ist, dass eine der beiden Intervallgrenzen sehr dicht an die
+Nullstelle rückt, und im folgenden nur noch diese Grenze minimal
+verbessert wird, während die zweite Grenze unverändert bleibt. Dies
+ist zum Beispiel in Abbildung~\ref{fig:bisektion} rechts gezeigt.
+
+Unglücklicherweise gibt es jedoch -- außer wenn die Funktion genau an
+der Nullstelle einen Wendepunkt hat -- immer eine Umgebung um die
+Nullstelle, in der die Funktion streng konkav oder konvex ist, so dass
+die Regula falsi immer ab einer gewissen Genauigkeit lethargisch
+konvergiert.
 
 \section{Newtonverfahren in mehreren Dimensionen}
 \index{Newtonverfahren>in mehreren Dimensionen}
