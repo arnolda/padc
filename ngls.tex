@@ -118,7 +118,7 @@ Wir betrachten nun zwei Fixpunkte $\overline{x}$ und $\overline{y}$. Dann gilt
 Das bedeutet, dass es nur genau einen Fixpunkt $\overline{x}$ von $g$
 in $M$ gibt, und dass die sukzessive Substitution für jeden Startwert
 \emph{global} gegen $\overline{x}$ konvergiert. \eqref{eq:banach}
-gibt auche eine \textit{a priori}-Abschätzung des Fehlers:
+gibt auch eine \textit{a priori}-Abschätzung des Fehlers:
 \begin{equation}
   \norm{\overline{x} - x_n} \le \frac{L^n}{1-L}\norm{g(x_0) - x_0}
 \end{equation}
@@ -512,10 +512,10 @@ echten Nullstelle liegt.
 
 Leider gilt dies aber nur, wenn die Funktion im Intervall eine
 Wendepunkt hat. Ist dies nicht der Fall, wenn die Funktion im
-Intervall also streng konkav oder konvex ist, dann wird die Regula
+Intervall also konkav oder konvex ist, dann wird die Regula
 falsi sehr langsam, was auch als \emph{Lethargie} bezeichnet wird.
 Der Grund ist, dass eine der beiden Intervallgrenzen sehr dicht an die
-Nullstelle rückt, und im folgenden nur noch diese Grenze minimal
+Nullstelle rückt und im folgenden nur noch diese Grenze minimal
 verbessert wird, während die zweite Grenze unverändert bleibt. Dies
 ist zum Beispiel in Abbildung~\ref{fig:bisektion} rechts gezeigt.
 
@@ -523,7 +523,15 @@ Unglücklicherweise gibt es jedoch -- außer wenn die Funktion genau an
 der Nullstelle einen Wendepunkt hat -- immer eine Umgebung um die
 Nullstelle, in der die Funktion streng konkav oder konvex ist, so dass
 die Regula falsi immer ab einer gewissen Genauigkeit lethargisch
-konvergiert.
+konvergiert, daher ist die einfache Bisektion in der Regel schneller
+als die Regula falsi. Die Regula falsi ist nur dann die schnellste und
+stabilste Nullstellensuche, falls die Ableitung der Funktion nicht
+bekannt ist, man aber weiß, dass die Funktion einen Wendepunkt in der
+Nullstelle hat.
+
+Die Regula falsi ist ein gutes Beispiel dafür, dass die Kombination
+zweier schneller und robuster Verfahren keineswegs immer ein
+schnelleres oder robusteres Verfahren liefert.
 
 \section{Newtonverfahren in mehreren Dimensionen}
 \index{Newtonverfahren>in mehreren Dimensionen}
