@@ -31,7 +31,7 @@ def linindex(x, y):
     global N
     return (x % N) + N*(y % N)
 # Schrittweite
-h=1
+h=0.1
 # Matrix
 Ap=zeros((N*N, N*N))
 
@@ -39,7 +39,7 @@ eqn=0
 for y in range(N):
     for x in range(N):
         if eqn > 0:
-            Ap[eqn, linindex(x,y)] = -4/h**2
+            Ap[eqn, linindex(x,y)]   = -4/h**2
             Ap[eqn, linindex(x+1,y)] = 1/h**2
             Ap[eqn, linindex(x-1,y)] = 1/h**2
             Ap[eqn, linindex(x,y+1)] = 1/h**2
@@ -59,7 +59,7 @@ A = normal(0,1,n*n)
 A = A.reshape((n,n))
 # strikt diagonal dominant machen
 for i in range(n):
-    A[i,i] = 1 + sum([abs(A[i,k]) for k in range(n)]) - abs(A[i,i])
+    A[i,i] = sum([abs(A[i,k]) for k in range(n)]) - abs(A[i,i])/0.9
 
 # zufaelliger Zielvektor/Ladungsdichte
 b = normal(0,1,n)
@@ -101,7 +101,8 @@ graph = figure.add_subplot(121)
 graph.set_yscale("log")
 
 # Anzahl Jacobi/etc Schritte
-steps = 40
+steps  = 25
+isteps = 4
 
 # gutartige Matrix A
 xjacobi  = zeros(n)
@@ -109,33 +110,41 @@ xjacobis  = [ xjacobi ]
 xgs      = zeros(n)
 xgss      = [ xgs.copy() ]
 # nicht strikt diagdom Ap
-xgsp = zeros(N*N)
-xgssp = [ xgsp ]
+xjacobip = zeros(N*N)
+xjacobisp = [ xjacobip ]
+xgsp     = zeros(N*N)
+xgssp     = [ xgsp ]
 xsorp    = zeros(N*N)
 xsorsp    = [ xsorp.copy() ]
 
-for step in range(steps):
-    xjacobi = jacobi_step(A, b, xjacobi)
-    xjacobis.append(xjacobi)
-    sor_step(A, b, 1, xgs)
-    xgss.append(xgs.copy())
+for step in range(0, steps):
+    for istep in range(isteps):
+        xjacobi = jacobi_step(A, b, xjacobi)
+        sor_step(A, b, 1, xgs)
+        
+        xjacobip = jacobi_step(Ap, bp, xjacobip)
+        sor_step(Ap, bp, 1, xgsp)
+        sor_step(Ap, bp, 1.66, xsorp)
 
-    sor_step(Ap, bp, 1, xgsp)
-    xgssp.append(xgsp)
-    sor_step(Ap, bp, 1.63, xsorp)
+    xjacobis.append(xjacobi.copy())
+    xgss.append(xgs.copy())
+    
+    xjacobisp.append(xjacobip.copy())
+    xgssp.append(xgsp.copy())
     xsorsp.append(xsorp.copy())
 
 jac_error  = [ norm(dot(A,x) - b) for x in xjacobis ]
 gs_error   = [ norm(dot(A,x) - b) for x in xgss ]
-gs_errorp =  [ norm(dot(Ap,x) - bp) for x in xgssp ]
+jac_errorp = [ norm(dot(Ap,x) - bp) for x in xjacobisp ]
+gs_errorp  = [ norm(dot(Ap,x) - bp) for x in xgssp ]
 sor_errorp = [ norm(dot(Ap,x) - bp) for x in xsorsp ]
 
-graph.plot(range(steps+1), jac_error, "bo", clip_on=False)
-graph.plot(range(steps+1), gs_errorp, "r+", clip_on=False)
-graph.plot(range(steps+1), gs_error, "rD", clip_on=False)
-graph.plot(range(steps+1), sor_errorp, "g*", clip_on=False)
+graph.plot(range(0, isteps*(steps+1),isteps), jac_error, "bo", clip_on=False)
+graph.plot(range(0, isteps*(steps+1),isteps), gs_error, "rD", clip_on=False)
+graph.plot(range(0, isteps*(steps+1),isteps), jac_errorp, "b.", clip_on=False)
+graph.plot(range(0, isteps*(steps+1),isteps), gs_errorp, "r+", clip_on=False)
+graph.plot(range(0, isteps*(steps+1),isteps), sor_errorp, "g*", clip_on=False)
 
-graph.axis((0,steps+1,1e-17,10))
 graph.xaxis.set_label_text("Schritte")
 graph.yaxis.set_label_text("Fehler")
 
@@ -160,7 +169,8 @@ for omega in omegas:
     errors.append(norm(dot(Ap,xsorp) - bp))
 
 graph.plot(omegas, errors, "g*", clip_on=False)
-graph.axis((0,2,5e-3,20))
 graph.xaxis.set_label_text(u"ω")
 
 figure.savefig("iterative.pdf")
+
+print "optimal omega:", omegas[argmin(errors)]

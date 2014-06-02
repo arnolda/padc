@@ -7,7 +7,7 @@
 % http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
-% !TeX root = padc.tex
+% !TEX root = padc.tex
 
 \chapter{Lineare Algebra \textrm{II}}
 \index{Gleichungssysteme>lineare}
@@ -215,10 +215,9 @@ Diese Bedingung ist sehr stark, zum Beispiel erfüllen weder die Matrix
 aus dem Eingangsbeispiel noch etwa die für die Spline-Interpolation
 benötigten Matrizen diese Bedingung, da in beiden Fällen das
 Diagonalelement betragsmäßig die Summe der Nebenelemente
-ist. Allerdings sind die bei der sogenannten Finite-Elemente
-Modellierung zur Diskretisierung von Differentialgleichungen
-entstehenden Matrizen meist strikt diagonaldominant. Daher spielen
-Löser für diese Art von Matrizen auch kommerziell eine wichtige Rolle.
+ist. Strikt diagonaldominante Matrizen treten zum Beispiel bei der
+sogenannten Finite-Elemente-Modellierung zur Diskretisierung von
+Differentialgleichungen auf.
 
 Ist $A$ strikt diagonaldominant, so nutzen wir die Maximumsnorm
 \begin{equation}
@@ -240,6 +239,17 @@ Vektormaximumsnorm bezeichnet. Je größer also die Diagonaleinträge
 gegenüber den Nebeneinträgen sind, desto schneller konvergiert das
 Verfahren, zum Beispiel wenn die Matrix eine kleine Störung der
 Einheitsmatrix ist.
+
+Diagonaldominanz ist keine
+\emph{notwendige} Bedingung für Konvergenz;
+auch für Matrizen, die nicht diagonaldominant
+sind, kann das Verfahren durchaus konvergieren
+(vergleiche auch Abbildung~\ref{fig:sor}). In diesem Fall ist die
+Konvergenz aber oft sehr langsam. Ist umgekehrt die Matrix zwar strikt
+diagonaldominant, aber das Diagonalelement in einigen Zeilen betragsmäßig
+nur wenig größer als die Betragssumme der restlichen Elemente, so ist $\norm{T}_\infty\approx 1$, und die Konvergenz kann trotzdem sehr langsam sein. In solchen Fällen muss
+zum effizienteren SOR-Verfahren gegriffen werden, das wir weiter unten besprechen
+werden.
 
 \subsubsection{Indizierte Matrixspeicherung}
 \index{indizierte Matrixspeicherung}
@@ -320,9 +330,9 @@ der etwas komplexeren Matrix $B= D + L$. Tatsächlich ist auch
   T = I - (D + L)^{-1} A = (D + L)^{-1}(D + L - A) = -(D+L)^{-1} U.
 \end{equation}
 Man kann zeigen, dass $\norm{T}_\infty$ beim Gauß-Seidel-Verfahren
-kleiner ist als beim Jacobi-Verfahren. Das bedeutet allerdings im
-allgemeinen nicht, dass das Gauß-Seidel-Verfahren schneller ist, trotz
-dessen, dass teilweise mit prinzipiell besseren Näherungen gerechnet
+kleiner ist als beim Jacobi-Verfahren. Das bedeutet oft, aber nicht immer,
+dass das Gauß-Seidel-Verfahren schneller ist, obwohl teilweise mit
+prinzipiell besseren Näherungen gerechnet
 wird. Man spart allerdings den Speicherplatz, um $x^{(i+1)}$
 zwischenzuspeichern.
 
@@ -351,27 +361,6 @@ auch nicht strikt diagonaldominante Matrizen behandelt
 werden. Allerdings kann man nur zeigen, dass $0<\omega< 2$ gelten
 muss, aber ein Wert $\omega$, der zu schneller Konvergenz führt, muss
 durch Ausprobieren gefunden werden.
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/iterative}
-  \caption{Konvergenz von Jacobi-, Gauß-Seidel- und
-    Relaxationsverfahren. Zum einen wird die Matrix $A$ aus
-    \eqref{eq:2d-laplace} betrachtet, die wie gesagt nicht strikt
-    diagonaldominant ist. Zum anderen wird eine Matrix $B$ mit
-    genausovielen, normalverteilten Einträgen, betrachtet, die strikt
-    diagonaldominant gemacht wurde, indem $b_{i,i} = 1+ \sum_{k\neq
-      i}\abs{b_{ik}}$ gesetzt wurde. Links sind die Fehler
-    $\norm{Bx-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
-    Matrix $B$ mit blauen Punkten bzw.\ roten Rauten eingezeichnet. Die
-    roten Kreuze zeigen hingegen den Fehler des Gauß-Seidel-Verfahrens
-    für die Matrix $A$, das nicht konvergiert. Grüne Sterne
-    schließlich zeigen den Fehler des SOR-Verfahrens, das mit
-    $\omega=1,63$ auch bei Matrix $A$ konvergiert. Der rechte Graph
-    zeigt den Fehler des SOR-Verfahrens in Abhängigkeit von $\omega$
-    nach 20 Schritten.}
-  \label{fig:sor}
-\end{figure}
 
 In Matrixschreibweise gilt analog zu \eqref{eq:gst}
 \begin{multline}
@@ -415,15 +404,35 @@ Relaxationsfaktor \lstinline!omega! und die aktuelle Näherung
 neuen Näherung überschrieben, die übergebene Variable \lstinline!x!
 also geändert.
 
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/iterative}
+  \caption{Konvergenz von Jacobi-, Gauß-Seidel- und
+    Relaxationsverfahren bei einer nicht strikt diagonaldominanten Matrix $A$ und einer
+    diagonaldominanten Matrix $B$. Links sind die Fehler
+    $\norm{Bx-b}_2$ von Jacobi- und Gauß-Seidel-Verfahren für die
+    Matrix $B$ mit großen blauen Kreisen bzw.\, roten Rauten eingezeichnet.
+    	Die entsprechenden Fehler für die Matrix $A$ sind als
+    blaue Punkte (Jacobi) und rote Kreuze (Gauß-Seidel) eingezeichnet. Obwohl $A$
+    nicht strikt diagonaldominant ist, konvergieren die Verfahren, allerdings extrem
+    langsam. Hier benötigt man das SOR-Verfahren (grüne Sterne), das mit
+    $\omega=1,66$ auch bei Matrix $A$ gut konvergiert. Der rechte Graph
+    zeigt den Fehler des SOR-Verfahrens in Abhängigkeit von $\omega$
+    nach 20 Schritten, der sehr sensitiv von $\omega$ abhängt. Der optimale Wert
+    lässt sich nur durch solches Ausprobieren ermitteln.}
+  \label{fig:sor}
+\end{figure}
+
 Abbildung~\ref{fig:sor} zeigt das Fehlerverhalten von Jacobi-,
 Gauß-Seidel- und SOR-Verfahren für die nicht strikt diagonaldominante
 Matrix $A$ aus \eqref{eq:2d-laplace} im Eingangsbeispiel und eine
-zufällige strikt diagonaldominante Matrix. Wie man sieht, konvergieren
-sowohl Jacobi- wie auch Gauß-Seidel-Verfahren sehr schnell mit
-exponentieller Rate, sofern die Matrix strikt diagonaldominant ist.
-Keines der beiden Verfahren konvergiert aber für die Matrix $A$, im
-Gegensatz zum SOR-Verfahren, dass auch bei dieser Matrix mit
-exponentieller Rate konvergiert.
+zufällige besetzte, strikt diagonaldominante Matrix $B$. Diese wurde erzeugt,
+indem die Nichtdiagonaleinträge zunächst normalverteilt zufällig gewählt
+und daraus die Diagonalelemente als $b_{i,i} = \sum_{k\neq i}\abs{b_{ik}}/0,9$ berechnet wurden, so dass $\norm{T}_\infty \approx 0.9 < 1$. Wie man sieht, konvergieren
+sowohl Jacobi- wie auch Gauß-Seidel-Verfahren sehr schnell für diese
+strikt diagonaldominante Matrix. Für die Matrix $A$ hingegen sind beide
+Verfahren äußerst langsam, während das SOR-Verfahren mit passend gewähltem
+$\omega$ fast so schnell wie bei einer gutartigen Matrix konvergiert.
 
 Im rechten Graphen sieht man allerdings auch, dass die Wahl von
 $\omega$ die Konvergenz stark beeinflusst. Die Matrix $A$ ist ein
