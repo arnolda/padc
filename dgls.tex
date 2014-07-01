@@ -7,7 +7,7 @@
 % http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
-% !TeX root = padc.tex
+% !TEX root = padc.tex
 
 \chapter{Differentialgleichungen}
 \index{Differentialgleichung}
@@ -35,8 +35,8 @@ Schwieriger ist die Lösung partieller Differentialgleichungen, die
 mehrdimensionale Variablen und deren Ableitungen enthalten.  Diese
 spielen in der Physik eine besonders wichtige Rolle, weil sie bei
 zeit- und ortsabhängigen Prozessen quasi automatisch auftreten. Sie
-werden meist mit Hilfe finiter Element-Methoden behandelt, die aber zu
-komplex sind, um sie in dieser Vorlesung einzuführen. Wir lernen
+werden meist mit Hilfe finiter Element-Methoden behandelt, die wir in
+dieser Vorlesung aber nur anreissen können. Wir lernen
 stattdessen einige Beispiele von partiellen DGLs kennen und wie diese
 mit Hilfe finiter Differenzen oder Fouriertransformationen numerisch
 gelöst werden können.
@@ -602,12 +602,132 @@ Finite-Volumen-Methoden (FVM) oder die Finite-Differenzen-Methode
 (FDM). In einigen Fällen können Differentialgleichungen auch durch
 schnelle Fouriertransformation numerisch gelöst werden.
 
-Die Finite-Differenzen-Methode hatten wir bereits bei der Lösung der
-Besselschen Differentialgleichung oder der Poissongleichung gesehen.
-Im Folgenden wird angerissen, wie die Finite-Elemente-Methode
-funktioniert, sowie auf die Lösung einiger spezieller partieller
-Differentialgleichungen eingegangen mit Hilfe finiter Differenzen oder
-Fouriertransformationen.
+Das Ziel bei diesen Ansätzen ist immer gleich: die Differentialgleichung
+soll in eine algebraische Gleichung überführt werden, für die wir ja bereits effiziente Lösungsmethoden kennen.
+
+\subsection{Finite-Differenzen-Methode --- Wärmeleitungsgleichung}
+\index{Diffusionsgleichung}
+\index{Wärmeleitungsgleichung}
+\index{Schrödingergleichung}
+\index{Finite-Differenzen-Methode}
+\index{FDM}
+\index{Lösung partieller DGLs>FDM}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/waermeleitung}
+  \caption{Näherungen für die Diffusionsgleichung. Oben die Lösungen
+    zu unterschiedlichen Zeitpunkten $t$ für eine $\delta$-verteilte
+    Anfangsverteilung (links) und zwei Quellen konstanter Rate 1 bei 0
+    und $\nicefrac{1}{2}$ bei -5 (rechts). Unten sind die
+    korrespondieren Gesamtmassen angegeben. Für die
+    $\delta$-Verteilung sind die Gesamtmassen auch bei geringfügig
+    höheren Zeitschritten $\delta t$ angegeben, wobei für $\delta
+    t=0,014$ die Näherung versagt.}
+  \label{fig:waermeleitung}
+\end{figure}
+
+Ist das interessante Gebiet $\Omega$ hinreichend einfach, reichen
+die einfachen finite Differenzen, wie wir sie bereits kennengelernt haben, um partielle
+Differentialgleichungen zu diskretisieren.  Wir betrachten als
+Beispiel die Differentialgleichung
+\begin{equation}
+  \label{eq:diffdgl}
+  \frac{\delta}{\delta t} p(x, t) =
+  D\frac{\delta^2}{\delta x^2} p(x, t).
+\end{equation}
+Gesucht ist $p:\RR^n\times\RR\to\RR$, $D$ ist ein freier Parameter,
+die Diffusionskonstante. Diese Differentialgleichung hatten wir in
+Abschnitt~\ref{sec:rw} als Diffusionsgleichung kennengelernt. Meist
+wird diese Gleichung aber als Wärmeleitungsgleichung bezeichnet, weil
+sie auch die Wärmeleitung beschreibt. Auch die zeitabhängige
+Schrödingergleichung hat diese Form, ist allerdings komplexwertig.
+
+Um die Differentialgleichung zu lösen, diskretisieren wir wie gewohnt
+die Raumkoordinaten äquidistant mit Abstand $h$, d.\,h.\, wir setzen
+$x_k = kh$ und $p_k(t) = p(x_k, t)$ für $k=1(1)N$. Für die zweite
+Ableitung kennen wir bereits eine einfache Strategie: wir ersetzen sie
+durch eine finite Differenz auf dem Gitter, etwa
+\eqref{eq:1order2diff}. Das ergibt in einer Dimension die
+ortsdiskretisierte Differentialgleichung
+\begin{equation}
+  \label{eq:discrdiff}
+  \frac{\delta}{\delta t} p_k(t) =
+  \frac{D}{h^2} \left[p_{k-1}(t) - 2 p_k(t) + p_{k+1}(t)\right].
+\end{equation}
+Aus der partiellen Differentialgleichung ist eine gewöhnliche
+Differentialgleichung in $t$ mit $N$ Variablen
+$p_1(t),\ldots,p_N(t)$ geworden, wobei $N$ die Anzahl der Ortspunkte
+ist. Diese DGL lösen wir nun mit dem Runge-Kutta-Verfahren. Das hat
+den großen Vorteil, dass wir die Verteilungen $p_k(t) = p(x_k, t)$, die bei
+großem $N$ oder mehreren Dimensionen sehr groß werden können, nur für
+wenige Zeitschritte speichern müssen.
+
+Quellcode~\ref{lst:waermeleitung} zeigt den resultierenden Code, der
+die Runge-Kutta-Implementierung aus diesem Kapitel nutzt. Wir
+betrachten dabei nur das Intervall $[-10,10]$, dass wir mit $N=201$
+Punkten im Abstand $h=0,1$ diskretisieren. Der Zeitschritt ist als
+$\delta t=0,01$ gewählt. Am Rand des Ortsintervalls benutzen
+wir diesmal keine periodischen Randbedingungen, sondern setzen die
+Funktion an den Intervallrändern auf $p(-10) = p(10) = 0$.
+
+Abbildung~\ref{fig:waermeleitung} zeigt links die Diffusionsgleichung
+für $D=1/2$ und eine $\delta$-Verteilung zum Zeitpunkt $t=0$, was dem
+einfachen Random walk aus Abschnitt~\ref{sec:rw} entspricht. In der
+Diskretisierung wird die $\delta$-Funktion an der Stelle $x_n$ dadurch
+dargestellt, dass $p(x_n)=1/h$ und $p(x_j)=0$ sonst. Die beobachteten
+Verteilungen bei $t=5$ und $t=80$ entsprechen gut den entsprechenden
+Verteilungen in Abbildung~\ref{fig:rw}.
+
+In der unteren Reihe ist die zugehörige Gesamtmasse
+\begin{equation}
+  \int_{-10}^{10} p(x, t)\, dx \approx \sum h\, p(x_n, t)
+\end{equation}
+aufgetragen. Bei unendlichem Intervall ist die Masse offenbar
+erhalten. In unserem Fall ist die Masse ebenfalls zunächst erhalten
+und gleich 1, da wir ja mit einer $\delta$-Verteilung begonnen
+haben. Sobald die Verteilung am Rand des Intervalls ankommt, verlieren
+wir dort wegen der Null-Randbedingung Masse.
+
+\lstinputlisting[style=floating,firstline=10, caption={Python-Code zur
+  Wärmeleitungsgleichung. Räumlich ist die Lösung mittels finiter
+  Differenzen erster Ordnung diskretisiert, zeitlich wird das
+  Runge-Kutta-Verfahren benutzt. Zusätzlich wird der Massenverlust
+  durch die Randbedingungen dargestellt.},label=lst:waermeleitung]{waermeleitung.py}%
+
+Die Abbildung zeigt auch die (In-)Stabilität dieses Ansatzes. Durch
+geringfügige Vergrößerung des Zeitschritts von $0,01$ auf $0,014$ bei
+gleichem Gitterabstand wird die Lösung nach nicht einmal hundert
+Schritten instabil und errechnet sogar negative Massen. Welcher Zeitschritt
+möglich ist, hängt von der Lipschitz-Konstanten des diskretisierten
+Differentialoperators in $t$ ab, die nach \eqref{eq:discrdiff} wie $\O(1/h^2)$ wächst.
+Bei Verfeinerung des Raumgitters muss der Zeitschritt also ebenfalls verkleinert
+werden.
+
+Auf der rechten Seite ist die Lösung der Gleichung
+\begin{equation}
+  \frac{\delta}{\delta t} p(x, t) =
+  D\frac{\delta^2}{\delta x^2} p(x, t)
+  + \frac{1}{2}\,\delta\left(x + 6\right) + \delta(x)
+\end{equation}
+mit zwei konstanten Teilchenquellen bzw. Heizungen dargestellt. Wir
+haben also eine Quelle mit einem halben Teilchen pro Zeiteinheit bei
+$-6$ und eine zweite bei $0$ mit einem Teilchen pro
+Zeiteinheit. Wie man erwarten würde, nehmen die Verteilungen dabei zu,
+bis eine stationäre Verteilung erreicht wird.
+
+Diese lässt sich sogar analytisch bestimmen. Die stationäre Lösung
+erfüllt die Poisson-Gleichung
+\begin{equation}
+  0 = D\frac{\delta^2}{\delta x^2} p(x) +
+  \frac{1}{2}\,\delta\left(x+6\right) + \delta(x).
+\end{equation}
+Die zugehörige homogene Gleichung, die Laplacegleichung, hat im Eindimensionalen Geraden
+als Lösung, die in unserem Fall die $\delta$-Quellen verbinden. Die Steigungen ändern
+sich wegen der $\delta$-Terme bei $-6$ um $0,5$ und bei 0 um 1. Mit
+den 0-Randbedingungen bei $\pm 10$ lassen sich die Steigungen
+bestimmen, und damit auch die Masse $137,5$ des
+Gleichgewichtszustandes, die in der Simulation gut reproduziert wird.
 
 \subsection{Finite-Elemente-Methode}
 \index{Finite-Elemente-Methode}
@@ -661,7 +781,7 @@ können wir zum Beispiel durch numerische Integration berechnen und das
 Gleichungssystem $Au=b$ etwa mit dem SOR-Verfahren lösen.
 
 Woher kommt der Name "`finite Elemente"'? Die FEM wird oft in
-Ingenieursanwendungen eingesetzt, also im $n=3$-dimensionalen Raum.
+Ingenieursanwendungen eingesetzt, also im $3$-dimensionalen Raum.
 Dadurch enthält die Basis üblicherweise viele tausende
 Testfunktionen. Das bedeutet, dass wir das Koeffizientenintegral
 \eqref{eq:femA} mehrere Millionen mal auswerten müssten. Um diesen
@@ -680,160 +800,80 @@ sozusagen. Dann gibt es nur dann Wechselwirkungen zwischen zwei
 Basisfunktionen, wenn diese eine gemeinsame Kante haben, so dass fast
 alle Integrale $a_{pq}=0$ sind, also $A$ dünn besetzt.
 
-Um die Genauigkeit zu verbessern, können zusätzliche Gitterpunkte
-eingefügt werden, oder von vorne herein das Gitter dort feiner gewählt
-werden, wo die Funktion vermutlich stark variiert (zum Beispiel in der
-Nähe einer Wärmequelle, wenn es um Wärmeleitung geht). Dadurch sind
-FEM-Gitter sehr viel komplexer als die regulären kubischen Gitter, die
-in dieser Vorlesung benutzt werden, und ihre Erzeugung selber schon
-eine Kunst. Da FEM vor allem in den Ingenieurwissenschaften benutzt
-wird, gibt es aber sehr leistungsfähige, kommerzielle Softwarepakete
-für die FEM-Modellierung. Eine freie Alternative ist das Softwarepaket
-DUNE~\cite{dune,duneweb}.
-
-\subsection{Finite-Differenzen-Methode --- Wärmeleitungsgleichung}
-\index{Diffusionsgleichung}
-\index{Wärmeleitungsgleichung}
-\index{Schrödingergleichung}
-\index{Finite-Differenzen-Methode}
-\index{FDM}
-\index{Lösung partieller DGLs>FDM}
-
 \begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/waermeleitung}
-  \caption{Näherungen für die Diffusionsgleichung. Oben die Lösungen
-    zu unterschiedlichen Zeitpunkten $t$ für eine $\delta$-verteilte
-    Anfangsverteilung (links) und zwei Quellen konstanter Rate 1 bei 0
-    und $\nicefrac{1}{2}$ bei -5 (rechts). Unten sind die
-    korrespondieren Gesamtmassen angegeben. Für die
-    $\delta$-Verteilung sind die Gesamtmassen auch bei geringfügig
-    höheren Zeitschritten $\delta t$ angegeben, wobei für $\delta
-    t=0,014$ die Näherung versagt.}
-  \label{fig:waermeleitung}
+	\includegraphics[width=\textwidth]{plots/fem}
+	\caption{Links: Lösung des stationären Wärmeleitungsproblems mittels der FEM-Methode mit linearen Splines für $\delta$-artige (blaue Rauten) und hütchenförmige Quellen (rote Kreise). Rechts oben: die verwendeten Splines $v_p(x)$ für $p=0$ (schwarz durchgezogen), $p=-1$ (blau gestrichelt) und $p=1$ (rot gestrichelt). Rechts unten: die zugehörigen Ableitungen der Splines.}
+	\label{fig:fem}
 \end{figure}
 
-Ist das interessante Gebiet $\Omega$ hinreichend einfach, reichen aber
-oft auch einfache finite Differenzen, um partielle
-Differentialgleichungen zu diskretisieren.  Wir betrachten nun als
-Beispiel die Differentialgleichung
+Als Beispiel wollen wir die stationäre Lösung der eindimensionalen
+Wärmeleitungsgleichung direkt bestimmen, also die Differentialgleichung
 \begin{equation}
-  \label{eq:diffdgl}
-  \frac{\delta}{\delta t} p(x, t) =
-  D\frac{\delta^2}{\delta x^2} p(x, t).
+  D\frac{\delta^2}{\delta x^2} p(x) = -q(x)
 \end{equation}
-Gesucht ist $p:\RR^n\times\RR\to\RR$, $D$ ist ein freier Parameter,
-die Diffusionskonstante. Diese Differentialgleichung hatten wir in
-Abschnitt~\ref{sec:rw} als Diffusionsgleichung kennengelernt. Meist
-wird diese Gleichung aber als Wärmeleitungsgleichung bezeichnet, weil
-sie auch die Wärmeleitung beschreibt. Auch die zeitabhängige
-Schrödingergleichung hat diese Form, ist allerdings komplexwertig.
-
-Um die Differentialgleichung zu lösen, diskretisieren wir wie gewohnt
-die Raumkoordinaten äquidistant mit Abstand $h$. Für die zweite
-Ableitung kennen wir bereits eine einfache Strategie: wir ersetzen sie
-durch eine finite Differenz auf dem Gitter, etwa
-\eqref{eq:1order2diff}. Das ergibt in einer Dimension die
-ortsdiskretisierte Differentialgleichung
+lösen, wobei $q(x)= \frac{1}{2}\,\delta\left(x+6\right) + \delta(x)$ die Wärmequellen aus dem vorherigen Beispiel sein sollen. Gesucht ist die Lösung im Interval $\Omega=[-10,10]$ mit der Randbedingung $p(-10) = p(10) = 0$. Wir approximieren die Lösung
+als Summe von linearen Splines auf einem regulären Gitter der Weite $h=2$, d.\,h.\, unsere
+Basisfunktionen sind (vgl. Abbildung~\ref{fig:fem}):
 \begin{equation}
-  \frac{\delta}{\delta t} p(x_k, t) =
-  \frac{D}{h^2} \left[p(x_{k-1}, t) - 2 p(x_k, t) + p(x_{k+1}, t)\right].
+	v_p(x) = \begin{cases}
+		x/h - p - 1 & \text{für } p - 1 \le x/h \le p \\  
+		p + 1 - x/h & \text{für } p \le x/h \le p + 1 \\
+		0 & \text{sonst}
+		\end{cases}\quad,\, p=-4(1)4.
 \end{equation}
-Aus der partiellen Differentialgleichung ist eine gewöhnliche
-Differentialgleichung in $t$ geworden, mit $N$ Variablen
-$p(x_1,t),\ldots,p(x_N, t)$, wobei $N$ die Anzahl der Ortspunkte
-ist. Diese DGL lösen wir nun mit dem Runge-Kutta-Verfahren. Das hat
-den großen Vorteil, dass wir die Verteilungen $p(x_k, t)$, die bei
-großem $N$ oder mehreren Dimensionen sehr groß werden können, nur für
-wenige Zeitschritte speichern müssen.
-
-Quellcode~\ref{lst:waermeleitung} zeigt den resultierenden Code, der
-die Runge-Kutta-Implementierung aus diesem Kapitel nutzt. Wir
-betrachten dabei nur das Intervall $[-10,10)$, dass wir mit $N=200$
-Punkten im Abstand $h=0,1$ diskretisieren. Der Zeitschritt ist als
-$\delta t=0,01$ gewählt. Am Rand des Ortsintervalls benutzen
-wir diesmal keine periodischen Randbedingungen, sondern setzen die
-Funktion außerhalb des Intervalls auf 0. Für hinreichend großes $L$
-nähert die Lösung damit das klassische, freie Problem.
-
-Abbildung~\ref{fig:waermeleitung} zeigt links die Diffusionsgleichung
-für $D=1/2$ und eine $\delta$-Verteilung zum Zeitpunkt $t=0$, was dem
-einfachen Random walk aus Abschnitt~\ref{sec:rw} entspricht. In der
-Diskretisierung wird die $\delta$-Funktion an der Stelle $x_n$ dadurch
-dargestellt, dass $p(x_n)=1/h$ und $p(x_j)=0$ sonst. Die beobachteten
-Verteilungen bei $t=5$ und $t=80$ entsprechen gut den entsprechenden
-Verteilungen in Abbildung~\ref{fig:rw}.
-
-In der unteren Reihe ist die zugehörige Gesamtmasse
+Dies mag zunächst seltsam erscheinen, da ja die zweite Ableitung einer solchen Funktion fast überall Null ist. Die Antwort ist eine partielle Integration bei der Berechnung der linksseitigen Koeffizientenmatrix $A$, durch die die zweite Ableitung verschwindet:
 \begin{equation}
-  \int_{-L}^L p(x, t)\, dx \approx \sum h p(x_n, t)
+  a_{pq} = \int_\Omega v''_q(x)\cdot v_P(x) dx = -\int_\Omega v'_q(x)\cdot v'_p(x) =
+  	\begin{cases}
+	\frac{-2}{h} & \text{für } p=q \\
+	\frac{1}{h}  & \text{für } \lvert p - q \rvert = 1\\
+	0 & \text{sonst.}
+	\end{cases}
 \end{equation}
-aufgetragen. Bei unendlichem Intervall ist die Masse offenbar
-erhalten. In unserem Fall ist die Masse ebenfalls zunächst erhalten
-und gleich 1, da wir ja mit einer $\delta$-Verteilung begonnen
-haben. Sobald die Verteilung am Rand des Intervalls ankommt, verlieren
-wir dort wegen der Null-Randbedingung Masse.
+Die Matrix $A$ ist also tridiagonal mit $-2/h$ auf der Diagonalen und $1/h$ auf den Sub- und Superdiagonalen. Dies ist bis auf einen Faktor $h$ genau die Matrix, die \eqref{eq:discrdiff} für das Finite-Differenzen-Verfahren beschreibt.
 
-\lstinputlisting[style=floating,firstline=10, caption={Python-Code zur
-  Wärmeleitungsgleichung. Räumlich ist die Lösung mittels finiter
-  Differenzen erster Ordnung diskretisiert, zeitlich wird das
-  Runge-Kutta-Verfahren benutzt. Zusätzlich wird der Massenverlust
-  durch die Randbedingungen dargestellt.},label=lst:waermeleitung]{waermeleitung.py}%
-
-Die Abbildung zeigt auch die (In-)Stabilität dieses Ansatzes. Durch
-geringfügige Vergrößerung des Zeitschritts von $0,01$ auf $0,014$ bei
-gleichem Gitterabstand wird die Lösung nach nicht einmal hundert
-Schritten instabil und erreicht sogar negative Massen. Bei Änderung
-der Raumdiskretisierung muss der Zeitschritt ebenfalls angepasst
-werden. Je kleiner $h$, desto kleiner muss auch $\delta t$
-werden. Dies ist nicht durch das Runge-Kutta-Verfahren bedingt,
-sondern eine Folge der finiten Differenzen in der Ortskoordinate.
-
-Auf der rechten Seite ist die Lösung der Gleichung
+Für die rechte Seite ergibt sich durch Auswerten der beiden $\delta$-Integrale
 \begin{equation}
-  \frac{\delta}{\delta t} p(x, t) =
-  D\frac{\delta^2}{\delta x^2} p(x, t)
-  + \frac{1}{2}\,\delta\left(x+\frac{L}{4}\right) + \delta(x)
+  b_p = \int_\Omega q(x)\cdot v_p(x) dx = \begin{cases}
+  \frac{1}{2} & \text{für } p = -3 \\
+  1           & \text{für } p = 0 \\
+  0 & \text{sonst}
+  \end{cases} \quad = q(x_p),
 \end{equation}
-mit zwei konstanten Teilchenquellen bzw. Heizungen dargestellt. Wir
-haben also eine Quelle mit einem halben Teilchen pro Zeiteinheit bei
-$-\nicefrac{L}{4}$ und eine zweite bei $0$ mit einem Teilchen pro
-Zeiteinheit. Wie man erwarten würde, nehmen die Verteilungen dabei zu,
-bis eine stationäre Verteilung erreicht wird.
+also bis auf einen Faktor $h$ ebenfalls die rechte Seite, die sich auch beim Finite-Differenzen-Verfahren ergeben würde. Daher entspricht die Lösung, wie sie Abbildung~\ref{fig:fem} zeigt, auch genau dem Langzeitlimes der FDM-Lösung aus dem letzten Kapitel.
 
-Diese lässt sich sogar analytisch bestimmen. Die stationäre Lösung
-erfüllt die Poisson-Gleichung
+Nehmen wir nun an, dass die rechte Seite nicht mehr $\delta$-Quellen sind, sondern zwei unserer Hutfunktionen der Breite $2h$, also $\tilde q(x)= \frac{1}{2h}\,v_{-3}(x) + \frac{1}{h}v_0(x)$. Für die FDM-Lösung macht dies keinen Unterschied, da nur die Werte an den Spitze eingehen. Für den FEM-Löser hingegen müssen wir nun $b_p$ neu bestimmen:
 \begin{equation}
-  0 = D\frac{\delta^2}{\delta x^2} p(x) +
-  \frac{1}{2}\,\delta\left(x+\frac{L}{4}\right) + \delta(x).
+  b_p = \int_\Omega \tilde q(x)\cdot v_p(x) dx = \frac{1}{2h}\int_\Omega v_p(x) v_{-3}(x) + \frac{1}{h}\int_\Omega v_p(x) v_0(x) dx.
 \end{equation}
-Die zugehörige Laplacegleichung hat aber im eindimensionalen Geraden
-als Lösung, die die $\delta$-Quellen verbinden. Die Steigungen ändern
-sich wegen der $\delta$-Terme bei $-L/4$ um $0,5$ und bei 0 um 1. Mit
-den Randbedingungen bei $\pm L/2$ lassen sich die Steigungen
-bestimmen, und damit auch die Masse $137,5$ des
-Gleichgewichtszustandes, die in der Simulation gut reproduziert wird.
+Eine Hutfunktion trägt dabei nicht nur zu dem Punkt bei, an dem sie liegt, sondern auch zu den benachbarten Punkten, da
+\begin{equation}
+  \int_\Omega v_q(x)\cdot v_p(x) =
+  	\begin{cases}
+	\frac{2}{3}h & \text{für } p=q \\
+	\frac{1}{6}h & \text{für } \lvert p - q \rvert = 1\\
+	0 & \text{sonst,}
+	\end{cases}
+\end{equation}
+die rechte Seite wird also mittels der Hutfunktion geglättet. In unserem Fall ergibt sich
+\begin{equation}
+(b_-4,\ldots,b_4) = (\frac{1}{12},\frac{1}{3},\frac{1}{12},\frac{1}{6},\frac{2}{3},\frac{1}{6}, 0, 0, 0).
+\end{equation}
+Die Lösung mit dieser rechten Seite ist an den beiden Quellen tatsächlich etwas \enquote{runder} als die Lösung für die $\delta$-Spitzen. Eine FDM hätte diese Feinheit nur mit deutlich feinerem Gitter reproduzieren können, da sie anders als FEM keine Annahmen über das Verhalten der Funktion zwischen den Stützstellen verarbeiten kann.
+
+Um die Genauigkeit einer FEM weiter zu verbessern, können dort zusätzliche Gitterpunkte
+eingefügt werden, wo die Funktion vermutlich stark variiert (zum Beispiel in der
+Nähe der Wärmequellen in unserem Beispiel). Auch höhere Splines, zum Beispiel kubische, erhöhen die Genauigkeit, sind allerdings mehrdimensional auf allgemeinen Gitter schwer überhaupt zu definieren. Die Erzeugung solcher komplexer Gitter selber erfordert
+spezielle Software, die oft nicht weniger kompliziert als der eigentliche
+FEM-Löser ist. In der Ingenieurspraxis kommen daher meist sehr leistungsfähige,
+kommerzielle Softwarepakete zum Einsatz. Eine freie Alternative ist das Softwarepaket
+DUNE~\cite{dune,duneweb}.
 
 \subsection{Lösung mittels Fouriertransformation --- Poisson-Gleichung}
 \index{Poisson-Gleichung}
 \index{Lösung partieller DGLs>mittels Fouriertransformation}
 
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/poisson}
-  \caption{Näherungslösung mit $50\times 50$ Gitterpunkten für die
-    Poissongleichung $\Delta \Phi=\rho$ in freien
-    Einheiten. Die Ladungsdichte $\rho$ ist rechts oben gezeigt
-    und beinhaltet zwei normalverteilte Ladungen. Die Lösungen
-    $\Phi_\text{FD}$ mit finiten Differenzen (links oben) und
-    $\Phi_\text{FFT}$ im Fourierraum mittels FFT (links unten) sind
-    praktisch identisch. Dies zeigt auch der relative Fehler
-    $\abs{\Phi_\text{FD} - \Phi_\text{FFT}}/\abs{\Phi_\text{FFT}}$
-    (rechts unten), der weniger als 2 Promille beträgt.}
-  \label{fig:poisson}
-\end{figure}
-
-Die eben schon genannte Poisson-Gleichung
+Die Poisson-Gleichung
 \begin{equation}
   \label{eq:poissonreal}
   \Delta  \Phi(x) = \nabla \cdot \nabla \Phi(x)  = \frac{\rho(x)}{\epsilon}
@@ -882,6 +922,21 @@ wird. Mit einer weiteren, kleinen Korrektur für die
 Ladungsverschmierung lassen sich so die elektrostatischen
 Wechselwirkungen von Millionen von Teilchen in Bruchteilen von
 Sekunden auf einem Großrechner berechnen.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/poisson}
+  \caption{Näherungslösung mit $50\times 50$ Gitterpunkten für die
+    Poissongleichung $\Delta \Phi=\rho$ in freien
+    Einheiten. Die Ladungsdichte $\rho$ ist rechts oben gezeigt
+    und beinhaltet zwei normalverteilte Ladungen. Die Lösungen
+    $\Phi_\text{FD}$ mit finiten Differenzen (links oben) und
+    $\Phi_\text{FFT}$ im Fourierraum mittels FFT (links unten) sind
+    praktisch identisch. Dies zeigt auch der relative Fehler
+    $\abs{\Phi_\text{FD} - \Phi_\text{FFT}}/\abs{\Phi_\text{FFT}}$
+    (rechts unten), der weniger als 2 Promille beträgt.}
+  \label{fig:poisson}
+\end{figure}
 
 Codebeispiel~\ref{lst:poisson} zeigt die Lösung im Fourierraum für
 eine beliebige, zweidimensionale Ladungsverteilung. In der Praxis ist

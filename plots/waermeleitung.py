@@ -23,8 +23,8 @@ D = 0.5
 
 # Kantenlaenge Simulationsbox
 L = 20.0
-# Punkte der Raumdiskretisierung
-N = 200
+# innere Punkte der Raumdiskretisierung
+N = 199
 
 # Zeitraum
 tmax = 80
@@ -34,7 +34,7 @@ dt = 0.01
 # Initialisierung
 #############################################
 
-h = L/N
+h = L/(N+1)
 
 # Raumdiskretisierung, Laplace mit 0-Randbedingung
 Laplace = zeros((N,N))
@@ -70,7 +70,7 @@ def unpack(tnpns):
 figure = pyplot.figure(figsize=(8,6))
 figure.subplots_adjust(left=0.15, right=0.95, top=0.95, wspace=0.3)
 
-x = linspace(-L/2.0, L/2.0, N, endpoint=False)
+x = linspace(-L/2.0, L/2.0, N+2)
 
 # links: homogen, ein Teilchen
 #############################################
@@ -87,7 +87,7 @@ ts, ps, mass = unpack(tnpns)
 graph = figure.add_subplot(221)
 
 for step, style in ((int(5.0/dt), "r-"), (int(20.0/dt), "g--"), (int(tmax/dt), "b:")):
-    graph.plot(x, ps[step], style, linewidth=2, label=("t=%0.1f" % ts[step]))
+    graph.plot(x, [0] + list(ps[step]) + [0], style, linewidth=2, label=("t=%0.1f" % ts[step]))
 
 graph.axis((-L/2.0,L/2.0,0,0.2))
 graph.xaxis.set_label_text("$x$")
@@ -118,7 +118,7 @@ def fhomogen(t, p):
     diff = D*dot(Laplace, p)
     # Delta-Quellen bei L/2 und L/4
     diff[N/2] += 1.0/h
-    diff[N/4] += 0.5/h
+    diff[N/5] += 0.5/h
     return diff
 
 # Am Anfang nix
@@ -134,7 +134,7 @@ ts, ps, mass = unpack(tnpns)
 graph = figure.add_subplot(222)
 
 for step, style in ((int(5.0/dt), "r-"), (int(20.0/dt), "g--"), (int(80.0/dt), "b:"), (int(tmax/dt), "k-")):
-    graph.plot(x, ps[step], style, linewidth=2, label=("t=%0.0f" % ts[step]))
+    graph.plot(x, [0] + list(ps[step]) + [0], style, linewidth=2, label=("t=%0.0f" % ts[step]))
 
 graph.axis((-L/2.0,L/2.0,0,20))
 graph.xaxis.set_label_text("$x$")
