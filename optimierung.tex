@@ -12,13 +12,13 @@
 \chapter{Optimierung}
 \index{Optimierung}
 
-Bei der Optimierung betrachtet man eine Funktion $f:M\to R$, die
+Bei der Optimierung betrachtet man eine Funktion $f:M\to \RR$, die
 \emph{Zielfunktion}, mit einer beliebigen \emph{zulässigen Menge} $M$.
 Gesucht ist $x\in M$, so dass $f(x) \le f(x')$ für alle $x'\in M$. Man
 schreibt kurz
 \begin{equation}
   \label{eq:min}
-  \min_{x\in M} f(x).
+  x = \argmin_{x'\in M} f(x') \quad\text{und}\quad f(x) = \min_{x'\in M} f(x')
 \end{equation}
 Die Menge $M$ ist dabei oft eine Teilmenge des $\RR^n$, die zum
 Beispiel durch \emph{Nebenbedingungen} der Form $g(x)\ge 0$
@@ -31,7 +31,7 @@ $f_v(x)$ gegeben, wobei $v$ freie Parameter sind. Gesucht
 wird
 \begin{equation}
   \label{eq:fit}
-  \min_{v} \sum_{i=1}^n (f_v(x_i) - y_i)^2.
+  \argmin_{v} \sum_{i=1}^n (f_v(x_i) - y_i)^2.
 \end{equation}
 
 Im Spezialfall, dass $f_v$ linear ist, also von der Form
@@ -39,8 +39,8 @@ $f_{v_x,v_c}(x) = \tilde{v_x}^Tx + v_c$, ist dies in
 Vektorschreibweise äquivalent zur Aufgabe
 \begin{equation}
   \label{eq:min2}
-  \min_{(v_x,v_c)\in\RR^{m+1}} \sum_{i=1}^n (v_x^T x_i -
-  v_c - y_i)^2 = \min_{v\in\RR^{m+1}} \norm{A v - b}_2.
+  \argmin_{(v_x,v_c)\in\RR^{m+1}} \sum_{i=1}^n (v_x^T x_i -
+  v_c - y_i)^2 = \argmin_{v\in\RR^{m+1}} \norm{A v - b}_2.
 \end{equation}
 mit
 \begin{equation*}
@@ -71,8 +71,8 @@ bestimmt und nicht durch den durchschnittlichen Fehler.  Aus
 \eqref{eq:min2} wird dann
 \begin{equation}
   \label{eq:mininf}
-  \min_{v\in\RR^{m+1}} \norm{A v -
-    b}_\infty = \min_{v\in\RR^{m+1}} \max_{i=1}^n \abs{(A v)_i - y_i}.
+  \argmin_{v\in\RR^{m+1}} \norm{A v -
+    b}_\infty = \argmin_{v\in\RR^{m+1}} \max_{i=1}^n \abs{(A v)_i - y_i}.
 \end{equation}
 Obwohl sich scheinbar nicht viel geändert hat, hat dieses Problem eine
 ganz andere Struktur, für die andere Lösungsmethoden benutzt
@@ -84,7 +84,7 @@ eine Minimierungsaufgabe mit linearer Zielfunktion und
 Nebenbedingungen:
 \begin{equation}
   \label{eq:chebyshevappr}
-  \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
+  \argmin_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
   \begin{pmatrix}
     A  & e\\
     -A & e
@@ -140,15 +140,15 @@ mit nichtlinearen Zielfunktionen oder über diskreten zulässigen Mengen
 keine Verfahren mit gesicherten Konvergenzaussagen, wir werden aber
 zwei physikalisch bzw.\ biologisch motivierte Verfahren kennenlernen.
 
-\section{Ausgleichsrechnung und \keyword{Pseudoinverse}}
+\section{\keyword{Pseudoinverse}}
 \index{Moore-Penrose-Inverse}
 
 Wir betrachten zunächst lineare Optimierungsprobleme der Form
 \begin{equation}
   \label{eq:optnorm2}
-  \min_{x\in\RR^n} \norm{Ax-b}_2,
+  \argmin_{x\in\RR^n} \norm{Ax-b}_2,
 \end{equation}
-\dh\,, wir suchen den Vektor $x$, so dass $Ax$ möglichst nahe an $b$
+\dh{}\,, wir suchen den Vektor $x$, so dass $Ax$ möglichst nahe an $b$
 liegt, wobei $A\in\RR^{m,n}$ und $b\in\RR^{m}$.  Solche Probleme
 ergeben sich zum Beispiel bei der Ausgleichsrechnung
 \eqref{eq:min2}.
@@ -180,7 +180,7 @@ minimaler Norm $\norm{x}$ suchen. Dies führt zu der
 Optimierungsaufgabe mit Nebenbedingungen
 \begin{equation}
   \label{eq:optnorm2bild}
-  \min_{x\in\RR^n} \norm{x}_2\quad\text{unter der Bedingung}\; Ax=b.
+  \argmin_{x\in\RR^n} \norm{x}_2\quad\text{unter der Bedingung}\; Ax=b.
 \end{equation}
 Diese Aufgabe können wir ganz ähnlich wie im Falle $m>n$ lösen. Hat
 $A$ wenigstens linear unabhängige Zeilen, so ist $AA^T$ invertierbar,
@@ -216,21 +216,17 @@ Sei also $A\in\RR^{m,n}$ eine Matrix mit maximalem Spaltenrang,
 insbesondere $m \ge n$. Aus dem Householder- oder Givensverfahren
 erhalten wir
 \begin{equation}
-  A = 
-  \begin{pmatrix}
-    Q_1 & Q_2
-  \end{pmatrix}
+  A = Q
   \cdot
   \begin{pmatrix}
     R_1\\
     0
   \end{pmatrix},
 \end{equation}
-wobei $R_1$ eine reguläre rechte obere $n\times n$-Dreiecksmatrix ist,
-und $Q_1$ die zugehörigen $n$ ersten Spalten der unitären Matrix $Q$.
+wobei $R_1$ eine reguläre rechte obere $n\times n$-Dreiecksmatrix ist.
 Dann ist
 \begin{equation}
-  (A^TA)^{-1}A^Tb = (R_1^TQ_1^TQ_1 R_1)^{-1}A^Tb =
+  (A^TA)^{-1}A^Tb = (R^TQ^TQ R)^{-1}A^Tb = (R^TR)^{-1}A^Tb =
   R_1^{-1}\left(R_1^T\right)^{-1}A^Tb,
 \end{equation}
 was durch bequemes Vorwärts- und Rückwärtseinsetzen ohne
@@ -240,10 +236,9 @@ die Matrix $Q$ nicht benötigt.
 Hat umgekehrt $A$ maximalen Zeilenrang, insbesondere also $m \le n$,
 dann zerlegen wir $A^T$ mit Hilfe von Householder- oder
 Givensverfahren wie oben in eine reguläre rechte obere $m\times
-m$-Dreiecksmatrix $R_1$ und orthonormale Matrizen $Q_1\in\RR^{n,m}$
-und $Q_2\in\RR^{n,n-m}$. Dann gilt entsprechend
+m$-Dreiecksmatrix $R_1$ und eine orthonormale Matrix $Q$. Dann gilt entsprechend
 \begin{equation}
-  A^T(AA^T)^{-1}b = A^T(R_1^TQ_1^TQ_1 R_1)^{-1}b =
+  A^T(AA^T)^{-1}b = A^T(R^TQ^TQ R)^{-1}b =
   A^TR_1^{-1}\left(R_1^T\right)^{-1}b.
 \end{equation}
 
@@ -469,7 +464,7 @@ daher kurz auch CG-Verfahren).
 Das Optimierungsproblem $\min f(x)$ kann dabei auch als Gleichung
 aufgefasst werden, da
 \begin{equation}
-  Ax = b \quad\iff\quad x\;\text{minimiert}\;f(x) = \frac{1}{2}x^TAx - x^Tb.
+  Ax = b \quad\iff\quad x = \argmin f(x') = \frac{1}{2}x^TAx' - x'^Tb.
 \end{equation}
 Daher wird das CG-Verfahren auch als effizienter
 Gleichungslöser für positiv definite Matrizen behandelt.
@@ -564,8 +559,8 @@ Funktionen $g_i:\RR^n\to\RR$, die die Nebenbedingungen
 definieren. Wäre nun $g_i(x)=-\infty$ für alle $x\notin M$ oder
 zumindest kleiner als das gesuchte Minimum von $f$ in $M$, so wäre
 \begin{equation}
-  \min_{x\in M} f(x) = \min_{x\in\RR^n} f(x) + \sum_{i=1}^m \min(0,
-  g_i(x))^2.
+  \argmin_{x\in M} f(x) = \argmin_{x\in\RR^n} \left[f(x) + \sum_{i=1}^m \min(0,
+  g_i(x))^2\right].
 \end{equation}
 In der Praxis ist einerseits $g_i(x)$ im Allgemeinen endlich,
 andererseits kennen wir aber auch kein Verfahren, um eine höchst
@@ -641,7 +636,7 @@ Beispiel $a=2$.
 Abbildung~\ref{fig:penalty} illustriert das Verfahren am Beispiel
 einer Abstandsminimierung zu einem Halbkreis. Wir suchen also
 \begin{equation}
-  \min_{x\in M} \norm{x - p}_2\quad\text{mit}\;
+  \argmin_{x\in M} \norm{x - p}_2\quad\text{mit}\;
   M = \{ (x,y)\,|\, g_i(x,y) \ge 0, i=1,2 \}
 \end{equation}
 mit
@@ -784,7 +779,7 @@ zulässigen Bereich im dreidimensionalen Raum.
 
 Auch das Problem
 \begin{equation}
-  \min_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
+  \argmin_v (0,\ldots,\,0,\,1)^T v\quad\text{unter der Bedingung}\;
   \begin{pmatrix}
     A & e\\
     -A & e
@@ -808,7 +803,7 @@ ergibt die äquivalente Aufgabe%
 {\samepage\vspace{0.2em}% für die TikZ-Deko
   \begin{equation}
     \label{eq:chebyshevapprnf}
-    \min_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
+    \argmin_x (\tikzlabel{vpl}0,\ldots,\,0,\,1\tikzlabel{vpr},
     \tikzlabel{vml}0,\ldots,\,0,\,-1\tikzlabel{vmr},
     \tikzlabel{zl}0,\ldots,\,0\tikzlabel{zr})^T x
   \end{equation}
@@ -949,7 +944,7 @@ optimal sind. Phase II kann dann genutzt werden, um eine solche Ecke zu finden.
 
 Dazu betrachten wir das neue Problem
 {\samepage\vspace{0.2em}\begin{equation}
-  \min_z (\tikzlabel{xl}0,\ldots,\,0\tikzlabel{xr},
+  \argmin_z (\tikzlabel{xl}0,\ldots,\,0\tikzlabel{xr},
   \tikzlabel{yl}1,\ldots,\,1\tikzlabel{yr})^Tz
 \end{equation}
 \begin{tikzpicture}[overlay, remember picture]

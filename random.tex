@@ -241,6 +241,177 @@ könnte man zum Beispiel eine Instanz der \lstinline!Rand!-Klasse oder
 \lstinline!MinStd!-Klasse benutzen, die dann wiederum einen Seed zur
 Initialisierung benötigt.
 
+\section{Qualitätsanalyse}
+\index{Pseudozufallszahlen>Qualitätsanalyse}
+
+Um die Qualität eines Zufallszahlengenerators zu testen, gibt es eine
+Vielzahl von Standardtests. Der Grund dafür ist, dass es leider keinen
+einzelnen Test gibt, der sicherstellt, dass es keinerlei Korrelationen
+in der generierten Folge gibt. Ein solcher Test müsste jede mögliche
+Teilmenge bilden und mit allen Zahlen korrelieren, was praktisch nicht
+möglich ist. Daher sollte ein guter Zufallszahlengenerator möglichst
+viele der folgenden Tests erfüllen, auch wenn dies keine Garantie ist,
+dass er im Einzelfall nicht doch zu kritischen Korrelationen führt,
+die im schlimmsten Fall das Ergebnis beeinflussen.
+
+Für eine bestimmte Anwendung genügt es natürlich, wenn er nur die
+Tests erfüllt, deren getestete Korrelationen Einfluss auf das System
+haben. Zum Beispiel werden bei einer Molekulardynamiksimulation in
+drei Dimensionen Paarkorrelationen unwichtig sein, aber
+Tripletkorrelationen problematisch.  Bei einem zweidimensionalen
+Isingmodell hingegen wird es genau umgekehrt sein.  In jedem Fall aber
+sollte die Periode des Generators wie besprochen groß genug sein.
+
+Für die im Folgenden beschriebenen Tests nehmen wir an, dass der zu
+testende Zufallszahlengenerator sogenannte Standardzufallszahlen
+liefert, also gleichverteilt im Intervall $[0,1]$. Diese können zum
+Beispiel mit einem der oben genannten Verfahren durch lineare
+Transformation erzeugt werden. Die Tests können analog auch auf nicht
+gleichverteilte Verteilungen erweitert werden. Wie diese auf dem
+Computer erzeugt werden können, sehen wir im nächsten Kapitel.
+
+\subsection{Statistiktests}
+
+Am naheliegendsten ist, zu überprüfen, dass die Verteilung der Zufallszahlen tatsächlich gleichförmig ist. Dazu legen wir Grenzen $0 = b_0 < b_1 < \ldots < b_M = 1$ fest und zählen, wie oft Mittelwerte in den Intervallen $[b_i,b_{i+1})$ auftreten. Wir bilden also das Histogramm der gezogenen Zufallszahlen. Die Wahrscheinlichkeit, eine Zufallszahl im Intervall $[b_i,b_{i+1})$ zu ziehen, ist
+\begin{equation}
+	P_i = P(b_i \le x < b_{i+1}) = b_{i+1} - b_i\,.
+\end{equation}
+Für die Anzahl der Treffer in diesem Intervall gilt
+\begin{equation}
+	\mean{N_i} = N\,P_i = N (b_{i+1} - b_i)\,,
+\end{equation}
+wobei $N$ die Gesamtanzahl der gezogenen Zufallszahlen ist. Wählt man die $b_i$ äquidistant mit Intervallbreite $h$, sollte also das gewonnene Histogramm der $N_i$ möglichst konstant $N/h$ sein. Dies kann man leicht in einer Visualisierung des Histogramms überprüfen.
+
+\index{$\chi^2$-Test}
+Quantifiziert wird die Abweichung durch die Größe
+\begin{equation}
+	\chi^2 = \sum_{i=1}^M\frac{(N_i - N P_i)^2}{N P_i}\,,
+\end{equation}
+die die quadratische Abweichung über die Intervalle mittelt. Der Name $\chi^2$ rührt daher, dass diese Größe für große $N_i$ der sogenannten $\chi^2$-Verteilung mit $M$ Freiheitsgraden folgt.
+
+Wann ist nun $\chi^2$ klein genug, so dass man davon ausgehen kann, dass die Reihe tatsächlich gleichverteilt ist? Dazu betrachten wir das $1-p$-Quantil der Verteilung. Dieses gibt an, welchen maximalen Wert $\chi^2$ in $1-p$ aller Fälle annimmt. Ist der beobachtete Wert größer, tritt dies in weniger als $p$ aller Fälle auf. Das $1-p$-Quantil der $\chi^2$-Verteilung ist leider nicht sehr einfach zu berechnen, allerdings gibt es im Internet zahlreiche Tabellen, siehe zum Beispiel \url{http://de.wikipedia.org/wiki/Chi-Quadrat-Test}. Bei $M=10$ Intervallen ist das $99\%$-Quantil etwa $22$. Falls wir also $\chi^2>22$ beobachten, bedeutet das, dass unsere Zufallsreihe mit $99\%$-iger Wahrscheinlichkeit nicht gleichverteilt ist.
+
+$\chi^2$ folgt übrigens stets dieser Verteilung, auch wenn die Ausgangsdaten nicht gleichverteilt sind. In der Statistik wird der oben beschriebene Test unter dem Namen $\chi^2$-Test häufig benutzt, um zu überprüfen, ob eine Stichprobe von Daten einer angenommenen Verteilung entspricht.
+
+\subsubsection{Blocking}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/statistics_test}
+  \caption{Verteilung von $\overline{x} = \frac{1}{100}\sum_{i=1}^{100} x_i$,
+    ermittelt aus 10.000$\times$100 Werten der Zufallsgeneratoren
+    \texttt{rand} (links) und \texttt{randu} (rechts). Rot
+    gestrichelt ist jeweils die erwartete Normalverteilung mit Varianz
+    $\nicefrac{1}{\sqrt{1200}}$ eingezeichnet.}
+  \label{fig:statistics_test}
+\end{figure}
+
+Um mögliche Korrelationen auszuschließen, teilen wir die gezogenen Zufallszahlen wie bei der Binning-Methode in Blöcke der Größe $k$ ein. 
+Sind die erzeugten Zufallszahlen $x_i$ tatsächlich gleichverteilt und
+auf $[0,1]$ und unabhängig, so sind die Blockmittelwerte
+\begin{equation}
+  X_i = \frac{1}{k}\sum_{j=1}^k x_{j + (i-1)k}\,,
+\end{equation}
+nach dem Gesetz der großen Zahlen für hinreichend großes $k$ nahezu normalverteilt. In der Praxis genügt dazu etwa $k=100$. Der Mittelwert
+ist $\mean{X_i} = \nicefrac{1}{2}$ und die Varianz
+\begin{equation}
+  \sigma(X_i) = \frac{1}{\sqrt{k}} \sigma(x) =
+  \frac{1}{\sqrt{12 k}}\,.
+\end{equation}
+Abbildung~\ref{fig:statistics_test} zeigt die Verteilung der $X_i$ mit Blockgröße $k=100$ am Beispiel von \texttt{MINSTD} und \texttt{rand} im Vergleich zur erwarteten Normalverteilung, die tatsächlich mit guter Genauigkeit reproduziert wird.
+
+Die Blockvarianz können wir leicht mit Hilfe des Varianzschätzers
+\begin{equation}
+  \frac{B}{B-1}\left(\overline{(x - \bar{x})^2}\right) \stackrel{!}{\approx} \frac{1}{\sqrt{12 k}}
+\end{equation}
+überprüfen, wobei $B=N/k$ die Anzahl der Blöcke ist. Besser ist es aber, die gesamte Verteilung der Zufallszahlen zu testen. Hierzu können wir wieder den $\chi^2$-Test benutzen. Die erwartete Anzahl der Treffer im Interval $[b_i,b_{i+1})$ ist diesmal
+\begin{equation}
+	\mean{N_i} = B\,P(b_i \le x < b_{i+1}) = B\int_{b_i}^{b_{i+1}} \frac{1}{\sqrt{24\pi k}} \exp\left[\frac{1}{24 k} \left(x - \frac{1}{2}\right)^2\right]\,dx\,.
+\end{equation}
+Für die in Abbildung~\ref{fig:statistics_test} gegebenen Daten ergibt sich ein $\chi^2$-Wert von 30 (\texttt{rand}) bzw. 39 (\texttt{MINSTD}). Bei $M=50$ Freiheitsgraden ist das $99\%$-Quantil der $\chi^2$-Verteilung etwa 76, beide Generatoren erzeugen also hinreichen unkorrelierte Blöcke der Länge 100.
+
+\subsection{Poincar\'e-Schnitte}
+\index{Würfeltest}\index{Quadrattest}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/optical_test}
+  \caption{Quadrat- und Würfeltest mit 2,000 Auswertung am Beispiel
+    des berüchtigten \texttt{randu}-Zufallszahlengenerators. Der
+    zweidimensionale Poincar\'e-Schnitt ist homogen und unauffällig,
+    aber in drei Dimensionen fallen die nur sehr wenigen Hyperebenen
+    des Generators deutlich auf.}
+  \label{fig:optical_test}
+\end{figure}
+
+Lineare Kongruenzgeneratoren haben nach einem Satz von Marsaglia die
+Eigenschaft, dass im $\RR^n$ $n$ aufeinanderfolgende Zufallszahlen,
+als Vektor aufgefasst, auf Hyperebenen liegen. Problematisch wird
+dies, wenn die Anzahl der Hyperebenen sehr klein ist. Für $n=2$ und
+$3$ kann man das sehr bequem überprüfen, indem man den
+Poincar\'e-Schnitt $(x_k, x_{k+1})$, $k=0,1,\ldots$ bzw.\ sein
+dreidimensionales Äquivalent $(x_k, x_{k+1}, x_{k+2})$, $k=0,1,\ldots$
+betrachtet. Da alle Punkte in $[0,1]^2$ bzw $[0,1]^3$ liegen, heißen
+dieses Tests auch Quadrat- oder Würfeltests. Diese Punktwolken sollten
+das Quadrat bzw.\ den Würfel homogen füllen und keine Strukturen
+aufweisen. In zwei Dimensionen können wir das sehr rasch erfassen, in
+drei Dimensionen muss man die Punktewolke rotieren, um nach
+Hyperebenen zu suchen.
+
+Abbildung~\ref{fig:optical_test} demonstriert dies für den
+berüchtigten \texttt{randu}-LCG ($m=2^{31}$, $a=65,539$,
+$b=0$). Dieser ist wegen des $2^{31}$-Moduls sehr schnell auf
+32-Bit-Rechnern zu implementieren und war daher früher sogar auf
+einigen Großrechnern zu finden. In der zweidimensionalen Darstellung
+sind keine Auffälligkeiten zu sehen, aber ausgerechnet in den
+physikalisch wichtigen drei Dimensionen zeigt sich, dass es lediglich
+eine Handvoll verschiedener Hyperebenen gibt, so dass mit diesem
+Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
+
+\subsection{\keyword{Fouriertest}}
+\index{Spektraltest}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{plots/fft_tests}
+  \caption{Spektraltest (links) und Autokorrelationsfunktion (rechts)
+    für die Zufallszahlengeneratoren \texttt{rand} und
+    \texttt{randu}. \texttt{rand} ist als blaue Fläche bzw.\ gepunktet
+    eingezeichnet, \texttt{randu} rot gestrichelt.  Im linken Graph
+    sind die DFT-Amplituden normiert dargestellt, also dividiert durch
+    die Anzahl der Zufallszahlen, so dass die 0-te Mode $1/2$
+    beträgt. Leider reichen diese Tests nicht aus, um die
+    3-Periodizität von \texttt{randu} zu detektieren.}
+  \label{fig:fft_tests}
+\end{figure}
+
+Wird eine lange Reihe von Standardzufallszahlen diskret
+Fourier-transformiert, so sollte die 0-te Mode eine Amplitude von
+$N/2$ aufweisen, da diese ja die Summe der Zufallszahlen angibt. Alle
+anderen Moden sollten vernachlässigbar kleine, gleichmäßige
+Amplituden haben, entsprechend einem weißen Rauschen. Die Amplituden
+aller Frequenzen ungleich $0$ sollte außerdem mit der Länge der
+transformierten Zufallszahlenreihe sinken. Dieser Test wird auch als
+Spektraltest bezeichnet. Abbildung~\ref{fig:fft_tests} zeigt die
+DFT am Beispiel von \texttt{rand} und \texttt{randu}. Leider reichen
+diese Tests nicht aus, um die Probleme von \texttt{randu} zu erkennen.
+
+\subsection{\keyword{Autokorrelationstest}}
+
+Neben der diskreten Fouriertransformierten kann man auch die
+Autokorrelationsfunktion der Zufallsreihe $u$ bestimmen, also
+\begin{equation}
+  C(u,u)(k) = \frac{1}{N}\,\text{iDFT}
+  \bigl(\overline{\text{DFT}(u)(n)}\,\text{DFT}(u)(n)\bigr)(k).
+\end{equation}
+Für eine Zufallsreihe sind alle paarweise verschiedenen Werte
+unkorreliert, also muss
+\begin{equation}
+  C(u,u)(k) = \sigma^2(u)\delta_k = \frac{1}{12}\delta_k
+\end{equation}
+gelten. Dies ist in Abbildung~\ref{fig:fft_tests} rechts
+demonstriert.
+
 \section{Andere Verteilungen}
 
 Die bisher besprochenen Zufallszahlengeneratoren liefern stets ganze
@@ -546,175 +717,6 @@ berechnen, und diese gemäß
   \end{split}
 \end{equation}
 zu transformieren.
-
-\section{Qualitätsanalyse}
-\index{Pseudozufallszahlen>Qualitätsanalyse}
-
-Um die Qualität eines Zufallszahlengenerators zu testen, gibt es eine
-Vielzahl von Standardtests. Der Grund dafür ist, dass es leider keinen
-einzelnen Test gibt, der sicherstellt, dass es keinerlei Korrelationen
-in der generierten Folge gibt. Ein solcher Test müsste jede mögliche
-Teilmenge bilden und mit allen Zahlen korrelieren, was praktisch nicht
-möglich ist. Daher sollte ein guter Zufallszahlengenerator möglichst
-viele der folgenden Tests erfüllen, auch wenn dies keine Garantie ist,
-dass er im Einzelfall nicht doch zu kritischen Korrelationen führt,
-die im schlimmsten Fall das Ergebnis beeinflussen.
-
-Für eine bestimmte Anwendung genügt es natürlich, wenn er nur die
-Tests erfüllt, deren getestete Korrelationen Einfluss auf das System
-haben. Zum Beispiel werden bei einer Molekulardynamiksimulation in
-drei Dimensionen Paarkorrelationen unwichtig sein, aber
-Tripletkorrelationen problematisch.  Bei einem zweidimensionalen
-Isingmodell hingegen wird es genau umgekehrt sein.  In jedem Fall aber
-sollte die Periode des Generators wie besprochen groß genug sein.
-
-Für die im Folgenden beschriebenen Tests nehmen wir an, dass der zu
-testende Zufallszahlengenerator Standardzufallszahlen liefert, also
-gleichverteilt im Intervall $[0,1]$.  Solche Zufallszahlen werden wie
-beschrieben standardmäßig auf dem Computer erzeugt und im Bedarfsfall
-auf andere Verteilungen transformiert.
-
-\subsection{Statistiktests}
-
-Am naheliegendsten ist, zu überprüfen, dass die Verteilung der Zufallszahlen tatsächlich gleichförmig ist. Dazu legen wir Grenzen $0 = b_0 < b_1 < \ldots < b_M = 1$ fest und zählen, wie oft Mittelwerte in den Intervallen $[b_i,b_{i+1})$ auftreten. Wir bilden also das Histogramm der gezogenen Zufallszahlen. Die Wahrscheinlichkeit, eine Zufallszahl im Intervall $[b_i,b_{i+1})$ zu ziehen, ist
-\begin{equation}
-	P_i = P(b_i \le x < b_{i+1}) = b_{i+1} - b_i\,.
-\end{equation}
-Für die Anzahl der Treffer in diesem Intervall gilt
-\begin{equation}
-	\mean{N_i} = N\,P_i = N (b_{i+1} - b_i)\,,
-\end{equation}
-wobei $N$ die Gesamtanzahl der gezogenen Zufallszahlen ist. Wählt man die $b_i$ äquidistant mit Intervallbreite $h$, sollte also das gewonnene Histogramm der $N_i$ möglichst konstant $N/h$ sein. Dies kann man leicht in einer Visualisierung des Histogramms überprüfen.
-
-\index{$\chi^2$-Test}
-Quantifiziert wird die Abweichung durch die Größe
-\begin{equation}
-	\chi^2 = \sum_{i=1}^M\frac{(N_i - N P_i)^2}{N P_i}\,,
-\end{equation}
-die die quadratische Abweichung über die Intervalle mittelt. Der Name $\chi^2$ rührt daher, dass diese Größe für große $N_i$ der sogenannten $\chi^2$-Verteilung mit $M$ Freiheitsgraden folgt.
-
-Wann ist nun $\chi^2$ klein genug, so dass man davon ausgehen kann, dass die Reihe tatsächlich gleichverteilt ist? Dazu betrachten wir das $1-p$-Quantil der Verteilung. Dieses gibt an, welchen maximalen Wert $\chi^2$ in $1-p$ aller Fälle annimmt. Ist der beobachtete Wert größer, tritt dies in weniger als $p$ aller Fälle auf. Das $1-p$-Quantil der $\chi^2$-Verteilung ist leider nicht sehr einfach zu berechnen, allerdings gibt es im Internet zahlreiche Tabellen, siehe zum Beispiel \url{http://de.wikipedia.org/wiki/Chi-Quadrat-Test}. Bei $M=10$ Intervallen ist das $99\%$-Quantil etwa $22$. Falls wir also $\chi^2>22$ beobachten, bedeutet das, dass unsere Zufallsreihe mit $99\%$-iger Wahrscheinlichkeit nicht gleichverteilt ist.
-
-$\chi^2$ folgt übrigens stets dieser Verteilung, auch wenn die Ausgangsdaten nicht gleichverteilt sind. In der Statistik wird der oben beschriebene Test unter dem Namen $\chi^2$-Test häufig benutzt, um zu überprüfen, ob eine Stichprobe von Daten einer angenommenen Verteilung entspricht.
-
-\subsubsection{Blocking}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/statistics_test}
-  \caption{Verteilung von $\overline{x} = \frac{1}{100}\sum_{i=1}^{100} x_i$,
-    ermittelt aus 10.000$\times$100 Werten der Zufallsgeneratoren
-    \texttt{rand} (links) und \texttt{randu} (rechts). Rot
-    gestrichelt ist jeweils die erwartete Normalverteilung mit Varianz
-    $\nicefrac{1}{\sqrt{1200}}$ eingezeichnet.}
-  \label{fig:statistics_test}
-\end{figure}
-
-Um mögliche Korrelationen auszuschließen, teilen wir die gezogenen Zufallszahlen wie bei der Binning-Methode in Blöcke der Größe $k$ ein. 
-Sind die erzeugten Zufallszahlen $x_i$ tatsächlich gleichverteilt und
-auf $[0,1]$ und unabhängig, so sind die Blockmittelwerte
-\begin{equation}
-  X_i = \frac{1}{k}\sum_{j=1}^k x_{j + (i-1)k}\,,
-\end{equation}
-nach dem Gesetz der großen Zahlen für hinreichend großes $k$ nahezu normalverteilt. In der Praxis genügt dazu etwa $k=100$. Der Mittelwert
-ist $\mean{X_i} = \nicefrac{1}{2}$ und die Varianz
-\begin{equation}
-  \sigma(X_i) = \frac{1}{\sqrt{k}} \sigma(x) =
-  \frac{1}{\sqrt{12 k}}\,.
-\end{equation}
-Abbildung~\ref{fig:statistics_test} zeigt die Verteilung der $X_i$ mit Blockgröße $k=100$ am Beispiel von \texttt{MINSTD} und \texttt{rand} im Vergleich zur erwarteten Normalverteilung, die tatsächlich mit guter Genauigkeit reproduziert wird.
-
-Die Blockvarianz können wir leicht mit Hilfe des Varianzschätzers
-\begin{equation}
-  \frac{B}{B-1}\left(\overline{(x - \bar{x})^2}\right) \stackrel{!}{\approx} \frac{1}{\sqrt{12 k}}
-\end{equation}
-überprüfen, wobei $B=N/k$ die Anzahl der Blöcke ist. Besser ist es aber, die gesamte Verteilung der Zufallszahlen zu testen. Hierzu können wir wieder den $\chi^2$-Test benutzen. Die erwartete Anzahl der Treffer im Interval $[b_i,b_{i+1})$ ist diesmal
-\begin{equation}
-	\mean{N_i} = B\,P(b_i \le x < b_{i+1}) = B\int_{b_i}^{b_{i+1}} \frac{1}{\sqrt{24\pi k}} \exp\left[\frac{1}{24 k} \left(x - \frac{1}{2}\right)^2\right]\,dx\,.
-\end{equation}
-Für die in Abbildung~\ref{fig:statistics_test} gegebenen Daten ergibt sich ein $\chi^2$-Wert von 30 (\texttt{rand}) bzw. 39 (\texttt{MINSTD}). Bei $M=50$ Freiheitsgraden ist das $99\%$-Quantil der $\chi^2$-Verteilung etwa 76, beide Generatoren erzeugen also hinreichen unkorrelierte Blöcke der Länge 100.
-
-\subsection{Poincar\'e-Schnitte}
-\index{Würfeltest}\index{Quadrattest}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/optical_test}
-  \caption{Quadrat- und Würfeltest mit 2,000 Auswertung am Beispiel
-    des berüchtigten \texttt{randu}-Zufallszahlengenerators. Der
-    zweidimensionale Poincar\'e-Schnitt ist homogen und unauffällig,
-    aber in drei Dimensionen fallen die nur sehr wenigen Hyperebenen
-    des Generators deutlich auf.}
-  \label{fig:optical_test}
-\end{figure}
-
-Lineare Kongruenzgeneratoren haben nach einem Satz von Marsaglia die
-Eigenschaft, dass im $\RR^n$ $n$ aufeinanderfolgende Zufallszahlen,
-als Vektor aufgefasst, auf Hyperebenen liegen. Problematisch wird
-dies, wenn die Anzahl der Hyperebenen sehr klein ist. Für $n=2$ und
-$3$ kann man das sehr bequem überprüfen, indem man den
-Poincar\'e-Schnitt $(x_k, x_{k+1})$, $k=0,1,\ldots$ bzw.\ sein
-dreidimensionales Äquivalent $(x_k, x_{k+1}, x_{k+2})$, $k=0,1,\ldots$
-betrachtet. Da alle Punkte in $[0,1]^2$ bzw $[0,1]^3$ liegen, heißen
-dieses Tests auch Quadrat- oder Würfeltests. Diese Punktwolken sollten
-das Quadrat bzw.\ den Würfel homogen füllen und keine Strukturen
-aufweisen. In zwei Dimensionen können wir das sehr rasch erfassen, in
-drei Dimensionen muss man die Punktewolke rotieren, um nach
-Hyperebenen zu suchen.
-
-Abbildung~\ref{fig:optical_test} demonstriert dies für den
-berüchtigten \texttt{randu}-LCG ($m=2^{31}$, $a=65,539$,
-$b=0$). Dieser ist wegen des $2^{31}$-Moduls sehr schnell auf
-32-Bit-Rechnern zu implementieren und war daher früher sogar auf
-einigen Großrechnern zu finden. In der zweidimensionalen Darstellung
-sind keine Auffälligkeiten zu sehen, aber ausgerechnet in den
-physikalisch wichtigen drei Dimensionen zeigt sich, dass es lediglich
-eine Handvoll verschiedener Hyperebenen gibt, so dass mit diesem
-Generator erzeugte 3d-Vektoren kaum als zufällig gelten können.
-
-\subsection{\keyword{Fouriertest}}
-\index{Spektraltest}
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\textwidth]{plots/fft_tests}
-  \caption{Spektraltest (links) und Autokorrelationsfunktion (rechts)
-    für die Zufallszahlengeneratoren \texttt{rand} und
-    \texttt{randu}. \texttt{rand} ist als blaue Fläche bzw.\ gepunktet
-    eingezeichnet, \texttt{randu} rot gestrichelt.  Im linken Graph
-    sind die DFT-Amplituden normiert dargestellt, also dividiert durch
-    die Anzahl der Zufallszahlen, so dass die 0-te Mode $1/2$
-    beträgt. Leider reichen diese Tests nicht aus, um die
-    3-Periodizität von \texttt{randu} zu detektieren.}
-  \label{fig:fft_tests}
-\end{figure}
-
-Wird eine lange Reihe von Standardzufallszahlen diskret
-Fourier-transformiert, so sollte die 0-te Mode eine Amplitude von
-$N/2$ aufweisen, da diese ja die Summe der Zufallszahlen angibt. Alle
-anderen Moden sollten vernachlässigbar kleine, gleichmäßige
-Amplituden haben, entsprechend einem weißen Rauschen. Die Amplituden
-aller Frequenzen ungleich $0$ sollte außerdem mit der Länge der
-transformierten Zufallszahlenreihe sinken. Dieser Test wird auch als
-Spektraltest bezeichnet. Abbildung~\ref{fig:fft_tests} zeigt die
-DFT am Beispiel von \texttt{rand} und \texttt{randu}. Leider reichen
-diese Tests nicht aus, um die Probleme von \texttt{randu} zu erkennen.
-
-\subsection{\keyword{Autokorrelationstest}}
-
-Neben der diskreten Fouriertransformierten kann man auch die
-Autokorrelationsfunktion der Zufallsreihe $u$ bestimmen, also
-\begin{equation}
-  C(u,u)(k) = \frac{1}{N}\,\text{iDFT}
-  \bigl(\overline{\text{DFT}(u)(n)}\,\text{DFT}(u)(n)\bigr)(k).
-\end{equation}
-Für eine Zufallsreihe sind alle paarweise verschiedenen Werte
-unkorreliert, also muss
-\begin{equation}
-  C(u,u)(k) = \sigma^2(u)\delta_k = \frac{1}{12}\delta_k
-\end{equation}
-gelten. Dies ist in Abbildung~\ref{fig:fft_tests} rechts
-demonstriert.
 
 \section{Beispiel: \keyword{Random walk}}
 \label{sec:rw}
