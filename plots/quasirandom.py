@@ -108,7 +108,7 @@ graph.axis((-1,1,-1,1))
 
 graph = figure.add_subplot(122)
 
-N_range = logspace(0, 6, 10)
+N_range = logspace(0, 6, 10, dtype=int)
 
 graph.set_xscale("log")
 graph.set_yscale("log")

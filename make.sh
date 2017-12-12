@@ -10,6 +10,8 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 
+set -e
+
 (cd plots; make)
 (cd gendata; make check)
-latexmk
+latexmk -interaction=nonstopmode

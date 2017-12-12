@@ -57,7 +57,7 @@ t = 0.01*deltas
 graph = figure.add_subplot(111)
 graph.set_xlabel(u"$\Delta$")
 graph.set_ylabel(u"$\sigma^2$-Schätzer")
-graph.errorbar(t, vars, yerr=varvars,  linestyle="o")
+graph.errorbar(t, vars, yerr=varvars, fmt="o")
 t = linspace(0.005,0.3,100)
 graph.plot(t, 1 - 2*0.17/t/N , "k-")
 graph.axis((0,0.305,0.5,1.2))
