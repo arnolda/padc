@@ -13,17 +13,17 @@ addons:
     - pgf
     - texlive-bibtex-extra
     - texlive-fonts-recommended
+    - texlive-fonts-extra
     - texlive-lang-german
     - texlive-latex-recommended
     - texlive-latex-extra
 
 script:
-    - bash make.sh
+- bash make.sh
 
 deploy:
   provider: releases
   api_key: $GH_TOKEN
-  file_glob: true
   file: $TRAVIS_BUILD_DIR/padc.pdf
   skip_cleanup: true
   on:
