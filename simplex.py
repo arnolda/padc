@@ -84,8 +84,8 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
 
     while True:
         An = A[:, nichtbasis]
-        cn = c[:, nichtbasis]
-        cb = c[:, basis]
+        cn = c[nichtbasis]
+        cb = c[basis]
         xb = dot(Abinv, b)
 
         # reduzierte Kosten

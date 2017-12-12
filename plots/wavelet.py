@@ -21,7 +21,7 @@ y = sin(x) + 0.1*sin(10*x) + rand.normal(0, 0.1, x.shape)
 # da wir nur Zweierpotenzen so einfach hinbekommen, ergaenzen wir mit
 # Nullen auf die naechste Zweierpotenz. Da alles lokal ist, schadet das
 # nix
-steps = ceil(log(N)/log(2))
+steps = int(ceil(log(N)/log(2)))
 ypadded = zeros(2**steps)
 ypadded[:N+1] = y
 

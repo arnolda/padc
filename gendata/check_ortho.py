@@ -46,7 +46,7 @@ def check(q, r, a, method, qref=None, rref=None):
     if max([r[i,k] for i in range(r.shape[0]) for k in range(i) ]) > tol:
         raise Exception("%s: r hat Subdiagonalelemente" % method)
 
-    if qref != None and rref != None:
+    if qref is not None and rref is not None:
         if norm(q - qref) > tol:
             raise Exception("%s: q not like reference" % method)
         if norm(r - rref) > tol:
