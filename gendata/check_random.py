@@ -16,12 +16,12 @@ import sys
 sys.path.append("..")
 
 def test_rng(name, rng, expected):
-    print "testing " + name
+    print(f"testing {name}")
 
     for val in expected:
         check = rng()
         if check != val:
-            print "mismatch %d != %d" % (check, val)
+            print(f"mismatch {check} != {val}")
 
 # Test MINSTD
 ##################################
@@ -86,4 +86,4 @@ test_rng("rand", rng, expected)
 ##################################
 
 rng = rand.Rand(1)
-print [rng() % 2 for i in range(10)]
+print([rng() % 2 for i in range(10)])

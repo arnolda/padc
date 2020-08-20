@@ -11,23 +11,20 @@
 # Test des CG-Verfahrens
 ##############################################
 
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
-
 import sys
+import numpy as np
 # da liegen die Methoden, da sie Teil des Skripts sind
 sys.path.append("..")
 
 from cg import conjugate_gradient
 
-A = uniform(0, 1, 100)
+A = np.random.uniform(0, 1, 100)
 A = A.reshape((10,10))
 A = 0.5*(A + A.transpose())
 
-b = uniform(0, 1, 10)
+b = np.random.uniform(0, 1, 10)
 
-res = solve(A, b)
+res = np.linalg.solve(A, b)
 
-if norm(conjugate_gradient(A, b, zeros_like(b)) - res) > 1e-5:
+if np.linalg.norm(conjugate_gradient(A, b, np.zeros_like(b)) - res) > 1e-5:
     raise Exception("Conjugate Gradient hat das Minimum nicht gefunden")

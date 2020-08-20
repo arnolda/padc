@@ -11,18 +11,16 @@
 # Test QR-Code
 ######################################
 
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
 import sys
+import numpy as np
 sys.path.append("..")
 
 from qr import qr_eigenwerte
 from inverse_iteration import inverse_iteration
 
-seed(123)
+np.random.seed(123)
 
-A = uniform(0,1,10*10)
+A = np.random.uniform(0,1,10*10)
 A = A.reshape((10, 10))
 # symmetrisieren fuer reelle Eigenwerte
 for i in range(10):
@@ -33,7 +31,7 @@ ews = qr_eigenwerte(A, 1e-5)
 
 for ew in ews:
     x = inverse_iteration(A, ew, 1e-5) 
-    if norm(ew*x - dot(A, x))/norm(x) > 1e-5:
+    if np.linalg.norm(ew*x - np.dot(A, x))/np.linalg.norm(x) > 1e-5:
         raise Exception("qr oder inverse_iteration haben ein Problem")
 
-print "Alle Eigenvektoren und Eigenwerte passen"
+print("Alle Eigenvektoren und Eigenwerte passen")

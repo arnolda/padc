@@ -11,19 +11,17 @@
 # Test verschiedene Orthogonalisierungsverfahren
 ##############################################
 
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
 import sys
+import numpy as np
 # da liegen die Methoden, da sie Teil des Skripts sind
 sys.path.append("..")
 
-seed(123)
+np.random.seed(123)
 
 # Erzeugen einer quadratischen Zufallsmatrix
 # da quadratisch, geben alle Verfahren bis auf Vz dasselbe
 n=10
-a = uniform(0,1,n*n)
+a = np.random.uniform(0,1,n*n)
 a = a.reshape((n, n))
 
 from gramschmidt import gramschmidt
@@ -39,17 +37,17 @@ def normalize(q, r):
 
 def check(q, r, a, method, qref=None, rref=None):
     tol = 1e-10
-    if norm(dot(q,r)-a) > tol:
+    if np.linalg.norm(np.dot(q,r)-a) > tol:
         raise Exception("%s: q*r != a" % method)
-    if norm(identity(q.shape[0]) - dot(q.transpose().conj(),q)) > tol:
+    if np.linalg.norm(np.identity(q.shape[0]) - np.dot(q.transpose().conj(),q)) > tol:
         raise Exception("%s: q^Hq != I" % method)
     if max([r[i,k] for i in range(r.shape[0]) for k in range(i) ]) > tol:
         raise Exception("%s: r hat Subdiagonalelemente" % method)
 
     if qref is not None and rref is not None:
-        if norm(q - qref) > tol:
+        if np.linalg.norm(q - qref) > tol:
             raise Exception("%s: q not like reference" % method)
-        if norm(r - rref) > tol:
+        if np.linalg.norm(r - rref) > tol:
             raise Exception("%s: q not like reference" % method)
 
 q, r = gramschmidt(a)
@@ -64,4 +62,3 @@ check(q, r, a, "householder", qref, rref)
 
 q, r = givens(a)
 check(q, r, a, "givens", qref, rref)
-

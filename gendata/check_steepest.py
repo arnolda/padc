@@ -11,11 +11,8 @@
 # Test des Steepest Descent
 ##############################################
 
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
-
 import sys
+import numpy as np
 # da liegen die Methoden, da sie Teil des Skripts sind
 sys.path.append("..")
 
@@ -24,7 +21,7 @@ def rosenbrock(x):
 
 
 def gradrosenbrock(x):
-    return array((2*(200*x[0]**3 - 200*x[0]*x[1] + x[0] - 1),
+    return np.array((2*(200*x[0]**3 - 200*x[0]*x[1] + x[0] - 1),
                   200*(x[1]-x[0]**2)))
 
 # Armijo
@@ -32,5 +29,5 @@ def gradrosenbrock(x):
 
 from armijo import armijo_steepest_descent
 
-if norm(armijo_steepest_descent(rosenbrock, gradrosenbrock, array((0.99,0.99)), tol=1e-6, maxiter=10000) - array((1,1))) > 1e-2:
+if np.linalg.norm(armijo_steepest_descent(rosenbrock, gradrosenbrock, np.array((0.99,0.99)), tol=1e-6, maxiter=10000) - np.array((1,1))) > 1e-2:
     raise Exception("Steepest Descent hat das Minimum nicht gefunden")
