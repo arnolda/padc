@@ -7,8 +7,7 @@
 # http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
-from scipy import *
-from scipy.linalg import *
+import numpy as np
 
 def rank1update(Abinv, t, y):
     """
@@ -86,21 +85,21 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
         An = A[:, nichtbasis]
         cn = c[nichtbasis]
         cb = c[basis]
-        xb = dot(Abinv, b)
+        xb = np.dot(Abinv, b)
 
         # reduzierte Kosten
-        r = cn - dot(An.transpose(), dot(Abinv.transpose(), cb))
+        r = cn - np.dot(An.transpose(), np.dot(Abinv.transpose(), cb))
         # beste Abstiegskoordinate s suchen
         minc, spos = minelement(r)
         if minc > -eps:
             # keine Abstiegsrichtung, Minimum gefunden!
-            x = zeros(n)
+            x = np.zeros(n)
             x[basis] = xb
             return x
         s = nichtbasis[spos]
 
         # rauszuwerfende Variable suchen
-        Abinvas = dot(Abinv, A[:,s])
+        Abinvas = np.dot(Abinv, A[:,s])
         t = minposelement(xb, Abinvas, eps)
 
         if t == None:
@@ -129,21 +128,21 @@ def phase1(c, A, b, eps=1e-10):
     
     # Problem erweitern, damit wir eine Loesung kennen
     b = b.copy()
-    A = concatenate((A, identity(m)),axis=1)
-    c = concatenate((zeros(n), ones(m)))
+    A = np.concatenate((A, np.identity(m)),axis=1)
+    c = np.concatenate((np.zeros(n), np.ones(m)))
     # Ax = b positiv machen
     for i in range(m):
         if b[i] < 0:
             b[i] = -b[i]
             A[i,:n] = -A[i,:n]
     # sichere Ecke
-    basis = range(n, n+m)
+    basis = np.arange(n, n+m)
     # Inverse
-    Abinv = identity(m)
+    Abinv = np.identity(m)
 
     # Loesung mit Hilfe von Phase 2 suchen
     x = phase2(c, A, b, basis, Abinv, eps)
-    if dot(c, x) > eps:
+    if np.dot(c, x) > eps:
         raise Exception("zulaessige Menge ist leer!")
 
     while True:
@@ -154,7 +153,7 @@ def phase1(c, A, b, eps=1e-10):
         # echte Ersatzvariable suchen, die nicht in der Basis ist
         for s in range(n):
             if s in basis: continue
-            Abinvas = dot(Abinv, A[:,s])
+            Abinvas = np.dot(Abinv, A[:,s])
             if Abinvas[t] < 0:
                 # Ein Tauschpartner!
                 basis[t] = s
@@ -163,12 +162,12 @@ def phase1(c, A, b, eps=1e-10):
         else:
             # Schleife durchgelaufen, ohne Ersatzvariable zu finden
             # -> Matrix linear abhaengig, q-te Zeile streichen
-            del basis[t]
+            basis = np.delete(basis, t)
             q = maxb - n
-            A = delete(A, q, 0)
-            b = delete(b, q, 0)
-            Abinv = delete(Abinv, q, 1)
-            Abinv = delete(Abinv, t, 0)
+            A = np.delete(A, q, 0)
+            b = np.delete(b, q, 0)
+            Abinv = np.delete(Abinv, q, 1)
+            Abinv = np.delete(Abinv, t, 0)
 
     return basis, Abinv, A[:,:n], b
 # @\newpage@

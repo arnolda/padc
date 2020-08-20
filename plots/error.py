@@ -13,20 +13,19 @@
 # Fehlerabschätzung korrelierter Daten
 ############################################
 
-from numpy import *
 import math
-import numpy.random as rand
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
 # 150 unabhängige Beispieldaten aus den Geschwindigkeitskomponenten
 # der Teilchen
-vac = loadtxt("v_0.5.data.gz").transpose()[1:]
+vac = np.loadtxt("v_0.5.data.gz").transpose()[1:]
 
 N = 200
-deltas = arange(1,30,1)
+deltas = np.arange(1,30,1)
 
-vars    = zeros(deltas.shape)
-varvars = zeros(deltas.shape)
+vars    = np.zeros(deltas.shape)
+varvars = np.zeros(deltas.shape)
 
 for k in range(len(deltas)):
     delta = deltas[k]
@@ -37,7 +36,7 @@ for k in range(len(deltas)):
         for offset in range(0,delta,10):
             data = sample[offset:offset + N*delta:delta]
             if len(data) != N:
-                print "das geht schief!!", len(data), N
+                print("das geht schief!!", len(data), N)
             mean = sum(data)/N
             var = (sum(data*data) - N*mean**2)/(N-1)
             # Varianz vom Datensatz
@@ -50,7 +49,7 @@ for k in range(len(deltas)):
     vars[k]    = meanvar
     varvars[k] = varvar
 
-figure = pyplot.figure(figsize=(4,4))
+figure = plt.figure(figsize=(4,4))
 figure.subplots_adjust(left=0.2)
 
 t = 0.01*deltas
@@ -58,7 +57,7 @@ graph = figure.add_subplot(111)
 graph.set_xlabel(u"$\Delta$")
 graph.set_ylabel(u"$\sigma^2$-Schätzer")
 graph.errorbar(t, vars, yerr=varvars, fmt="o")
-t = linspace(0.005,0.3,100)
+t = np.linspace(0.005,0.3,100)
 graph.plot(t, 1 - 2*0.17/t/N , "k-")
 graph.axis((0,0.305,0.5,1.2))
 figure.savefig("error.pdf")

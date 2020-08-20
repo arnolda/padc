@@ -32,10 +32,10 @@ lotka-volterra.pdf planets.pdf \
 waermeleitung.pdf poisson.pdf pb.pdf
 
 trapezregel.pdf mittelpunktsregel.pdf simpsonregel.pdf rechteckregel.pdf trapezzusammen.pdf: num_int.py
-	python $<
+	python3 $<
 
 pendel_energie.pdf pendel_loesung.pdf: pendel_plot.py
-	python $<
+	python3 $<
 
 %.pdf: %.py
-	python $<
+	python3 $<

@@ -11,19 +11,18 @@
 # Der Klassiker: Random Walk
 #
 ############################################
-from scipy import *
-from numpy.random import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import numpy as np
 
-seed(123)
+np.random.seed(123)
 
 # Anzahl Schritte
 N = 100
 
 ##########################################
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
 
 ##########################################
@@ -33,8 +32,8 @@ def rw(N):
     def move(x):
         if x == 0: return -1
         elif x == 1: return 1
-    moves = array([ move(x) for x in randint(0,2,N)])
-    positions = concatenate(([0], cumsum(moves, axis=0)))
+    moves = np.array([ move(x) for x in np.random.randint(0,2,N)])
+    positions = np.concatenate(([0], np.cumsum(moves, axis=0)))
     return positions
 
 graph = figure.add_subplot(121)
@@ -50,7 +49,7 @@ graph.yaxis.set_label_text("$x_t$")
 ##########################################
 
 samples=1000
-avgpos = zeros(N+1)
+avgpos = np.zeros(N+1)
 p5 = []
 p80 = []
 for cnt in range(samples):
@@ -71,8 +70,8 @@ graph.yaxis.set_label_text("$<x_t^2>$")
 
 ##########################################
 
-p5histo, edges = histogram(p5, bins=20, range=(-20,20), normed=True)
-p80histo, edges = histogram(p80, bins=20, range=(-20,20), normed=True)
+p5histo, edges = np.histogram(p5, bins=20, range=(-20,20), density=True)
+p80histo, edges = np.histogram(p80, bins=20, range=(-20,20), density=True)
 
 graph = figure.add_subplot(224)
 
@@ -82,9 +81,9 @@ graph.bar(edges[:-1], p80histo, width=width,
 graph.bar(edges[:-1], p5histo, width=0.9*width,
           color="#ff8080", edgecolor="red", linewidth=1)
 
-x=linspace(-20,20,100)
+x=np.linspace(-20,20,100)
 for s2 in (5, 80):
-    graph.plot(x, 1/sqrt(2*pi*s2)*exp(-0.5*x**2/s2), "k--",linewidth=1)
+    graph.plot(x, 1/np.sqrt(2*np.pi*s2)*np.exp(-0.5*x**2/s2), "k--",linewidth=1)
 
 graph.xaxis.set_label_text("$x_t$")
 graph.yaxis.set_label_text("$P(x_t)$")

@@ -1,19 +1,19 @@
 # check some included code
 check:
-	python check_horner.py
-	python check_random.py
-	python check_ortho.py 
-	python check_qr.py
-	python check_sor.py
-	python check_steepest.py
-	python check_cg.py
-	python check_simplex.py
+	python3 check_horner.py
+	python3 check_random.py
+	python3 check_ortho.py 
+	python3 check_qr.py
+	python3 check_sor.py
+	python3 check_steepest.py
+	python3 check_cg.py
+	python3 check_simplex.py
 
 # output the raw tables that are inserted into the lecture
 tables:
-	python gen_division.py
-	python gen_heron.py
-	python gen_random_intro.py
+	python3 gen_division.py
+	python3 gen_heron.py
+	python3 gen_random_intro.py
 
 # simulations
 simanneal:

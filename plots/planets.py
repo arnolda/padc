@@ -12,9 +12,9 @@
 #
 # Himmelsmechanik
 ##############################################
-from scipy import *
-from scipy.linalg import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
+
 import sys
 # da liegt der Integrator da er Teil des Skripts ist
 sys.path.append("..")
@@ -40,23 +40,23 @@ xymond = [0, 1 + 0.00257]
 vxymond = [6.278+0.2154, 0]
 
 # alles zusammengepackt und flachgedrueckt
-x0 = array([xysonne, xyerde, xymond]).ravel()
-v0 = array([vxysonne, vxyerde, vxymond]).ravel()
-m  = array([Msonne,  Merde,  Mmond])
+x0 = np.array([xysonne, xyerde, xymond]).ravel()
+v0 = np.array([vxysonne, vxyerde, vxymond]).ravel()
+m  = np.array([Msonne,  Merde,  Mmond])
 
 # Gravitationsgesetz
 def F(dx, m):
-    r = norm(dx)
+    r = np.linalg.norm(dx)
     return -G*m/r**3 * dx
 def E(dx, m):
-    r = norm(dx)
+    r = np.linalg.norm(dx)
     return -G*m/r
 
 # Beschleunigungen auf Objekte
 def acc(t, x):
-    N = len(x)/2
+    N = len(x)//2
     x = x.reshape((N, 2))
-    a = zeros((N, 2))
+    a = np.zeros((N, 2))
     for i in range(N):
         for k in range(N):
             if i != k:
@@ -65,12 +65,12 @@ def acc(t, x):
     return a.ravel()
 
 def tot_en(x, v):
-    N = len(x)/2
+    N = len(x)//2
     x = x.reshape((N, 2))
     v = v.reshape((N, 2))
     en = 0.0
     for i in range(N):
-        en += 0.5*norm(v[i])**2*m[i]
+        en += 0.5*np.linalg.norm(v[i])**2*m[i]
         for k in range(N):
             if i != k:
                 dx = x[i] - x[k]
@@ -86,10 +86,10 @@ from rk import rk_explicit, rk_klassisch
 
 # decomposing
 def f(t, xv):
-    n = len(xv)/2
+    n = len(xv)//2
     x = xv[:n]
     v = xv[n:]
-    return concatenate((v, acc(t, x)))
+    return np.concatenate((v, acc(t, x)))
 
 def velocity_verlet_w_energy(acc, x0, v0, tmax, h):
     N = len(x0)
@@ -103,7 +103,7 @@ def velocity_verlet_w_energy(acc, x0, v0, tmax, h):
 
 def rk_explicit_w_energy(acc, x0, v0, tmax, h):
     N = len(x0)
-    result = rk_explicit(rk_klassisch, f, concatenate((x0, v0)), tmax, h)
+    result = rk_explicit(rk_klassisch, f, np.concatenate((x0, v0)), tmax, h)
     tns = result[:,0]
     xns = result[:,1:N+1]
     vns = result[:,N+1:2*N+1]
@@ -126,9 +126,9 @@ def unpack(tns, xns, ens):
         xmond.append(pos[4])
         ymond.append(pos[5])
 
-    return array(xerde), array(yerde), \
-        array(xsonne), array(ysonne), \
-        array(xmond), array(ymond)
+    return np.array(xerde), np.array(yerde), \
+        np.array(xsonne), np.array(ysonne), \
+        np.array(xmond), np.array(ymond)
 
 tns_vv, xns_vv, ens_vv = velocity_verlet_w_energy(acc, x0, v0, tmax, h)
 xerde_vv, yerde_vv, \
@@ -143,7 +143,7 @@ xerde_rk, yerde_rk, \
 # Ausgabe
 #############################################
 
-figure = pyplot.figure(figsize=(8,8))
+figure = plt.figure(figsize=(8,8))
 figure.subplots_adjust(left=0.15, right=0.95,wspace=0.3)
 
 # links, Erde um Sonne
@@ -173,11 +173,11 @@ graph = figure.add_subplot(222)
 
 tgtx = xmond_vv - xerde_vv
 tgty = ymond_vv - yerde_vv
-graph.plot(tgtx[:365/2], tgty[:365/2], "r--", linewidth=1)
+graph.plot(tgtx[:365//2], tgty[:365//2], "r--", linewidth=1)
 
 tgtx = xmond_rk - xerde_rk
 tgty = ymond_rk - yerde_rk
-graph.plot(tgtx[:365/2], tgty[:365/2], "b:", linewidth=1)
+graph.plot(tgtx[:365//2], tgty[:365//2], "b:", linewidth=1)
 
 graph.plot((0,),
            (0,), "bo", markeredgecolor="b")

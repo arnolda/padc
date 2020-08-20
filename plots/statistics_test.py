@@ -11,9 +11,8 @@
 # Chi^2-Test, statistischer Test von RNGs
 #
 ############################################
-from scipy import *
-from numpy.random import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
 from rng_tests import *
 
@@ -21,17 +20,17 @@ from rng_tests import *
 N = 100
 
 # erwartete Varianz der Verteilung 
-s = 1.0/sqrt(12*N)
+s = 1.0/np.sqrt(12*N)
 
 # Darstellungsbereich
 rang=(0.35, 0.6501)
 
 def normal(x):
-    return 1/sqrt(2*pi)/s*exp(-0.5*(x-0.5)**2/s**2)
+    return 1/np.sqrt(2*np.pi)/s*np.exp(-0.5*(x-0.5)**2/s**2)
 
 ##########################################
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
 
 ##########################################
@@ -39,7 +38,7 @@ figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
 rng = Rand()
 data = [ sum([rng.next() for k in range(N)])/N for x in range(10000)]
 
-histo, edges = histogram(array(data), bins=50, range=rang, normed=True)
+histo, edges = np.histogram(np.array(data), bins=50, range=rang, density=True)
 
 graph = figure.add_subplot(121)
 
@@ -53,7 +52,7 @@ graph.axis(rang + (0, 14))
 ##########
 # chi^2
 
-histo, edges = histogram(array(data), bins=50, range=rang, normed=False)
+histo, edges = np.histogram(np.array(data), bins=50, range=rang)
 
 chi = 0
 for i in range(len(histo)):
@@ -61,18 +60,18 @@ for i in range(len(histo)):
     E = len(data)*(edges[i+1] - edges[i])*normal(0.5*(edges[i] + edges[i+1]))
     chi += (histo[i] - E)**2 / E
 
-print "chi^2 for rand:", chi
+print("chi^2 for rand:", chi)
 
 ##########################################
 
 rng = Minstd()
 data = [ sum([rng.next() for k in range(N)])/N for x in range(10000)]
 
-histo, edges = histogram(array(data), bins=50, range=rang, normed=True)
+histo, edges = np.histogram(np.array(data), bins=50, range=rang, density=True)
 
 graph = figure.add_subplot(122)
 
-x = linspace(rang[0], rang[1],100)
+x = np.linspace(rang[0], rang[1],100)
 
 graph.plot(x, normal(x), "r--",linewidth=2)
 graph.bar(edges[:-1], histo, width=(edges[1] - edges[0]),
@@ -82,7 +81,7 @@ graph.axis(rang + (0, 14))
 ##########
 # chi^2
 
-histo, edges = histogram(array(data), bins=50, range=rang, normed=False)
+histo, edges = np.histogram(array(data), bins=50, range=rang, normed=False)
 
 chi = 0
 for i in range(len(histo)):
@@ -90,9 +89,8 @@ for i in range(len(histo)):
     E = len(data)*(edges[i+1] - edges[i])*normal(0.5*(edges[i] + edges[i+1]))
     chi += (histo[i] - E)**2 / E
 
-print "chi^2 for minstd:", chi
+print("chi^2 for minstd:", chi)
 
 ##########################################
 
 figure.savefig("statistics_test.pdf")
-

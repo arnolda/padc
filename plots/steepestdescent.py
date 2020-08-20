@@ -11,21 +11,20 @@
 # Steepest Descent
 #
 ############################################
-from scipy import *
-from scipy.linalg import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import numpy as np
 
 def armijo_steepest_descent(f, gradf, x0, alpha=0.1, rho=0.5,
                             tolerance=1e-10, maxsteps=None):
     ls = []
-    x = array(x0)
+    x = np.array(x0)
     path = [ x.copy() ]
     fx = f(x)
     grad = gradf(x)
 
     step = 0
-    while norm(grad) > tolerance and (not maxsteps or maxsteps > step):
+    while np.linalg.norm(grad) > tolerance and (not maxsteps or maxsteps > step):
         step += 1
 
         d = -grad
@@ -34,7 +33,7 @@ def armijo_steepest_descent(f, gradf, x0, alpha=0.1, rho=0.5,
         if alpha != None:
             lmbda = 1
             xneu = x + d
-            grad2 = dot(grad, d)
+            grad2 = np.dot(grad, d)
             while  f(xneu) > fx + alpha*lmbda*grad2:
                 lmbda = rho*lmbda
                 xneu = x + lmbda*d
@@ -52,18 +51,18 @@ def armijo_steepest_descent(f, gradf, x0, alpha=0.1, rho=0.5,
         # Abbruch, wenn wir kompletten Unsinn rechnen
         if min(x) < -5 or max(x) > 5:
             break
-    return array(path).transpose(), array(ls)
+    return np.array(path).transpose(), np.array(ls)
 
 ############################################
 
-figure = pyplot.figure(figsize=(8,8))
+figure = plt.figure(figsize=(8,8))
 figure.subplots_adjust(left=0.05, right=0.95)
-pyplot.gray()
+plt.gray()
 
 def draw(f, gradf, x0, where, method, axis, levels, limit=None):
     graph = figure.add_subplot(where)
 
-    print "method is", method
+    print("method is", method)
 
     if method == "armijo":
         path, lambdas = armijo_steepest_descent(f, gradf, x0, tolerance=0.01)
@@ -73,16 +72,16 @@ def draw(f, gradf, x0, where, method, axis, levels, limit=None):
                                                 maxsteps=limit)
 
 
-    print "steps taken", len(lambdas)
-    print "min step was", min(lambdas)
-    print "max step was", max(lambdas)
+    print("steps taken", len(lambdas))
+    print("min step was", min(lambdas))
+    print("max step was", max(lambdas))
 
     # contour
     n=100
-    rx = linspace(axis[0], axis[1], n)
-    ry = linspace(axis[2], axis[3], n)
-    x, y = meshgrid(rx, ry)
-    z = zeros_like(x)
+    rx = np.linspace(axis[0], axis[1], n)
+    ry = np.linspace(axis[2], axis[3], n)
+    x, y = np.meshgrid(rx, ry)
+    z = np.zeros_like(x)
     for k in range(n):
         for l in range(n):
             z[k, l] = max(1e-20, f([ x[k, l], y[k, l] ]))
@@ -106,15 +105,15 @@ def draw(f, gradf, x0, where, method, axis, levels, limit=None):
 # Oben, quadratische Funktion
 ############################################
 
-A = array([[70,30],[30,50]])
+A = np.array([[70,30],[30,50]])
 
-print A
+print(A)
 
 def f(x):
-    return dot(x, dot(A,x))
+    return np.dot(x, np.dot(A,x))
 
 def gradf(x):
-    return 2*dot(A,x)
+    return 2*np.dot(A,x)
 
 draw(f, gradf, (-0.5,-1), 221, "armijo", (-1,1,-1,1), (1,10,30,50,100))
 draw(f, gradf, (-0.5,-1), 222, "fixed", (-1,1,-1,1), (1,10,30,50,100))
@@ -126,7 +125,7 @@ def rosenbrock(x):
     return (1.0-x[0])**2 + 100.0*(x[1]-x[0]**2)**2
 
 def gradrosenbrock(x):
-    return array((2*(200*x[0]**3 - 200*x[0]*x[1] + x[0] - 1),
+    return np.array((2*(200*x[0]**3 - 200*x[0]*x[1] + x[0] - 1),
                   200*(x[1]-x[0]**2)))
 
 draw(rosenbrock, gradrosenbrock, (0,0.2), 223, "armijo", (0,1,-0.25,1), (0.2,1,5,10,15,20))

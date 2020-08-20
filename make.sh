@@ -14,4 +14,5 @@ set -e
 
 (cd plots; make)
 (cd gendata; make check)
+(cd examples; make check)
 latexmk -interaction=nonstopmode

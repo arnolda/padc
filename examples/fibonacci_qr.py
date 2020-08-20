@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -11,45 +11,45 @@
 # Demonstration QR-Algorithmus
 ######################################
 
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
+import math
 import sys
+import numpy as np
 
 # Fibonacci-Matrix
-A = array(((0,1),(1,1)))
+A = np.array(((0, 1), (1, 1)))
 
 # QR-Algorithmus
 ################################
-print "QR-Algorithmus"
+print("QR-Algorithmus")
 
 Ak = A.copy()
-I = identity(Ak.shape[0])
+I = np.identity(Ak.shape[0])
 for i in range(6):
-    print "Iteration {}, Ak ist".format(i)
-    print Ak
+    print("Iteration {}, Ak ist".format(i))
+    print(Ak)
 
-    shift = Ak[-1,-1]
-    Q, R = qr(Ak - shift*I)
-    Ak = dot(R, Q) + shift*I
+    shift = Ak[-1, -1]
+    Q, R = np.linalg.qr(Ak - shift * I)
+    Ak = np.dot(R, Q) + shift * I
 
-print "Eigenwerte sollten {} und {} sein.".format(0.5*(1-sqrt(5)), 0.5*(1+sqrt(5)))
+print("Eigenwerte sollten {} und {} sein.".format(
+    0.5 * (1 - math.sqrt(5)), 0.5 * (1 + math.sqrt(5))))
 
 # Inverse Iteration
 ################################
 
 # Iteration ueber die Eigenwerte
-for l in diag(Ak):
-    print "Inverse Iteration zum Eigenwert {}".format(l)
-    Ashift = A - l*I
+for l in np.diag(Ak):
+    print("Inverse Iteration zum Eigenwert {}".format(l))
+    Ashift = A - l * I
     # Startwert
-    xk = ones(A.shape[0])
+    xk = np.ones(A.shape[0])
     for i in range(2):
-        xk = solve(Ashift, xk)
-        xk = xk / norm(xk)
-        print "Iteration {}, xk ist".format(i)
-        print xk
+        xk = np.linalg.solve(Ashift, xk)
+        xk = xk / np.linalg.norm(xk)
+        print("Iteration {}, xk ist".format(i))
+        print(xk)
 
-    print "Der Eigenvektor sollte sein:"
-    v = array([1.0, l])
-    print v/norm(v)
+    print("Der Eigenvektor sollte sein:")
+    v = np.array([1.0, l])
+    print(v / np.linalg.norm(v))

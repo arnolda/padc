@@ -7,9 +7,8 @@
 # http://creativecommons.org/licenses/by-sa/3.0/de/ oder wenden Sie sich
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
-from scipy import *
-from scipy.linalg import *
 import sys
+import numpy as np
 
 def rank1update(Abinv, t, y):
     """
@@ -86,47 +85,45 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
         An = A[:, nichtbasis]
         cn = c[:, nichtbasis]
         cb = c[:, basis]
-        xb = dot(Abinv, b)
+        xb = np.dot(Abinv, b)
 
-        x = zeros(n)
+        x = np.zeros(n)
         x[basis] = xb
 
-        print
-        print "**** Neuer Simplex-Schritt"
-        print "Basis ist", basis
-        print "und x = ", x
+        print("**** Neuer Simplex-Schritt")
+        print("Basis ist", basis)
+        print("und x = ", x)
 
         # reduzierte Kosten
-        r = cn - dot(An.transpose(), dot(Abinv.transpose(), cb))
+        r = cn - np.dot(An.transpose(), np.dot(Abinv.transpose(), cb))
 
-        print "reduzierte Kosten sind", r
+        print("reduzierte Kosten sind", r)
 
         # beste Abstiegskoordinate s suchen
         minc, spos = minelement(r)
         if minc > -eps:
             # keine Abstiegsrichtung, Minimum gefunden!
-            print "x war minimal, das wars!"
-            print
+            print("x war minimal, das wars!")
             return x
         s = nichtbasis[spos]
 
-        print "Koordinate %d ist beste Abstiegsrichtung" % s
+        print("Koordinate %d ist beste Abstiegsrichtung" % s)
 
         # rauszuwerfende Variable suchen
-        Abinvas = dot(Abinv, A[:,s])
+        Abinvas = np.dot(Abinv, A[:,s])
         t = minposelement(xb, Abinvas, eps)
 
         for i in range(0,len(basis)):
             if Abinvas[i] > eps:
-                print "%d-te Basiskoordinate %d erlaubt maximal %f" % \
-                    (i, basis[i], x[i] / Abinvas[i])
+                print("%d-te Basiskoordinate %d erlaubt maximal %f" % \
+                    (i, basis[i], x[i] / Abinvas[i]))
 
         if t == None:
             # zulaessige Menge unbegrenzt!
-            print "keine Basisgrenze gefunden, zulaessige Menge unbeschraenkt!"
+            print("keine Basisgrenze gefunden, zulaessige Menge unbeschraenkt!")
             return
 
-        print "... und %d-te Basiskoordinate %d muss raus" % (t, basis[t])
+        print("... und %d-te Basiskoordinate %d muss raus" % (t, basis[t]))
 
         # Austausch von j_t und s
         nichtbasis[spos] = basis[t]
@@ -147,16 +144,15 @@ def phase1(c, A, b, eps=1e-10):
     # Anzahl Variablen und Gleichungen
     m, n = A.shape
     
-    print "Problem:"
-    print "A=", A
-    print "b=", b
-    print "c=", c
-    print
+    print("Problem:")
+    print("A=", A)
+    print("b=", b)
+    print("c=", c)
 
     # Problem erweitern, damit wir eine Loesung kennen
     b = b.copy()
-    A = concatenate((A, identity(m)),axis=1)
-    c = concatenate((zeros(n), ones(m)))
+    A = np.concatenate((A, np.identity(m)),axis=1)
+    c = np.concatenate((np.zeros(n), np.ones(m)))
     # Ax = b positiv machen
     for i in range(m):
         if b[i] < 0:
@@ -165,23 +161,21 @@ def phase1(c, A, b, eps=1e-10):
     # sichere Ecke
     basis = range(n, n+m)
     # Inverse
-    Abinv = identity(m)
+    Abinv = np.identity(m)
 
-    print "Erweitertes Problem:"
-    print "A=", A
-    print "b=", b
-    print "c=", c
-    print
+    print("Erweitertes Problem:")
+    print("A=", A)
+    print("b=", b)
+    print("c=", c)
 
-    print "****** Phase II in Phase I"
+    print("****** Phase II in Phase I")
     # Loesung mit Hilfe von Phase 2 suchen
     x = phase2(c, A, b, basis, Abinv, eps)
-    print "****** fertig"
-    print
+    print("****** fertig")
 
-    if dot(c, x) > eps:
-        print "zulaessige Menge ist leer! Minimum ist", dot(c, x)
-        print "Zugehoeriger Punkt ist ", x
+    if np.dot(c, x) > eps:
+        print("zulaessige Menge ist leer! Minimum ist", np.dot(c, x))
+        print("Zugehoeriger Punkt ist ", x)
         return
 
     while True:
@@ -189,19 +183,19 @@ def phase1(c, A, b, eps=1e-10):
         maxb, t = maxelement(basis)
         if maxb <= n: break
 
-        print "Kuenstliche Variable %d muss raus" % maxb
+        print("Kuenstliche Variable %d muss raus" % maxb)
 
         # echte Ersatzvariable suchen, die nicht in der Basis ist
         for s in range(n):
             if s in basis: continue
-            Abinvas = dot(Abinv, A[:,s])
+            Abinvas = np.dot(Abinv, A[:,s])
             if Abinvas[t] < 0:
-                print "Austausch mit %d-ter Koordinate %d" % (t, basis[t])
+                print("Austausch mit %d-ter Koordinate %d" % (t, basis[t]))
 
                 # Ein Tauschpartner!
                 basis[t] = s
 
-                print "Neue Basis ist", basis
+                print("Neue Basis ist", basis)
 
                 rank1update(Abinv, t, Abinvas)
                 break
@@ -210,12 +204,12 @@ def phase1(c, A, b, eps=1e-10):
             # -> Matrix linear abhaengig, q-te Zeile streichen
             del basis[t]
             q = maxb - n
-            A = delete(A, q, 0)
-            b = delete(b, q, 0)
-            Abinv = delete(Abinv, q, 1)
-            Abinv = delete(Abinv, t, 0)
+            A = np.delete(A, q, 0)
+            b = np.delete(b, q, 0)
+            Abinv = np.delete(Abinv, q, 1)
+            Abinv = np.delete(Abinv, t, 0)
 
-            print "Kein Partner, Zeile %d-%d = %d gestrichen" % (maxb, n, t)
+            print("Kein Partner, Zeile %d-%d = %d gestrichen" % (maxb, n, t))
         print
 
     return basis, Abinv, A[:,:n], b
@@ -227,13 +221,13 @@ def simplex(c, A, b, eps=1e-10):
     zurueck. eps ist die Toleranz des Algorithmus.
     """
 
-    print "***************"
-    print "Phase I"
-    print "***************"
+    print("***************")
+    print("Phase I")
+    print("***************")
     basis, Abinv, A, b = phase1(c, A, b, eps)
-    print "***************"
-    print "Phase II"
-    print "***************"
+    print("***************")
+    print("Phase II")
+    print("***************")
     return phase2(c, A, b, basis, Abinv, eps)
 
 ##############################################
@@ -249,9 +243,9 @@ if task == "1":
     # Abbildung 9.3.1
     # die zweite Bedingung ist offenbar sinnlos
     # und wird in der ersten Phase des Simplex eliminiert
-    A = array(((1, 1, 1),
+    A = np.array(((1, 1, 1),
                (2, 2, 2)))
-    b = array((1, 2))
+    b = np.array((1, 2))
     c = (-0.3, 0.4, 0)
 
 elif task == "2":
@@ -278,13 +272,13 @@ elif task == "2":
     #
     #    Gewinn ist 100 K + 250 R + 120 W
     #
-    A = array(((1,   1,  1, 1,0,0),
+    A = np.array(((1,   1,  1, 1,0,0),
                (40,120, 10, 0,1,0),
                ( 7, 12,  7, 0,0,1),
                ( 1,  0, -1, 0,0,0),
                ), dtype=float)
-    b = array((40, 2400, 312, 0), dtype=float)
-    c = array((-100, -250, -120, 0, 0, 0), dtype=float)
+    b = np.array((40, 2400, 312, 0), dtype=float)
+    c = np.array((-100, -250, -120, 0, 0, 0), dtype=float)
 
 elif task == "3":
     # unbeschraenkte zulaessige Menge und Zielfunktion
@@ -292,10 +286,10 @@ elif task == "3":
     # y  >=   5 + x  <=>  x - y <= -5
     # y  >= -10 + 2x <=> 2x - y <= 10
     # 
-    A = array(((1, -1, -1,  0),
+    A = np.array(((1, -1, -1,  0),
                (2, -1,  0, -1)), dtype=float)
-    b = array((-5, 10), dtype=float)
-    c = array((-1, -1, 0, 0), dtype=float)
+    b = np.array((-5, 10), dtype=float)
+    c = np.array((-1, -1, 0, 0), dtype=float)
 
 elif task == "4":
     # leere zulaessige Menge
@@ -304,10 +298,10 @@ elif task == "4":
     # y >= 2+x       <=> -x  + y >= 2
     # y <= 3/2 + x/2 <=> -2x + 2y <= 3
     #
-    A = array((( 1, 1, -1, 0, 0),
+    A = np.array((( 1, 1, -1, 0, 0),
                (-1, 1,  0,-1, 0),
                (-2, 2,  0, 0, 1)), dtype=float)
-    b = array((1, 2, 3), dtype=float)
-    c = array((1, 1, 0, 0, 0), dtype=float)
+    b = np.array((1, 2, 3), dtype=float)
+    c = np.array((1, 1, 0, 0, 0), dtype=float)
 
-print simplex(array(c), A, b)
+print(simplex(np.array(c), A, b))

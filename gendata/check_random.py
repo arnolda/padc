@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -15,13 +15,14 @@ import sys
 # da liegen die Methoden, da sie Teil des Skripts sind
 sys.path.append("..")
 
+
 def test_rng(name, rng, expected):
-    print "testing " + name
+    print(f"testing {name}")
 
     for val in expected:
         check = rng()
-        if check != val:
-            print "mismatch %d != %d" % (check, val)
+        assert check == val, f"mismatch {check} != {val}"
+
 
 # Test MINSTD
 ##################################
@@ -38,9 +39,9 @@ expected = [
     101027544,
     1457850878,
     1458777923,
-    2007237709 ]
+    2007237709]
 
-test_rng("minstd", rng, expected) 
+test_rng("minstd", rng, expected)
 
 # Test R250
 ##################################
@@ -58,10 +59,10 @@ expected = [
     2143434332,
     662639499,
     131866351
-    ]
+]
 
-test_rng("r250", rng, expected) 
-    
+test_rng("r250", rng, expected)
+
 # Test rand
 ##################################
 import rand
@@ -78,12 +79,12 @@ expected = [
     486256185,
     1062517886,
     267834847
-    ]
+]
 
-test_rng("rand", rng, expected) 
+test_rng("rand", rng, expected)
 
 # Zeigt, dass bei rand das niedrigste Bit periodisch wechselt
 ##################################
 
 rng = rand.Rand(1)
-print [rng() % 2 for i in range(10)]
+print([rng() % 2 for i in range(10)])
