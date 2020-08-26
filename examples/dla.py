@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -11,14 +11,13 @@
 # Diffusionslimitierte Aggregation (DLA) in 2D
 #
 ##############################################
-from scipy import *
-from numpy.random import *
+import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+from matplotlib.animation import FuncAnimation
 
-seed(123)
+np.random.seed(123)
 
 M = 100
 
@@ -26,41 +25,46 @@ M = 100
 R = 5
 
 # Zentrum, wo der Keim sitzt
-ctr = (M + 1)/2
+ctr = (M + 1) // 2
 
 # 2D-Simulationsgitter, 1 bedeutet besetzt
-world = zeros((M, M))
+world = np.zeros((M, M))
 # Der Keim ist schon da
-world[ctr,ctr] = 1
+world[ctr, ctr] = 1
+
 
 def dla():
     global M, R, ctr
 
     def center_dist(x, y):
-        return sqrt((x - ctr)**2 + (y - ctr)**2)
+        return np.sqrt((x - ctr)**2 + (y - ctr)**2)
 
     path = []
 
     # Startpunkt auf Kreis um das Zentrum
-    phi = uniform(0, 2*pi)
-    x = int(round(ctr + R*cos(phi)))
-    y = int(round(ctr + R*sin(phi) + 0.5))
-    path.append((x,y))
+    phi = np.random.uniform(0, 2 * np.pi)
+    x = int(round(ctr + R * np.cos(phi)))
+    y = int(round(ctr + R * np.sin(phi) + 0.5))
+    path.append((x, y))
 
     attached = False
     running = True
     while running:
         xalt, yalt = x, y
-        move = randint(0,4)
-        if   move == 0: x += -1
-        elif move == 1: x +=  1
-        elif move == 2: y += -1
-        elif move == 3: y +=  1
-            
-        # Position merken
-        path.append((x,y))
+        move = np.random.randint(0, 4)
+        if move == 0:
+            x += -1
+        elif move == 1:
+            x += 1
+        elif move == 2:
+            y += -1
+        elif move == 3:
+            y += 1
 
-        if center_dist(x, y) >= 2*R or \
+        # Position merken
+        path.append((x, y))
+
+        if center_dist(x, y) >= 2 * R or \
                 x < 0 or x >= M or y < 0 or y >= M:
             # zu weit draussen, abbrechen und neu starten
             running = False
@@ -76,49 +80,41 @@ def dla():
 
 # Ausgabe
 ##########################################
+fig, axis = plt.subplots(1, 1, figsize=(4, 4))
 
-pyplot.hsv()
-figure = pyplot.figure(figsize=(4,4))
-figure.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
-
-graph = figure.add_subplot(111)
-
-pfad, = graph.plot([],[], "r-")
-kreis, = graph.plot([],[], "k:")
+pfad, = axis.plot([], [], "r-")
+kreis, = axis.plot([], [], "k:")
 
 # Plot-Routine
 ##########################################
 
-# Fuer die Farbe
-cnt = 0.0
-
-def animate():
-    global graph, pfad, kreis, ctr, cnt
+def animate(*args):
+    global axis, pfad, kreis, ctr
 
     # neuen Punkt generieren
     pts, R, attached = dla()
 
     # Pfad und Kreis updaten
-    x,y = zip(*pts)
+    x, y = zip(*pts)
     pfad.set_data(x, y)
-    kreis.set_data([ctr + R*cos(phi) for phi in linspace(0,2*pi,100)],
-                   [ctr + R*sin(phi) for phi in linspace(0,2*pi,100)])
+    kreis.set_data([ctr + R * np.cos(phi) for phi in np.linspace(0, 2 * np.pi, 100)],
+                   [ctr + R * np.sin(phi) for phi in np.linspace(0, 2 * np.pi, 100)])
 
     # und letzten Punkt permanent ausgeben, falls angelagert
     if attached:
-        graph.scatter(x[-1], y[-1], s=4, c=cm.hsv(cnt), linewidth=0)
-        cnt += 0.1
+        axis.scatter(x[-1], y[-1], s=4, linewidth=0)
 
     # Groesse anpasse
-    graph.axis((0,M-1,0,M-1))
+    axis.axis((0, M - 1, 0, M - 1))
 
-    # periodisch die Funktion wieder aufrufen, wenn noch ok
-    if R >= 0.4*M:
-        print "Radius %d ist zu gross geworden" % R
-    else:
-        figure.canvas.manager.window.after(200, animate)
+    if R >= 0.4 * M:
+        print(f"Radius {R} ist zu gross geworden")
+        return
 
-    figure.canvas.draw()
+    return pfad, kreis
 
-figure.canvas.manager.window.after_idle(animate)
-pyplot.show()
+
+anim = FuncAnimation(fig, animate, frames=100, interval=20, blit=True, repeat=False)
+plt.show(block=False)
+plt.pause(3)
+plt.close()

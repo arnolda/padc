@@ -11,13 +11,14 @@
 # LJ-Energiebeispiel
 ##############################################
 
-from scipy import *
-from scipy.linalg import norm
-from scipy.optimize import fmin
-import matplotlib.pyplot as pyplot
+import sys
+
+import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cm
-import sys
+import numpy as np
+import scipy.optimize
+
 sys.path.append("..")
 
 # Quadratkantenlaenge
@@ -32,7 +33,7 @@ def minimag(p0, positions):
     d = positions.transpose().copy()
     for i in range(p0.shape[0]):
         d[i] -= p0[i]
-        d[i] -= around(d[i]/L)*L
+        d[i] -= np.around(d[i]/L)*L
     return d
 
 # Potential am Ort eines Teilchens
@@ -41,14 +42,14 @@ def energy(p0, particles):
     dds = ds[0]*ds[0] + ds[1]*ds[1]
     return sum(lj(dds))
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 
 # LJ-Potential
 ##################################
 
 graph = figure.add_axes([0.1,0.1,0.375,0.75])
 
-r = linspace(0.5, 2.5, 200)
+r = np.linspace(0.5, 2.5, 200)
 
 m = 2**(1./6)
 graph.plot(r, lj(r*r), "r-", linewidth=2)
@@ -68,33 +69,33 @@ graph.yaxis.set_label_text("$\phi_{LJ}(r)/\epsilon$")
 
 graph = figure.add_axes([0.52,0.1,0.475,0.75])
 
-positions = loadtxt("lj_snapshot.coord")
+positions = np.loadtxt("lj_snapshot.coord")
 
 # heatmap
 n=100
-rx = linspace(0, L, n)
-ry = linspace(0, L, n)
-x, y = meshgrid(rx, ry)
-z = zeros_like(x)
+rx = np.linspace(0, L, n)
+ry = np.linspace(0, L, n)
+x, y = np.meshgrid(rx, ry)
+z = np.zeros_like(x)
 cnt = 0
 candidates = []
 for k in range(n):
     for l in range(n):
-        z[k, l] = energy(array((x[k, l], y[k, l])), positions)
+        z[k, l] = energy(np.array((x[k, l], y[k, l])), positions)
         if z[k, l] < 1000:
-            candidates.append(array((x[k, l], y[k, l])))
-z = array(z)
-print "Energiebereich", z.min(), z.max()
+            candidates.append(np.array((x[k, l], y[k, l])))
+z = np.array(z)
+print("Energiebereich", z.min(), z.max())
 
 minima = []
 for x0 in candidates:
-    minimum = fmin(energy, x0, args=(positions,), disp=False)
+    minimum = scipy.optimize.fmin(energy, x0, args=(positions,), disp=False)
     for mm in minima:
-        if allclose(minimum, mm, 1e-2):
+        if np.allclose(minimum, mm, 1e-2):
            break
     else:
         minima.append(minimum)
-print len(minima), "Minima gefunden"
+print(len(minima), "Minima gefunden")
 
 im = graph.imshow(z, interpolation='bilinear', cmap=cm.gray,
                   origin='lower', norm = colors.Normalize(0,5000),

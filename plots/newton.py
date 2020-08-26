@@ -11,15 +11,15 @@
 # Newtonverfahren
 #
 ############################################
-from numpy import *
 import math
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
 def f(r, phi0):
-    return exp(-r)/r - phi0
+    return np.exp(-r)/r - phi0
 
 def fprime(r, phi0):
-    return exp(-r)*(-r - 1)/r**2
+    return np.exp(-r)*(-r - 1)/r**2
 
 def graphical_newton(x0, f, fprime, n):
     "Newtonverfahren"
@@ -46,14 +46,14 @@ rmax=0.5
 path = graphical_newton(x0, lambda r: f(r, phi0),
                         lambda r: fprime(r, phi0), n)
         
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 
 graph = figure.add_subplot(121)
 
-x = linspace(rmin, rmax, 200)
+x = np.linspace(rmin, rmax, 200)
 
 graph.plot(x, f(x, phi0), "b-")
-graph.plot(x, zeros(x.shape), "b:",linewidth=0.5)
+graph.plot(x, np.zeros(x.shape), "b:",linewidth=0.5)
 
 for n in range(1, len(path)):
     xnn = path[n-1]
@@ -65,7 +65,7 @@ for n in range(1, len(path)):
         graph.text(xnn, -1.3, "$x_%d$" % (n-1),
                    horizontalalignment='center')
 
-print abs(xn - xnn)
+print(abs(xn - xnn))
 
 graph.axis([0,rmax,-1.5,20])
 
@@ -83,10 +83,10 @@ path = graphical_newton(x0, lambda r: f(r, phi0),
         
 graph = figure.add_subplot(122)
 
-x = linspace(0.01, rmax, 200)
+x = np.linspace(0.01, rmax, 200)
 
 graph.plot(x, f(x, phi0), "b-")
-graph.plot(x, zeros(x.shape), "b:",linewidth=0.5)
+graph.plot(x, np.zeros(x.shape), "b:",linewidth=0.5)
 
 for n in range(1, len(path)):
     xnn = path[n-1]
@@ -99,6 +99,6 @@ for n in range(1, len(path)):
                    horizontalalignment='center')
 
 graph.axis([rmin, rmax,-0.25,0.5])
-graph.set_xticks(arange(rmin, rmax+0.01, 0.25))
+graph.set_xticks(np.arange(rmin, rmax+0.01, 0.25))
 
 figure.savefig("newton.pdf")

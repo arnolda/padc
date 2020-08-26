@@ -11,11 +11,11 @@
 # Besselfunktion ueber Besselintegral
 #
 ############################################
-from scipy import *
-from scipy.special import *
-from scipy.interpolate import *
 import math
 import matplotlib.pyplot as pyplot
+import numpy as np
+import scipy.interpolate
+import scipy.special
 
 nu = 0
 
@@ -29,9 +29,9 @@ def trapez(x, N):
     """Zusammengesetzte Trapezregel fuer das Besselintegral
     mit N Stuetzstellen auf [0,pi]"""
 
-    h = pi/N
+    h = np.pi/N
 
-    res = zeros(x.shape)
+    res = np.zeros(x.shape)
 
     for n in range(len(x)):
         xn = x[n]
@@ -39,12 +39,12 @@ def trapez(x, N):
         # Trapezregel
         # linker Rand tau = 0
         # und rechter Rand tau = pi
-        I = 0.5 + 0.5*cos(nu*pi)
+        I = 0.5 + 0.5*np.cos(nu*np.pi)
         # Rest
-        tau = arange(1, N)*h
-        I += sum(cos(nu*tau - xn*sin(tau)))
+        tau = np.arange(1, N)*h
+        I += sum(np.cos(nu*tau - xn*np.sin(tau)))
 
-        res[n] = h*I/pi
+        res[n] = h*I/np.pi
 
     return res
 
@@ -52,9 +52,9 @@ def simpson(x, N):
     """Zusammengesetzte Simpsonregel fuer das Besselintegral
     mit N Stuetzstellen auf [0,pi]"""
 
-    h = pi/N
+    h = np.pi/N
 
-    res = zeros(x.shape)
+    res = np.zeros(x.shape)
 
     for n in range(len(x)):
         xn = x[n]
@@ -62,13 +62,13 @@ def simpson(x, N):
         # Trapezregel
         # linker Rand tau = 0, tau = h
         # und rechter Rand tau = pi
-        I = 1 + 4*cos(nu*h - xn*sin(h)) + cos(nu*pi)
+        I = 1 + 4*np.cos(nu*h - xn*np.sin(h)) + np.cos(nu*np.pi)
         # Rest, doppelte Schrittweite
-        tau = arange(1, N/2)*2*h
-        I += sum(  2*cos(nu*tau       - xn*sin(tau))
-                 + 4*cos(nu*(tau + h) - xn*sin(tau + h)))
+        tau = np.arange(1, N/2)*2*h
+        I += sum(  2*np.cos(nu*tau       - xn*np.sin(tau))
+                 + 4*np.cos(nu*(tau + h) - xn*np.sin(tau + h)))
 
-        res[n] = h/3*I/pi
+        res[n] = h/3*I/np.pi
 
     return res
 
@@ -80,18 +80,18 @@ figure.subplots_adjust(left=0.05, right=0.95, wspace=.2)
 # Links, Integrale
 ############################################
 
-x = linspace(0, xmax, 200)
+x = np.linspace(0, xmax, 200)
 
 graph = figure.add_subplot(121)
 
-graph.plot(x, jn(nu, x), "k-",linewidth=0.5)
-xint = arange(0,xmax, 1)
+graph.plot(x, scipy.special.jn(nu, x), "k-",linewidth=0.5)
+xint = np.arange(0,xmax, 1)
 graph.plot(xint, trapez(xint, 6), "r.")
-xint = arange(0.25,xmax, 1)
+xint = np.arange(0.25,xmax, 1)
 graph.plot(xint, trapez(xint, 20), "b+", markersize=3)
-xint = arange(0.5,xmax, 1)
+xint = np.arange(0.5,xmax, 1)
 graph.plot(xint, simpson(xint, 6), "gx", markersize=3)
-xint = arange(0.75,xmax, 1)
+xint = np.arange(0.75,xmax, 1)
 graph.plot(xint, simpson(xint, 20), "yD", markeredgewidth=0, markersize=3)
 graph.axis((0, xmax, -0.5, 1))
 
@@ -101,26 +101,26 @@ graph.axis((0, xmax, -0.5, 1))
 N = 6
 xn = 12
 
-tau = linspace(0, pi, 200)
+tau = np.linspace(0, np.pi, 200)
 
 graph = figure.add_subplot(122)
 
 def f(tau):
-    return cos(nu*tau - xn*sin(tau))
+    return np.cos(nu*tau - xn*np.sin(tau))
 
-support = linspace(0,pi, N+1)
+support = np.linspace(0,np.pi, N+1)
 
-trapez = interp1d(support, f(support), "linear")
+trapez = scipy.interpolate.interp1d(support, f(support), "linear")
     
 graph.plot(tau, f(tau), "k-", linewidth=0.5)
 graph.plot(tau, trapez(tau), "r:")
 # Simpson-Parabeln
-h = pi/N
-for n in range(N/2):
-    lsupp = array((2*n*h, (2*n+1)*h, (2*n+2)*h))
-    ltau = linspace(2*n*h, (2*n+2)*h, 400/N)
-    graph.plot(ltau, lagrange(lsupp, f(lsupp))(ltau), "g--")
+h = np.pi/N
+for n in range(N//2):
+    lsupp = np.array((2*n*h, (2*n+1)*h, (2*n+2)*h))
+    ltau = np.linspace(2*n*h, (2*n+2)*h, 400//N)
+    graph.plot(ltau, scipy.interpolate.lagrange(lsupp, f(lsupp))(ltau), "g--")
 graph.plot(support, f(support), "k.")
-graph.axis((0, pi, -1, 1.5))
+graph.axis((0, np.pi, -1, 1.5))
 
 figure.savefig("bessel_int.pdf")

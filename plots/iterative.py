@@ -12,12 +12,10 @@
 # Iterative Gleichungsloeser
 #
 ##############################################
-from scipy import *
-from scipy.linalg import *
-from numpy.random import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
-seed(123)
+np.random.seed(123)
 
 # DGL-Diskretisierungsschritte
 N=5
@@ -33,7 +31,7 @@ def linindex(x, y):
 # Schrittweite
 h=0.1
 # Matrix
-Ap=zeros((N*N, N*N))
+Ap=np.zeros((N*N, N*N))
 
 eqn=0
 for y in range(N):
@@ -50,25 +48,25 @@ for y in range(N):
         eqn += 1
 
 # zufaelliger Zielvektor/Ladungsdichte
-bp = normal(0,1,N*N)
+bp = np.random.normal(0,1,N*N)
 
 # zum Vergleich, strikt diagonal dominant
 ##############################################
 
-A = normal(0,1,n*n)
+A = np.random.normal(0,1,n*n)
 A = A.reshape((n,n))
 # strikt diagonal dominant machen
 for i in range(n):
     A[i,i] = sum([abs(A[i,k]) for k in range(n)]) - abs(A[i,i])/0.9
 
 # zufaelliger Zielvektor/Ladungsdichte
-b = normal(0,1,n)
+b = np.random.normal(0,1,n)
 
 # Verfahren
 ##############################################
 
 def jacobi_step(A, b, x):
-    xnew = zeros_like(x)
+    xnew = np.zeros_like(x)
     n = A.shape[0]
     for j in range(n):
         s = b[j]
@@ -91,7 +89,7 @@ def sor_step(A, b, omega, x):
 # Ausgabe
 ##########################################
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
 
 ##########################################
@@ -105,16 +103,16 @@ steps  = 25
 isteps = 4
 
 # gutartige Matrix A
-xjacobi  = zeros(n)
+xjacobi  = np.zeros(n)
 xjacobis  = [ xjacobi ]
-xgs      = zeros(n)
+xgs      = np.zeros(n)
 xgss      = [ xgs.copy() ]
 # nicht strikt diagdom Ap
-xjacobip = zeros(N*N)
+xjacobip = np.zeros(N*N)
 xjacobisp = [ xjacobip ]
-xgsp     = zeros(N*N)
+xgsp     = np.zeros(N*N)
 xgssp     = [ xgsp ]
-xsorp    = zeros(N*N)
+xsorp    = np.zeros(N*N)
 xsorsp    = [ xsorp.copy() ]
 
 for step in range(0, steps):
@@ -133,11 +131,11 @@ for step in range(0, steps):
     xgssp.append(xgsp.copy())
     xsorsp.append(xsorp.copy())
 
-jac_error  = [ norm(dot(A,x) - b) for x in xjacobis ]
-gs_error   = [ norm(dot(A,x) - b) for x in xgss ]
-jac_errorp = [ norm(dot(Ap,x) - bp) for x in xjacobisp ]
-gs_errorp  = [ norm(dot(Ap,x) - bp) for x in xgssp ]
-sor_errorp = [ norm(dot(Ap,x) - bp) for x in xsorsp ]
+jac_error  = [ np.linalg.norm(np.dot(A,x) - b) for x in xjacobis ]
+gs_error   = [ np.linalg.norm(np.dot(A,x) - b) for x in xgss ]
+jac_errorp = [ np.linalg.norm(np.dot(Ap,x) - bp) for x in xjacobisp ]
+gs_errorp  = [ np.linalg.norm(np.dot(Ap,x) - bp) for x in xgssp ]
+sor_errorp = [ np.linalg.norm(np.dot(Ap,x) - bp) for x in xsorsp ]
 
 graph.plot(range(0, isteps*(steps+1),isteps), jac_error, "bo", clip_on=False)
 graph.plot(range(0, isteps*(steps+1),isteps), gs_error, "rD", clip_on=False)
@@ -157,20 +155,20 @@ graph.set_yscale("log")
 # Anzahl SOR-Schritte, nach der wir messen
 steps = 20
 
-omegas = linspace(0,1,10, endpoint=False)
-omegas = concatenate((omegas, linspace(1,2,30)))
+omegas = np.linspace(0,1,10, endpoint=False)
+omegas = np.concatenate((omegas, np.linspace(1,2,30)))
 errors = []
 
 for omega in omegas:
-    xsorp = zeros(N*N)
+    xsorp = np.zeros(N*N)
 
     for step in range(steps):
         sor_step(Ap, bp, omega, xsorp)
-    errors.append(norm(dot(Ap,xsorp) - bp))
+    errors.append(np.linalg.norm(np.dot(Ap,xsorp) - bp))
 
 graph.plot(omegas, errors, "g*", clip_on=False)
 graph.xaxis.set_label_text(u"ω")
 
 figure.savefig("iterative.pdf")
 
-print "optimal omega:", omegas[argmin(errors)]
+print("optimal omega:", omegas[np.argmin(errors)])

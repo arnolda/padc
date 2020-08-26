@@ -11,9 +11,8 @@
 # Matrix zum 2d-Laplace-Operator
 ##############################################
 
-from scipy import *
-from scipy.linalg import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Laplace 1. Ordnung auf NxN
 N=5
@@ -23,7 +22,7 @@ def linindex(x, y): return (x % N) + N*(y % N)
 h=1
 
 # matrix
-A=zeros((N*N, N*N))
+A=np.zeros((N*N, N*N))
 # and corresponding points to plot
 # 4/h^2
 M = []
@@ -48,9 +47,9 @@ for y in range(N):
             O.append((linindex(x,y-1), eqn))
             if eqn <= 2:
                 # kommt in den Text als Beispiel der indizierten Speicherung
-                print linindex(x+1,y), linindex(x-1,y),\
-                    linindex(x,y+1), linindex(x,y-1)
-                print A[eqn,:]
+                print(linindex(x+1,y), linindex(x-1,y),\
+                    linindex(x,y+1), linindex(x,y-1))
+                print(A[eqn,:])
         else:
             # Normierung
             A[0, 0] = 1
@@ -58,12 +57,12 @@ for y in range(N):
 
         eqn += 1
 
-print det(A)
+print(np.linalg.det(A))
 
 # Graphik
 ##########################################
 
-figure = pyplot.figure(figsize=(4,4))
+figure = plt.figure(figsize=(4,4))
 figure.subplots_adjust(left=0.1, bottom=0.05, right=1, top=0.95)
 
 ##########################################
@@ -85,5 +84,5 @@ graph.plot(px, py, "o",
            markerfacecolor="red", markeredgecolor="red")
 graph.axis((-0.5, N*N-0.5, N*N-0.5, -0.5))
 
-#pyplot.show()
+#plt.show()
 figure.savefig("2d-laplace.pdf")

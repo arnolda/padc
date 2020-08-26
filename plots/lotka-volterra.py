@@ -12,9 +12,8 @@
 #
 # Lotka-Volterra-DGL
 ##############################################
-from scipy import *
-from scipy.linalg import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 import sys
 # da liegt der Integrator da er Teil des Skripts ist
 sys.path.append("..")
@@ -31,21 +30,21 @@ D = 0.1
 #
 # diese einfache Funktion ist nicht zeitabhaengig
 def f(t, y):
-    return array((+A*y[0] - B*y[0]*y[1],
+    return np.array((+A*y[0] - B*y[0]*y[1],
                   -C*y[1] + D*y[0]*y[1]))
 
-print "Stationaer:", C/D, A/B
+print("Stationaer:", C/D, A/B)
 # Loeser
 #############################################
 
 from rk import rk_explicit, euler, rk_klassisch
 
-y0 = array((100,1))
+y0 = np.array((100,1))
 
 # Ausgabe
 #############################################
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(left=0.15, right=0.95,wspace=0.3)
 
 # links oben, Expliziter Euler

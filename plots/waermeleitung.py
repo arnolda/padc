@@ -11,9 +11,8 @@
 #
 # Waermeleitungsgleichung
 ##############################################
-from scipy import *
-from scipy.linalg import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 import sys
 # da liegt der Integrator, da er Teil des Skripts ist
 sys.path.append("..")
@@ -37,7 +36,7 @@ dt = 0.01
 h = L/(N+1)
 
 # Raumdiskretisierung, Laplace mit 0-Randbedingung
-Laplace = zeros((N,N))
+Laplace = np.zeros((N,N))
 
 for i in range(N):
     if i > 0:
@@ -48,7 +47,7 @@ for i in range(N):
 
 # p' = f(t, p)
 def fhomogen(t, p):
-    return D*dot(Laplace, p)
+    return D*np.dot(Laplace, p)
 
 from rk import rk_explicit, rk_klassisch
 
@@ -67,17 +66,17 @@ def unpack(tnpns):
 # Ausgabe
 #############################################
 
-figure = pyplot.figure(figsize=(8,6))
+figure = plt.figure(figsize=(8,6))
 figure.subplots_adjust(left=0.15, right=0.95, top=0.95, wspace=0.3)
 
-x = linspace(-L/2.0, L/2.0, N+2)
+x = np.linspace(-L/2.0, L/2.0, N+2)
 
 # links: homogen, ein Teilchen
 #############################################
 
 # Am Anfang ein Teilchen in der Mitte
-p0 = zeros(N)
-p0[N/2] = 1.0/h
+p0 = np.zeros(N)
+p0[N//2] = 1.0/h
 
 tnpns = rk_explicit(rk_klassisch, fhomogen, p0, tmax, dt)
 ts, ps, mass = unpack(tnpns)
@@ -98,12 +97,12 @@ graph.yaxis.set_label_text("$p(x,t)$")
 #############################################
 graph = figure.add_subplot(223)
 
-graph.plot(ts, h*array(mass),  "r:", linewidth=2, label="dt=%.3f" % dt)
+graph.plot(ts, h*np.array(mass),  "r:", linewidth=2, label="dt=%.3f" % dt)
 
 for ddt, style in ((1.3*dt, "y--"), (1.4*dt, "k-")):
     tnpns2 = rk_explicit(rk_klassisch, fhomogen, p0, tmax, ddt)
     ts2, ps2, mass2 = unpack(tnpns2)
-    graph.plot(ts2, h*array(mass2), style, linewidth=2, label="dt=%.3f" % ddt)
+    graph.plot(ts2, h*np.array(mass2), style, linewidth=2, label="dt=%.3f" % ddt)
 
 graph.axis((0,tmax,0.0,2.0))
 graph.xaxis.set_label_text("$t$")
@@ -115,14 +114,14 @@ graph.legend(prop={"size": 10})
 
 # p' = f(t, p)
 def fhomogen(t, p):
-    diff = D*dot(Laplace, p)
+    diff = D*np.dot(Laplace, p)
     # Delta-Quellen bei L/2 und L/4
-    diff[N/2] += 1.0/h
-    diff[N/5] += 0.5/h
+    diff[N//2] += 1.0/h
+    diff[N//5] += 0.5/h
     return diff
 
 # Am Anfang nix
-p0 = zeros(N)
+p0 = np.zeros(N)
 
 tmax = 500
 
@@ -145,7 +144,7 @@ graph.legend(prop={"size": 10})
 #############################################
 graph = figure.add_subplot(224)
 
-graph.plot(ts, h*array(mass),  "r:", linewidth=2)
+graph.plot(ts, h*np.array(mass),  "r:", linewidth=2)
 graph.xaxis.set_label_text("$t$")
 graph.yaxis.set_label_text("$m(t)$")
 graph.axis((0,tmax,0,150))

@@ -10,12 +10,12 @@
 # Geschwindigkeitsautokorrelationsfunktion
 #
 ############################################
-from numpy import *
 import math
 import matplotlib.pyplot as pyplot
+import numpy as np
 
-vac1  = loadtxt("v_ac_1.data").transpose()
-vac05 = loadtxt("v_ac_0.5.data").transpose()
+vac1  = np.loadtxt("v_ac_1.data").transpose()
+vac05 = np.loadtxt("v_ac_0.5.data").transpose()
 
 # Abschaetzen von tau durch mutige Integration
 def estimate_tau(d):
@@ -26,8 +26,8 @@ def estimate_tau(d):
         I += f*dt
     return I/v[0]
 
-print "vac 1 -> tau = ", estimate_tau(vac1)
-print "vac 0.5 -> tau = ", estimate_tau(vac05)
+print(f"vac 1 -> tau = {estimate_tau(vac1)}")
+print(f"vac 0.5 -> tau = {estimate_tau(vac05)}")
 
 figure = pyplot.figure(figsize=(4,4))
 figure.subplots_adjust(left=0.16)

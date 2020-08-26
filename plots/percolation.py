@@ -10,15 +10,14 @@
 #
 # Perkolation
 ##############################################
-from scipy import *
-from numpy.random import *
 import matplotlib.pyplot as pyplot
+import numpy as np
 
-seed(123)
+np.random.seed(123)
 
 def try_percolation(M, p):
     # 2D-Simulationsgitter, 1 bedeutet besetzt
-    world = zeros((M,M))
+    world = np.zeros((M,M))
 
     # Besetzung
     ##########################################
@@ -27,7 +26,7 @@ def try_percolation(M, p):
 
     for x in range(M):
         for y in range(M):
-            u = uniform(0, 1)
+            u = np.random.uniform(0, 1)
             world[x,y] = (u < p)
             if world[x,y]:
                 structure.append((x,y))
@@ -71,7 +70,7 @@ def try_percolation(M, p):
 # Simulationen
 ##########################################
 
-ps = linspace(0.5, 0.7, 7)
+ps = np.linspace(0.5, 0.7, 7)
 
 threshold = 0.6
 
@@ -80,7 +79,7 @@ def sims(M, ps, samples):
     for p in ps:
         successful = 0
         for cnt in range(samples):
-            if cnt % 10 == 0: print "Test ", cnt
+            if cnt % 10 == 0: print("Test ", cnt)
             percolating, structure, connected = try_percolation(M, p)
             if percolating:
                 successful += 1
@@ -124,7 +123,7 @@ graph.plot(ps, probs20, "bo")
 graph.plot(ps, probs100, "r:")
 graph.plot(ps, probs100, "rD")
 graph.xaxis.set_label_text("$p$")
-graph.xaxis.set_ticks(linspace(0.4,0.8,5))
+graph.xaxis.set_ticks(np.linspace(0.4,0.8,5))
 graph.yaxis.set_label_text("Perkolationsw-keit")
 graph.axis((0.495,0.705,0,1))
 

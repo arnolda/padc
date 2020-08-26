@@ -11,10 +11,9 @@
 # Verwerfungsmethode fuer rho= x^2
 #
 ############################################
-from scipy import *
-from numpy.random import *
 import math
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
 def rho(x):
     return x**2
@@ -27,25 +26,25 @@ def verwerfungsmethode(rho, n):
     global cnt
     while True:
         cnt += 1
-        p = uniform(0, 1, n)
-        u = uniform(0, 1)
+        p = np.random.uniform(0, 1, n)
+        u = np.random.uniform(0, 1)
         if u < rho(p):
             return p
 
 ##########################################
 
-figure = pyplot.figure(figsize=(8,4))
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(bottom=0.15,wspace=0.3, left=0.1,right=0.95)
 
 ##########################################
 
 graph = figure.add_subplot(121)
 
-x = linspace(0,1,100)
+x = np.linspace(0,1,100)
 
 graph.plot(x, rho(x), "k-")
 
-pts = zip(uniform(0,1,200), uniform(0,1,200))
+pts = zip(np.random.uniform(0,1,200), np.random.uniform(0,1,200))
 inner = []
 outer = []
 for xx, yy in pts:
@@ -66,9 +65,9 @@ cnt = 0
 for n in range(100000):
     drawn.append(verwerfungsmethode(rho, 1))
 
-print "ZZ pro Zug", float(cnt)/100000
+print("ZZ pro Zug", float(cnt)/100000)
 
-histo, edges = histogram(array(drawn), bins=50, range=(0,1), normed=True)
+histo, edges = np.histogram(np.array(drawn), bins=50, range=(0,1), density=True)
 
 graph = figure.add_subplot(122)
 

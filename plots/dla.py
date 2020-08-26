@@ -11,19 +11,18 @@
 # Diffusionslimitierte Aggregation (DLA) in 2D
 #
 ##############################################
-from scipy import *
-from numpy.random import *
-import matplotlib.pyplot as pyplot
+import matplotlib.pyplot as plt
+import numpy as np
 
-seed(123)
+np.random.seed(123)
 
 def dla(M, N):
     """DLA-Historie fuerr ein Gitter von M**2 Plaetzen und N Teilchen
     """
     # Zentrum, wo der Keim sitzt
-    ctr = (M+1)/2
+    ctr = (M+1)//2
     # 2D-Simulationsgitter, 1 bedeutet besetzt
-    world = zeros((M,M))
+    world = np.zeros((M,M))
     # Der Keim ist schon da
     world[ctr,ctr] = 1
     # angelagerte Punkte fuer die Ausgabe
@@ -36,22 +35,22 @@ def dla(M, N):
     ##########################################
 
     def center_dist(x, y):
-        return sqrt((x - ctr)**2 + (y - ctr)**2)
+        return np.sqrt((x - ctr)**2 + (y - ctr)**2)
 
     for n in range(N):
         if n % 100 == 0:
-            print "Anfuegen von Teilchen", n
+            print("Anfuegen von Teilchen", n)
         attached = False
         while not attached:
             # Startpunkt auf Kreis um das Zentrum
-            phi = uniform(0, 2*pi)
-            x = int(round(ctr + R*cos(phi)))
-            y = int(round(ctr + R*sin(phi) + 0.5))
+            phi = np.random.uniform(0, 2*np.pi)
+            x = int(round(ctr + R*np.cos(phi)))
+            y = int(round(ctr + R*np.sin(phi) + 0.5))
 
             running = True
             while running:
                 xalt, yalt = x, y
-                move = randint(0,4)
+                move = np.random.randint(0,4)
                 if   move == 0: x += -1
                 elif move == 1: x +=  1
                 elif move == 2: y += -1
@@ -77,8 +76,8 @@ def dla(M, N):
 # Ausgabe
 ##########################################
 
-pyplot.hsv()
-figure = pyplot.figure(figsize=(8,4))
+plt.hsv()
+figure = plt.figure(figsize=(8,4))
 figure.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9)
 
 ##########################################
