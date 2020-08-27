@@ -83,8 +83,8 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
 
     while True:
         An = A[:, nichtbasis]
-        cn = c[:, nichtbasis]
-        cb = c[:, basis]
+        cn = c[nichtbasis]
+        cb = c[basis]
         xb = np.dot(Abinv, b)
 
         x = np.zeros(n)
@@ -159,7 +159,7 @@ def phase1(c, A, b, eps=1e-10):
             b[i] = -b[i]
             A[i,:n] = -A[i,:n]
     # sichere Ecke
-    basis = range(n, n+m)
+    basis = list(range(n, n+m))
     # Inverse
     Abinv = np.identity(m)
 
