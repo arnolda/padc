@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -9,11 +9,10 @@
 # View, California, 94041, USA.
 # Perkolation
 ##############################################
-from scipy import *
-from numpy.random import *
-import matplotlib.pyplot as pyplot
+import numpy as np
+import matplotlib.pyplot as plt
 
-seed(123)
+np.random.seed(123)
 
 # Laenge einer Gitterseite
 M = 50
@@ -22,21 +21,25 @@ p = 0.55
 # wie oft wir messen, um die W-keit zu bestimmen
 samples = 100
 
-def try_percolation(M, p):
-    # 2D-Simulationsgitter, 1 bedeutet besetzt
-    world = zeros((M,M))
 
-    # Besetzung
-    ##########################################
-    # Liste der besetzen Punkte, fuer die Ausgabe    
+def occupy(world, p):
+    """Gitter mit zufaellig gefuellten Feldern erzeugen."""
     structure = []
 
-    for x in range(M):
-        for y in range(M):
-            u = uniform(0, 1)
-            world[x,y] = (u < p)
-            if world[x,y]:
-                structure.append((x,y))
+    for x in range(world.shape[0]):
+        for y in range(world.shape[1]):
+            u = np.random.uniform(0, 1)
+            world[x, y] = (u < p)
+            if world[x, y]:
+                structure.append((x, y))
+    return structure
+
+
+def try_percolation(M, p):
+    # 2D-Simulationsgitter, 1 bedeutet besetzt
+    world = np.zeros((M, M))
+    # Liste der besetzen Punkte, fuer die Ausgabe
+    structure = occupy(world, p)
 
     # Flutung von oben nach unten
     ##########################################
@@ -47,9 +50,9 @@ def try_percolation(M, p):
 
     # Initialisierung von oben
     for x in range(M):
-        if world[x, M-1]:
-            connected_undone.append((x, M-1))
-            connected.append((x, M-1))
+        if world[x, M - 1]:
+            connected_undone.append((x, M - 1))
+            connected.append((x, M - 1))
 
     # Durchfluten
     while connected_undone:
@@ -74,27 +77,31 @@ def try_percolation(M, p):
 
     return percolating, structure, connected
 
-# Ausgabe
-##########################################
 
-successful = 0
-for cnt in range(samples):
-    print "Test ", cnt
-    percolating, structure, connected = try_percolation(M, p)
-    if percolating:
-        successful += 1
-        # Erfolg merken fuer die Ausgabe
-        succ_structure = structure
-        succ_connected = connected
+def plot():
+    """Ausgabe."""
+    successful = 0
+    for cnt in range(samples):
+        print(f"Test {cnt}")
+        percolating, structure, connected = try_percolation(M, p)
+        if percolating:
+            successful += 1
+            # Erfolg merken fuer die Ausgabe
+            succ_structure = structure
+            succ_connected = connected
 
-print "Perkolations-W-keit", float(successful)/samples
+    print(f"Perkolations-W-keit {float(successful)/samples}")
 
-if successful > 0:
-    # Liste von Paaren in Paar von Listen verwandeln
-    xs, ys = zip(*succ_structure)
-    xc, yc = zip(*succ_connected)
+    if successful > 0:
+        # Liste von Paaren in Paar von Listen verwandeln
+        xs, ys = zip(*succ_structure)
+        xc, yc = zip(*succ_connected)
 
-    pyplot.plot(xs, ys, "k+")
-    pyplot.plot(xc, yc, "bo")
+        plt.plot(xs, ys, "k+")
+        plt.plot(xc, yc, "bo")
 
-    pyplot.show()
+        plt.show()
+
+
+if __name__ == "__main__":
+    plot()

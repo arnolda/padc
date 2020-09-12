@@ -535,14 +535,7 @@ Fehler der einfachen Trapezregel übernehmen, da stets $\frac{1}{N}
 
 Eine einfache Implementation der Trapezregel in Python könnte so
 aussehen:
-\begin{lstlisting}
-def trapez(f, a, b, N):
-    h = (b-a)/float(N)
-    summe = 0.5*(f(a) + f(b))
-    for x in a + numpy.arange(1, N)*h:
-        summe += f(x)
-    return h*summe
-\end{lstlisting}
+\lstinputlisting[firstline=10]{trapez.py}
 
 Die zusammengesetzte Trapezregel ist in Scipy als
 \scipy{scipy.integrate.trapz(y, x)} implementiert. Man beachte dabei
@@ -1046,13 +1039,7 @@ zusammen mit der Integration abschätzen.
 Als SciPy-Code sieht eine Monte-Carlo-Integration noch einfacher als
 die Trapezregel aus. Hier ein Code, der zweidimensional über
 $[a,b]\times[c,d]$ integriert:
-\begin{lstlisting}
-from numpy.random import uniform
-
-def montecarlo(f, a, b, c, d, N):
-    volumen = (b-a)*(d-c)
-    return volumen*sum(f(uniform(a,b,N), uniform(c,d,N)))/N
-\end{lstlisting}
+\lstinputlisting[firstline=10]{montecarlo.py}
 
 Da die Standardabweichung eine Konstante ist, fällt der Fehler der
 Monte-Carlo-Integration im Allgemeinen wie $\O(N^{-1/2})$. Im
@@ -1196,27 +1183,7 @@ Corput-Folge zur Basis $p$. Dazu wird solange von den natürlichen
 Zahlen $1,2,\ldots,N$ die unterste Stelle abgezogen und mit der
 reziproken Potenz auf das Ergebnis addiert, bis alle Stellen von auch
 der höchsten Zahl, $N$, bearbeitet wurden:
-\begin{lstlisting}
-from numpy import *
-def vanderCorput(N, p):
-    # zu wandelnde Zahlen
-    numbers = arange(1,int(N)+1)
-    # bitumgekehrtes Ergebnis
-    result = zeros(N)
-    # Wert der aktuellen, inversen Stelle
-    frac = 1.0 / p
-
-    # solange die groesste Zahl noch Stellen hat
-    while numbers[-1] > 0:
-        # unterste Stelle abschneiden
-        digit = numbers % p
-        numbers /= p
-        # ... und zum Ergebnis hinzufuegen
-        result += frac*digit
-        frac /= p
-
-    return array(result)
-\end{lstlisting}
+\lstinputlisting[firstline=10]{vander_corput.py}
 
 Die mehrdimensionale \emph{Halton-Folge} ist die Folge, die aus der
 Verschränkung einer van Corput-Folge für jede Dimension entsteht,

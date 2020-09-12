@@ -680,15 +680,7 @@ auch für die direkte Auswertung nach \eqref{eq:crosscorrnum}, da für
 größere $k$ die Anzahl der Messwerte nicht ausreichend ist.
 
 In Python sieht die Berechnung der Kreuzkorrelation so aus:
-\begin{lstlisting}
-import numpy
-import numpy.fft as fft
-
-def kreuzkorrelation(A, B):
-    ftA = fft.fft(A).conj()
-    ftB = fft.fft(B)
-    return numpy.real(fft.ifft(ftA*ftB))/A.shape[0]
-\end{lstlisting}
+\lstinputlisting[firstline=10]{kreuzkorrelation.py}
 
 \subsection{Autokorrelationsfunktion}
 
@@ -891,16 +883,7 @@ abgeschätzt werden.
 
 Auf dem Computer lassen sich $\mean{x}$ und $\sigma^2(x)$ mit Hilfe
 von \eqref{eq:varest} bequem in einem Durchlauf der Daten abschätzen:
-\begin{lstlisting}
-sum  = 0
-sum2 = 0
-for v in x:
-    sum  += v
-    sum2 += v*v
-mittel = sum/len(x)
-sigma2 = (sum2/len(x) - mittel**2)*len(x)/(len(x)-1)
-fehler = sqrt(sigma2/N)
-\end{lstlisting}
+\lstinputlisting[firstline=10]{meanvar.py}%
 Der zweite Weg in \eqref{eq:varest} via $\overline{(x - \bar{x})^2}$
 ist zwar numerisch etwas stabiler, aber erfordert zwei Schleifen über
 alle Daten, da der Mittelwert zunächst bestimmt werden muss, was unter

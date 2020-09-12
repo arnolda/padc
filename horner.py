@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -8,7 +8,8 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 def horner(series, x):
+    """Polynom an der Stelle x auswerten."""
     r = series[-1]
     for c in reversed(series[:-1]):
-        r = r*x + c
+        r = r * x + c
     return r

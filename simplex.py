@@ -1,6 +1,6 @@
 # Dies ist Teil der Vorlesung Physik auf dem Computer, SS 2012,
 # Axel Arnold, Universitaet Stuttgart.
-# 
+#
 # Dieses Werk ist unter einer Creative Commons-Lizenz vom Typ
 # Namensnennung-Weitergabe unter gleichen Bedingungen 3.0 Deutschland
 # zugaenglich. Um eine Kopie dieser Lizenz einzusehen, konsultieren Sie
@@ -9,56 +9,46 @@
 # View, California, 94041, USA.
 import numpy as np
 
+
 def rank1update(Abinv, t, y):
-    """
-    Update von Ab^{-1}, wenn in Ab Spalte t durch Ab*y ersetzt wird
-    """
+    """Update von 1/Ab, wenn in Ab Spalte t durch Ab*y ersetzt wird."""
     v = y.copy()
     pivot = v[t]
     v[t] -= 1
     v /= pivot
     u = Abinv[t]
     for i in range(Abinv.shape[0]):
-        Abinv[:,i] -= v*u[i]
+        Abinv[:, i] -= v * u[i]
+
 
 def minelement(x):
-    """
-    sucht die kleinste Komponente von x und deren Index
-    """
-    s = 0
-    minimum = x[0]
-    for i in range(1,len(x)):
-        if x[i] < minimum:
-            s, minimum = i, x[i]
-    return minimum, s
+    """Sucht die kleinste Komponente von x und deren Index."""
+    s = np.argmin(x)
+    return x[s], s
+
 
 def maxelement(x):
-    """
-    sucht die groesste Komponente von x und deren Index
-    """
-    s = 0
-    maximum = x[0]
-    for i in range(1,len(x)):
-        if x[i] > maximum:
-            s, maximum = i, x[i]
-    return maximum, s
+    """Sucht die groesste Komponente von x und deren Index."""
+    s = np.argmax(x)
+    return x[s], s
+
 
 def minposelement(x, y, eps):
     """
-    sucht den Index der kleinsten Komponente von x_i/y_i,
+    Sucht den Index der kleinsten Komponente von x_i/y_i,
     wobei y_i > 0 sein soll.
     """
-    s = -1
-    for i in range(0,len(x)):
+    s, minimum = None, None
+    for i, xi in enumerate(x):
         if y[i] > eps:
-            v = x[i] / y[i]
-            if s == -1 or v < minimum:
+            v = xi / y[i]
+            if s is None or v < minimum:
                 # erstes passendes Element
                 # oder spaeter ein kleineres
                 s, minimum = i, v
-    if s >= 0: return s
-    else:      return None
+    return s
 # @\newpage@
+
 
 def phase2(c, A, b, basis, Abinv, eps=1e-10):
     """
@@ -72,14 +62,9 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
 
     # Anzahl Variablen
     n = A.shape[1]
-    # und Gleichungen
-    m = A.shape[0]
 
     # Nichtbasis berechnen
-    nichtbasis = []
-    for i in range(n):
-        if not i in basis:
-            nichtbasis.append(i)
+    nichtbasis = [i for i in range(n) if i not in basis]
 
     while True:
         An = A[:, nichtbasis]
@@ -99,12 +84,12 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
         s = nichtbasis[spos]
 
         # rauszuwerfende Variable suchen
-        Abinvas = np.dot(Abinv, A[:,s])
+        Abinvas = np.dot(Abinv, A[:, s])
         t = minposelement(xb, Abinvas, eps)
 
-        if t == None:
+        if t is None:
             # zulaessige Menge unbegrenzt!
-            raise Exception("zulaessige Menge unbeschraenkt!")
+            raise ValueError("zulaessige Menge unbeschraenkt!")
 
         # Austausch von j_t und s
         nichtbasis[spos] = basis[t]
@@ -113,6 +98,7 @@ def phase2(c, A, b, basis, Abinv, eps=1e-10):
         # Update von Abinv
         rank1update(Abinv, t, Abinvas)
 # @\newpage@
+
 
 def phase1(c, A, b, eps=1e-10):
     """
@@ -125,35 +111,37 @@ def phase1(c, A, b, eps=1e-10):
 
     # Anzahl Variablen und Gleichungen
     m, n = A.shape
-    
+
     # Problem erweitern, damit wir eine Loesung kennen
     b = b.copy()
-    A = np.concatenate((A, np.identity(m)),axis=1)
+    A = np.concatenate((A, np.identity(m)), axis=1)
     c = np.concatenate((np.zeros(n), np.ones(m)))
     # Ax = b positiv machen
     for i in range(m):
         if b[i] < 0:
             b[i] = -b[i]
-            A[i,:n] = -A[i,:n]
+            A[i, :n] = -A[i, :n]
     # sichere Ecke
-    basis = np.arange(n, n+m)
+    basis = np.arange(n, n + m)
     # Inverse
     Abinv = np.identity(m)
 
     # Loesung mit Hilfe von Phase 2 suchen
     x = phase2(c, A, b, basis, Abinv, eps)
     if np.dot(c, x) > eps:
-        raise Exception("zulaessige Menge ist leer!")
+        raise ValueError("zulaessige Menge ist leer!")
 
     while True:
         # pruefen, ob Basis noch Schattenvariablen enthaelt
         maxb, t = maxelement(basis)
-        if maxb <= n: break
+        if maxb <= n:
+            break
 
         # echte Ersatzvariable suchen, die nicht in der Basis ist
         for s in range(n):
-            if s in basis: continue
-            Abinvas = np.dot(Abinv, A[:,s])
+            if s in basis:
+                continue
+            Abinvas = np.dot(Abinv, A[:, s])
             if Abinvas[t] < 0:
                 # Ein Tauschpartner!
                 basis[t] = s
@@ -169,8 +157,9 @@ def phase1(c, A, b, eps=1e-10):
             Abinv = np.delete(Abinv, q, 1)
             Abinv = np.delete(Abinv, t, 0)
 
-    return basis, Abinv, A[:,:n], b
+    return basis, Abinv, A[:, :n], b
 # @\newpage@
+
 
 def simplex(c, A, b, eps=1e-10):
     """

@@ -8,27 +8,29 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 #
-# Newtonverfahren zur Wurzelnaeherung
-#
-##############################################
+"""
+Newtonverfahren zur Wurzelnaeherung
+"""
 
-# berechne k-te Wurzel aus a
-a = 2.0
-k = 2
 
-# gewuenschte Genauigkeit
-t = 1e-10
+def main(a, t):
+    "Berechne k-te Wurzel aus a mit Genauigkeit t"
+    k = 2
 
-xcurr = a
-xlast = 0.0
-step = 1
+    xcurr = a
+    xlast = 0.0
+    step = 1
 
-print(f"x[{step}] = {xcurr:.15f}")
-
-# Schleife, bis das Ergebnis konvergiert ist
-while abs(xcurr - xlast) > t:
-    xlast = xcurr
-    # Newtonschritt
-    xcurr = (1 - 1.0 / k) * xlast + a * 1.0 / (k * xlast**(k - 1))
     print(f"x[{step}] = {xcurr:.15f}")
-    step += 1
+
+    # Schleife, bis das Ergebnis konvergiert ist
+    while abs(xcurr - xlast) > t:
+        xlast = xcurr
+        # Newtonschritt
+        xcurr = (1 - 1.0 / k) * xlast + a * 1.0 / (k * xlast**(k - 1))
+        print(f"x[{step}] = {xcurr:.15f}")
+        step += 1
+
+
+if __name__ == "__main__":
+    main(2.0, 1e-10)

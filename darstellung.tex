@@ -360,13 +360,7 @@ niedrigeren Grad hat. Daraus ergibt sich die folgende \emph{Newtonsche
 \end{equation}
 Die letztere Umformung zeigt, dass sich die Newtonsche Darstellung
 effizient mit einem leicht abgewandelten Hornerschema auswerten lässt:
-\begin{lstlisting}
-def horner(x, xsupport, gamma):
-    r = 0
-    for k in range(len(xsupport)-1, -1, -1):
-        r = r*(x-xsupport[k]) + gamma[k];
-    return r
-\end{lstlisting}
+\lstinputlisting[firstline=10]{horner_newton_interpol.py}
 
 Die Koeffizienten $\gamma_i$, $i=2(1)n$ lassen sich dabei bequem mit
 dem Nevilleschema bestimmen. $\gamma_k$ ist ja der höchste Koeffizient
@@ -387,15 +381,7 @@ einen Vektor
     \gamma_{0,k},\gamma_{1,k},\ldots,\gamma_{n-k,k}\right),
 \end{equation}
 der wie folgt berechnet wird:
-\begin{lstlisting}
-def neville(x, y):
-    n = len(x)
-    gamma = y.copy()
-    for k in range(1, n):
-        for i in range(n-k-1, -1, -1):
-            gamma[i+k] = (gamma[i+k] - gamma[i+k-1])/(x[i+k] - x[i])
-    return gamma
-\end{lstlisting}
+\lstinputlisting[firstline=10]{neville.py}%
 Die Schleife über $i$ zählt abwärts, um benötigte Werte nicht zu
 überschreiben.
 
@@ -754,7 +740,9 @@ Weiter gilt:
   \begin{equation}
     \frac{d}{dt}  f(t) = \sum_{n\in\ZZ} \hat{f}_n i n\omega e^{i n\omega
       t} = \sum_{n\in\ZZ} \widehat{\left(\frac{df}{dt}\right)}_n e^{i n\omega
-      t}\quad\implies\quad \widehat{\left(\frac{df}{dt}\right)}_n= i n\omega\hat{f}_n.
+      t}\quad\implies\quad \widehat{\left(\frac{df}{dt}\right)}_n= i
+    n\omega\hat{f}_n.
+    \label{eq:dfft}
   \end{equation}
 \end{itemize}
 

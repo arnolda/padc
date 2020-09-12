@@ -624,36 +624,11 @@ vieldimensionale Probleme dominiert dieser Aufwand klar. Eine
 Beispielimplementation des gedämpten Newtonverfahrens zeigt
 Listing~\ref{lst:newton}.
 
-\begin{lstlisting}[style=floating,float=t,deletekeywords={lambda},
-caption={Gedämpftes Newtonverfahren in mehreren
-Dimensionen. \lstinline!f(x)! muß
-eine vektorwertige Funktion sein, \lstinline!fprime(x)! ihre
-Ableitung, d.h. eine matrixwertige Funktion.},label={lst:newton}]
-# Gedaempftes Newtonverfahren
-#############################
-
-def gedaempfter_newton(f, fprime, x0, epsilon):
-   xi = x0
-   konvergiert = False
-   while not konvergiert:
-      # Newton-Korrektur
-      di = solve(fprime(xi), f(xi))
-      if norm(di) < epsilon:
-         konvergiert = True
-      else:
-         # Schrittweitendaempfung
-         lambda = 1.0
-         abstieg = False
-         while not abstieg:
-            # neue Naeherung
-            xneu = xi + lambda*di
-            if norm(f(xneu)) < norm(f(xi)):
-               abstieg = True
-            else:
-               lambda = lambda / 2.0
-         xi = xneu
-   return xi
-\end{lstlisting}
+\lstinputlisting[style=floating,float=t,firstline=10,
+caption={Gedämpftes Newtonverfahren in mehreren Dimensionen. \lstinline!f(x)! muß
+  eine vektorwertige Funktion sein, \lstinline!fprime(x)! ihre
+  Ableitung, d.h. eine matrixwertige Funktion.},
+label={lst:newton}]{damped_newton.py}%
 
 %%% Local Variables: 
 %%% mode: latex

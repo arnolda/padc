@@ -8,19 +8,22 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 #
-# Pseudozufallszahlentests
-#
-############################################
-import math
+"""
+Pseudozufallszahlentests
+"""
+import argparse
+import itertools as it
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
 class Randmine:
+    """RAND-Zufallszahlengenerator mit selbstbestimmten Koeffizienten"""
     def __init__(self):
         self.state = 123
 
     def next(self):
+        "Nächste Zahl berechnen und zurückgeben"
         m = 1 << 32
         a = 49
         b = 1975
@@ -29,10 +32,12 @@ class Randmine:
 
 
 class Rand:
+    """Standard-RAND-Zufallszahlengenerator"""
     def __init__(self):
         self.state = 123
 
     def next(self):
+        "Nächste Zahl berechnen und zurückgeben"
         m = 1 << 32
         a = 1103515245
         b = 12345
@@ -41,10 +46,12 @@ class Rand:
 
 
 class Randu:
+    """RANDU-Zufallszahlengenerator"""
     def __init__(self):
         self.state = 123
 
     def next(self):
+        "Nächste Zahl berechnen und zurückgeben"
         m = 1 << 31
         a = 65539
         self.state = (self.state * a) % m
@@ -52,30 +59,56 @@ class Randu:
 
 
 class Minstd:
+    """Minstd-Zufallszahlengenerator"""
     def __init__(self):
         self.state = 123
 
     def next(self):
+        "Nächste Zahl berechnen und zurückgeben"
         m = (1 << 31) - 1
         a = 16807
         self.state = (self.state * a) % m
         return float(self.state - 1) / float(m - 1)
 
-##########################################
+
+def main():
+    "Hauptroutine"
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--class", dest="klass",
+                        help="Zufallszahlengenerator", metavar="Name",
+                        type=str,
+                        default="randu")
+    parser.add_argument("--limit", dest="limit",
+                        help=u"Zeitlimit in 0.1s", metavar=u"Limit",
+                        type=int)
+    args = parser.parse_args()
+
+    rng_name = args.klass.lower()
+    if rng_name == "randmine":
+        RngType = Randmine
+    elif rng_name == "rand":
+        RngType = Randmine
+    elif rng_name == "randu":
+        RngType = Randu
+    elif rng_name == "minstd":
+        RngType = Minstd
+    else:
+        raise ValueError("invalid RNG")
+
+    figure = plt.figure(figsize=(4, 4))
+
+    rng = RngType()
+    data = [rng.next() for x in range(1000)]
+
+    graph = Axes3D(figure)
+
+    graph.scatter(data[:-2], data[1:-1], data[2:], s=1, marker="o",
+                  edgecolors="blue", facecolors="blue")
+
+    plt.show(block=False)
+    for _ in range(args.limit) if args.limit else it.count():
+        plt.pause(.1)
 
 
-rng_type = Randu
-
-figure = plt.figure(figsize=(4, 4))
-
-rng = rng_type()
-data = [rng.next() for x in range(1000)]
-
-graph = Axes3D(figure)
-
-graph.scatter(data[:-2], data[1:-1], data[2:], s=1, marker="o",
-              edgecolors="blue", facecolors="blue")
-
-plt.show(block=False)
-plt.pause(3)
-plt.close()
+if __name__ == "__main__":
+    main()

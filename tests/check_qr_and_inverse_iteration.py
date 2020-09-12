@@ -8,14 +8,14 @@
 # schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 # View, California, 94041, USA.
 
-# Test QR-Code
+# Test QR-Code und inverse Iteration
 ######################################
 
 import sys
 import numpy as np
 sys.path.append("..")
 
-from qr import qr_eigenwerte
+from qr import qr_eigenvalues
 from inverse_iteration import inverse_iteration
 
 np.random.seed(123)
@@ -27,7 +27,7 @@ for i in range(10):
     for k in range(10):
         A[i, k] = A[k, i]
 
-ews = qr_eigenwerte(A, 1e-5)
+ews = qr_eigenvalues(A, 1e-5)
 
 for ew in ews:
     x = inverse_iteration(A, ew, 1e-5)

@@ -466,16 +466,7 @@ wir dies als unseren Zufallsvektor, ansonsten versuchen wir es einfach
 erneut. Da die Wahrscheinlichkeit, gezogen zu werden, für alle
 Kreisscheibenpunkte gleich ist, sind die zurückgelieferten $p$
 gleichverteilt. Als Code sieht dies so aus:
-\begin{lstlisting}
-from numpy.random import uniform
-
-def kreisscheibe():
-    while True:
-        x = uniform(-1, 1)
-        y = uniform(-1, 1)
-        if x**2 + y**2 <= 1:
-            return (x, y)
-\end{lstlisting}
+\lstinputlisting[firstline=10]{kreis.py}%
 Da wir im Mittel nur $1-\pi/4$ der gezogenen Punkte benutzen, brauchen
 wir $\nicefrac{4}{(4-\pi)}$ mal mehr Zufallszahlen, als wir als
 Koordinaten der Punkte zurückliefern. Im Falle des Kreises ist der
@@ -549,16 +540,7 @@ die korrekte Verteilung erzeugt.
 
 Als Python-Code sieht die allgemeinere Verwerfungsmethode nicht
 wesentlich schwieriger aus:
-\begin{lstlisting}
-from numpy.random import uniform
-
-def verwerfungsmethode(rho, n):
-    while True:
-        p = uniform(0, 1, n)
-        u = uniform(0, 1)
-        if u < rho(p):
-            return p
-\end{lstlisting}
+\lstinputlisting[firstline=10]{verwerfungsmethode.py}%
 \argd{rho} muss dabei eine Pythonfunktion sein, die als einziges
 Argument ein $n$-dimensionales Numpy-Array akzeptiert.
 
@@ -776,16 +758,7 @@ Ein \emph{Random walk} ist eine Folge $x_t$, die durch eine solche
 einfache stochastische Bewegungsgleichung beschrieben wird.
 Abbildung~\ref{fig:rw} zeigt links drei mögliche Random
 walks. Sie wurden durch eine Routine ähnlich der folgenden generiert: 
-\begin{lstlisting}
-def rw(N):
-    x = 0
-    xt = [ x ] 
-    for move in randint(0,2,N):
-        if   move == 0: x += -1
-        elif move == 1: x +=  1
-        xt.append(x)
-    return xt
-\end{lstlisting}
+\lstinputlisting[firstline=10]{rw.py}
 
 Dieses Modell ist so einfach, dass wir seine statistischen
 Eigenschaften fast vollständig analytisch berechnen können. So ist zum

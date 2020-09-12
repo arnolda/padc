@@ -1,8 +1,11 @@
+GRAPH_SOURCES = dla.py pendel.py rng_plot_test.py runge_barycentric.py
+SOURCES = fibonacci_qr.py root.py simplex_with_output.py
+
+MARKER = "**********************************************************"
+
 check:
-	python3 dla.py
-	python3 fibonacci_qr.py
-	python3 pendel.py
-	python3 rng_plot_test.py
-	python3 root.py
-	python3 runge_barycentric.py
-	python3 simplex_with_output.py
+	for src in $(GRAPH_SOURCES); do echo $(MARKER); echo $$src; python3 $$src --limit=10; done
+	for src in $(SOURCES); do echo $(MARKER); echo $$src; python3 $$src; done
+
+lint:
+	for src in $(GRAPH_SOURCES) $(SOURCES); do flake8 $$src || exit 0; done

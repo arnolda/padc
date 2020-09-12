@@ -8,7 +8,7 @@
 % schriftlich an Creative Commons, 444 Castro Street, Suite 900, Mountain
 % View, California, 94041, USA.
 
-\documentclass[BCOR0mm,index=default]{scrbook}
+\documentclass[BCOR=0mm,index=default]{scrbook}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 
@@ -99,6 +99,11 @@ pdftitle={Physik auf dem Computer Sommersemester 2014}]{hyperref}
 \lstdefinestyle{inline}{columns=fullflexible,
   basicstyle={\ttfamily}
 }
+\makeatletter
+\let\lstinputlistingorig\lstinputlisting
+\renewcommand{\lstinputlisting}{\def\@captype{table}\lstinputlistingorig}
+\makeatother
+
 \newcommand{\scipy}[1]{\lstinline[style=scipy]!#1!}
 \newcommand{\argd}[1]{\lstinline[style=inline]!#1!}
 

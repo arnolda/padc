@@ -298,7 +298,7 @@ Parameter ein Wörterbuch, dass das Butchertableau für das zu
 benutzende Runge-Kutta-Verfahren beschreibt. Für das Eulerverfahren
 und das klassische Runge-Kutta-Verfahren sehen solche Wörterbücher so
 aus:%
-{\lstinputlisting[firstline=36]{rk.py}}%
+{\lstinputlisting[firstline=10]{rk_tableaus.py}}%
 
 \subsection{Beispiel: Lotka-Volterra-Gleichungen}
 \index{Lotka-Volterra-Gleichungen}
@@ -888,8 +888,8 @@ Lösung aus dem vorigen Abschnitt unterstreicht dies.
 Wie alle lineare partiellen Differentialgleichungen mit konstanten
 Koeffizienten, kann Gleichung \eqref{eq:poissonreal} unter
 periodischen Randbedingungen einfach in den Fourierraum übertragen
-werden, da ja $\widehat{\nabla \Phi} = i n \omega \hat \Phi$. Zweimalige
-Anwendung ergibt
+werden, da ja $\widehat{\nabla \Phi} = i n \omega \hat \Phi$ (siehe
+\eqref{eq:dfft}). Zweimalige Anwendung ergibt
 \begin{equation}
   \label{eq:poissonft}
   -n^2\omega^2\hat\Phi_n  = \frac{\hat\rho_n}{\epsilon}
@@ -903,8 +903,10 @@ ladungsneutral sein. Für die übrigen Frequenzen lässt sich die
 Poissongleichung nun ganz einfach durch $\hat\Phi_n =
 -\hat\rho_n/\epsilon(n\omega)^2$ lösen. Um also $\Phi(x)$ zu berechnen,
 transformieren wir eine diskrete Ladungsverteilung $\rho$ mit Hilfe
-der FFT in den Fourierraum, lösen dort trivial die Poissongleichung,
-und transformieren $\hat\Phi$ zurück.
+der diskreten FFT in den Fourierraum, lösen dort trivial die
+Poissongleichung, und transformieren $\hat\Phi$ zurück. Dabei ist zu
+beachten, dass das \emph{diskretisierte} $\omega = 2\pi h / L = 2\pi / N$
+(siehe \eqref{eq:dft}).
 
 \lstinputlisting[style=floating,firstline=10, caption={Lösung der
   Poisson-Gleichung im Fourierraum für
@@ -1102,7 +1104,7 @@ die charakteristische Länge der Dämpfung $\kappa^{-1}$ ist. Für eine
 sie nur etwa $1$nm, \dh es gibt praktisch keine elektrostatischen
 Wechselwirkungen über Distanzen größer als ein Nanometer.
 
-\lstinputlisting[style=floating,firstline=10, caption={Python-Code zur
+\lstinputlisting[style=multipage,firstline=10, caption={Python-Code zur
   Poisson-Boltzmann-Gleichung. Die Lösung wird räumlich mittels
   finiter Differenzen erster Ordnung diskretisiert und anschließend
   durch Bestimmen des Potentials aus der aktuellen Ladungsdichte
